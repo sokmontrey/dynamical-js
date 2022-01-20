@@ -1,12 +1,13 @@
 class Render {
 	canvas; c;
 	lastTime = 0;
-	isWireFrame = false;
 	frameRate = 30;
 	frames = [];
 
+	isWireFrame = false;
+
 	fillColor = "#000000";
-	strokeColor = "#000000";
+	strokeColor = "#aaa";
 	backgroundColor = "#ffffff";
 
 	init(canvas){
@@ -14,7 +15,7 @@ class Render {
 		this.c = canvas.getContext('2d');
 
 		this.c.fillStyle = "#000000";
-		this.c.strokeStyle = "#0000000";
+		this.c.strokeStyle = this.strokeColor
 
 		this.hw = canvas.width/2;
 		this.hh = canvas.height/2;
@@ -52,8 +53,10 @@ class Render {
 			Math.floor(position.x + vertices[0].x + this.hw), 
 			Math.floor(position.y - vertices[0].y + this.hh)
 		);
-		if(this.isWireFrame) this.c.stroke();
-		else this.c.fill();
+		if(this.isWireFrame) {
+			this.c.stroke();
+			this.c.lineWidth = 3;
+		}else this.c.fill();
 		this.c.closePath();
 	}
 	renderPoint(point){
@@ -64,13 +67,16 @@ class Render {
 			Math.floor(point.position.y + this.hh), 
 			size, 0, 2*Math.PI, false
 		);
-		this.c.fill();
+		if(this.isWireFrame) {
+			this.c.stroke();
+			this.c.lineWidth = 3;
+		}else this.c.fill();
 		this.c.closePath();
 	}
 	renderBodies(bodies){
-		this.c.fillStyle = this.fillColor;
 		this.c.strokeStyle = this.strokeColor;
 		for(var i=0; i<bodies.length; i++){
+			this.c.fillStyle = bodies[i].color;
 			var body = bodies[i];
 			if(body.type === 'point'){
 				this.renderPoint(body);

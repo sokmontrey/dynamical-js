@@ -7,13 +7,11 @@ canvas.height = window.innerHeight;
 
 const point = new Point(-100,-100, 4);
 const rect = new Rectangle(100, 100, 100, 50);
-const tri = new Triangle(-100, 100, 100, 100, 0, -100);
 const poly = new Polygon([
 	{x: -100, y: -100},
 	{x: 100, y: -100},
 	{x: 0, y: 100}
 ]);
-console.log(poly);
 
 const Render = new Renderer();
 Render.init(canvas);
