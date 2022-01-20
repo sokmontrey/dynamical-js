@@ -13,10 +13,11 @@ const poly = new Polygon([
 	{x: 0, y: 100}
 ]);
 
+console.log(poly);
+
 const Render = new Renderer();
 Render.init(canvas);
 Render.setWireFrame(false);
-Render.setShowBounds(true);
 Render.renderLoop([point, rect, poly], (deltaTime, there)=>{
 	there.clearCanvas();
 

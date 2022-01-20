@@ -102,9 +102,11 @@ class Render {
 			}else{
 				this.renderVertices(bodies[i].position, bodies[i].vertices);
 			}
+			/*
 			if(this.isShowBounds){
 				this.renderBounds(bodies[i]);
 			}
+			*/
 		}
 	}
 	renderLoop(bodies, callback){
