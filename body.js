@@ -1,7 +1,13 @@
 var schemeList = ["#f94144", "#f8961e", "#90be6d", "#577590", "#f3722c", "#f9c74f", "#43aa8b"];
 
 export class Circle{
-	constructor(x,y,radius,sides=16,color=undefined){
+	constructor(
+		x=0,
+		y=0,
+		radius=50,
+		sides=16,
+		color=undefined
+	){
 		var i;
 
 		const vertices = [];
@@ -23,7 +29,11 @@ export class Circle{
 	}
 }
 export class Point{
-	constructor(x,y,size,color=undefined){
+	constructor(
+		x=0,
+		y=0,
+		size=4,color=undefined
+	){
 		return {
 			type: 'point',
 			position: {x: x, y:y},
@@ -35,7 +45,13 @@ export class Point{
 	}
 }
 export class Rectangle{
-	constructor(x,y,width,height,color=undefined){
+	constructor(
+		x=0,
+		y=0,
+		width=100,
+		height=50,
+		color=undefined
+	){
 		var vertices = [
 			{x:-width/2 , y:-height/2},
 			{x:-width/2 , y: height/2},
@@ -55,7 +71,12 @@ export class Rectangle{
 	}
 }
 export class Triangle{
-	constructor(x1,y1, x2,y2, x3,y3, color=undefined){
+	constructor(
+		x1=10 , y1=10, 
+		x2=0  , y2=-7, 
+		x3=-10, y3=10, 
+		color=undefined
+	){
 		var position = {x: (x1+x2+x3)/3, y:(y1+y2+y3)/3} 
 		var vertices = [
 			{x: x1-position.x, y: y1-position.y},
@@ -73,7 +94,7 @@ export class Triangle{
 	}
 }
 export class Polygon{
-	constructor(vertices, color){
+	constructor(vertices, color=undefined){
 		var i;
 		var position = {x: 0, y:0};
 
