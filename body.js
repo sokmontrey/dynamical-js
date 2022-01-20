@@ -66,3 +66,28 @@ export class Triangle{
 		};
 	}
 }
+export class Polygon{
+	constructor(vertices){
+		var i;
+		var position = {x: 0, y:0};
+
+		for(i=0; i<vertices.length; i++){
+			position.x += vertices[i].x;
+			position.y += vertices[i].y;
+		}
+		position.x /= vertices.length;
+		position.y /= vertices.length;
+
+		for(i=0; i<vertices.length; i++){
+			vertices[i].x -= position.x;
+			vertices[i].y -= position.y;
+		}
+
+		return {
+			type: 'polygon',
+			position: position,
+
+			vertices: vertices,
+		};
+	}
+};
