@@ -30,3 +30,22 @@ export class Point{
 		};
 	}
 }
+export class Rectangle{
+	constructor(x,y,width,height){
+		var vertices = [
+			{x:-width/2 , y:-height/2},
+			{x:-width/2 , y: height/2},
+			{x: width/2 , y: height/2},
+			{x: width/2 , y:-height/2},
+		];
+
+		return {
+			type: 'rectangle',
+			position: {x: x, y:y},
+			width: width,
+			height: height,
+
+			vertices: vertices,
+		}
+	}
+}
