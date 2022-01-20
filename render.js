@@ -36,12 +36,13 @@ class Render {
 		this.c.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 	renderVertices(position, vertices){
+		var i;
 		this.c.beginPath();
 		this.c.moveTo(
 			Math.floor(position.x + vertices[0].x + this.hw), 
 			Math.floor(position.y - vertices[0].y + this.hh)
 		);
-		for(var i=0; i<vertices.length; i++){
+		for(i=0; i<vertices.length; i++){
 			this.c.lineTo(
 				Math.floor(position.x + vertices[i].x + this.hw), 
 				Math.floor(position.y - vertices[i].y + this.hh)

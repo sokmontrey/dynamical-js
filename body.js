@@ -49,3 +49,20 @@ export class Rectangle{
 		}
 	}
 }
+export class Triangle{
+	constructor(x1,y1, x2,y2, x3,y3){
+		var position = {x: (x1+x2+x3)/3, y:(y1+y2+y3)/3} 
+		var vertices = [
+			{x: x1-position.x, y: y1-position.y},
+			{x: x2-position.x, y: y2-position.y},
+			{x: x3-position.x, y: y3-position.y},
+		];
+
+		return {
+			type: 'triangle',
+			position: position,
+
+			vertices: vertices,
+		};
+	}
+}
