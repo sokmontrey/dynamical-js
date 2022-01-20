@@ -12,11 +12,19 @@ export class Circle{
 			});
 		}
 
+		var bounds = {
+			minX: -radius,
+			minY: -radius,
+			maxX: radius,
+			maxY: radius,
+		};
+
 		return {
 			type: 'circle',
 			position: {x: x, y:y},
 			radius: radius,
 
+			bounds: bounds,
 			vertices: vertices,
 			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
 		}
@@ -24,11 +32,18 @@ export class Circle{
 }
 export class Point{
 	constructor(x,y,size,color=undefined){
+		var bounds = {
+			minX: -size,
+			minY: -size,
+			maxX: size,
+			maxY: size
+		};
 		return {
 			type: 'point',
 			position: {x: x, y:y},
 			size: size,
 
+			bounds: bounds,
 			vertices: [{x: 0, y: 0}],
 			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
 		};
@@ -42,6 +57,12 @@ export class Rectangle{
 			{x: width/2 , y: height/2},
 			{x: width/2 , y:-height/2},
 		];
+		var bounds = {
+			minX: -width/2,
+			minY: -height/2,
+			maxX: width/2,
+			maxY: height/2
+		};
 
 		return {
 			type: 'rectangle',
@@ -49,6 +70,7 @@ export class Rectangle{
 			width: width,
 			height: height,
 
+			bounds: bounds,
 			vertices: vertices,
 			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
 		}
@@ -62,11 +84,18 @@ export class Triangle{
 			{x: x2-position.x, y: y2-position.y},
 			{x: x3-position.x, y: y3-position.y},
 		];
+		var bounds = {
+			minX: Math.min(x1,x2,x3)-position.x,
+			minY: Math.min(y1,y2,y3)-position.y,
+			maxX: Math.max(x1,x2,x3)-position.x,
+			maxY: Math.max(y1,y2,y3)-position.y
+		};
 
 		return {
 			type: 'triangle',
 			position: position,
 
+			bounds: bounds,
 			vertices: vertices,
 			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
 		};
@@ -89,10 +118,18 @@ export class Polygon{
 			vertices[i].y -= position.y;
 		}
 
+		var bounds = {
+			minX: Math.min(vertices.map(v => v.x)),
+			minY: Math.min(vertices.map(v => v.y)),
+			maxX: Math.max(vertices.map(v => v.x)),
+			maxY: Math.max(vertices.map(v => v.y)),
+		};
+
 		return {
 			type: 'polygon',
 			position: position,
 
+			bounds: bounds,
 			vertices: vertices,
 			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
 		};

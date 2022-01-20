@@ -5,6 +5,7 @@ class Render {
 	frames = [];
 
 	isWireFrame = false;
+	isShowBounds = false;
 
 	fillColor = "#000000";
 	strokeColor = "#aaa";
@@ -19,6 +20,9 @@ class Render {
 
 		this.hw = canvas.width/2;
 		this.hh = canvas.height/2;
+	}
+	setShowBounds(isShowBounds){
+		this.isShowBounds = isShowBounds;
 	}
 	setWireFrame(isWireFrame){
 		this.isWireFrame = isWireFrame;
@@ -73,6 +77,21 @@ class Render {
 		}else this.c.fill();
 		this.c.closePath();
 	}
+	renderBounds(body){
+		var bounds = body.bounds;
+		var position = body.position;
+		this.c.beginPath();
+		this.c.moveTo(bounds.minX + this.hw + position.x, bounds.minY + this.hh + position.y);
+		this.c.lineTo(bounds.minX + this.hw + position.x, bounds.maxY + this.hh + position.y);
+		this.c.lineTo(bounds.maxX + this.hw + position.x, bounds.maxY + this.hh + position.y);
+		this.c.lineTo(bounds.maxX + this.hw + position.x, bounds.minY + this.hh + position.y);
+		this.c.lineTo(bounds.minX + this.hw + position.x, bounds.minY + this.hh + position.y);
+		this.c.strokeStyle = "#33aa33";
+		this.c.lineWidth = 4;
+		this.c.stroke();
+		this.c.closePath();
+	}
+
 	renderBodies(bodies){
 		this.c.strokeStyle = this.strokeColor;
 		for(var i=0; i<bodies.length; i++){
@@ -82,6 +101,9 @@ class Render {
 				this.renderPoint(body);
 			}else{
 				this.renderVertices(bodies[i].position, bodies[i].vertices);
+			}
+			if(this.isShowBounds){
+				this.renderBounds(bodies[i]);
 			}
 		}
 	}
@@ -93,45 +115,11 @@ class Render {
 		else deltaTime = (newTime - this.lastTime)/1000.0;
 		this.lastTime = newTime;
 
-		const isCallback = callback(deltaTime, this)
-
+		const isCallback = callback(deltaTime, this);
 		this.renderBodies(bodies);
 
 		if(isCallback)
 			requestAnimationFrame(()=>{this.renderLoop(bodies, callback)});
 	}
-	saveFrame(){
-		var data = this.canvas.toDataURL("image/png");
-		var img = new Image();
-		img.src = data;
-		this.frames.push(img);
-	}
-	downloadFrame(){
-		//download this.frames one by one 
-		for(var i=0; i<this.frames.length; i++){
-			var img = this.frames[i];
-			var link = document.createElement("a");
-			link.download = "frame" + i + ".png";
-			link.href = img.src;
-			link.click();
-		}
-	}
-	renderAnimation(bodies, duration, callback){
-		var deltaTime = 1 / this.frameRate;
-		var totalFrame = duration * this.frameRate;
-		var frameCount = 0;
-
-		const request =()=> { 
-			callback(deltaTime, this);
-			this.renderBodies(bodies);
-			this.saveFrame();
-
-			frameCount++;
-			if(frameCount <= totalFrame)
-				requestAnimationFrame(request);
-		}
-		requestAnimationFrame(request);
-	}
-
 }
 export default Render;

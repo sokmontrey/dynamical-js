@@ -16,6 +16,7 @@ const poly = new Polygon([
 const Render = new Renderer();
 Render.init(canvas);
 Render.setWireFrame(false);
+Render.setShowBounds(true);
 Render.renderLoop([point, rect, poly], (deltaTime, there)=>{
 	there.clearCanvas();
 
