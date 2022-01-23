@@ -1,5 +1,5 @@
 import Renderer from './render.js';
-import { Point } from './body.js';
+import { Dot } from './body.js';
 
 const canvasContainer = document.createElement('div');
 document.body.appendChild(canvasContainer);
@@ -12,4 +12,6 @@ Render.init(canvasContainer, 600,600);
 Render.setWireFrame(false);
 Render.setShowBounds(false);
 
-Render.render([], ()=>{}, 0);
+const dot = new Dot(0,0);
+
+Render.render([dot], ()=>{}, 0);

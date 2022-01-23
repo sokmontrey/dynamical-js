@@ -35,7 +35,7 @@ export class Circle{
 		}
 	}
 }
-export class Point{
+export class Dot{
 	constructor(
 		x=0,
 		y=0,
@@ -48,7 +48,7 @@ export class Point{
 			maxY: size
 		}
 		return {
-			type: 'point',
+			type: 'dot',
 			position: {x: x, y:y},
 			size: size,
 

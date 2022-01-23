@@ -86,7 +86,7 @@ class Render {
 		}else c.fill();
 		c.closePath();
 	}
-	renderPoint(point, layer){
+	renderDot(point, layer){
 		var size = point.size;
 		const c = this.layer[layer].c;
 
@@ -163,8 +163,8 @@ class Render {
 		for(var i=0; i<bodies.length; i++){
 			c.fillStyle = bodies[i].color;
 			var body = bodies[i];
-			if(body.type === 'point'){
-				this.renderPoint(body, layer);
+			if(body.type === 'dot'){
+				this.renderDot(body, layer);
 			}else if(body.type === 'line'){
 				this.renderLine(body, layer);
 			}else{
