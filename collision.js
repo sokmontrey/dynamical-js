@@ -90,3 +90,4 @@ class Collision{
 		return intersect % 2 === 1;
 	}	
 }
+export default new Collision();
