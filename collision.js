@@ -1,6 +1,9 @@
 class Collision{
-	constructor(){}
-
+	//a method to check if a polygon is outside the screen with width and height
+	//checking if the polygon is outside the screen by
+	//go throught all the vertices of the polygon
+	//if any of the vertices is outside the screen return true
+	//else return false
 	border(polygon, width, height){
 		var i;
 		const vertices = polygon.vertices;
@@ -14,6 +17,10 @@ class Collision{
 		return false;
 	}
 
+	//check for collision between polygons by
+	//pick a polygon that has the smallest vertices number
+	//and loop through all the vertices of the other polygon
+	//and check if the point is inside the polygon using ray casting
 	polygonPolygon(polygon1, polygon2){
 		var i;
 		var collide = false;
@@ -47,6 +54,10 @@ class Collision{
 
 		return false;
 	}
+
+	//using ray casting from the point to the very right
+	//if the point is inside the polygon the number of intersections is odd
+	//if the point is outside the polygon the number of intersections is even
 	pointPolygon(point, polygon){
 		var i;
 		var intersect = 0;
