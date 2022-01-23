@@ -1,6 +1,39 @@
 class Collision{
 	constructor(){}
 
+	polygonPolygon(polygon1, polygon2){
+		var i;
+		var collide = false;
+
+		const p1 = () => {
+			for(i=0; i<polygon1.vertices.length; i++){
+				collide = checkCollision({
+					x: polygon1.vertices[i].x + polygon1.position.x,
+					y: polygon1.vertices[i].y + polygon1.position.y
+				}, polygon2);
+				if(collide) return true;
+			}
+		}
+		const p2 = () => {
+			for(i=0; i<polygon2.vertices.length; i++){
+				collide = checkCollision({
+					x: polygon2.vertices[i].x + polygon2.position.x,
+					y: polygon2.vertices[i].y + polygon2.position.y
+				}, polygon1) 
+				if(collide) return true;
+			}
+		}
+
+		if(polygon1.vertices.length > polygon2.vertices.length){
+			p1();
+			p2();
+		}else {
+			p2();
+			p1();
+		}
+
+		return false;
+	}
 	pointPolygon(point, polygon){
 		var i;
 		var intersect = 0;

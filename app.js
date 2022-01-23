@@ -37,23 +37,5 @@ function checkBorder(polygon, width, height){
 }
 
 function checkPoly(polygon1, polygon2){
-	var i;
-	var collide = false;
-	for(i=0; i<polygon2.vertices.length; i++){
-		collide = checkCollision({
-			x: polygon2.vertices[i].x + polygon2.position.x,
-			y: polygon2.vertices[i].y + polygon2.position.y
-		}, polygon1) 
-		if(collide) return true;
-	}
-
-	for(i=0; i<polygon1.vertices.length; i++){
-		collide = checkCollision({
-			x: polygon1.vertices[i].x + polygon1.position.x,
-			y: polygon1.vertices[i].y + polygon1.position.y
-		}, polygon2);
-		if(collide) return true;
-	}
-	return false;
 }
 */
