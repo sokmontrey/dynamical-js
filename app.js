@@ -1,5 +1,5 @@
 import Renderer from './render.js';
-import { Circle } from './body.js';
+import { Circle, Line } from './body.js';
 
 const canvasContainer = document.createElement('div');
 document.body.appendChild(canvasContainer);
@@ -12,4 +12,5 @@ Render.init(canvasContainer, 600,600);
 Render.setWireFrame(false);
 
 const circle = new Circle(0,0, 50);
-Render.render([circle], ()=>{}, 0);
+const line = new Line(-100, 100, 100, -100);
+Render.render([circle, line], ()=>{}, 0);

@@ -99,6 +99,24 @@ class Render {
 		}else c.fill();
 		c.closePath();
 	}
+	renderLine(line, layer){
+		var size = line.size;
+		const c = this.layer[layer].c;
+
+		c.beginPath();
+		c.moveTo(
+			Math.floor( line.position.x + this.hw + line.vertices[0].x ),
+			Math.floor(-line.position.y + this.hh - line.vertices[0].y )
+		);
+		c.lineTo(
+			Math.floor( line.position.x + this.hw + line.vertices[1].x ),
+			Math.floor(-line.position.y + this.hh - line.vertices[1].y )
+		);
+		c.lineWidth = line.size;
+		c.strokeStyle = line.color;
+		c.stroke();
+		c.closePath();
+	}
 	renderBodies(bodies, layer){
 		const c = this.layer[layer].c;
 
@@ -108,6 +126,8 @@ class Render {
 			var body = bodies[i];
 			if(body.type === 'point'){
 				this.renderPoint(body, layer);
+			}else if(body.type === 'line'){
+				this.renderLine(body, layer);
 			}else{
 				this.renderVertices(
 					bodies[i].position, 
