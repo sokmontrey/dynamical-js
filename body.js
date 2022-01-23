@@ -145,3 +145,30 @@ export class Polygon{
 		};
 	}
 };
+export class SymPolygon{
+	constructor(
+		x=0, 
+		y=0,
+		radius=50, 
+		sides=6,
+		color=undefined,
+	){
+		var i;
+		var vertices = [];
+		for(i=0; i<sides; i++){
+			vertices.push({
+				x: radius * Math.cos(i * 2 * Math.PI / sides),
+				y: radius * Math.sin(i * 2 * Math.PI / sides)
+			});
+		}
+
+		return{
+			type: 'polygon',
+			position: {x: x, y:y},
+			radius: radius,
+
+			vertices: vertices,
+			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
+		}
+	}
+}
