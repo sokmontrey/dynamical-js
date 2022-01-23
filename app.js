@@ -10,6 +10,7 @@ document.body.appendChild(text);
 const Render = new Renderer();
 Render.init(canvasContainer, 600,600);
 Render.setWireFrame(false);
+Render.setShowBounds(true);
 
 const circle = new Circle(0,0, 50);
 const line = new Line(-100, 100, 100, -100);

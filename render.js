@@ -6,6 +6,7 @@ class Render {
 
 	isWireFrame = false;
 	wireFrameColor = '#aaa';
+	wireFrameSize = 3;
 	isShowBounds = false;
 
 	fillColor = "#000000";
@@ -80,7 +81,7 @@ class Render {
 		);
 		if(this.isWireFrame) {
 			c.strokeStyle = this.wireFrameColor;
-			c.lineWidth = 3;
+			c.lineWidth = this.wireFrameSize;
 			c.stroke();
 		}else c.fill();
 		c.closePath();
@@ -97,7 +98,7 @@ class Render {
 		);
 		if(this.isWireFrame) {
 			c.strokeStyle = this.wireFrameColor;
-			c.lineWidth = 3;
+			c.lineWidth = this.wireFrameSize;
 			c.stroke();
 		}else c.fill();
 		c.closePath();
@@ -150,7 +151,7 @@ class Render {
 			Math.floor( position.x + bounds.minX + this.hw ),
 			Math.floor(-position.y - bounds.minY + this.hh)
 		);
-		c.strokeStyle = "#ccc";
+		c.strokeStyle = "#a6f75e";
 		c.lineWidth = 4;
 		c.stroke();
 		c.closePath();
