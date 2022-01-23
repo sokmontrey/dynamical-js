@@ -6,15 +6,16 @@ export class Circle{
 		y=0,
 		radius=50,
 		sides=16,
+		angle=0,
 		color=undefined
 	){
 		var i;
 
-		const vertices = [];
+		var vertices = [];
 		for(i=0; i<sides; i++){
 			vertices.push({
-				x: radius * Math.cos(i * 2 * Math.PI / sides), 
-				y: radius * Math.sin(i * 2 * Math.PI / sides)
+				x: radius * Math.cos((i * 2 * Math.PI / sides) + angle ), 
+				y: radius * Math.sin((i * 2 * Math.PI / sides) + angle )
 			});
 		}
 		var bounds = {
@@ -64,21 +65,25 @@ export class Line{
 		y1=0,
 		x2=50,
 		y2=0,
-		size=4, color=undefined
+		size=4, 
+		angle=0,
+		color=undefined
 	){
 		const position = {
 			x: (x1+x2)/2, 
 			y: (y1+y2)/2
 		};
+		var sin = Math.sin(angle),
+			cos = Math.cos(angle);
 		const vertices = [
-			{x: x1-position.x, y: y1-position.y}, 
-			{x: x2-position.x, y: y2-position.y}
+			{x: x1-position.x + cos, y: y1-position.y + sin}, 
+			{x: x2-position.x + cos, y: y2-position.y + sin}
 		];
 		var bounds = {
-			minX: Math.min(x1, x2)-position.x,
-			minY: Math.min(y1, y2)-position.y,
-			maxX: Math.max(x1, x2)-position.x,
-			maxY: Math.max(y1, y2)-position.y
+			minX: Math.min(x1, x2)-position.x + cos,
+			minY: Math.min(y1, y2)-position.y + sin,
+			maxX: Math.max(x1, x2)-position.x + cos,
+			maxY: Math.max(y1, y2)-position.y + sin
 		}
 		return {
 			type: 'line',
@@ -97,20 +102,23 @@ export class Rectangle{
 		y=0,
 		width=100,
 		height=50,
+		angle=0,
 		color=undefined
 	){
+		var cos = Math.cos(angle),
+			sin = Math.sin(angle);
 		var vertices = [
-			{x:-width/2 , y:-height/2},
-			{x:-width/2 , y: height/2},
-			{x: width/2 , y: height/2},
-			{x: width/2 , y:-height/2},
+			{x:-width/2 + cos , y:-height/2 + sin},
+			{x:-width/2 + cos , y: height/2 + sin},
+			{x: width/2 + cos , y: height/2 + sin},
+			{x: width/2 + cos , y:-height/2 + sin},
 		];
 
 		var bounds = {
-			minX: -width/2,
-			minY: -height/2,
-			maxX: width/2,
-			maxY: height/2
+			minX:-width/2 + cos,
+			minY:-height/2 + sin,
+			maxX: width/2 + cos,
+			maxY: height/2 + sin
 		}
 		return {
 			type: 'rectangle',
@@ -129,19 +137,22 @@ export class Triangle{
 		x1=10 , y1=10, 
 		x2=0  , y2=-7, 
 		x3=-10, y3=10, 
+		angle=0,
 		color=undefined
 	){
+		var cos = Math.cos(angle),
+			sin = Math.sin(angle);
 		var position = {x: (x1+x2+x3)/3, y:(y1+y2+y3)/3} 
 		var vertices = [
-			{x: x1-position.x, y: y1-position.y},
-			{x: x2-position.x, y: y2-position.y},
-			{x: x3-position.x, y: y3-position.y},
+			{x: x1-position.x + cos, y: y1-position.y + sin},
+			{x: x2-position.x + cos, y: y2-position.y + sin},
+			{x: x3-position.x + cos, y: y3-position.y + sin},
 		];
 		var bounds = {
-			minX: Math.min(x1, x2, x3)-position.x,
-			minY: Math.min(y1, y2, y3)-position.y,
-			maxX: Math.max(x1, x2, x3)-position.x,
-			maxY: Math.max(y1, y2, y3)-position.y
+			minX: Math.min(x1, x2, x3)-position.x + cos,
+			minY: Math.min(y1, y2, y3)-position.y + sin,
+			maxX: Math.max(x1, x2, x3)-position.x + cos,
+			maxY: Math.max(y1, y2, y3)-position.y + sin
 		};
 
 		return {
@@ -155,7 +166,11 @@ export class Triangle{
 	}
 }
 export class Polygon{
-	constructor(vertices, color=undefined){
+	constructor(
+		vertices, 
+		angle, 
+		color=undefined
+	){
 		var i;
 		var position = {x: 0, y:0};
 
@@ -166,9 +181,12 @@ export class Polygon{
 		position.x /= vertices.length;
 		position.y /= vertices.length;
 
+		var cos = Math.cos(angle),
+			sin = Math.sin(angle);
+
 		for(i=0; i<vertices.length; i++){
-			vertices[i].x -= position.x;
-			vertices[i].y -= position.y;
+			vertices[i].x += -position.x + cos;
+			vertices[i].y += -position.y + sin;
 		}
 
 		var bounds = {
@@ -194,14 +212,15 @@ export class SymPolygon{
 		y=0,
 		radius=50, 
 		sides=6,
+		angle=0,
 		color=undefined,
 	){
 		var i;
 		var vertices = [];
 		for(i=0; i<sides; i++){
 			vertices.push({
-				x: radius * Math.cos(i * 2 * Math.PI / sides),
-				y: radius * Math.sin(i * 2 * Math.PI / sides)
+				x: radius * Math.cos(i * 2 * Math.PI / sides + angle),
+				y: radius * Math.sin(i * 2 * Math.PI / sides + angle)
 			});
 		}
 		var bounds = {
