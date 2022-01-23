@@ -99,7 +99,6 @@ class Render {
 		}else c.fill();
 		c.closePath();
 	}
-
 	renderBodies(bodies, layer){
 		const c = this.layer[layer].c;
 

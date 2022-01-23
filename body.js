@@ -44,6 +44,32 @@ export class Point{
 		};
 	}
 }
+export class Line{
+	constructor(
+		x1=-50,
+		y1=0,
+		x2=50,
+		y2=0,
+		size=4, color=undefined
+	){
+		const position = {
+			x: (x1+x2)/2, 
+			y: (y1+y2)/2
+		};
+		const vertices = [
+			{x: x1-position.x, y: y1-position.y}, 
+			{x: x2-position.x, y: y2-position.y}
+		];
+		return {
+			type: 'line',
+			position: position,
+			size: size,
+
+			vertices:vertices,
+			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
+		};
+	}
+}
 export class Rectangle{
 	constructor(
 		x=0,
