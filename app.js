@@ -22,20 +22,3 @@ const polygon = new Polygon([
 	{x: 0, y: -100}
 ]);
 
-/*
-function checkBorder(polygon, width, height){
-	var i;
-	const vertices = polygon.vertices;
-	for(i=0; i<vertices.length; i++){
-		var x = vertices[i].x + polygon.position.x,
-			y = vertices[i].y + polygon.position.y;
-		if(x < -width/2 || x > width/2 || y < -height/2 || y > height/2){
-			return true;
-		}
-	}
-	return false;
-}
-
-function checkPoly(polygon1, polygon2){
-}
-*/

@@ -1,6 +1,19 @@
 class Collision{
 	constructor(){}
 
+	border(polygon, width, height){
+		var i;
+		const vertices = polygon.vertices;
+		for(i=0; i<vertices.length; i++){
+			var x = vertices[i].x + polygon.position.x,
+				y = vertices[i].y + polygon.position.y;
+			if(x < -width/2 || x > width/2 || y < -height/2 || y > height/2){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	polygonPolygon(polygon1, polygon2){
 		var i;
 		var collide = false;
