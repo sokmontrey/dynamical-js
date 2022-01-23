@@ -117,6 +117,35 @@ class Render {
 		c.stroke();
 		c.closePath();
 	}
+	renderBounds(bounds, position, layer){
+		const c = this.layer[layer].c;
+
+		c.beginPath();
+		c.moveTo(
+			Math.floor( position.x + bounds.minX + this.hw ),
+			Math.floor(-position.y - bounds.minY + this.hh)
+		);
+		c.lineTo(
+			Math.floor( position.x + bounds.maxX + this.hw ),
+			Math.floor(-position.y - bounds.minY + this.hh)
+		);
+		c.lineTo(
+			Math.floor( position.x + bounds.maxX + this.hw ),
+			Math.floor(-position.y - bounds.maxY + this.hh)
+		);
+		c.lineTo(
+			Math.floor( position.x + bounds.minX + this.hw ),
+			Math.floor(-position.y - bounds.maxY + this.hh)
+		);
+		c.lineTo(
+			Math.floor( position.x + bounds.minX + this.hw ),
+			Math.floor(-position.y - bounds.minY + this.hh)
+		);
+		c.strokeStyle = "#ccc";
+		c.lineWidth = 4;
+		c.stroke();
+		c.closePath();
+	}
 	renderBodies(bodies, layer){
 		const c = this.layer[layer].c;
 
@@ -130,10 +159,13 @@ class Render {
 				this.renderLine(body, layer);
 			}else{
 				this.renderVertices(
-					bodies[i].position, 
-					bodies[i].vertices,
+					body.position, 
+					body.vertices,
 					layer
 				);
+			}
+			if(this.isShowBounds){
+				this.renderBounds(body.bounds, body.position, layer);
 			}
 		}
 	}
