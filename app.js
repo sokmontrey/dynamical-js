@@ -1,50 +1,92 @@
 import Renderer from './render.js';
-import { Rectangle, Point } from './body.js';
+import { Polygon, Rectangle } from './body.js';
 
-const canvas = document.getElementById('canvas');
-canvas.width = window.innerHeight;
-canvas.height = window.innerHeight;
+const canvasContainer = document.createElement('div');
+document.body.appendChild(canvasContainer);
 
-const point1 = new Point(100, 100);
-const polygon = new Rectangle(100, 100, 100, 100);
+const text = document.createElement('h3');
+document.body.appendChild(text);
 
 const Render = new Renderer();
-Render.init(canvas);
+Render.init(canvasContainer, 600,600);
 Render.setWireFrame(false);
-Render.renderLoop([point1, polygon], (deltaTime, there)=>{
-	there.clearCanvas();
 
-	window.addEventListener('mousemove', (e)=>{
-		const mouseX=e.clientX - there.canvas.width/2;
-		const mouseY=e.clientY - there.canvas.height/2;
+const rect = new Rectangle(0, 0, 100, 100);
+const polygon = new Polygon([
+	//create set of point that create star shape width {x: 0, y: 0} as center
+	{x: -100, y: 0},
+	{x: -50, y: 0},
+	{x: 0, y: 100},
+	{x: 50, y: 0},
+	{x: 100, y: 0},
+	{x: 0, y: -100}
+]);
 
-		point1.position.x = mouseX;
-		point1.position.y = mouseY;
-		const c = checkCollision(point1, polygon);
-		if(c){ polygon.color = "#ff0000"; point1.color = '#ff0000'; }
-		else{ polygon.color = "#00ff00"; point1.color = '#00ff00'; }
-	});
 
-	return true;
-});
 
-function checkCollision(points, polygon){
+/*
+function checkBorder(polygon, width, height){
+	var i;
 	const vertices = polygon.vertices;
-	const pp = polygon.position;
-	const p = points.position;
-	var intersections = 0;
-
-	for(var i=0; i<vertices.length; i++){
-		const a = vertices[i];
-		const b = vertices[i+1] || vertices[0];
-
-		if(
-			p.y < a.y+pp.y != p.y < b.y+pp.y &&
-			p.x < (b.x+pp.x-a.x+pp.x) * (p.y-a.y+pp.y) / (b.y+pp.y - a.y+pp.y) + a.x+pp.x
-		){
-			intersections++;
+	for(i=0; i<vertices.length; i++){
+		var x = vertices[i].x + polygon.position.x,
+			y = vertices[i].y + polygon.position.y;
+		if(x < -width/2 || x > width/2 || y < -height/2 || y > height/2){
+			return true;
 		}
 	}
-
-	return intersections % 2 == 0 ? false : true;
+	return false;
 }
+
+function checkPoly(polygon1, polygon2){
+	var i;
+	var collide = false;
+	for(i=0; i<polygon2.vertices.length; i++){
+		collide = checkCollision({
+			x: polygon2.vertices[i].x + polygon2.position.x,
+			y: polygon2.vertices[i].y + polygon2.position.y
+		}, polygon1) 
+		if(collide) return true;
+	}
+
+	for(i=0; i<polygon1.vertices.length; i++){
+		collide = checkCollision({
+			x: polygon1.vertices[i].x + polygon1.position.x,
+			y: polygon1.vertices[i].y + polygon1.position.y
+		}, polygon2);
+		if(collide) return true;
+	}
+	return false;
+}
+
+function checkCollision(point, polygon){
+	var i;
+	const vertices = polygon.vertices;
+	const p = {
+		x: point.x, 
+		y: point.y
+	};
+	var intersect = 0;
+
+	for(i=0; i<vertices.length; i++){
+		const a = {
+			x: vertices[i].x + polygon.position.x,
+			y: vertices[i].y + polygon.position.y
+		}
+		const next = vertices[i+1] || vertices[0]; 
+		const b = {
+			x: next.x + polygon.position.x,
+			y: next.y + polygon.position.y
+		}
+
+		if(p.y > Math.min(a.y, b.y) && p.y < Math.max(a.y, b.y) ){
+			if(p.x > Math.max(a.x, b.x)) continue;
+
+			//get x value from segment a and b by knowing by from p.y
+			const x = (p.y - a.y) * (b.x - a.x) / (b.y - a.y) + a.x;
+			if(x > p.x) intersect++;
+		}else continue;
+	}
+	return intersect % 2 === 1;
+}
+*/

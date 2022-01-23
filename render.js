@@ -9,17 +9,37 @@ class Render {
 
 	fillColor = "#000000";
 	strokeColor = "#aaa";
-	backgroundColor = "#ffffff";
 
-	init(canvas){
-		this.canvas = canvas;
-		this.c = canvas.getContext('2d');
+	init(canvasContainer, width, height){
+		this.width = width;
+		this.height = height;
 
-		this.c.fillStyle = "#000000";
-		this.c.strokeStyle = this.strokeColor
+		this.hw = width/2;
+		this.hh = height/2;
 
-		this.hw = canvas.width/2;
-		this.hh = canvas.height/2;
+		this.canvasContainer = canvasContainer;
+		this.layer = {};
+		this.createLayer(0);
+	}
+	createLayer(layer){
+		if(this.layer[layer]) return;
+		const canvas = document.createElement('canvas');
+		canvas.width = this.width;
+		canvas.height = this.height;
+		canvas.style.zIndex = layer;
+		canvas.style.position = 'absolute';
+		canvas.style.top = '0px';
+		canvas.style.left = '0px';
+
+		const c = canvas.getContext('2d');
+		this.canvasContainer.appendChild(canvas)
+
+		this.layer[layer] = {
+			canvas: canvas,
+			c: c
+		};
+		c.fillStyle = "#000000";
+		c.strokeStyle = this.strokeColor;
 	}
 	setShowBounds(isShowBounds){
 		this.isShowBounds = isShowBounds;
@@ -27,89 +47,78 @@ class Render {
 	setWireFrame(isWireFrame){
 		this.isWireFrame = isWireFrame;
 	}
-	setBackgroundColor(backgroundColor){
-		this.c.fillStyle = backgroundColor;
-		this.c.fillRect(0, 0, this.canvas.width, this.canvas.height);
-		this.backgroundColor = backgroundColor;
-	}
 	setFrameRate(frameRate){
 		this.frameRate = frameRate;
 	}
-	clearCanvas(){
-		this.c.fillStyle = this.backgroundColor;
-		this.c.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		this.c.fillRect(0, 0, this.canvas.width, this.canvas.height);
+	clearCanvas(layer){
+		const c = this.layer[layer].c;
+		c.clearRect(0, 0, this.width, this.height);
 	}
-	renderVertices(position, vertices){
+	fillBackground(color, layer){
+		const c = this.layer[layer].c;
+		c.fillStyle = color;
+		c.fillRect(0, 0, this.width, this.height);
+	}
+	renderVertices(position, vertices, layer){
 		var i;
-		this.c.beginPath();
-		this.c.moveTo(
-			Math.floor(position.x + vertices[0].x + this.hw), 
-			Math.floor(position.y - vertices[0].y + this.hh)
+		const c = this.layer[layer].c;
+		c.beginPath();
+		c.moveTo(
+			Math.floor( position.x + vertices[0].x + this.hw), 
+			Math.floor(-position.y - vertices[0].y + this.hh)
 		);
 		for(i=0; i<vertices.length; i++){
-			this.c.lineTo(
-				Math.floor(position.x + vertices[i].x + this.hw), 
-				Math.floor(position.y - vertices[i].y + this.hh)
+			c.lineTo(
+				Math.floor( position.x + vertices[i].x + this.hw), 
+				Math.floor(-position.y - vertices[i].y + this.hh)
 			);
 		}
-		this.c.lineTo(
+		c.lineTo(
 			Math.floor(position.x + vertices[0].x + this.hw), 
-			Math.floor(position.y - vertices[0].y + this.hh)
+			Math.floor(-position.y - vertices[0].y + this.hh)
 		);
 		if(this.isWireFrame) {
-			this.c.stroke();
-			this.c.lineWidth = 3;
-		}else this.c.fill();
-		this.c.closePath();
+			c.stroke();
+			c.lineWidth = 3;
+		}else c.fill();
+		c.closePath();
 	}
-	renderPoint(point){
+	renderPoint(point, layer){
 		var size = point.size;
-		this.c.beginPath();
-		this.c.arc(
-			Math.floor(point.position.x + this.hw), 
-			Math.floor(point.position.y + this.hh), 
+		const c = this.layer[layer].c;
+
+		c.beginPath();
+		c.arc(
+			Math.floor( point.position.x + this.hw), 
+			Math.floor(-point.position.y + this.hh), 
 			size, 0, 2*Math.PI, false
 		);
 		if(this.isWireFrame) {
-			this.c.stroke();
-			this.c.lineWidth = 3;
-		}else this.c.fill();
-		this.c.closePath();
-	}
-	renderBounds(body){
-		var bounds = body.bounds;
-		var position = body.position;
-		this.c.beginPath();
-		this.c.moveTo(bounds.minX + this.hw + position.x, bounds.minY + this.hh + position.y);
-		this.c.lineTo(bounds.minX + this.hw + position.x, bounds.maxY + this.hh + position.y);
-		this.c.lineTo(bounds.maxX + this.hw + position.x, bounds.maxY + this.hh + position.y);
-		this.c.lineTo(bounds.maxX + this.hw + position.x, bounds.minY + this.hh + position.y);
-		this.c.lineTo(bounds.minX + this.hw + position.x, bounds.minY + this.hh + position.y);
-		this.c.strokeStyle = "#33aa33";
-		this.c.lineWidth = 4;
-		this.c.stroke();
-		this.c.closePath();
+			c.stroke();
+			c.lineWidth = 3;
+		}else c.fill();
+		c.closePath();
 	}
 
-	renderBodies(bodies){
-		this.c.strokeStyle = this.strokeColor;
+	renderBodies(bodies, layer){
+		const c = this.layer[layer].c;
+
+		c.strokeStyle = this.strokeColor;
 		for(var i=0; i<bodies.length; i++){
-			this.c.fillStyle = bodies[i].color;
+			c.fillStyle = bodies[i].color;
 			var body = bodies[i];
 			if(body.type === 'point'){
-				this.renderPoint(body);
+				this.renderPoint(body, layer);
 			}else{
-				this.renderVertices(bodies[i].position, bodies[i].vertices);
+				this.renderVertices(
+					bodies[i].position, 
+					bodies[i].vertices,
+					layer
+				);
 			}
-			/*
-			if(this.isShowBounds){
-				this.renderBounds(bodies[i]);
-			}
-			*/
 		}
 	}
-	renderLoop(bodies, callback){
+	renderLoop(bodies, callback=()=>{}, layer=0){
 		var deltaTime;
 		const newTime = Date.now();
 
@@ -118,10 +127,18 @@ class Render {
 		this.lastTime = newTime;
 
 		const isCallback = callback(deltaTime, this);
-		this.renderBodies(bodies);
+
+		this.createLayer(layer);
+		this.renderBodies(bodies, layer);
 
 		if(isCallback)
 			requestAnimationFrame(()=>{this.renderLoop(bodies, callback)});
+	}
+	render(bodies, callback=()=>{}, layer=0){
+		const isCallback = callback(this);
+
+		this.createLayer(layer);
+		this.renderBodies(bodies, layer);
 	}
 }
 export default Render;
