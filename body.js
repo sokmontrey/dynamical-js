@@ -1,3 +1,4 @@
+import Vertex from './Operator/vertex.js';
 var schemeList = ["#f94144", "#f8961e", "#90be6d", "#577590", "#f3722c", "#f9c74f", "#43aa8b"];
 
 export class Circle{
@@ -6,16 +7,14 @@ export class Circle{
 		y=0,
 		radius=50,
 		sides=16,
-		angle=0,
 		color=undefined
 	){
 		var i;
-
 		var vertices = [];
 		for(i=0; i<sides; i++){
 			vertices.push({
-				x: radius * Math.cos((i * 2 * Math.PI / sides) + angle ), 
-				y: radius * Math.sin((i * 2 * Math.PI / sides) + angle )
+				x: radius * Math.cos(i * 2 * Math.PI / sides), 
+				y: radius * Math.sin(i * 2 * Math.PI / sides)
 			});
 		}
 		var bounds = {
@@ -69,21 +68,24 @@ export class Line{
 		angle=0,
 		color=undefined
 	){
+		var i;
 		const position = {
 			x: (x1+x2)/2, 
 			y: (y1+y2)/2
 		};
-		var sin = Math.sin(angle),
-			cos = Math.cos(angle);
-		const vertices = [
-			{x: x1-position.x + cos, y: y1-position.y + sin}, 
-			{x: x2-position.x + cos, y: y2-position.y + sin}
+		var vertices = [
+			{x: x1-position.x, y: y1-position.y}, 
+			{x: x2-position.x, y: y2-position.y}
 		];
+
+		if(angle)
+			vertices = Vertex.rotate(vertices, angle);
+
 		var bounds = {
-			minX: Math.min(x1, x2)-position.x + cos,
-			minY: Math.min(y1, y2)-position.y + sin,
-			maxX: Math.max(x1, x2)-position.x + cos,
-			maxY: Math.max(y1, y2)-position.y + sin
+			minX: Vertex.min(vertices, 'x'),
+			minY: Vertex.min(vertices, 'y'),
+			maxX: Vertex.max(vertices, 'x'),
+			maxY: Vertex.max(vertices, 'y'),
 		}
 		return {
 			type: 'line',
@@ -105,20 +107,19 @@ export class Rectangle{
 		angle=0,
 		color=undefined
 	){
-		var cos = Math.cos(angle),
-			sin = Math.sin(angle);
 		var vertices = [
-			{x:-width/2 + cos , y:-height/2 + sin},
-			{x:-width/2 + cos , y: height/2 + sin},
-			{x: width/2 + cos , y: height/2 + sin},
-			{x: width/2 + cos , y:-height/2 + sin},
+			{x:-width/2, y:-height/2},
+			{x:-width/2, y: height/2},
+			{x: width/2, y: height/2},
+			{x: width/2, y:-height/2},
 		];
-
+		if(angle)
+			vertices = Vertex.rotate(vertices, angle);
 		var bounds = {
-			minX:-width/2 + cos,
-			minY:-height/2 + sin,
-			maxX: width/2 + cos,
-			maxY: height/2 + sin
+			minX: Vertex.min(vertices, 'x'),
+			minY: Vertex.min(vertices, 'y'),
+			maxX: Vertex.max(vertices, 'x'),
+			maxY: Vertex.max(vertices, 'y'),
 		}
 		return {
 			type: 'rectangle',
@@ -127,7 +128,7 @@ export class Rectangle{
 			height: height,
 
 			vertices: vertices,
-			boundds: bounds,
+			bounds: bounds,
 			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
 		}
 	}
@@ -144,15 +145,17 @@ export class Triangle{
 			sin = Math.sin(angle);
 		var position = {x: (x1+x2+x3)/3, y:(y1+y2+y3)/3} 
 		var vertices = [
-			{x: x1-position.x + cos, y: y1-position.y + sin},
-			{x: x2-position.x + cos, y: y2-position.y + sin},
-			{x: x3-position.x + cos, y: y3-position.y + sin},
+			{x: x1-position.x, y: y1-position.y},
+			{x: x2-position.x, y: y2-position.y},
+			{x: x3-position.x, y: y3-position.y},
 		];
+		if(angle)
+			vertices = Vertex.rotate(vertices, angle);
 		var bounds = {
-			minX: Math.min(x1, x2, x3)-position.x + cos,
-			minY: Math.min(y1, y2, y3)-position.y + sin,
-			maxX: Math.max(x1, x2, x3)-position.x + cos,
-			maxY: Math.max(y1, y2, y3)-position.y + sin
+			minX: Vertex.min(vertices, 'x'),
+			minY: Vertex.min(vertices, 'y'),
+			maxX: Vertex.max(vertices, 'x'),
+			maxY: Vertex.max(vertices, 'y'),
 		};
 
 		return {
@@ -181,19 +184,18 @@ export class Polygon{
 		position.x /= vertices.length;
 		position.y /= vertices.length;
 
-		var cos = Math.cos(angle),
-			sin = Math.sin(angle);
-
 		for(i=0; i<vertices.length; i++){
-			vertices[i].x += -position.x + cos;
-			vertices[i].y += -position.y + sin;
+			vertices[i].x += -position.x;
+			vertices[i].y += -position.y;
 		}
+		if(angle)
+			vertices = Vertex.rotate(vertices, angle);
 
 		var bounds = {
-			minX: vertices.reduce((min, v) => Math.min(min, v.x), Infinity),
-			minY: vertices.reduce((min, v) => Math.min(min, v.y), Infinity),
-			maxX: vertices.reduce((max, v) => Math.max(max, v.x), -Infinity),
-			maxY: vertices.reduce((max, v) => Math.max(max, v.y), -Infinity),
+			minX: Vertex.min(vertices, 'x'),
+			minY: Vertex.min(vertices, 'y'),
+			maxX: Vertex.max(vertices, 'x'),
+			maxY: Vertex.max(vertices, 'y'),
 		}
 
 		return {
@@ -219,15 +221,18 @@ export class SymPolygon{
 		var vertices = [];
 		for(i=0; i<sides; i++){
 			vertices.push({
-				x: radius * Math.cos(i * 2 * Math.PI / sides + angle),
-				y: radius * Math.sin(i * 2 * Math.PI / sides + angle)
+				x: radius * Math.cos(i * 2 * Math.PI / sides),
+				y: radius * Math.sin(i * 2 * Math.PI / sides)
 			});
 		}
+		if(angle)
+			vertices = Vertex.rotate(vertices, angle);
+
 		var bounds = {
-			minX: vertices.reduce((min, v) => Math.min(min, v.x), Infinity),
-			minY: vertices.reduce((min, v) => Math.min(min, v.y), Infinity),
-			maxX: vertices.reduce((max, v) => Math.max(max, v.x), -Infinity),
-			maxY: vertices.reduce((max, v) => Math.max(max, v.y), -Infinity),
+			minX: Vertex.min(vertices, 'x'),
+			minY: Vertex.min(vertices, 'y'),
+			maxX: Vertex.max(vertices, 'x'),
+			maxY: Vertex.max(vertices, 'y'),
 		}
 
 		return{
