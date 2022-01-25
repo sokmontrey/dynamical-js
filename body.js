@@ -31,6 +31,13 @@ export class Circle{
 		this.vertices= vertices;
 		this.bounds= bounds;
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
+
+		this.physic = {
+			velocity: {x:0, y:0},
+			acceleration: {x:0, y:0},
+			mass: 1,
+			force: {x:0, y:0},
+		}
 	}
 }
 export class Dot{
@@ -49,7 +56,7 @@ export class Dot{
 		this.position= {x: x, y:y};
 		this.size= size;
 
-		this.vertices= vertices;
+		this.vertices= [{x:0, y:0}];
 		this.bounds= bounds;
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
