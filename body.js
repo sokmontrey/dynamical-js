@@ -1,37 +1,7 @@
 import Vertex from './Operator/vertex.js';
 var schemeList = ["#f94144", "#f8961e", "#90be6d", "#577590", "#f3722c", "#f9c74f", "#43aa8b"];
 
-export class Circle{
-	constructor(
-		x=0,
-		y=0,
-		radius=50,
-		sides=16,
-		color=undefined
-	){
-		var i;
-		var vertices = [];
-		for(i=0; i<sides; i++){
-			vertices.push({
-				x: radius * Math.cos(i * 2 * Math.PI / sides), 
-				y: radius * Math.sin(i * 2 * Math.PI / sides)
-			});
-		}
-		var bounds = {
-			minX:-radius,
-			minY:-radius,
-			maxX: radius,
-			maxY: radius
-		}
-
-		this.type= 'circle';
-		this.position= {x: x, y:y};
-		this.radius= radius;
-
-		this.vertices= vertices;
-		this.bounds= bounds;
-		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
-	}
+class Dynamic{
 	setDynamic(initValue={
 		mass: 1,
 		force: {x: 0, y: 0},
@@ -72,6 +42,38 @@ export class Circle{
 		}
 		this.position.x += this.dynamic.velocity.x * deltaTime;
 		this.position.y += this.dynamic.velocity.y * deltaTime;
+	}
+}
+export class Circle extends Dynamic{
+	constructor(
+		x=0,
+		y=0,
+		radius=50,
+		sides=16,
+		color=undefined
+	){
+		var i;
+		var vertices = [];
+		for(i=0; i<sides; i++){
+			vertices.push({
+				x: radius * Math.cos(i * 2 * Math.PI / sides), 
+				y: radius * Math.sin(i * 2 * Math.PI / sides)
+			});
+		}
+		var bounds = {
+			minX:-radius,
+			minY:-radius,
+			maxX: radius,
+			maxY: radius
+		}
+
+		this.type= 'circle';
+		this.position= {x: x, y:y};
+		this.radius= radius;
+
+		this.vertices= vertices;
+		this.bounds= bounds;
+		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
 export class Dot{
