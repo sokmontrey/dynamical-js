@@ -1,29 +1,30 @@
 class Collision{
-	//a method to check if a polygon is outside the screen with width and height
-	//checking if the polygon is outside the screen by
-	//go throught all the vertices of the polygon
-	//if any of the vertices is outside the screen return true
-	//else return false
 	border(polygon, width, height){
-		var i;
-		const vertices = polygon.vertices;
-
-		for(i=0; i<vertices.length; i++){
-			var x = vertices[i].x + polygon.position.x,
-				y = vertices[i].y + polygon.position.y;
-			var direction = {x: 0, y:0};
-			var collide = false;
-			if(x < -width/2 || x > width/2){
-				collide = true;
-				direction.x = (x>width/2 ? width/2 : -width/2) - x;
-			}
-			if(y < -height/2 || y > height/2){
-				collide = true;
-				direction.y = (y>height/2 ? height/2 : -height/2) - y;
-			}
-			if(collide) return [true, direction];
+		const polygonBounds = polygon.bounds;
+		const position = polygon.position;
+		const bounds = {
+			minX: position.x + polygonBounds.minX,
+			minY: position.y + polygonBounds.minY,
+			maxX: position.x + polygonBounds.maxX,
+			maxY: position.y + polygonBounds.maxY
 		}
-		return [false, null];
+
+		var direction = {x: 0, y:0};
+		if(bounds.minX < -width/2){
+			direction.x = -width/2 - bounds.minX;
+		}else if(bounds.maxX > width/2){
+			direction.x = width/2 - bounds.maxX;
+		}
+
+		if(bounds.minY < -height/2){
+			direction.y = -height/2 - bounds.minY;
+		}else if(bounds.maxY > height/2){
+			direction.y = height/2 - bounds.maxY;
+		}
+
+		if(direction.x || direction.y){
+			return [true, direction];
+		}else return [false, null];
 	}
 
 	//check for collision between polygons by
@@ -76,6 +77,8 @@ class Collision{
 			x: point.x, 
 			y: point.y
 		};
+		var direction = {x: 0, y: 0};
+		var old_distance = Infinity;
 
 		for(i=0; i<vertices.length; i++){
 			const a = {
@@ -91,7 +94,7 @@ class Collision{
 			if(p.y > Math.min(a.y, b.y) && p.y < Math.max(a.y, b.y) ){
 				if(p.x > Math.max(a.x, b.x)) continue;
 
-				//get x value from segment a and b by knowing by from p.y
+				//get x value from segment a and b by knowing y from p.y
 				const x = (p.y - a.y) * (b.x - a.x) / (b.y - a.y) + a.x;
 				if(x > p.x) intersect++;
 			}else continue;

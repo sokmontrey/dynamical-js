@@ -1,5 +1,5 @@
 import Renderer from './render.js';
-import { Dot, Rectangle } from './body.js';
+import { Dot, Rectangle, Circle } from './body.js';
 import Enginer from './engine.js';
 
 const canvasContainer = document.createElement('div');
@@ -15,7 +15,9 @@ Render.setShowBounds(false);
 
 const dot = new Dot(0,0);
 const rect = new Rectangle(100,0,100,100);
+const circle = new Circle(100, 100, 50, 16);
 
 const Engine = new Enginer();
-Engine.init(Render, [dot, rect]);
+Engine.init(Render, [dot, circle]);
 Engine.run();
+Engine.stop = true;

@@ -41,8 +41,9 @@ class Dynamic{
 		this.position.y += this.dynamic.velocity.y * deltaTime;
 	}
 
-	collisionManifold(direction){
+	resolveCollisionManifold(direction){
 		if(!this.isDynamic) return 0;
+		this.color = 'red';
 
 		this.position.x += direction.x;
 		this.position.y += direction.y;

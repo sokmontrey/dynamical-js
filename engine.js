@@ -1,7 +1,8 @@
-
+import Collision from './collision.js';
 
 class Engine{
 	gravity = { x: 0, y: -10 }
+	stop = false;
 
 	//public---------------
 	init(renderer, bodies, staticBodies=[]){
@@ -18,8 +19,10 @@ class Engine{
 		this.renderer.renderLoop(this.bodies, (deltaTime, there)=>{
 			there.clearCanvas(0);
 			this.updateBodies(deltaTime);
+			this.checkCollision();
 
-			return false; 
+			if(this.stop) return false;
+			return true; 
 		}, 0);
 		this.renderer.render(this.staticBodies, ()=>{}, -1);
 	}
@@ -33,6 +36,25 @@ class Engine{
 	}
 
 	//private-----------
+	updateBodies(deltaTime){
+		var i;
+		for(i=0; i<this.bodies.length; i++){
+			const body = this.bodies[i];
+			body.update(deltaTime);
+		}
+	}
+	checkCollision(){
+		var i;
+		for(i=0; i<this.bodies.length; i++){
+			const body = this.bodies[i];
+			const [isCollide, direction] = Collision.border(
+				body, 
+				this.renderer.width, 
+				this.renderer.height);
+			if(isCollide)
+				body.resolveCollisionManifold(direction);
+		}
+	}
 	setDynamicBodies(bodies){
 		this.bodies = bodies;
 		var i;
@@ -53,13 +75,6 @@ class Engine{
 		for(i=0; i<this.bodies.length; i++){
 			const body = this.bodies[i];
 			body.setGravity(this.gravity);
-		}
-	}
-	updateBodies(deltaTime){
-		var i;
-		for(i=0; i<this.bodies.length; i++){
-			const body = this.bodies[i];
-			body.update(deltaTime);
 		}
 	}
 }
