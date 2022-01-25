@@ -16,8 +16,8 @@ class Dynamic{
 			acceleration: initValue.acceleration
 		}
 	}
-	setGravity(x, y){
-		this.gravity ={x: x, y:y}
+	setGravity(gravity){
+		this.gravity = gravity
 	}
 	setStatic(initValue){
 		this.isDynamic = false;
@@ -25,13 +25,9 @@ class Dynamic{
 			//something
 		}
 	}
-	update(deltaTime, additionalForce){
+	update(deltaTime){
 		if(!this.isDynamic) return 0;
 
-		this.dynamic.force = {
-			x: this.dynamic.force.x + additionalForce.x,
-			y: this.dynamic.force.y + additionalForce.y
-		}
 		this.dynamic.acceleration = {
 			x: this.dynamic.force.x / this.dynamic.mass,
 			y: this.dynamic.force.y / this.dynamic.mass
