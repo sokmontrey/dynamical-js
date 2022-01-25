@@ -60,6 +60,7 @@ class Engine{
 			for(j=i+1; j<this.bodies.length; j++){
 				const nextBody = this.bodies[j];
 				const isInBounds = Collision.isInBounds(body, nextBody);
+				console.log(isInBounds);
 				if(isInBounds){
 					var [isPolygon, polygonDirection] = Collision.check(
 						body, nextBody

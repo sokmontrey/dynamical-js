@@ -28,8 +28,18 @@ class Collision{
 	}
 
 	isInBounds(polygon1, polygon2){
-		const bounds1 = polygon1.bounds;
-		const bounds2 = polygon2.bounds;
+		const bounds1 = {
+			minX: polygon1.position.x + polygon1.bounds.minX,
+			minY: polygon1.position.y + polygon1.bounds.minY,
+			maxX: polygon1.position.x + polygon1.bounds.maxX,
+			maxY: polygon1.position.y + polygon1.bounds.maxY
+		}
+		const bounds2 = {
+			minX: polygon2.position.x + polygon2.bounds.minX,
+			minY: polygon2.position.y + polygon2.bounds.minY,
+			maxX: polygon2.position.x + polygon2.bounds.maxX,
+			maxY: polygon2.position.y + polygon2.bounds.maxY
+		}
 
 		if(bounds1.minX > bounds2.maxX || 
 			bounds1.maxX < bounds2.minX) return false;
