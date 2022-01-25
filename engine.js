@@ -1,11 +1,9 @@
 class Engine{
 	gravity = { x: 0, y: -10 }
 
-	setRender(renderer){
+	init(renderer, bodies, staticBodies=[]){
 		this.renderer = renderer;
-	}
-	setBody(bodies, staticBodies=[]){
-		var i;
+
 		this.bodies = bodies;
 		this.staticBodies = staticBodies;
 		this.enableGravity(0, -10);
@@ -41,5 +39,5 @@ class Engine{
 		this.renderer.render(this.staticBodies, ()=>{}, 0);
 	}
 }
-export default new Engine();
+export default Engine;
 
