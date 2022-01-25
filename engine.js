@@ -44,15 +44,33 @@ class Engine{
 		}
 	}
 	checkCollision(){
-		var i;
+		var i, j;
+		//sort bodies by x axis with bounds
+		this.bodies.sort((a, b)=>{
+			return a.position.x + a.bounds.minX - 
+				b.position.x + b.bounds.minX;
+		});
 		for(i=0; i<this.bodies.length; i++){
 			const body = this.bodies[i];
-			const [isCollide, direction] = Collision.border(
+			const [isBorder, borderDirection] = Collision.border(
 				body, 
 				this.renderer.width, 
 				this.renderer.height);
-			if(isCollide)
-				body.resolveCollisionManifold(direction);
+			if(isBorder) body.resolveCollision(borderDirection);
+			for(j=i+1; j<this.bodies.length; j++){
+				const nextBody = this.bodies[j];
+				const isInBounds = Collision.isInBounds(body, nextBody);
+				if(isInBounds){
+					var [isPolygon, polygonDirection] = Collision.check(
+						body, nextBody
+					);
+					//TODO: devide polygonDirection to 2 for each body
+					if(isPolygon){
+						body.resolveCollision(polygonDirection);
+						nextBody.resolveCollision(polygonDirection);
+					}
+				}else continue;
+			}
 		}
 	}
 	setDynamicBodies(bodies){
