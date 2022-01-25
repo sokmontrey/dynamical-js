@@ -31,13 +31,47 @@ export class Circle{
 		this.vertices= vertices;
 		this.bounds= bounds;
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
-
-		this.physic = {
-			velocity: {x:0, y:0},
-			acceleration: {x:0, y:0},
-			mass: 1,
-			force: {x:0, y:0},
+	}
+	setDynamic(initValue={
+		mass: 1,
+		force: {x: 0, y: 0},
+		velocity: {x: 0, y: 0},
+		acceleration: {x: 0, y: 0}
+	}){
+		this.isDynamic = true;
+		this.dynamic = {
+			mass: initValue.mass,
+			force: initValue.force,
+			velocity: initValue.velocity,
+			acceleration: initValue.acceleration
 		}
+	}
+	setGravity(x, y){
+		this.gravity ={x: x, y:y}
+	}
+	setStatic(initValue){
+		this.isDynamic = false;
+		this.static = {
+			//something
+		}
+	}
+	update(deltaTime, additionalForce){
+		if(!this.isDynamic) return 0;
+
+		this.dynamic.force = {
+			x: this.dynamic.force.x + additionalForce.x,
+			y: this.dynamic.force.y + additionalForce.y
+		}
+		this.dynamic.acceleration = {
+			x: this.dynamic.force.x / this.dynamic.mass,
+			y: this.dynamic.force.y / this.dynamic.mass
+		}
+		this.dynamic.velocity = {
+			x: this.dynamic.velocity.x + (this.gravity.x + this.dynamic.acceleration.x) * deltaTime,
+			y: this.dynamic.velocity.y + (this.gravity.y + this.dynamic.acceleration.y) * deltaTime
+		}
+		this.position.x += this.dynamic.velocity.x * deltaTime;
+		this.position.y += this.dynamic.velocity.y * deltaTime;
 	}
 }
 export class Dot{
