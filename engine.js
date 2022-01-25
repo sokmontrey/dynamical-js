@@ -3,9 +3,11 @@ class Engine{
 
 	init(renderer, bodies, staticBodies=[]){
 		this.renderer = renderer;
+		this.renderer.createLayer(0);
+		this.renderer.createLayer(1);
 
-		this.bodies = bodies;
-		this.staticBodies = staticBodies;
+		this.setDynamicBodies(bodies);
+		this.setStaticBodies(staticBodies);
 		this.enableGravity(0, -10);
 	}
 	enableGravity(x=0, y=-10){
@@ -15,6 +17,20 @@ class Engine{
 	disableGravity(){
 		this.gravity = {x: 0, y: 0};
 		this.setBodiesGravity();
+	}
+	setDynamicBodies(bodies){
+		this.bodies = bodies;
+		var i;
+		for(i=0; i<this.bodies.length; i++){
+			this.bodies[i].setDynamic();
+		}
+	}
+	setStaticBodies(bodies){
+		this.staticBodies = bodies;
+		var i;
+		for(i=0; i<this.staticBodies.length; i++){
+			this.staticBodies[i].setStatic();
+		}
 	}
 	setBodiesGravity(){
 		var i;
@@ -31,10 +47,12 @@ class Engine{
 		}
 	}
 	run(){
+		var count = 0;
 		this.renderer.renderLoop(this.bodies, (deltaTime, there)=>{
-			there.clearCanvas();
+			there.clearCanvas(1);
 			this.updateBodies(deltaTime);
-			return true;
+
+			return false; 
 		}, 1);
 		this.renderer.render(this.staticBodies, ()=>{}, 0);
 	}
