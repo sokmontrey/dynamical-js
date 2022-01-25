@@ -2,6 +2,7 @@ import Vertex from './Operator/vertex.js';
 var schemeList = ["#f94144", "#f8961e", "#90be6d", "#577590", "#f3722c", "#f9c74f", "#43aa8b"];
 
 class Dynamic{
+	constructor(){}
 	setDynamic(initValue={
 		mass: 1,
 		force: {x: 0, y: 0},
@@ -48,6 +49,7 @@ export class Circle extends Dynamic{
 		sides=16,
 		color=undefined
 	){
+		super();
 		var i;
 		var vertices = [];
 		for(i=0; i<sides; i++){
@@ -78,6 +80,7 @@ export class Dot extends Dynamic{
 		y=0,
 		size=4,color=undefined
 	){
+		super();
 		var bounds = {
 			minX:-size,
 			minY:-size,
@@ -103,6 +106,7 @@ export class Line extends Dynamic{
 		angle=0,
 		color=undefined
 	){
+		super();
 		var i;
 		const position = {
 			x: (x1+x2)/2, 
@@ -140,6 +144,7 @@ export class Rectangle extends Dynamic{
 		angle=0,
 		color=undefined
 	){
+		super();
 		var vertices = [
 			{x:-width/2, y:-height/2},
 			{x:-width/2, y: height/2},
@@ -172,6 +177,7 @@ export class Triangle extends Dynamic{
 		angle=0,
 		color=undefined
 	){
+		super();
 		var cos = Math.cos(angle),
 			sin = Math.sin(angle);
 		var position = {x: (x1+x2+x3)/3, y:(y1+y2+y3)/3} 
@@ -203,6 +209,7 @@ export class Polygon extends Dynamic{
 		angle, 
 		color=undefined
 	){
+		super();
 		var i;
 		var position = {x: 0, y:0};
 
@@ -244,6 +251,7 @@ export class SymetricalPolygon extends Dynamic{
 		angle=0,
 		color=undefined,
 	){
+		super();
 		var i;
 		var vertices = [];
 		for(i=0; i<sides; i++){
