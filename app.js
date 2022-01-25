@@ -15,9 +15,9 @@ Render.setShowBounds(false);
 
 const dot = new Dot(0,0);
 const rect = new Rectangle(100,0,100,100);
-const circle = new Circle(100, 100, 50, 16);
+const circle = new Circle(100, 200, 50, 16);
 
 const Engine = new Enginer();
-Engine.init(Render, [dot, circle]);
+Engine.init(Render, [dot, rect,circle]);
 Engine.run();
 Engine.stop = true;

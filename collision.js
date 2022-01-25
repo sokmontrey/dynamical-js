@@ -91,15 +91,34 @@ class Collision{
 				y: next.y + polygon.position.y
 			}
 
+			//find closest point from the point to edge
+			var abx = b.x - a.x + 1e-8,
+				aby = b.y - a.y + 1e-8;
+			var ab_distance = Math.sqrt(abx*abx + aby*aby);
+
+			const distance = Math.abs(
+				aby*p.x - abx*p.y + b.x*a.y-b.y*a.x
+			) / ab_distance;
+
+			const d_over_ab = distance / ab_distance;
+			var dx = aby * d_over_ab;
+			var dy = abx * d_over_ab;
+
+			//get x value from segment a and b by knowing y from p.y
+			const x = (p.y - a.y) * (b.x - a.x) / (b.y - a.y) + a.x;
+			if(distance < old_distance){
+				if(x > p.x) direction = {x: -dx, y:dy};
+				else direction = {x: dx, y:dy}
+
+				old_distance = distance;
+			}
+
 			if(p.y > Math.min(a.y, b.y) && p.y < Math.max(a.y, b.y) ){
 				if(p.x > Math.max(a.x, b.x)) continue;
-
-				//get x value from segment a and b by knowing y from p.y
-				const x = (p.y - a.y) * (b.x - a.x) / (b.y - a.y) + a.x;
 				if(x > p.x) intersect++;
 			}else continue;
 		}
-		return intersect % 2 === 1;
+		return intersect % 2 === 1 ? [true, direction] : [false, null];
 	}	
 }
 export default new Collision();
