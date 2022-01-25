@@ -60,15 +60,16 @@ class Engine{
 			for(j=i+1; j<this.bodies.length; j++){
 				const nextBody = this.bodies[j];
 				const isInBounds = Collision.isInBounds(body, nextBody);
-				console.log(isInBounds);
 				if(isInBounds){
 					var [isPolygon, polygonDirection] = Collision.check(
 						body, nextBody
 					);
 					//TODO: devide polygonDirection to 2 for each body
 					if(isPolygon){
-						body.resolveCollision(polygonDirection);
-						nextBody.resolveCollision(polygonDirection);
+						body.resolveCollision(polygonDirection, nextBody);
+						nextBody.resolveCollision({
+							x: -polygonDirection.x, 
+							y: -polygonDirection.y}, body);
 					}
 				}else continue;
 			}

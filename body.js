@@ -41,9 +41,13 @@ class Dynamic{
 		this.position.y += this.dynamic.velocity.y * deltaTime;
 	}
 
-	resolveCollision(direction){
+	resolveCollision(direction, other){
 		if(!this.isDynamic) return 0;
 		this.resolveCollisionManifold(direction);
+		//TODO: when body colliding with the other we got no other params so there will be error
+	}
+	resolveDynamic(other){
+		if(!this.isDynamic) return 0;
 	}
 	resolveCollisionManifold(direction){
 		this.position.x += direction.x;
