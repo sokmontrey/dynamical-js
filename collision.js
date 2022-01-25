@@ -27,7 +27,7 @@ class Collision{
 		}else return [false, null];
 	}
 
-	isBounds(polygon1, polygon2){
+	isCollideBounds(polygon1, polygon2){
 		const bounds1 = polygon1.bounds;
 		const bounds2 = polygon2.bounds;
 
