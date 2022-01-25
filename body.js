@@ -76,7 +76,7 @@ export class Circle extends Dynamic{
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
-export class Dot{
+export class Dot extends Dynamic{
 	constructor(
 		x=0,
 		y=0,
@@ -97,7 +97,7 @@ export class Dot{
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
-export class Line{
+export class Line extends Dynamic{
 	constructor(
 		x1=-50,
 		y1=0,
@@ -135,7 +135,7 @@ export class Line{
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
-export class Rectangle{
+export class Rectangle extends Dynamic{
 	constructor(
 		x=0,
 		y=0,
@@ -168,7 +168,7 @@ export class Rectangle{
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
-export class Triangle{
+export class Triangle extends Dynamic{
 	constructor(
 		x1=10 , y1=10, 
 		x2=0  , y2=-7, 
@@ -201,7 +201,7 @@ export class Triangle{
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
-export class Polygon{
+export class Polygon extends Dynamic{
 	constructor(
 		vertices, 
 		angle, 
@@ -239,7 +239,7 @@ export class Polygon{
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 };
-export class SymetricalPolygon{
+export class SymetricalPolygon extends Dynamic{
 	constructor(
 		x=0, 
 		y=0,
