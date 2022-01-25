@@ -27,6 +27,17 @@ class Collision{
 		}else return [false, null];
 	}
 
+	isBounds(polygon1, polygon2){
+		const bounds1 = polygon1.bounds;
+		const bounds2 = polygon2.bounds;
+
+		if(bounds1.minX > bounds2.maxX || 
+			bounds1.maxX < bounds2.minX) return false;
+		if(bounds1.minY > bounds2.maxY || 
+			bounds1.maxY < bounds2.minY) return false;
+
+		return true;
+	}
 	//check for collision between polygons by
 	//pick a polygon that has the smallest vertices number
 	//and loop through all the vertices of the other polygon
