@@ -12,6 +12,4 @@ Render.init(canvasContainer, 600,600);
 Render.setWireFrame(false);
 Render.setShowBounds(false);
 
-const dot = new Dot(0,0);
 
-Render.render([dot], ()=>{}, 0);

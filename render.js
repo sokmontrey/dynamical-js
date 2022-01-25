@@ -6,7 +6,7 @@ class Render {
 
 	isWireFrame = false;
 	wireFrameColor = '#aaa';
-	wireFrameSize = 3;
+	wireFrameSize = 2;
 	isShowBounds = false;
 
 	fillColor = "#000000";

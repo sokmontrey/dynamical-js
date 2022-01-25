@@ -24,15 +24,13 @@ export class Circle{
 			maxY: radius
 		}
 
-		return {
-			type: 'circle',
-			position: {x: x, y:y},
-			radius: radius,
+		this.type= 'circle';
+		this.position= {x: x, y:y};
+		this.radius= radius;
 
-			vertices: vertices,
-			bounds: bounds,
-			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
-		}
+		this.vertices= vertices;
+		this.bounds= bounds;
+		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
 export class Dot{
@@ -47,15 +45,13 @@ export class Dot{
 			maxX: size,
 			maxY: size
 		}
-		return {
-			type: 'dot',
-			position: {x: x, y:y},
-			size: size,
+		this.type= 'dot';
+		this.position= {x: x, y:y};
+		this.size= size;
 
-			vertices: [{x: 0, y: 0}],
-			bounds: bounds, 
-			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
-		};
+		this.vertices= vertices;
+		this.bounds= bounds;
+		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
 export class Line{
@@ -87,15 +83,13 @@ export class Line{
 			maxX: Vertex.max(vertices, 'x'),
 			maxY: Vertex.max(vertices, 'y'),
 		}
-		return {
-			type: 'line',
-			position: position,
-			size: size,
+		this.type= 'line';
+		this.position= position;
+		this.size= size;
 
-			vertices:vertices,
-			bounds: bounds,
-			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
-		};
+		this.vertices= vertices;
+		this.bounds= bounds;
+		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
 export class Rectangle{
@@ -121,16 +115,14 @@ export class Rectangle{
 			maxX: Vertex.max(vertices, 'x'),
 			maxY: Vertex.max(vertices, 'y'),
 		}
-		return {
-			type: 'rectangle',
-			position: {x: x, y:y},
-			width: width,
-			height: height,
+		this.type= 'rectangle';
+		this.position= {x:x, y:y};
+		this.width= width;
+		this.height= height;
 
-			vertices: vertices,
-			bounds: bounds,
-			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
-		}
+		this.vertices= vertices;
+		this.bounds= bounds;
+		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
 export class Triangle{
@@ -158,14 +150,12 @@ export class Triangle{
 			maxY: Vertex.max(vertices, 'y'),
 		};
 
-		return {
-			type: 'triangle',
-			position: position,
+		this.type= 'triangle';
+		this.position= position;
 
-			vertices: vertices,
-			bounds: bounds,
-			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
-		};
+		this.vertices= vertices;
+		this.bounds= bounds;
+		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
 export class Polygon{
@@ -198,17 +188,15 @@ export class Polygon{
 			maxY: Vertex.max(vertices, 'y'),
 		}
 
-		return {
-			type: 'polygon',
-			position: position,
+		this.type= 'polygon';
+		this.position= position;
 
-			vertices: vertices,
-			bounds: bounds,
-			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
-		};
+		this.vertices= vertices;
+		this.bounds= bounds;
+		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 };
-export class SymPolygon{
+export class SymetricalPolygon{
 	constructor(
 		x=0, 
 		y=0,
@@ -235,14 +223,12 @@ export class SymPolygon{
 			maxY: Vertex.max(vertices, 'y'),
 		}
 
-		return{
-			type: 'polygon',
-			position: {x: x, y:y},
-			radius: radius,
+		this.type= 'symetricalPolygon';
+		this.position= {x: x, y:y};
+		this.radius= radius;
 
-			vertices: vertices,
-			bounds: bounds,
-			color: color || schemeList[Math.floor(Math.random() * schemeList.length)],
-		}
+		this.vertices= vertices;
+		this.bounds= bounds;
+		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
 	}
 }
