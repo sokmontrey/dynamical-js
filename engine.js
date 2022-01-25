@@ -4,7 +4,7 @@ class Engine{
 	init(renderer, bodies, staticBodies=[]){
 		this.renderer = renderer;
 		this.renderer.createLayer(0);
-		this.renderer.createLayer(1);
+		this.renderer.createLayer(-1);
 
 		this.setDynamicBodies(bodies);
 		this.setStaticBodies(staticBodies);
@@ -49,12 +49,12 @@ class Engine{
 	run(){
 		var count = 0;
 		this.renderer.renderLoop(this.bodies, (deltaTime, there)=>{
-			there.clearCanvas(1);
+			there.clearCanvas(0);
 			this.updateBodies(deltaTime);
 
 			return false; 
-		}, 1);
-		this.renderer.render(this.staticBodies, ()=>{}, 0);
+		}, 0);
+		this.renderer.render(this.staticBodies, ()=>{}, -1);
 	}
 }
 export default Engine;
