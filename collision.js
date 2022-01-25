@@ -7,14 +7,23 @@ class Collision{
 	border(polygon, width, height){
 		var i;
 		const vertices = polygon.vertices;
+
 		for(i=0; i<vertices.length; i++){
 			var x = vertices[i].x + polygon.position.x,
 				y = vertices[i].y + polygon.position.y;
-			if(x < -width/2 || x > width/2 || y < -height/2 || y > height/2){
-				return true;
+			var direction = {x: 0, y:0};
+			var collide = false;
+			if(x < -width/2 || x > width/2){
+				collide = true;
+				direction.x = (x>width/2 ? width/2 : -width/2) - x;
 			}
+			if(y < -height/2 || y > height/2){
+				collide = true;
+				direction.y = (y>height/2 ? height/2 : -height/2) - y;
+			}
+			if(collide) return [true, direction];
 		}
-		return false;
+		return [false, null];
 	}
 
 	//check for collision between polygons by

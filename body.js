@@ -40,6 +40,13 @@ class Dynamic{
 		this.position.x += this.dynamic.velocity.x * deltaTime;
 		this.position.y += this.dynamic.velocity.y * deltaTime;
 	}
+
+	collisionManifold(direction){
+		if(!this.isDynamic) return 0;
+
+		this.position.x += direction.x;
+		this.position.y += direction.y;
+	}
 }
 export class Circle extends Dynamic{
 	constructor(

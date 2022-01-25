@@ -1,6 +1,9 @@
+
+
 class Engine{
 	gravity = { x: 0, y: -10 }
 
+	//public---------------
 	init(renderer, bodies, staticBodies=[]){
 		this.renderer = renderer;
 		this.renderer.createLayer(0);
@@ -10,6 +13,16 @@ class Engine{
 		this.setStaticBodies(staticBodies);
 		this.enableGravity(0, -10);
 	}
+	run(){
+		var count = 0;
+		this.renderer.renderLoop(this.bodies, (deltaTime, there)=>{
+			there.clearCanvas(0);
+			this.updateBodies(deltaTime);
+
+			return false; 
+		}, 0);
+		this.renderer.render(this.staticBodies, ()=>{}, -1);
+	}
 	enableGravity(x=0, y=-10){
 		this.gravity = {x: x, y: y};
 		this.setBodiesGravity();
@@ -18,6 +31,8 @@ class Engine{
 		this.gravity = {x: 0, y: 0};
 		this.setBodiesGravity();
 	}
+
+	//private-----------
 	setDynamicBodies(bodies){
 		this.bodies = bodies;
 		var i;
@@ -32,6 +47,7 @@ class Engine{
 			this.staticBodies[i].setStatic();
 		}
 	}
+
 	setBodiesGravity(){
 		var i;
 		for(i=0; i<this.bodies.length; i++){
@@ -45,16 +61,6 @@ class Engine{
 			const body = this.bodies[i];
 			body.update(deltaTime);
 		}
-	}
-	run(){
-		var count = 0;
-		this.renderer.renderLoop(this.bodies, (deltaTime, there)=>{
-			there.clearCanvas(0);
-			this.updateBodies(deltaTime);
-
-			return false; 
-		}, 0);
-		this.renderer.render(this.staticBodies, ()=>{}, -1);
 	}
 }
 export default Engine;
