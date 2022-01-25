@@ -33,24 +33,24 @@ class Collision{
 	//and check if the point is inside the polygon using ray casting
 	polygonPolygon(polygon1, polygon2){
 		var i;
-		var collide = false;
+		var collide = [false, null];
 
 		const p1 = () => {
 			for(i=0; i<polygon1.vertices.length; i++){
-				collide = checkCollision({
+				collide = this.pointPolygon({
 					x: polygon1.vertices[i].x + polygon1.position.x,
 					y: polygon1.vertices[i].y + polygon1.position.y
 				}, polygon2);
-				if(collide) return true;
+				if(collide[0]) return collide;
 			}
 		}
 		const p2 = () => {
 			for(i=0; i<polygon2.vertices.length; i++){
-				collide = checkCollision({
+				collide = this.pointPolygon({
 					x: polygon2.vertices[i].x + polygon2.position.x,
 					y: polygon2.vertices[i].y + polygon2.position.y
 				}, polygon1) 
-				if(collide) return true;
+				if(collide[0]) return collide;
 			}
 		}
 
@@ -62,7 +62,7 @@ class Collision{
 			p1();
 		}
 
-		return false;
+		return [false,null];
 	}
 
 	//using ray casting from the point to the very right
