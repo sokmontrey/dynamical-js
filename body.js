@@ -63,6 +63,7 @@ class Dynamic{
 		}
 	}
 	resolveDynamic(other){
+		//create a better dynamic resolver
 		const otherDynamic = other.dynamic;
 		const thisDynamic = this.dynamic;
 		thisDynamic.oldVelocity = thisDynamic.velocity;

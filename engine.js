@@ -108,7 +108,6 @@ class Engine{
 			this.staticBodies[i].setStatic();
 		}
 	}
-
 	setBodiesGravity(){
 		var i;
 		for(i=0; i<this.bodies.length; i++){
