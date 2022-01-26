@@ -49,7 +49,24 @@ class Collision{
 		return true;
 	}
 	check(polygon1, polygon2){
-		return this.polygonPolygon(polygon1, polygon2);
+		if(polygon1.type === "circle" && polygon2.type === "circle"){
+			return this.circleCircle(polygon1, polygon2);
+		}else if(polygon1.type=== "circle" && polygon2.type === "dot"
+				||polygon1.type === "dot" && polygon2.type==="circle"){
+			if(polygon1.type ==='circle'){
+				return this.pointCircle(polygon1, polygon2);
+			}else{
+				return this.pointCircle(polygon2, polygon1);
+			}
+		}else if(polygon1.type==='circle' || polygon2.type==='circle'){
+			if(polygon1.type === 'circle'){
+				return this.circlePolygon(polygon1, polygon2);
+			}else{
+				return this.circlePolygon(polygon2, polygon1);
+			}
+		}else{
+			return this.polygonPolygon(polygon1, polygon2);
+		}
 	}
 	//check for collision between polygons by
 	//pick a polygon that has the smallest vertices number
