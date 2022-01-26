@@ -12,7 +12,7 @@ class Engine{
 
 		this.setDynamicBodies(bodies);
 		this.setStaticBodies(staticBodies);
-		this.enableGravity(0, 0);
+		this.enableGravity(0, -10);
 	}
 	run(){
 		var count = 0;
@@ -50,6 +50,10 @@ class Engine{
 			return a.position.x + a.bounds.minX - 
 				b.position.x + b.bounds.minX;
 		});
+		this.staticBodies.sort((a, b)=>{
+			return a.position.x + a.bounds.minX - 
+				b.position.x + b.bounds.minX;
+		});
 		for(i=0; i<this.bodies.length; i++){
 			const body = this.bodies[i];
 			const [isBorder, borderDirection] = Collision.border(
@@ -70,6 +74,21 @@ class Engine{
 						nextBody.resolveCollision({
 							x: -polygonDirection.x, 
 							y: -polygonDirection.y}, body);
+					}
+				}else continue;
+			}
+			for(j=0; j<this.staticBodies.length; j++){
+				const nextBody = this.staticBodies[j];
+				if(body.bounds.minX + body.position.x 
+					> nextBody.bounds.maxX + nextBody.position.x
+				) continue;
+				var isInBounds = Collision.isInBounds(body, nextBody);
+				if(isInBounds){
+					var [isPolygon, polygonDirection] = Collision.check(
+						body, nextBody
+					);
+					if(isPolygon){
+						body.resolveCollision(polygonDirection, nextBody);
 					}
 				}else continue;
 			}

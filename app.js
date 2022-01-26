@@ -14,8 +14,8 @@ Render.setWireFrame(false);
 Render.setShowBounds(false);
 
 const rect = new Rectangle(0,40,100,100);
-const circle = new Circle(-150,0, 50, 16);
-const rect2 = new Rectangle(-200,200,100,100);
+const circle = new Circle(-150,0,50, 16);
+const rect2 = new Rectangle(0,-200,500,20, -Math.PI/7);
 
 const Engine = new Enginer();
 Engine.init(Render, [rect,circle], [rect2]);

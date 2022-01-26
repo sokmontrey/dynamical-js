@@ -21,10 +21,19 @@ class Dynamic{
 	setGravity(gravity){
 		this.gravity = gravity
 	}
-	setStatic(initValue){
+	setStatic(initValue={
+		mass: 1,
+		force: {x: 0, y: 0},
+		velocity: {x: 0, y: 0},
+		acceleration: {x: 0, y: 0}
+	}){
 		this.isDynamic = false;
-		this.static = {
-			//something
+		this.dynamic = {
+			mass: initValue.mass,
+			force: initValue.force,
+			velocity: initValue.velocity,
+			acceleration: initValue.acceleration,
+			oldVelocity: initValue.velocity,
 		}
 	}
 	update(deltaTime){
