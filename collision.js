@@ -75,6 +75,18 @@ class Collision{
 
 		return [false,null];
 	}
+	circlePolygon(circle, polygon){
+		var i;
+		const vertices = polygon.vertices;
+		for(i=0; i<vertices.length; i++){
+			var collide = this.pointCircle({
+				x: vertices[i].x + polygon.position.x,
+				y: vertices[i].y + polygon.position.y
+			}, circle);
+			if(collide[0]) return collide;
+		}
+		return [false, null];
+	}
 	circleCircle(circle1, circle2){
 		var distance = Math.sqrt(
 			Math.pow(circle1.position.x - circle2.position.x, 2) +
@@ -88,6 +100,7 @@ class Collision{
 			}
 			return [true, normal];
 		}
+		return [false, null]
 	}
 
 	pointCircle(point, circle){
@@ -103,6 +116,7 @@ class Collision{
 			}
 			return [true, normal];
 		}
+		return [false, null]
 	}
 	//using ray casting from the point to the very right
 	//if the point is inside the polygon the number of intersections is odd
