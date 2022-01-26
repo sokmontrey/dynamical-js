@@ -76,6 +76,20 @@ class Collision{
 		return [false,null];
 	}
 
+	pointCircle(point, circle){
+		var distance = Math.sqrt(
+			Math.pow(point.x - circle.position.x, 2) + 
+			Math.pow(point.y - circle.position.y, 2)
+		);
+		if(distance < circle.radius){
+			var d_to_edge = circle.radius - distance;
+			var normal = {
+				x: d_to_edge*(point.x - circle.position.x)/distance,
+				y: d_to_edge*(point.y - circle.position.y)/distance
+			}
+			return [true, normal];
+		}
+	}
 	//using ray casting from the point to the very right
 	//if the point is inside the polygon the number of intersections is odd
 	//if the point is outside the polygon the number of intersections is even
@@ -88,7 +102,7 @@ class Collision{
 			x: point.x, 
 			y: point.y
 		};
-		var direction = {x: 0, y: 0};
+		var normal = {x: 0, y: 0};
 		var old_distance = Infinity;
 
 		for(i=0; i<vertices.length; i++){
@@ -118,8 +132,8 @@ class Collision{
 			//get x value from segment a and b by knowing y from p.y
 			const x = (p.y - a.y) * (b.x - a.x) / (b.y - a.y) + a.x;
 			if(distance < old_distance){
-				if(x > p.x) direction = {x: -dx, y:dy};
-				else direction = {x: dx, y:dy}
+				if(x > p.x) normal = {x: -dx, y:dy};
+				else normal = {x: dx, y:dy}
 
 				old_distance = distance;
 			}
@@ -129,7 +143,7 @@ class Collision{
 				if(x > p.x) intersect++;
 			}else continue;
 		}
-		return intersect % 2 === 1 ? [true, direction] : [false, null];
+		return intersect % 2 === 1 ? [true, normal] : [false, null];
 	}	
 }
 export default new Collision();

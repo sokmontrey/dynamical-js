@@ -20,15 +20,4 @@ const rect2 = new Rectangle(0,-200,500,20, -Math.PI/7);
 const Engine = new Enginer();
 Engine.init(Render, [circle,rect], [rect2]);
 Engine.run();
-Render.layer['0'].canvas.addEventListener('mousemove', (e) => {
-	var i;
-	var hw = 300,
-		hh = 300;
-	const mouseX = e.offsetX - hw;
-	const mouseY = -e.offsetY + hh;
-	const body = circle.position
-	body.x = mouseX;
-	body.y = mouseY;
-
-});
 Engine.stop = false;
