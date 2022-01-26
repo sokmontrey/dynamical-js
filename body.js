@@ -14,7 +14,8 @@ class Dynamic{
 			mass: initValue.mass,
 			force: initValue.force,
 			velocity: initValue.velocity,
-			acceleration: initValue.acceleration
+			acceleration: initValue.acceleration,
+			oldVelocity: initValue.velocity,
 		}
 	}
 	setGravity(gravity){
@@ -29,25 +30,53 @@ class Dynamic{
 	update(deltaTime){
 		if(!this.isDynamic) return 0;
 
-		this.dynamic.acceleration = {
-			x: this.dynamic.force.x / this.dynamic.mass,
-			y: this.dynamic.force.y / this.dynamic.mass
+		const dynamic = this.dynamic;
+		dynamic.acceleration.x += dynamic.force.x / dynamic.mass;
+		dynamic.acceleration.y += dynamic.force.y / dynamic.mass;
+
+		dynamic.force = {x: 0, y: 0}
+
+		dynamic.velocity = {
+			x: dynamic.velocity.x + (this.gravity.x + dynamic.acceleration.x) * deltaTime,
+			y: dynamic.velocity.y + (this.gravity.y + dynamic.acceleration.y) * deltaTime
 		}
-		this.dynamic.velocity = {
-			x: this.dynamic.velocity.x + (this.gravity.x + this.dynamic.acceleration.x) * deltaTime,
-			y: this.dynamic.velocity.y + (this.gravity.y + this.dynamic.acceleration.y) * deltaTime
-		}
-		this.position.x += this.dynamic.velocity.x * deltaTime;
-		this.position.y += this.dynamic.velocity.y * deltaTime;
+		this.position.x += dynamic.velocity.x * deltaTime;
+		this.position.y += dynamic.velocity.y * deltaTime;
 	}
 
 	resolveCollision(direction, other){
 		if(!this.isDynamic) return 0;
 		this.resolveCollisionManifold(direction);
 		//TODO: when body colliding with the other we got no other params so there will be error
+		if(other === null) this.resolveBorder(); 
+		else{
+			this.resolveDynamic(other);
+		}
 	}
 	resolveDynamic(other){
-		if(!this.isDynamic) return 0;
+		const otherDynamic = other.dynamic;
+		const thisDynamic = this.dynamic;
+		thisDynamic.oldVelocity = thisDynamic.velocity;
+		var subMass = thisDynamic.mass - otherDynamic.mass,
+			addMass = thisDynamic.mass + otherDynamic.mass;
+		thisDynamic.velocity = {
+			x: ( thisDynamic.oldVelocity.x*subMass 
+				+ 2*otherDynamic.mass*otherDynamic.oldVelocity.x 
+				) / addMass,
+			y: ( thisDynamic.oldVelocity.y*subMass 
+				+ 2*otherDynamic.mass*otherDynamic.oldVelocity.y 
+				) / addMass
+		}
+	}
+	resolveBorder(){
+		this.dynamic.velocity = {
+			x: 0,
+			y: 0
+		}
+		this.acceleration = {
+			x: 0,
+			y: 0
+		}
 	}
 	resolveCollisionManifold(direction){
 		this.position.x += direction.x;

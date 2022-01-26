@@ -13,11 +13,11 @@ Render.init(canvasContainer, 600,600);
 Render.setWireFrame(false);
 Render.setShowBounds(false);
 
-const dot = new Dot(0,0);
-const rect = new Rectangle(100,0,100,100);
-const circle = new Circle(100, 200, 50, 16);
+const rect = new Rectangle(0,40,100,100);
+const circle = new Circle(-150,0, 50, 16);
+const rect2 = new Rectangle(-200,200,100,100);
 
 const Engine = new Enginer();
-Engine.init(Render, [dot, rect,circle]);
+Engine.init(Render, [rect,circle], [rect2]);
 Engine.run();
-Engine.stop = true;
+Engine.stop = false;

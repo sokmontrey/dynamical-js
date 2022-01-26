@@ -12,13 +12,13 @@ class Engine{
 
 		this.setDynamicBodies(bodies);
 		this.setStaticBodies(staticBodies);
-		this.enableGravity(0, -10);
+		this.enableGravity(0, 0);
 	}
 	run(){
 		var count = 0;
 		this.renderer.renderLoop(this.bodies, (deltaTime, there)=>{
 			there.clearCanvas(0);
-			this.updateBodies(deltaTime);
+			this.updateBodies(deltaTime * 5);
 			this.checkCollision();
 
 			if(this.stop) return false;
@@ -56,7 +56,7 @@ class Engine{
 				body, 
 				this.renderer.width, 
 				this.renderer.height);
-			if(isBorder) body.resolveCollision(borderDirection);
+			if(isBorder) body.resolveCollision(borderDirection, null);
 			for(j=i+1; j<this.bodies.length; j++){
 				const nextBody = this.bodies[j];
 				const isInBounds = Collision.isInBounds(body, nextBody);
