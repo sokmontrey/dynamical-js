@@ -75,6 +75,20 @@ class Collision{
 
 		return [false,null];
 	}
+	circleCircle(circle1, circle2){
+		var distance = Math.sqrt(
+			Math.pow(circle1.position.x - circle2.position.x, 2) +
+			Math.pow(circle1.position.y - circle2.position.y, 2)
+		);
+		if(distance < circle1.radius + circle2.radius){
+			var d_to_edge = circle1.radius + circle2.radius - distance;
+			var normal = {
+				x: d_to_edge*(circle1.position.x - circle2.position.x)/distance,
+				y: d_to_edge*(circle1.position.y - circle2.position.y)/distance
+			}
+			return [true, normal];
+		}
+	}
 
 	pointCircle(point, circle){
 		var distance = Math.sqrt(
