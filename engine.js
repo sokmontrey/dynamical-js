@@ -1,4 +1,4 @@
-import Collision from './collision.js';
+import Detector from './detector.js';
 
 class Engine{
 	gravity = { x: 0, y: -10 }
@@ -18,7 +18,7 @@ class Engine{
 		var count = 0;
 		this.renderer.renderLoop(this.bodies, (deltaTime, there)=>{
 			there.clearCanvas(0);
-			this.updateBodies(deltaTime * 5);
+			this.updateBodies(deltaTime * 10);
 			this.checkCollision();
 
 			if(this.stop) return false;
@@ -56,16 +56,17 @@ class Engine{
 		});
 		for(i=0; i<this.bodies.length; i++){
 			const body = this.bodies[i];
-			const [isBorder, borderDirection] = Collision.border(
+			const [isBorder, borderDirection] = Detector.border(
 				body, 
 				this.renderer.width, 
 				this.renderer.height);
 			if(isBorder) body.resolveCollision(borderDirection, null);
 			for(j=i+1; j<this.bodies.length; j++){
 				const nextBody = this.bodies[j];
-				const isInBounds = Collision.isInBounds(body, nextBody);
+				if(body.bounds.minX > nextBody.bounds.maxX) continue;
+				const isInBounds = Detector.isInBounds(body, nextBody);
 				if(isInBounds){
-					var [isPolygon, polygonDirection] = Collision.check(
+					var [isPolygon, polygonDirection] = Detector.check(
 						body, nextBody
 					);
 					//TODO: devide polygonDirection to 2 for each body
@@ -74,7 +75,7 @@ class Engine{
 						nextBody.resolveCollision({
 							x: -polygonDirection.x, 
 							y: -polygonDirection.y}, body);
-					}
+					}else continue;
 				}else continue;
 			}
 			for(j=0; j<this.staticBodies.length; j++){
@@ -82,9 +83,9 @@ class Engine{
 				if(body.bounds.minX + body.position.x 
 					> nextBody.bounds.maxX + nextBody.position.x
 				) continue;
-				var isInBounds = Collision.isInBounds(body, nextBody);
+				var isInBounds = Detector.isInBounds(body, nextBody);
 				if(isInBounds){
-					var [isPolygon, polygonDirection] = Collision.check(
+					var [isPolygon, polygonDirection] = Detector.check(
 						body, nextBody
 					);
 					if(isPolygon){

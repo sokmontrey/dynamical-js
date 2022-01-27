@@ -55,8 +55,8 @@ class Dynamic{
 
 	resolveCollision(direction, other){
 		if(!this.isDynamic) return 0;
-		this.resolveCollisionManifold(direction);
 		//TODO: when body colliding with the other we got no other params so there will be error
+		this.resolveCollisionManifold(direction);
 		if(other === null) this.resolveBorder(); 
 		else{
 			this.resolveDynamic(other);
