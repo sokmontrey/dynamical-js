@@ -1,4 +1,6 @@
-import Detector from './detector.js';
+import DetectorClass from './detector.js';
+
+const Detector = new DetectorClass();
 
 class Collision{
 	algorithm = 'broadphase'
@@ -66,4 +68,4 @@ class Collision{
 		}
 	}
 }
-export default new Collision();
+export default Collision;

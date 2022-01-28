@@ -1,4 +1,8 @@
-import Detector from './detector.js';
+import DetectorClass from './detector.js';
+import CollisionClass from './collision.js';
+
+const Collision = new CollisionClass();
+const Detector = new DetectorClass();
 
 class Engine{
 	gravity = { x: 0, y: -10 }
@@ -13,13 +17,14 @@ class Engine{
 		this.setDynamicBodies(bodies);
 		this.setStaticBodies(staticBodies);
 		this.enableGravity(0, -10);
+		Collision.setBodies(this.bodies, this.staticBodies);
 	}
 	run(){
 		var count = 0;
 		this.renderer.renderLoop(this.bodies, (deltaTime, there)=>{
 			there.clearCanvas(0);
 			this.updateBodies(deltaTime * 10);
-			this.checkCollision();
+			Collision.check();
 
 			if(this.stop) return false;
 			return true; 
@@ -42,8 +47,6 @@ class Engine{
 			const body = this.bodies[i];
 			body.update(deltaTime);
 		}
-	}
-	checkCollision(){
 	}
 	setDynamicBodies(bodies){
 		this.bodies = bodies;

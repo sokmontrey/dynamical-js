@@ -1,3 +1,4 @@
+export default Detector;
 class Detector{
 	checkBorder(polygon, width, height){
 		const polygonBounds = polygon.bounds;
@@ -189,4 +190,3 @@ class Detector{
 		return intersect % 2 === 1 ? [true,normal,depth] : [false,null,null];
 	}	
 }
-export default new Detector();

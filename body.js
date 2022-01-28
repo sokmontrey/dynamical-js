@@ -52,7 +52,10 @@ class Dynamic{
 		this.position.x += dynamic.velocity.x * deltaTime;
 		this.position.y += dynamic.velocity.y * deltaTime;
 	}
+	resolveCollision(normal, depth, other){
 
+	}
+/*
 	resolveCollision(direction, other){
 		if(!this.isDynamic) return 0;
 		//TODO: when body colliding with the other we got no other params so there will be error
@@ -92,6 +95,7 @@ class Dynamic{
 		this.position.x += direction.x;
 		this.position.y += direction.y;
 	}
+	*/
 }
 export class Circle extends Dynamic{
 	constructor(
