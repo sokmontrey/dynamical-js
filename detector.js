@@ -146,25 +146,19 @@ class Detector{
 		var i;
 		var intersect = 0;
 		const vertices = polygon.vertices;
-		const p = {
-			x: point.x, 
-			y: point.y
-		};
+		const p = { x: point.x, y: point.y };
 
 		var normal={x: 0, y: 0},
 			depth=0;
 		var old_distance = Infinity;
 
 		for(i=0; i<vertices.length; i++){
-			const a = {
-				x: vertices[i].x + polygon.position.x,
-				y: vertices[i].y + polygon.position.y
-			}
 			const next = vertices[i+1] || vertices[0]; 
-			const b = {
-				x: next.x + polygon.position.x,
-				y: next.y + polygon.position.y
-			}
+
+			const a = { x: vertices[i].x + polygon.position.x,
+				y: vertices[i].y + polygon.position.y }
+			const b = { x: next.x + polygon.position.x,
+				y: next.y + polygon.position.y }
 
 			//find closest point from the point to edge
 			var abx = b.x - a.x + 1e-8,
@@ -181,9 +175,9 @@ class Detector{
 			if(distance < old_distance){
 				depth = distance;
 				if(p.x>x)
-					normal = {x:aby/ab_distance,y:-abx/ab_distance}
-				else 
 					normal = {x:-aby/ab_distance,y:abx/ab_distance}
+				else 
+					normal = {x:aby/ab_distance,y:-abx/ab_distance}
 				old_distance = distance;
 			}
 
