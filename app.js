@@ -21,4 +21,4 @@ const circle2 = new Circle(10, 100, 50, 16);
 const Engine = new Enginer();
 Engine.init(Render, [ rect]);
 Engine.run();
-Engine.stop = false;
+Engine.stop = true;

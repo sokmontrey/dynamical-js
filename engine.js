@@ -44,56 +44,6 @@ class Engine{
 		}
 	}
 	checkCollision(){
-		var i, j;
-		//sort bodies by x axis with bounds
-		this.bodies.sort((a, b)=>{
-			return a.position.x + a.bounds.minX - 
-				b.position.x + b.bounds.minX;
-		});
-		this.staticBodies.sort((a, b)=>{
-			return a.position.x + a.bounds.minX - 
-				b.position.x + b.bounds.minX;
-		});
-		for(i=0; i<this.bodies.length; i++){
-			const body = this.bodies[i];
-			const [isBorder, borderDirection] = Detector.border(
-				body, 
-				this.renderer.width, 
-				this.renderer.height);
-			if(isBorder) body.resolveCollision(borderDirection, null);
-			for(j=i+1; j<this.bodies.length; j++){
-				const nextBody = this.bodies[j];
-				if(body.bounds.minX > nextBody.bounds.maxX) continue;
-				const isInBounds = Detector.isInBounds(body, nextBody);
-				if(isInBounds){
-					var [isPolygon, polygonDirection] = Detector.check(
-						body, nextBody
-					);
-					//TODO: devide polygonDirection to 2 for each body
-					if(isPolygon){
-						body.resolveCollision(polygonDirection, nextBody);
-						nextBody.resolveCollision({
-							x: -polygonDirection.x, 
-							y: -polygonDirection.y}, body);
-					}else continue;
-				}else continue;
-			}
-			for(j=0; j<this.staticBodies.length; j++){
-				const nextBody = this.staticBodies[j];
-				if(body.bounds.minX + body.position.x 
-					> nextBody.bounds.maxX + nextBody.position.x
-				) continue;
-				var isInBounds = Detector.isInBounds(body, nextBody);
-				if(isInBounds){
-					var [isPolygon, polygonDirection] = Detector.check(
-						body, nextBody
-					);
-					if(isPolygon){
-						body.resolveCollision(polygonDirection, nextBody);
-					}
-				}else continue;
-			}
-		}
 	}
 	setDynamicBodies(bodies){
 		this.bodies = bodies;

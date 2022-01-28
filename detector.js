@@ -48,7 +48,7 @@ class Detector{
 
 		return true;
 	}
-	check(polygon1, polygon2){
+	isCollide(polygon1, polygon2){
 		if(polygon1.type === "circle" && polygon2.type === "circle"){
 			return this.circleCircle(polygon1, polygon2);
 		}else if(polygon1.type==='circle' || polygon2.type==='circle'){
