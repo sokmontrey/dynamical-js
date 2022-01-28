@@ -1,3 +1,4 @@
+export default Vertex;
 class Vertex{
 	rotate(vertices, angle){
 		let cos = Math.cos(angle);
@@ -25,5 +26,4 @@ class Vertex{
 		return max;
 	}
 }
-export default new Vertex();
 

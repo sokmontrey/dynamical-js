@@ -1,5 +1,6 @@
-import Vertex from './Operator/vertex.js';
+import VertexClass from './Operator/vertex.js';
 var schemeList = ["#f94144", "#f8961e", "#90be6d", "#577590", "#f3722c", "#f9c74f", "#43aa8b"];
+const Vertex = new VertexClass();
 
 class Dynamic{
 	constructor(){}
