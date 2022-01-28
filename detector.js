@@ -8,7 +8,7 @@ class Detector{
 			maxX: position.x + polygonBounds.maxX,
 			maxY: position.y + polygonBounds.maxY
 		}
-		var minX = -width/2,
+		var minX =-width/2,
 			maxX = width/2,
 			minY =-height/2,
 			maxY = height/2;
@@ -54,24 +54,7 @@ class Detector{
 		return true;
 	}
 	isCollide(polygon1, polygon2){
-		if(polygon1.type === "circle" && polygon2.type === "circle"){
-			return this.circleCircle(polygon1, polygon2);
-		}else if(polygon1.type==='circle' || polygon2.type==='circle'){
-			var collide;
-			if(polygon1.type === 'circle'){
-				collide = this.circlePolygon(polygon1, polygon2);
-			}else{
-				collide = this.circlePolygon(polygon2, polygon1);
-			}
-			if(collide[0]) return collide;
-			else{
-				if(polygon1.vertices.length > polygon2.vertices.length)
-					return this.polygonPolygon(polygon1, polygon2);
-				return this.polygonPolygon(polygon2, polygon1);
-			}
-		}else{
-			return this.polygonPolygon(polygon1, polygon2);
-		}
+		return this.polygonPolygon(polygon1, polygon2);
 	}
 	//check for collision between polygons by
 	//pick a polygon that has the smallest vertices number
@@ -79,66 +62,82 @@ class Detector{
 	//and check if the point is inside the polygon using ray casting
 	polygonPolygon(polygon1, polygon2){
 		var i;
+		var isCollide=false,
+			normal={x:0,y:0},
+			depth=0;
 
 		for(i=0; i<polygon1.vertices.length; i++){
-			var collide = this.pointPolygon({
+			[isCollide,normal,depth]= this.pointPolygon({
 				x: polygon1.vertices[i].x + polygon1.position.x,
 				y: polygon1.vertices[i].y + polygon1.position.y
 			}, polygon2);
-			if(collide[0]) return collide;
+			if(isCollide) return [isCollide, normal, depth];
 		}
 		for(i=0; i<polygon2.vertices.length; i++){
-			var collide = this.pointPolygon({
+			[isCollide,normal,depth]= this.pointPolygon({
 				x: polygon2.vertices[i].x + polygon2.position.x,
 				y: polygon2.vertices[i].y + polygon2.position.y
-			}, polygon1) 
-			if(collide[0]) return collide;
+			}, polygon1);
+			if(isCollide) return [isCollide,{x:-normal.x, y:-normal.y}, depth];
 		}
 
-		return [false,null];
+		return [false,null,null];
 	}
 	circlePolygon(circle, polygon){
-		var i;
+		var i,
+			isCollide=false,
+			normal={x:0,y:0},
+			depth=0;
+
 		const vertices = polygon.vertices;
 		for(i=0; i<vertices.length; i++){
-			var collide = this.pointCircle({
+			[isCollide,normal,depth]= this.pointCircle({
 				x: vertices[i].x + polygon.position.x,
 				y: vertices[i].y + polygon.position.y
 			}, circle);
-			if(collide[0]) return collide;
+			if(isCollide) return [isCollide,normal,depth];
 		}
-		return [false, null];
+
+		return [false,null,null];
 	}
 	circleCircle(circle1, circle2){
+		var normal={x:0,y:0},
+			depth=0;
+
 		var distance = Math.sqrt(
 			Math.pow(circle1.position.x - circle2.position.x, 2) +
 			Math.pow(circle1.position.y - circle2.position.y, 2)
 		);
+
 		if(distance < circle1.radius + circle2.radius){
-			var d_to_edge = circle1.radius + circle2.radius - distance;
-			var normal = {
-				x: d_to_edge*(circle1.position.x - circle2.position.x)/distance,
-				y: d_to_edge*(circle1.position.y - circle2.position.y)/distance
+			depth = circle1.radius + circle2.radius - distance;
+			normal = {
+				x: (circle1.position.x - circle2.position.x)/distance,
+				y: (circle1.position.y - circle2.position.y)/distance
 			}
-			return [true, normal];
+			return [true, normal, depth];
 		}
-		return [false, null]
+		return [false,null,null]
 	}
 
 	pointCircle(point, circle){
+		var normal={x:0,y:0},
+			depth=0;
+
 		var distance = Math.sqrt(
 			Math.pow(point.x - circle.position.x, 2) + 
 			Math.pow(point.y - circle.position.y, 2)
 		);
+
 		if(distance < circle.radius){
-			var d_to_edge = circle.radius - distance;
-			var normal = {
-				x: d_to_edge*(point.x - circle.position.x)/distance,
-				y: d_to_edge*(point.y - circle.position.y)/distance
+			depth = circle.radius - distance;
+			normal = {
+				x: (point.x - circle.position.x)/distance,
+				y: (point.y - circle.position.y)/distance
 			}
-			return [true, normal];
+			return [true,normal,depth];
 		}
-		return [false, null]
+		return [false, null, null]
 	}
 	//using ray casting from the point to the very right
 	//if the point is inside the polygon the number of intersections is odd
@@ -147,12 +146,13 @@ class Detector{
 		var i;
 		var intersect = 0;
 		const vertices = polygon.vertices;
-
 		const p = {
 			x: point.x, 
 			y: point.y
 		};
-		var normal = {x: 0, y: 0};
+
+		var normal={x: 0, y: 0},
+			depth=0;
 		var old_distance = Infinity;
 
 		for(i=0; i<vertices.length; i++){

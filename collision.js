@@ -43,19 +43,26 @@ class Collision{
 					bodyA.resolveCollision(normal, depth);
 					bodyB.resolveCollision({
 						x: -normal.x,
-						y: -normal.y
-					}, depth);
-				}
-			}
-		}
+						y: -normal.y }, depth);
+				}//end of if
+
+			}//end of for j
+		}//end of for i
+
 	}
 	checkBorder(){
 		var i;
+		var isCollide=false,
+			normal={x:0,y:0}, 
+			depth=0;
 		for(i=0; i<this.allBodies.length; i++){
 			var body = this.allBodies[i];
 			if(!body.isDynamic) continue;
 
-			Detector.checkBorder()
+			[isCollide,normal,depth] = Detector.checkBorder(body, this.width, this.height);
+			if(isCollide) {
+				body.resolveCollision(normal, depth);
+			}
 		}
 	}
 }
