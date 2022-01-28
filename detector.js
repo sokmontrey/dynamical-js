@@ -175,16 +175,15 @@ class Detector{
 				aby*p.x - abx*p.y + b.x*a.y-b.y*a.x
 			) / ab_distance;
 
-			const d_over_ab = distance / ab_distance;
-			var dx = aby * d_over_ab;
-			var dy = abx * d_over_ab;
-
 			//get x value from segment a and b by knowing y from p.y
 			const x = (p.y - a.y) * (b.x - a.x) / (b.y - a.y) + a.x;
-			if(distance < old_distance){
-				if(x > p.x) normal = {x: -dx, y:dy};
-				else normal = {x: dx, y:dy}
 
+			if(distance < old_distance){
+				depth = distance;
+				if(p.x>x)
+					normal = {x:aby/ab_distance,y:-abx/ab_distance}
+				else 
+					normal = {x:-aby/ab_distance,y:abx/ab_distance}
 				old_distance = distance;
 			}
 
@@ -193,7 +192,7 @@ class Detector{
 				if(x > p.x) intersect++;
 			}else continue;
 		}
-		return intersect % 2 === 1 ? [true, normal] : [false, null];
+		return intersect % 2 === 1 ? [true,normal,depth] : [false,null,null];
 	}	
 }
 export default new Detector();
