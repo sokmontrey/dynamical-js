@@ -51,40 +51,11 @@ class Collision{
 	}
 	checkBorder(){
 		var i;
-		var minX = -this.width/2,
-			maxX = this.width/2,
-			minY = -this.height/2,
-			maxY = this.height/2;
-
 		for(i=0; i<this.allBodies.length; i++){
 			var body = this.allBodies[i];
 			if(!body.isDynamic) continue;
-			var normal = {x:0, y:0}, depth = 0, isCollide = false;
-			var bounds = {
-				minX: body.bounds.minX + body.position.x,
-				minY: body.bounds.minY + body.position.x,
-				maxX: body.bounds.maxX + body.position.y,
-				maxY: body.bounds.maxY + body.position.y
-			};
-			if(bounds.minX < minX){
-				normal.x= 1; isCollide=true;
-				depth=minX-bounds.minX;
-			} else if(bounds.maxX > maxX){
-				normal.x=-1; isCollide=true;
-				depth=bounds.maxX-maxX;
-			}
 
-			if(bounds.minY < minY){
-				normal.y= 1; isCollide=true;
-				depth=minY-bounds.minY;
-			} else if(bounds.maxY > maxY){
-				normal.y=-1; isCollide=true;
-				depth=bounds.maxY-maxY;
-			}
-			//resolve collision
-			if(isCollide){
-				body.resolveCollision(normal, depth);
-			}
+			Detector.checkBorder()
 		}
 	}
 }

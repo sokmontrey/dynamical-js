@@ -1,30 +1,35 @@
 class Detector{
-	border(polygon, width, height){
+	checkBorder(polygon, width, height){
 		const polygonBounds = polygon.bounds;
 		const position = polygon.position;
-		const bounds = {
+		var bounds = {
 			minX: position.x + polygonBounds.minX,
 			minY: position.y + polygonBounds.minY,
 			maxX: position.x + polygonBounds.maxX,
 			maxY: position.y + polygonBounds.maxY
 		}
+		var minX = -width/2,
+			maxX = width/2,
+			minY =-height/2,
+			maxY = height/2;
 
-		var direction = {x: 0, y:0};
-		if(bounds.minX < -width/2){
-			direction.x = -width/2 - bounds.minX;
-		}else if(bounds.maxX > width/2){
-			direction.x = width/2 - bounds.maxX;
+		var normal = {x:0, y:0}, depth = 0, isCollide = false;
+		if(bounds.minX < minX){
+			normal.x= 1; isCollide=true;
+			depth=minX-bounds.minX;
+		} else if(bounds.maxX > maxX){
+			normal.x=-1; isCollide=true;
+			depth=bounds.maxX-maxX;
 		}
 
-		if(bounds.minY < -height/2){
-			direction.y = -height/2 - bounds.minY;
-		}else if(bounds.maxY > height/2){
-			direction.y = height/2 - bounds.maxY;
+		if(bounds.minY < minY){
+			normal.y= 1; isCollide=true;
+			depth=minY-bounds.minY;
+		} else if(bounds.maxY > maxY){
+			normal.y=-1; isCollide=true;
+			depth=bounds.maxY-maxY;
 		}
-
-		if(direction.x || direction.y){
-			return [true, direction];
-		}else return [false, null];
+		return [isCollide, normal, depth]
 	}
 
 	isInBounds(polygon1, polygon2){
