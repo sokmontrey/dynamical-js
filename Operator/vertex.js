@@ -1,5 +1,4 @@
-export default Vertex;
-class Vertex{
+export default class Vertex{
 	rotate(vertices, angle){
 		let cos = Math.cos(angle);
 		let sin = Math.sin(angle);

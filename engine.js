@@ -18,6 +18,7 @@ class Engine{
 		this.setStaticBodies(staticBodies);
 		this.enableGravity(0, -10);
 		Collision.setBodies(this.bodies, this.staticBodies);
+		Collision.setBorder(renderer.width, renderer.height);
 	}
 	run(){
 		var count = 0;

@@ -54,7 +54,11 @@ class Dynamic{
 		this.position.y += dynamic.velocity.y * deltaTime;
 	}
 	resolveCollision(normal, depth, other){
-
+		if(!this.isDynamic) return 0
+		this.dynamic.velocity.x = 0;
+		this.dynamic.velocity.y = 0;
+		this.position.x += normal.x * depth
+		this.position.y += normal.y * depth 
 	}
 /*
 	resolveCollision(direction, other){

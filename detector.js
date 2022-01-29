@@ -1,5 +1,4 @@
-export default Detector;
-class Detector{
+export default class Detector{
 	checkBorder(polygon, width, height){
 		const polygonBounds = polygon.bounds;
 		const position = polygon.position;
@@ -63,82 +62,8 @@ class Detector{
 	//and check if the point is inside the polygon using ray casting
 	polygonPolygon(polygon1, polygon2){
 		var i;
-		var isCollide=false,
-			normal={x:0,y:0},
-			depth=0;
-
-		for(i=0; i<polygon1.vertices.length; i++){
-			[isCollide,normal,depth]= this.pointPolygon({
-				x: polygon1.vertices[i].x + polygon1.position.x,
-				y: polygon1.vertices[i].y + polygon1.position.y
-			}, polygon2);
-			if(isCollide) return [isCollide, normal, depth];
-		}
-		for(i=0; i<polygon2.vertices.length; i++){
-			[isCollide,normal,depth]= this.pointPolygon({
-				x: polygon2.vertices[i].x + polygon2.position.x,
-				y: polygon2.vertices[i].y + polygon2.position.y
-			}, polygon1);
-			if(isCollide) return [isCollide,{x:-normal.x, y:-normal.y}, depth];
-		}
 
 		return [false,null,null];
-	}
-	circlePolygon(circle, polygon){
-		var i,
-			isCollide=false,
-			normal={x:0,y:0},
-			depth=0;
-
-		const vertices = polygon.vertices;
-		for(i=0; i<vertices.length; i++){
-			[isCollide,normal,depth]= this.pointCircle({
-				x: vertices[i].x + polygon.position.x,
-				y: vertices[i].y + polygon.position.y
-			}, circle);
-			if(isCollide) return [isCollide,normal,depth];
-		}
-
-		return [false,null,null];
-	}
-	circleCircle(circle1, circle2){
-		var normal={x:0,y:0},
-			depth=0;
-
-		var distance = Math.sqrt(
-			Math.pow(circle1.position.x - circle2.position.x, 2) +
-			Math.pow(circle1.position.y - circle2.position.y, 2)
-		);
-
-		if(distance < circle1.radius + circle2.radius){
-			depth = circle1.radius + circle2.radius - distance;
-			normal = {
-				x: (circle1.position.x - circle2.position.x)/distance,
-				y: (circle1.position.y - circle2.position.y)/distance
-			}
-			return [true, normal, depth];
-		}
-		return [false,null,null]
-	}
-
-	pointCircle(point, circle){
-		var normal={x:0,y:0},
-			depth=0;
-
-		var distance = Math.sqrt(
-			Math.pow(point.x - circle.position.x, 2) + 
-			Math.pow(point.y - circle.position.y, 2)
-		);
-
-		if(distance < circle.radius){
-			depth = circle.radius - distance;
-			normal = {
-				x: (point.x - circle.position.x)/distance,
-				y: (point.y - circle.position.y)/distance
-			}
-			return [true,normal,depth];
-		}
-		return [false, null, null]
 	}
 	//using ray casting from the point to the very right
 	//if the point is inside the polygon the number of intersections is odd

@@ -38,14 +38,15 @@ class Collision{
 				bodyB = this.allBodies[j];
 
 				if(bodyB.minX > bodyA.maxX) continue;
-				if(Detector.isInBounds(bodyA, bodyB)) continue;
+				if(!Detector.isInBounds(bodyA, bodyB)) continue;
 
 				[isCollide, normal, depth] = Detector.isCollide(bodyA, bodyB);
+				console.log(isCollide, normal, depth);
 				if(isCollide) {
-					bodyA.resolveCollision(normal, depth);
+					bodyA.resolveCollision(normal, depth, bodyB);
 					bodyB.resolveCollision({
 						x: -normal.x,
-						y: -normal.y }, depth);
+						y: -normal.y }, depth, bodyA);
 				}//end of if
 
 			}//end of for j
@@ -63,7 +64,7 @@ class Collision{
 
 			[isCollide,normal,depth] = Detector.checkBorder(body, this.width, this.height);
 			if(isCollide) {
-				body.resolveCollision(normal, depth);
+				body.resolveCollision(normal, depth, null);
 			}
 		}
 	}
