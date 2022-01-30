@@ -41,7 +41,6 @@ class Collision{
 				if(!Detector.isInBounds(bodyA, bodyB)) continue;
 
 				[isCollide, normal, depth] = Detector.isCollide(bodyA, bodyB);
-				console.log(isCollide, normal, depth);
 				if(isCollide) {
 					bodyA.resolveCollision(normal, depth, bodyB);
 					bodyB.resolveCollision({

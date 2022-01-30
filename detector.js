@@ -68,7 +68,7 @@ export default class Detector{
 
 		var vertices = polygon1.vertices;
 		for(i=0; i<vertices.length; i++){
-			const [isCollide,normal,depth] = this.pointPolygon(
+			const [isCollide,normal,depth] = this.pointPolygonWithNormal(
 				{x:vertices[i].x + polygon1.position.x, y:vertices[i].y + polygon1.position.y},
 				polygon2);
 
@@ -78,15 +78,14 @@ export default class Detector{
 					finalDepth = depth;
 					finalNormal = normal;
 				}
-			}else if(finalIsCollide) {
-				return [true,finalNormal,finalDepth];
-			}
+			}else if(finalIsCollide) break;
 		}
+		if(finalIsCollide) return [true,finalNormal,finalDepth];
 
 		finalIsCollide=false; finalNormal={x:0,y:0}; finalDepth=0;
 		vertices=polygon2.vertices;
 		for(i=0; i<vertices.length; i++){
-			const [isCollide,normal,depth] = this.pointPolygon(
+			const [isCollide,normal,depth] = this.pointPolygonWithNormal(
 				{x:vertices[i].x + polygon2.position.x, y:vertices[i].y + polygon2.position.y},
 				polygon1);
 
@@ -96,10 +95,9 @@ export default class Detector{
 					finalDepth = depth;
 					finalNormal = {x:-normal.x, y:-normal.y};
 				}
-			}else if(finalIsCollide) {
-				return [true,finalNormal,finalDepth];
-			}
+			}else if(finalIsCollide) break;
 		}
+		if(finalIsCollide) return [true,finalNormal,finalDepth];
 		return [false,null,null];
 	}
 	//using ray casting from the point to the very right
