@@ -15,11 +15,12 @@ Render.setWireFrame(false);
 Render.setShowBounds(false);
 
 const rect = new Rectangle(0,-50,100,100);
-const circle = new Circle(0,-50,20, 16);
+const circle = new Circle(0,100,20, 16);
+const circle2 = new Circle(-10,0, 20, 16);
+const rect2 = new Rectangle(0,-200, 400, 30, -Math.PI/12);
 const dot = new Dot(0,200,10);
-const circle2 = new Circle(10, 100, 50, 16);
 
 const Engine = new Enginer();
-Engine.init(Render, [rect, circle]);
+Engine.init(Render, [circle, circle2, rect2]);
 Engine.run();
-Engine.stop = true;
+Engine.stop = false;

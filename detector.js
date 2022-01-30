@@ -98,6 +98,7 @@ export default class Detector{
 			}else if(finalIsCollide) break;
 		}
 		if(finalIsCollide) return [true,finalNormal,finalDepth];
+
 		return [false,null,null];
 	}
 	//using ray casting from the point to the very right
