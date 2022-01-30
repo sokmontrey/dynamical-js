@@ -16,7 +16,7 @@ class Dynamic{
 			force: initValue.force,
 			velocity: initValue.velocity,
 			acceleration: initValue.acceleration,
-			oldVelocity: initValue.velocity,
+			oldPosition: {x:0,y:0}
 		}
 	}
 	setGravity(gravity){
@@ -34,13 +34,15 @@ class Dynamic{
 			force: initValue.force,
 			velocity: initValue.velocity,
 			acceleration: initValue.acceleration,
-			oldVelocity: initValue.velocity,
+			oldPosition: {x:0,y:0}
 		}
 	}
 	update(deltaTime){
 		if(!this.isDynamic) return 0;
 
 		const dynamic = this.dynamic;
+		dynamic.oldPosition = this.position;
+
 		dynamic.acceleration.x += dynamic.force.x / dynamic.mass;
 		dynamic.acceleration.y += dynamic.force.y / dynamic.mass;
 
@@ -60,47 +62,6 @@ class Dynamic{
 		this.position.x += normal.x * depth
 		this.position.y += normal.y * depth 
 	}
-/*
-	resolveCollision(direction, other){
-		if(!this.isDynamic) return 0;
-		//TODO: when body colliding with the other we got no other params so there will be error
-		this.resolveCollisionManifold(direction);
-		if(other === null) this.resolveBorder(); 
-		else{
-			this.resolveDynamic(other);
-		}
-	}
-	resolveDynamic(other){
-		//create a better dynamic resolver
-		const otherDynamic = other.dynamic;
-		const thisDynamic = this.dynamic;
-		thisDynamic.oldVelocity = thisDynamic.velocity;
-		var subMass = thisDynamic.mass - otherDynamic.mass,
-			addMass = thisDynamic.mass + otherDynamic.mass;
-		thisDynamic.velocity = {
-			x: ( thisDynamic.oldVelocity.x*subMass 
-				+ 2*otherDynamic.mass*otherDynamic.oldVelocity.x 
-				) / addMass,
-			y: ( thisDynamic.oldVelocity.y*subMass 
-				+ 2*otherDynamic.mass*otherDynamic.oldVelocity.y 
-				) / addMass
-		}
-	}
-	resolveBorder(){
-		this.dynamic.velocity = {
-			x: 0,
-			y: 0
-		}
-		this.acceleration = {
-			x: 0,
-			y: 0
-		}
-	}
-	resolveCollisionManifold(direction){
-		this.position.x += direction.x;
-		this.position.y += direction.y;
-	}
-	*/
 }
 export class Circle extends Dynamic{
 	constructor(

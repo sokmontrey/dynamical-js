@@ -1,10 +1,8 @@
-import DetectorClass from './detector.js';
 import CollisionClass from './collision.js';
 
 const Collision = new CollisionClass();
-const Detector = new DetectorClass();
 
-class Engine{
+export default class Engine{
 	gravity = { x: 0, y: -10 }
 	stop = false;
 
@@ -71,5 +69,4 @@ class Engine{
 		}
 	}
 }
-export default Engine;
 

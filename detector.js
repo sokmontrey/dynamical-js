@@ -62,13 +62,50 @@ export default class Detector{
 	//and check if the point is inside the polygon using ray casting
 	polygonPolygon(polygon1, polygon2){
 		var i;
+		var finalIsCollide=false,
+			finalNormal = {x:0, y:0},
+			finalDepth = 0;
 
+		var vertices = polygon1.vertices;
+		for(i=0; i<vertices.length; i++){
+			const [isCollide,normal,depth] = this.pointPolygon(
+				{x:vertices[i].x + polygon1.position.x, y:vertices[i].y + polygon1.position.y},
+				polygon2);
+
+			if(isCollide){
+				finalIsCollide = true;
+				if(depth > finalDepth){
+					finalDepth = depth;
+					finalNormal = normal;
+				}
+			}else if(finalIsCollide) {
+				return [true,finalNormal,finalDepth];
+			}
+		}
+
+		finalIsCollide=false; finalNormal={x:0,y:0}; finalDepth=0;
+		vertices=polygon2.vertices;
+		for(i=0; i<vertices.length; i++){
+			const [isCollide,normal,depth] = this.pointPolygon(
+				{x:vertices[i].x + polygon2.position.x, y:vertices[i].y + polygon2.position.y},
+				polygon1);
+
+			if(isCollide){
+				finalIsCollide = true;
+				if(depth > finalDepth){
+					finalDepth = depth;
+					finalNormal = {x:-normal.x, y:-normal.y};
+				}
+			}else if(finalIsCollide) {
+				return [true,finalNormal,finalDepth];
+			}
+		}
 		return [false,null,null];
 	}
 	//using ray casting from the point to the very right
 	//if the point is inside the polygon the number of intersections is odd
 	//if the point is outside the polygon the number of intersections is even
-	pointPolygon(point, polygon){
+	pointPolygonWithNormal(point, polygon){
 		var i;
 		var intersect = 0;
 		const vertices = polygon.vertices;
@@ -114,4 +151,27 @@ export default class Detector{
 		}
 		return intersect % 2 === 1 ? [true,normal,depth] : [false,null,null];
 	}	
+	isPointInPolygon(point, polygon){
+		var i;
+		var intersect = 0;
+		const vertices = polygon.vertices;
+		const p = { x: point.x, y: point.y };
+
+		for(i=0; i<vertices.length; i++){
+			const next = vertices[i+1] || vertices[0]; 
+			const a = { x: vertices[i].x + polygon.position.x,
+				y: vertices[i].y + polygon.position.y }
+			const b = { x: next.x + polygon.position.x,
+				y: next.y + polygon.position.y }
+
+			if(p.y > Math.min(a.y, b.y) && p.y < Math.max(a.y, b.y) ){
+				if(p.x > Math.max(a.x, b.x)) continue;
+
+				//get x value from segment a and b by knowing y from p.y
+				const x = (p.y - a.y) * (b.x - a.x) / (b.y - a.y) + a.x;
+				if(x > p.x) intersect++;
+			}else continue;
+		}
+		return intersect % 2 === 1;
+	}
 }
