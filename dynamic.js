@@ -59,6 +59,9 @@ export default class Dynamic{
 
 		dynamic.angularVelocity += dynamic.angularAcceleration * deltaTime;
 		this.rotation += dynamic.angularVelocity * deltaTime;
+		if(dynamic.angularVelocity){
+			this.reCalculateBounds();
+		}
 	}
 	resolveCollision(normal, depth, other){
 		if(!this.isDynamic) return 0
@@ -74,5 +77,14 @@ export default class Dynamic{
 		const otherDynamic = other.dynamic;
 		thisDynamic.velocity.x = (thisDynamic.velocity.x - otherDynamic.velocity.x) / 2;
 		thisDynamic.velocity.y = (thisDynamic.velocity.y - otherDynamic.velocity.y) / 2;
+	}
+	reCalculateBounds(){
+		const vertices = this.vertices;
+		this.bounds = {
+			minX: Vertex.min(vertices, 'x'),
+			minY: Vertex.min(vertices, 'y'),
+			maxX: Vertex.max(vertices, 'x'),
+			maxY: Vertex.max(vertices, 'y')
+		}
 	}
 }
