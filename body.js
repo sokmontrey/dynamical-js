@@ -65,7 +65,7 @@ export class Line extends Dynamic{
 		x2=50,
 		y2=0,
 		size=4, 
-		angle=0,
+		rotation=0,
 		color=undefined
 	){
 		super();
@@ -79,8 +79,8 @@ export class Line extends Dynamic{
 			{x: x2-position.x, y: y2-position.y}
 		];
 
-		if(angle)
-			vertices = Vertex.rotate(vertices, angle);
+		if(rotation)
+			vertices = Vertex.rotate(vertices, rotation);
 
 		var bounds = {
 			minX: Vertex.min(vertices, 'x'),
@@ -103,7 +103,7 @@ export class Rectangle extends Dynamic{
 		y=0,
 		width=100,
 		height=50,
-		angle=0,
+		rotation=0,
 		color=undefined
 	){
 		super();
@@ -113,8 +113,8 @@ export class Rectangle extends Dynamic{
 			{x: width/2, y: height/2},
 			{x: width/2, y:-height/2},
 		];
-		if(angle)
-			vertices = Vertex.rotate(vertices, angle);
+		if(rotation)
+			vertices = Vertex.rotate(vertices, rotation);
 		var bounds = {
 			minX: Vertex.min(vertices, 'x'),
 			minY: Vertex.min(vertices, 'y'),
@@ -136,20 +136,18 @@ export class Triangle extends Dynamic{
 		x1=10 , y1=10, 
 		x2=0  , y2=-7, 
 		x3=-10, y3=10, 
-		angle=0,
+		rotation=0,
 		color=undefined
 	){
 		super();
-		var cos = Math.cos(angle),
-			sin = Math.sin(angle);
 		var position = {x: (x1+x2+x3)/3, y:(y1+y2+y3)/3} 
 		var vertices = [
 			{x: x1-position.x, y: y1-position.y},
 			{x: x2-position.x, y: y2-position.y},
 			{x: x3-position.x, y: y3-position.y},
 		];
-		if(angle)
-			vertices = Vertex.rotate(vertices, angle);
+		if(rotation)
+			vertices = Vertex.rotate(vertices, rotation);
 		var bounds = {
 			minX: Vertex.min(vertices, 'x'),
 			minY: Vertex.min(vertices, 'y'),
@@ -168,7 +166,7 @@ export class Triangle extends Dynamic{
 export class Polygon extends Dynamic{
 	constructor(
 		vertices, 
-		angle, 
+		rotation=0, 
 		color=undefined
 	){
 		super();
@@ -186,8 +184,8 @@ export class Polygon extends Dynamic{
 			vertices[i].x += -position.x;
 			vertices[i].y += -position.y;
 		}
-		if(angle)
-			vertices = Vertex.rotate(vertices, angle);
+		if(rotation)
+			vertices = Vertex.rotate(vertices, rotation);
 
 		var bounds = {
 			minX: Vertex.min(vertices, 'x'),
@@ -210,7 +208,7 @@ export class SymetricalPolygon extends Dynamic{
 		y=0,
 		radius=50, 
 		sides=6,
-		angle=0,
+		rotation=0,
 		color=undefined,
 	){
 		super();
@@ -222,8 +220,8 @@ export class SymetricalPolygon extends Dynamic{
 				y: radius * Math.sin(i * 2 * Math.PI / sides)
 			});
 		}
-		if(angle)
-			vertices = Vertex.rotate(vertices, angle);
+		if(rotation)
+			vertices = Vertex.rotate(vertices, rotation);
 
 		var bounds = {
 			minX: Vertex.min(vertices, 'x'),

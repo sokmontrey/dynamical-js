@@ -5,7 +5,9 @@ export default class Dynamic{
 		mass: 1,
 		force: {x: 0, y: 0},
 		velocity: {x: 0, y: 0},
-		acceleration: {x: 0, y: 0}
+		acceleration: {x: 0, y: 0},
+		angularVelocity: 0,
+		angularAcceleration: 0,
 	}){
 		this.isDynamic = true;
 		this.dynamic = {
@@ -13,7 +15,10 @@ export default class Dynamic{
 			force: initValue.force,
 			velocity: initValue.velocity,
 			acceleration: initValue.acceleration,
-			oldPosition: {x:0,y:0}
+			oldPosition: {x:0,y:0},
+
+			angularVelocity: initialValue.angularVelocity,
+			angularAcceleration: initialValue.angularAcceleration,
 		}
 	}
 	setGravity(gravity){
@@ -51,6 +56,9 @@ export default class Dynamic{
 		}
 		this.position.x += dynamic.velocity.x * deltaTime;
 		this.position.y += dynamic.velocity.y * deltaTime;
+
+		dynamic.angularVelocity += dynamic.angularAcceleration * deltaTime;
+		this.rotation += dynamic.angularVelocity * deltaTime;
 	}
 	resolveCollision(normal, depth, other){
 		if(!this.isDynamic) return 0
