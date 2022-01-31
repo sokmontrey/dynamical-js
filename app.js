@@ -16,11 +16,11 @@ Render.setShowBounds(false);
 
 const rect = new Rectangle(0,-50,100,100);
 const circle = new Circle(0,100,20, 16);
-const circle2 = new Circle(-10,0, 20, 16);
+const circle2 = new Circle(-10,0, 40, 16);
 const rect2 = new Rectangle(0,-200, 400, 30, -Math.PI/12);
 const dot = new Dot(0,200,10);
 
 const Engine = new Enginer();
-Engine.init(Render, [circle, circle2, rect2]);
+Engine.init(Render, [circle, circle2]);
 Engine.run();
 Engine.stop = false;

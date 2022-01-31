@@ -54,7 +54,103 @@ export default class Detector{
 		return true;
 	}
 	isCollide(polygon1, polygon2){
+		if(polygon1.type==='circle'&&polygon2.type==='circle'){
+			return this.circleCircle(polygon1, polygon2);
+		}else if(polygon1==='circle'){
+			return this.circlePolygon(polygon1, polygon2);
+		}else if(polygon2==='circle'){
+			const [isCollide,normal,depth] = this.circlePolygon(polygon2, polygon1);
+			return [isCollide,{x:-normal.x, y:-normal.y},depth];
+		}
+
 		return this.polygonPolygon(polygon1, polygon2);
+	}
+	circleCircle(circle1, circle2){
+		const distance = Math.sqrt(
+			Math.pow(circle1.x-circle2.x,2)+Math.pow(circle1.y-circle2.y,2)
+		);
+
+		if(distance < circle1.radius + circle2.radius){
+			const normal = {
+				x: (circle2.x-circle1.x)/distance,
+				y: (circle2.y-circle1.y)/distance
+			};
+			const depth = circle1.radius + circle2.radius - distance;
+			return [true, normal, depth];
+		}
+		return [false, null, null];
+	}
+	circlePolygon(circle, polygon){
+		var i;
+		const vertices = polygon.vertices;
+
+		for(i=0; i<vertices.length; i++){
+			const a = {
+				x:vertices[i].x + polygon.position.x,
+				y:vertices[i].y + polygon.position.y
+			}
+			const next = vertices[i+1] || vertices[0];
+			const b = {
+				x: next.x + polygon.position.x,
+				y: next.y + polygon.position.y
+			}
+
+			//check if the segment ab intersects with the circle
+			const [isCollide, normal, depth] = this.segmentCircle(a, b, circle);
+			if(isCollide)
+				return [isCollide, normal, depth];
+		}
+		return [false, null, null];
+	}
+	segmentCircle(a, b, circle){
+		var dist_a_circle = Math.sqrt(Math.pow(a.x - circle.x, 2) + Math.pow(a.y - circle.y, 2));
+		var dist_b_circle = Math.sqrt(Math.pow(b.x - circle.x, 2) + Math.pow(b.y - circle.y, 2));
+		if(dist_a_circle < circle.radius && dist_b_circle < circle.radius){
+			return [true, 
+				dist_a_circle<dist_b_circle
+				? this._pointCircleNormal(a, circle)
+				: this._pointCircleNormal(b, circle),
+				dist_a_circle<dist_b_circle
+				? circle.radius - dist_a_circle
+				: circle.radius - dist_b_circle];
+		}else if(dist_a_circle < circle.radius){
+			return [true,
+				this._pointCircleNormal(a, circle),
+				circle.radius - dist_a_circle];
+		}else if(dist_b_circle < circle.radius){
+			return [true,
+				this._pointCircleNormal(b, circle),
+				circle.radius - dist_b_circle];
+		}
+
+		//find closest point from the point to edge
+		var abx = b.x - a.x + 1e-8,
+			aby = b.y - a.y + 1e-8;
+		var ab_distance = Math.sqrt(abx*abx + aby*aby);
+
+		const distance = Math.abs(
+			aby*circle.x - abx*circle.y + b.x*a.y-b.y*a.x
+		) / ab_distance;
+
+		//get x value from segment a and b by knowing y from p.y
+		const x = (p.y - a.y)*(b.x - a.x)/(b.y - a.y) + a.x;
+
+		if(distance < circle.radius){
+			var normal = {x:0, y:0};
+			if(circle.x>x)
+				normal = {x:-aby/ab_distance,y:abx/ab_distance}
+			else 
+				normal = {x:aby/ab_distance,y:-abx/ab_distance}
+			return [true, normal, circle.radius - distance];
+		}
+		return [false, null, null];
+	}
+	_pointCircleNormal(point, circle){
+		const distance = Math.sqrt(Math.pow(point.x - circle.x, 2) + Math.pow(point.y - circle.y, 2));
+		return {
+			x: (point.x -circle.x)/distance,
+			y: (point.y -circle.y)/distance
+		}
 	}
 	//check for collision between polygons by
 	//pick a polygon that has the smallest vertices number
