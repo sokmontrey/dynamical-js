@@ -8,6 +8,7 @@ export default class Dynamic{
 		acceleration: {x: 0, y: 0},
 		angularVelocity: 0,
 		angularAcceleration: 0,
+		momentOfInertia: 1,
 	}){
 		this.isDynamic = true;
 		this.dynamic = {
@@ -19,6 +20,7 @@ export default class Dynamic{
 
 			angularVelocity: initialValue.angularVelocity,
 			angularAcceleration: initialValue.angularAcceleration,
+			momentOfInertia: initialValue.momentOfInertia,
 		}
 	}
 	setGravity(gravity){
@@ -62,6 +64,7 @@ export default class Dynamic{
 		if(dynamic.angularVelocity){
 			this.reCalculateBounds();
 		}
+		//TODO: implement moment of inertia and stuff
 	}
 	resolveCollision(normal, depth, other){
 		if(!this.isDynamic) return 0
