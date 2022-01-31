@@ -14,13 +14,13 @@ Render.init(canvasContainer, 600,600);
 Render.setWireFrame(false);
 Render.setShowBounds(false);
 
-const rect = new Rectangle(0,-50,100,100);
+const rect = new Rectangle(10,200,100,100);
 const circle = new Circle(0,100,20, 16);
-const circle2 = new Circle(-10,0, 40, 16);
+const circle2 = new Circle(0,-100, 40, 16);
 const rect2 = new Rectangle(0,-200, 400, 30, -Math.PI/12);
 const dot = new Dot(0,200,10);
 
 const Engine = new Enginer();
-Engine.init(Render, [circle, circle2]);
+Engine.init(Render, [rect,circle2, circle]);
 Engine.run();
 Engine.stop = false;

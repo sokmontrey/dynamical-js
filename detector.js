@@ -54,7 +54,7 @@ export default class Detector{
 		return true;
 	}
 	isCollide(polygon1, polygon2){
-		if(polygon1.type==='circle'&&polygon2.type==='circle'){
+		if(polygon1.type==='circle'&& polygon2.type==='circle'){
 			return this.circleCircle(polygon1, polygon2);
 		}else if(polygon1==='circle'){
 			return this.circlePolygon(polygon1, polygon2);
@@ -66,14 +66,16 @@ export default class Detector{
 		return this.polygonPolygon(polygon1, polygon2);
 	}
 	circleCircle(circle1, circle2){
+		var a = {x: circle1.position.x, y: circle1.position.y},
+			b = {x: circle2.position.x, y: circle2.position.y};
 		const distance = Math.sqrt(
-			Math.pow(circle1.x-circle2.x,2)+Math.pow(circle1.y-circle2.y,2)
+			Math.pow(a.x-b.x,2) + Math.pow(a.y-b.y,2)
 		);
 
-		if(distance < circle1.radius + circle2.radius){
+		if(distance < circle1.radius+circle2.radius){
 			const normal = {
-				x: (circle2.x-circle1.x)/distance,
-				y: (circle2.y-circle1.y)/distance
+				x: -(b.x-a.x)/(distance+1e-8),
+				y: -(b.y-a.y)/(distance+1e-8)
 			};
 			const depth = circle1.radius + circle2.radius - distance;
 			return [true, normal, depth];
