@@ -1,9 +1,10 @@
-import VectorClass from './vector.js';
-const Vector = new VectorClass();
+import VectorClass from './Operator/vector.js';
+const Vector = new VectorClass()
 
 export default class Dynamic{
 	constructor(){}
 	setDynamic(initValue={
+		torque: 0,
 		force: {x: 0, y: 0},
 		velocity: {x: 0, y: 0},
 		acceleration: {x: 0, y: 0},
@@ -20,13 +21,16 @@ export default class Dynamic{
 			acceleration: initValue.acceleration,
 			oldPosition: {x:0,y:0},
 
-			angularVelocity: initialValue.angularVelocity,
-			angularAcceleration: initialValue.angularAcceleration,
-			momentOfInertia: initialValue.momentOfInertia || this.calculateMomentOfInertia(),
+			torque: initValue.torque,
+			angularVelocity: initValue.angularVelocity,
+			angularAcceleration: initValue.angularAcceleration,
+			momentOfInertia: initValue.momentOfInertia,
 
-			density: initialValue.density,
-			mass: initValue.mass || this.calculateMass(),
+			density: initValue.density,
+			mass: initValue.mass,
 		}
+		this.dynamic['momentOfInertia'] = initValue.momentOfInertia || this.calculateMomentOfInertia();
+		this.dynamic['mass'] = initValue.mass || this.calculateMass();
 	}
 	calculateMass(){
 		if(this.type === 'circle'){
@@ -39,7 +43,7 @@ export default class Dynamic{
 
 			for(i=0; i<vertices.length; i++){
 				const vertex = vertices[i];
-				const next = vertices[i+1] || this.vvertices[0];
+				const next = vertices[i+1] || vertices[0];
 				area += Math.abs(Vector.crossProduct(vertex, next));
 			}
 			return area * this.dynamic.density;
@@ -59,7 +63,7 @@ export default class Dynamic{
 				A = vertices[i];
 				B = vertices[i+1] || vertices[0];
 				mass_tri = this.density * Math.abs(Vector.crossProduct(A, B) * 0.5);
-				inertia_tri = mass_tri * (sqrtLength(A) + sqrtLength(B) + Vector.dotProduct(A, B)) / 6;
+				inertia_tri = mass_tri * (Vector.sqrtLength(A) + Vector.sqrtLength(B) + Vector.dotProduct(A, B)) / 6;
 				inertia += inertia_tri;
 			}
 			return inertia;
@@ -106,7 +110,6 @@ export default class Dynamic{
 		if(dynamic.angularVelocity){
 			this.reCalculateBounds();
 		}
-		//TODO: implement moment of inertia and stuff
 	}
 	resolveCollision(normal, depth, other){
 		if(!this.isDynamic) return 0
