@@ -1,5 +1,7 @@
 import VectorClass from './Operator/vector.js';
+import VertexClass from './Operator/vertex.js';
 const Vector = new VectorClass()
+const Vertex = new VertexClass();
 
 export default class Dynamic{
 	constructor(){}
@@ -107,8 +109,9 @@ export default class Dynamic{
 
 		dynamic.angularVelocity += dynamic.angularAcceleration * deltaTime;
 		this.rotation += dynamic.angularVelocity * deltaTime;
-		if(dynamic.angularVelocity){
+		if(dynamic.angularVelocity && this.type!=='dot' && this.type!=='circle'){
 			this.reCalculateBounds();
+			this.reCalculateVertices();
 		}
 	}
 	resolveCollision(normal, depth, other){
@@ -125,6 +128,10 @@ export default class Dynamic{
 		const otherDynamic = other.dynamic;
 		thisDynamic.velocity.x = (thisDynamic.velocity.x - otherDynamic.velocity.x) / 2;
 		thisDynamic.velocity.y = (thisDynamic.velocity.y - otherDynamic.velocity.y) / 2;
+	}
+	reCalculateVertices(){
+		const vertices = this.vertices;
+		this.vertices = Vertex.rotate(vertices, this.rotation);
 	}
 	reCalculateBounds(){
 		const vertices = this.vertices;

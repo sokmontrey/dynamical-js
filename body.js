@@ -34,6 +34,7 @@ export class Circle extends Dynamic{
 		this.vertices= vertices;
 		this.bounds= bounds;
 		this.color= color || schemeList[Math.floor(Math.random() * schemeList.length)];
+		this.rotattion = 0;
 	}
 }
 export class Dot extends Dynamic{
@@ -52,6 +53,7 @@ export class Dot extends Dynamic{
 		this.type= 'dot';
 		this.position= {x: x, y:y};
 		this.size= size;
+		this.rotation = 0;
 
 		this.vertices= [{x:0, y:0}];
 		this.bounds= bounds;
@@ -91,6 +93,7 @@ export class Line extends Dynamic{
 		this.type= 'line';
 		this.position= position;
 		this.size= size;
+		this.rotation = rotation;
 
 		this.vertices= vertices;
 		this.bounds= bounds;
@@ -125,6 +128,7 @@ export class Rectangle extends Dynamic{
 		this.position= {x:x, y:y};
 		this.width= width;
 		this.height= height;
+		this.rotation = rotation;
 
 		this.vertices= vertices;
 		this.bounds= bounds;
@@ -157,6 +161,7 @@ export class Triangle extends Dynamic{
 
 		this.type= 'triangle';
 		this.position= position;
+		this.rotation = rotation;
 
 		this.vertices= vertices;
 		this.bounds= bounds;
@@ -196,6 +201,7 @@ export class Polygon extends Dynamic{
 
 		this.type= 'polygon';
 		this.position= position;
+		this.rotation = rotation;
 
 		this.vertices= vertices;
 		this.bounds= bounds;
@@ -233,6 +239,7 @@ export class SymetricalPolygon extends Dynamic{
 		this.type= 'symetricalPolygon';
 		this.position= {x: x, y:y};
 		this.radius= radius;
+		this.rotation = rotation;
 
 		this.vertices= vertices;
 		this.bounds= bounds;

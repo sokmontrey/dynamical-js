@@ -1,4 +1,3 @@
-//TODO: in dynamic create moment of inertia
 import Renderer from './render.js';
 import { Dot, Rectangle, Circle } from './body.js';
 import Enginer from './engine.js';
@@ -23,5 +22,6 @@ const dot = new Dot(0,200,10);
 
 const Engine = new Enginer();
 Engine.init(Render, [rect,circle2, circle]);
+rect.dynamic.angularVelocity = 0.001
 Engine.run();
 Engine.stop = false;
