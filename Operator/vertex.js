@@ -1,4 +1,6 @@
 export default class Vertex{
+	//rotate by angle
+	//TODO: implement rotate to angle
 	rotate(vertices, angle){
 		let cos = Math.cos(angle);
 		let sin = Math.sin(angle);

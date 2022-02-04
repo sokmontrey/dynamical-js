@@ -22,6 +22,6 @@ const dot = new Dot(0,200,10);
 
 const Engine = new Enginer();
 Engine.init(Render, [rect,circle2, circle]);
-rect.dynamic.angularVelocity = 0.001
+rect.dynamic.angularVelocity = -0.01;
 Engine.run();
 Engine.stop = false;

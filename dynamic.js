@@ -110,8 +110,10 @@ export default class Dynamic{
 		dynamic.angularVelocity += dynamic.angularAcceleration * deltaTime;
 		this.rotation += dynamic.angularVelocity * deltaTime;
 		if(dynamic.angularVelocity && this.type!=='dot' && this.type!=='circle'){
+			if(this.rotation > Math.PI*2 || this.rotation < -Math.PI*2) 
+				this.rotation = 0;
 			this.reCalculateBounds();
-			this.reCalculateVertices();
+			this.reCalculateVertices(dynamic.angularVelocity);
 		}
 	}
 	resolveCollision(normal, depth, other){
@@ -129,9 +131,9 @@ export default class Dynamic{
 		thisDynamic.velocity.x = (thisDynamic.velocity.x - otherDynamic.velocity.x) / 2;
 		thisDynamic.velocity.y = (thisDynamic.velocity.y - otherDynamic.velocity.y) / 2;
 	}
-	reCalculateVertices(){
-		const vertices = this.vertices;
-		this.vertices = Vertex.rotate(vertices, this.rotation);
+	reCalculateVertices(angle){
+		//TODO: implement a real recaculate because this is rotate vertices by angle not to angle
+		this.vertices = Vertex.rotate(this.vertices, angle);
 	}
 	reCalculateBounds(){
 		const vertices = this.vertices;
