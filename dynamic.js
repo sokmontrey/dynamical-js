@@ -52,6 +52,7 @@ export default class Dynamic{
 		}
 	}
 	calculateMomentOfInertia(){
+		//TODO fix this (NaN value)
 		if(this.type === 'circle'){
 			return this.mass * this.radius * this.radius / 2;
 		}else if(this.type === 'dot'){
