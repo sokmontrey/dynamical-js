@@ -1,6 +1,8 @@
 import DetectorClass from './detector.js';
+import ResolverClass from './resolver.js';
 
 const Detector = new DetectorClass();
+const Resolver = new ResolverClass();
 
 class Collision{
 	algorithm = 'broadphase'
@@ -42,10 +44,7 @@ class Collision{
 
 				[isCollide, normal, depth] = Detector.isCollide(bodyA, bodyB);
 				if(isCollide) {
-					bodyA.resolveCollision(normal, depth, bodyB);
-					bodyB.resolveCollision({
-						x: -normal.x,
-						y: -normal.y }, depth, bodyA);
+					Resolver.resolve(bodyA, bodyB, normal, depth)
 				}//end of if
 
 			}//end of for j
@@ -63,7 +62,7 @@ class Collision{
 
 			[isCollide,normal,depth] = Detector.checkBorder(body, this.width, this.height);
 			if(isCollide) {
-				body.resolveCollision(normal, depth, null);
+				Resolver.resolveBorder(body, normal, depth);
 			}
 		}
 	}

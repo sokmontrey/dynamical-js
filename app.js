@@ -21,6 +21,7 @@ const rect2 = new Rectangle(0,-200, 400, 30, -Math.PI/12);
 const dot = new Dot(20,250,10);
 
 const Engine = new Enginer();
-Engine.init(Render, [rect,circle2, circle, dot]);
+Engine.init(Render, [rect,circle2, circle]);
+rect.dynamic.velocity.y = -5;
 Engine.run();
 Engine.stop = false;

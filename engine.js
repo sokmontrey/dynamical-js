@@ -3,7 +3,7 @@ import CollisionClass from './collision.js';
 const Collision = new CollisionClass();
 
 export default class Engine{
-	gravity = { x: 0, y: -10 }
+	gravity = { x: 0, y: 0 }
 	stop = false;
 
 	//public---------------
@@ -14,7 +14,7 @@ export default class Engine{
 
 		this.setDynamicBodies(bodies);
 		this.setStaticBodies(staticBodies);
-		this.enableGravity(0, -10);
+		this.enableGravity(0, 0);
 		Collision.setBodies(this.bodies, this.staticBodies);
 		Collision.setBorder(renderer.width, renderer.height);
 	}
