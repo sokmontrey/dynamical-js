@@ -14,7 +14,7 @@ export default class Dynamic{
 		angularAcceleration: 0,
 		momentOfInertia: undefined,
 		mass: undefined,
-		density: 1,
+		density: 0.001,
 	}){
 		this.isDynamic = true;
 		this.dynamic = {
@@ -26,10 +26,10 @@ export default class Dynamic{
 			torque: initValue.torque,
 			angularVelocity: initValue.angularVelocity,
 			angularAcceleration: initValue.angularAcceleration,
-			momentOfInertia: initValue.momentOfInertia,
+			momentOfInertia: null,
 
 			density: initValue.density,
-			mass: initValue.mass,
+			mass: null,
 		}
 		this.dynamic['momentOfInertia'] = initValue.momentOfInertia || this.calculateMomentOfInertia();
 		this.dynamic['mass'] = initValue.mass || this.calculateMass();
@@ -52,7 +52,6 @@ export default class Dynamic{
 		}
 	}
 	calculateMomentOfInertia(){
-		//TODO fix this (NaN value)
 		if(this.type === 'circle'){
 			return this.mass * this.radius * this.radius / 2;
 		}else if(this.type === 'dot'){
@@ -107,6 +106,8 @@ export default class Dynamic{
 		}
 		this.position.x += dynamic.velocity.x * deltaTime;
 		this.position.y += dynamic.velocity.y * deltaTime;
+
+		console.log(this.type, " : ", dynamic.mass);
 
 		dynamic.angularVelocity += dynamic.angularAcceleration * deltaTime;
 		this.rotation += dynamic.angularVelocity * deltaTime;
