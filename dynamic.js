@@ -117,21 +117,6 @@ export default class Dynamic{
 			this.reCalculateVertices(dynamic.angularVelocity);
 		}
 	}
-	resolveCollision(normal, depth, other){
-		if(!this.isDynamic) return 0
-		this.dynamic.velocity.x = 0;
-		this.dynamic.velocity.y = 0;
-		this.position.x += normal.x * (depth)
-		this.position.y += normal.y * (depth);
-		if(other != null)
-			this.resolveVelocity(other);
-	}
-	resolveVelocity(other){
-		const thisDynamic = this.dynamic;
-		const otherDynamic = other.dynamic;
-		thisDynamic.velocity.x = (thisDynamic.velocity.x - otherDynamic.velocity.x) / 2;
-		thisDynamic.velocity.y = (thisDynamic.velocity.y - otherDynamic.velocity.y) / 2;
-	}
 	reCalculateVertices(angle){
 		//TODO: implement a real recaculate because this is rotate vertices by angle not to angle
 		this.vertices = Vertex.rotate(this.vertices, angle);
