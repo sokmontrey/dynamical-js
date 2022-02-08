@@ -31,8 +31,8 @@ export default class Dynamic{
 			density: initValue.density,
 			mass: null,
 		}
-		this.dynamic['momentOfInertia'] = initValue.momentOfInertia || this.calculateMomentOfInertia();
 		this.dynamic['mass'] = initValue.mass || this.calculateMass();
+		this.dynamic['momentOfInertia'] = initValue.momentOfInertia || this.calculateMomentOfInertia();
 	}
 	calculateMass(){
 		if(this.type === 'circle'){
@@ -52,10 +52,8 @@ export default class Dynamic{
 		}
 	}
 	calculateMomentOfInertia(){
-		if(this.type === 'circle'){
-			return this.mass * this.radius * this.radius / 2;
-		}else if(this.type === 'dot'){
-			return this.mass * this.size * this.size / 2;
+		if(this.type === 'dot'){
+			return this.dynamic.mass * this.dynamic.density * this.size * this.size / 2;
 		}else{
 			const vertices = this.vertices;
 			var inertia=0, i;
@@ -64,7 +62,7 @@ export default class Dynamic{
 			for(i=0; i<vertices.length; i++){
 				A = vertices[i];
 				B = vertices[i+1] || vertices[0];
-				mass_tri = this.density * Math.abs(Vector.crossProduct(A, B) * 0.5);
+				mass_tri = this.dynamic.density * Math.abs(Vector.crossProduct(A, B) * 0.5);
 				inertia_tri = mass_tri * (Vector.sqrtLength(A) + Vector.sqrtLength(B) + Vector.dotProduct(A, B)) / 6;
 				inertia += inertia_tri;
 			}
@@ -107,7 +105,8 @@ export default class Dynamic{
 		this.position.x += dynamic.velocity.x * deltaTime;
 		this.position.y += dynamic.velocity.y * deltaTime;
 
-		console.log(this.type, " : ", dynamic.mass);
+		dynamic.angularAcceleration = dynamic.torque / dynamic.momentOfInertia;
+		dynamic.torque = 0;
 
 		dynamic.angularVelocity += dynamic.angularAcceleration * deltaTime;
 		this.rotation += dynamic.angularVelocity * deltaTime;
