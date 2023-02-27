@@ -1,25 +1,13 @@
 import Renderer from './render.js';
 
-const canvasContainer = document.createElement('div');
-document.body.appendChild(canvasContainer);
+const canvas = document.createElement('canvas');
+document.body.appendChild(canvas);
 
-const text = document.createElement('h3');
-text.id = 'text';
-document.body.appendChild(text);
+const renderer = new Renderer(canvas);
 
-const Render = new Renderer();
-Render.init(canvasContainer, 600,600);
-Render.setWireFrame(false);
-Render.setShowBounds(false);
-
-const rect = new Rectangle(10,200,100,100);
-const circle = new Circle(0,100,20, 16);
-const circle2 = new Circle(0,-100, 40, 16);
-const rect2 = new Rectangle(0,-200, 400, 30, -Math.PI/12);
-const dot = new Dot(20,250,10);
-
-const Engine = new Enginer();
-Engine.init(Render, [rect,circle2, circle]);
-rect.dynamic.velocity.y = -5;
-Engine.run();
-Engine.stop = false;
+renderer.setBackground('#222222');
+renderer.setUpdate((dt)=>{
+    renderer.clear();
+    renderer.setFill('#ffffff');
+    renderer.point(200,200);
+});
