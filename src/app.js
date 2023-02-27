@@ -1,6 +1,4 @@
 import Renderer from './render.js';
-import { Dot, Rectangle, Circle } from './body.js';
-import Enginer from './engine.js';
 
 const canvasContainer = document.createElement('div');
 document.body.appendChild(canvasContainer);
