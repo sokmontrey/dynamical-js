@@ -1,1 +1,1 @@
-A basic vertex based geometry Physics engine written in JavaScript.
+An attempt to understand and build a Physic Engine from scratch in JavaScript
