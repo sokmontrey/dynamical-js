@@ -11,11 +11,11 @@ export default class Renderer{
 		this.color_palette = [];
 		this.background_color = 'white';
 
-		this.update_function = null;
-		this.last_time = 0;
-
 		this.resize(width, height);
 		this.clear();
+
+		this.update_function;
+		this.last_time = 0;
 		this._animate = this._animate.bind(this);
 	}
 
@@ -42,24 +42,22 @@ export default class Renderer{
 		this.c.fillRect(0,0, this.width, this.height);
 	}
 
-	point({_data: pos_vector}, radius=3,
+	point({_data: [x, y]}, radius=3,
 		{ 
 			fill=null, 
 			stroke=null, 
-			stroke_weight=null, 
-		}
+			stroke_width=null, 
+		}={}
 	){
-		const [x, y] = pos_vector;
 		this.c.beginPath();
-
-		fill ? this.c.fillStyle = fill : null;
-		stroke ? this.c.strokeStyle = stroke : null;
-
 		this.c.arc(x, y, radius, 0, Math.PI * 2);
 
+		if(fill) this.c.fillStyle = fill; 
 		this.c.fill();
-		if(stroke_weight){
-			this.c.strokeWeight = stroke_weight;
+
+		if(stroke_width) {
+			stroke ? this.c.strokeStyle = stroke : null;
+			this.c.lineWidth = stroke_width;
 			this.c.stroke();
 		}
 	}
@@ -82,7 +80,7 @@ export default class Renderer{
 	}
 
 	_animate(current_time) {
-		const delta_time = current_time - this.last_time;
+		const delta_time = Math.min(current_time - this.last_time, 1000/30.0);
 		this.last_time = current_time;
 
 		if(this.update_function) {
