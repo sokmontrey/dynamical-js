@@ -82,8 +82,8 @@ function applyConstraint(){
                 v.subtract(
                     n.multiply(
                         new Vector(
-                            2*dot,
-                            2*dot
+                            1*dot,
+                            1*dot
                         )
                     )
                 )
@@ -95,7 +95,7 @@ function applyConstraint(){
 }
 function applyCollision(){
     for(let i=0; i<p.length; i++){
-        for(let j=i+1; j<p.length; j++){
+        for(let j=0; j<p.length; j++){
             const pa = p[i];
             const pb = p[j];
 
