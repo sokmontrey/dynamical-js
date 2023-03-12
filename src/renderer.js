@@ -1,4 +1,5 @@
 
+const Vector = Victor;
 export default class Renderer{
 
 	constructor(canvas, width=500, height=500){
@@ -42,7 +43,7 @@ export default class Renderer{
 		this.c.fillRect(0,0, this.width, this.height);
 	}
 
-	point({_data: [x, y]}, radius=3,
+	point({x, y}, radius=3,
 		{ 
 			fill=null, 
 			stroke=null, 
@@ -62,7 +63,7 @@ export default class Renderer{
 		}
 	}
 
-	line({data:[x,y]}, thickness=2,
+	line({x, y}, thickness=2,
 		{
 			fill=null, 
 			stroke=null, 
@@ -93,15 +94,15 @@ export default class Renderer{
 	}
 
 	get CENTER(){
-		return math.matrix([
+		return new Vector(
 			this.width/2.0, 
 			this.height/2.0
-		]);
+		);
 	}
 	get RANDOM(){
-		return math.matrix([ 
+		return new Vector(
 			Math.random() * this.width, 
 			Math.random() * this.height 
-		]);
+		);
 	}
 }

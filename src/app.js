@@ -1,4 +1,5 @@
 import Renderer from './renderer.js';
+const Vector = Victor;
 
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
@@ -6,73 +7,134 @@ document.body.appendChild(canvas);
 const renderer = new Renderer(canvas);
 renderer.setBackground('#232323');
 
+
 class Point{
-    constructor(pos_vector){
-        this.current_position = pos_vector;
-        this.old_position = pos_vector;
-        this.old_velocity = math.zeros(2);
-        this.acceleration = math.zeros(2);
-        this.velocity = math.zeros(2);
+    constructor({x,y}, radius=10){
+        this.old_pos = new Vector(x,y);
+        this.current_pos = new Vector(x,y);
+        this.acc = new Vector(0,0);
+        this.velocity = new Vector(0,0);
 
         this.mass = 1;
+        this.radius = radius;
     }
+
     updatePosition(delta_time){
-        this.velocity = math.subtract(this.current_position, this.old_position);
-        this.old_position = this.current_position;
+        this.velocity.x = this.current_pos.x - this.old_pos.x;
+        this.velocity.y = this.current_pos.y - this.old_pos.y;
 
-        this.current_position = math.add(
-            math.add(this.current_position, this.velocity),
-            math.multiply(this.acceleration, delta_time * delta_time * 0.5)
-        );
+        this.old_pos.x = this.current_pos.x;
+        this.old_pos.y = this.current_pos.y;
 
-        this.acceleration._data[0] = 0;
-        this.acceleration._data[1] = 0;
+        const delta_time_squared = delta_time * delta_time;
+        this.current_pos.add(this.velocity);
+        this.current_pos.add(this.acc.multiply(new Vector(delta_time_squared, delta_time_squared)));
+
+        this.acc.x = 0;
+        this.acc.y = 0;
     }
 
     applyForce(force_vector){
-        this.accelerate(math.divide(force_vector, this.mass));
+        this.acc.x = force_vector.x / this.mass;
+        this.acc.y = force_vector.y / this.mass;
     }
 
-    accelerate(acc){
-        this.acceleration = math.add(this.acceleration, acc);
+    getPosition(){
+        return this.current_pos;
     }
-
-    get position (){ return this.current_position; }
-    set position (new_position) {
-        this.current_position = new_position;
+    setPosition(new_position){
+        this.current_pos.x = new_position.x;
+        this.current_pos.y = new_position.y;
     }
 }
-const p1 = new Point(math.add(renderer.CENTER, math.matrix([100,0])));
+
+const p = []; 
+for(let i=0; i<2; i++) p.push(new Point(new Vector(250, 250 + i*30 - 130)));
 
 function applyGravity(){
-    p1.applyForce(math.multiply(p1.mass * 20, math.matrix([0,1])));
+    for(let i=0; i<p.length; i++){
+        p[i].applyForce(new Vector(0, 1 * p[i].mass * 9.8));
+    }
 }
+
 function updatePosition(delta_time){
-    p1.updatePosition(delta_time * 0.01);
+    for(let i=0; i<p.length; i++){
+        p[i].updatePosition(delta_time);
+    }
 }
+
 function applyConstraint(){
     const position = renderer.CENTER;
     const radius = 200;
 
-    const to_point = math.subtract(p1.position, position);
-    const dist = math.sqrt(
-        Math.pow(to_point._data[0],2) + Math.pow(to_point._data[1], 2)
-    );
-    if(dist > radius - 20){
-        const n = math.divide(to_point, dist);
-        const v = math.subtract(p1.position, p1.old_position);
-        const contact_point = math.add(position, math.multiply(n, (dist-1)));
+    for(let i=0; i<p.length; i++){
+        const to_point = p[i].getPosition().clone().subtract(position);
+        const dist = to_point.length();
 
-        p1.old_position = math.add(
-            math.subtract(
-                math.multiply(
-                    1.8*(n._data[0]*v._data[0]+n._data[1]*v._data[1])
-                    , n
-                ), v
-            ), contact_point
-        );
-        p1.position = contact_point;
+        if(dist > radius - 10){
+            const n = new Vector(to_point.x/dist, to_point.y/dist);
+            const v = p[i].old_pos.clone().subtract(p[i].getPosition());
 
+            const contact_point = position.clone().add(n.clone().multiply(new Vector(dist-1, dist-1)));
+
+            const dot = n.dot(v);
+            p[i].old_pos = contact_point.clone().add(
+                v.subtract(
+                    n.multiply(
+                        new Vector(
+                            2*dot,
+                            2*dot
+                        )
+                    )
+                )
+            );
+
+            p[i].setPosition(contact_point);
+        }
+    }
+}
+function applyCollision(){
+    for(let i=0; i<p.length; i++){
+        for(let j=i+1; j<p.length; j++){
+            const pa = p[i];
+            const pb = p[j];
+
+            const to_point = pa.getPosition().clone().subtract(pb.getPosition());
+            const dist = to_point.length();
+
+            if(dist < pa.radius + pb.radius){
+                const na = new Vector(to_point.x/dist, to_point.y/dist);
+                const nb = new Vector(-to_point.x/dist, -to_point.y/dist);
+
+                const va = pa.old_pos.clone().subtract(pa.getPosition());
+                const vb = pb.old_pos.clone().subtract(pb.getPosition());
+
+                const contact_point_a = pa.getPosition().clone().add(na.clone().multiply(new Vector(dist/2-1, dist/2-1)));
+                const contact_point_b = pb.getPosition().clone().add(nb.clone().multiply(new Vector(dist/2-1, dist/2-1)));
+
+                const dot_a = na.dot(va);
+                const dot_b = nb.dot(vb);
+
+                pa.old_pos= contact_point_a.clone().add(
+                    va.subtract(
+                        na.multiply(
+                            new Vector( 1*dot_b, 1*dot_b)
+                        )
+                    )
+                );
+
+                pb.old_pos= contact_point_b.clone().add(
+                    vb.subtract(
+                        nb.multiply(
+                            new Vector( 1*dot_b, 1*dot_b)
+                        )
+                    )
+                );
+
+                pa.current_pos= contact_point_a;
+                pb.current_pos= contact_point_b;
+            }
+        }
     }
 }
 
@@ -80,11 +142,14 @@ renderer.update(({delta_time, context:c})=>{
     renderer.clear();
 
     applyGravity();
+    updatePosition(delta_time * 0.01);
+    for(let i=0; i<5; i++){
+    applyCollision();
     applyConstraint();
-    updatePosition(delta_time);
+    }
 
     c.fillStyle='white';
-    renderer.point(renderer.CENTER, 200)
+    renderer.point(renderer.CENTER, 200);
     c.fillStyle='black';
-    renderer.point(p1.position, 20);
+    for(let i=0; i<p.length; i++) renderer.point(p[i].getPosition(), 10);
 });
