@@ -7,7 +7,6 @@ document.body.appendChild(canvas);
 const renderer = new Renderer(canvas);
 renderer.setBackground('#232323');
 
-
 class Point{
     constructor({x,y}, radius=10){
         this.old_pos = new Vector(x,y);
