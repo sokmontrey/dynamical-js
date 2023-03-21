@@ -1,5 +1,5 @@
+import {Vector2} from './util/vector.js';
 
-const Vector = Victor;
 export default class Renderer{
 
 	constructor(canvas, width=500, height=500){
@@ -94,13 +94,13 @@ export default class Renderer{
 	}
 
 	get CENTER(){
-		return new Vector(
+		return new Vector2(
 			this.width/2.0, 
 			this.height/2.0
 		);
 	}
 	get RANDOM(){
-		return new Vector(
+		return new Vector2(
 			Math.random() * this.width, 
 			Math.random() * this.height 
 		);
