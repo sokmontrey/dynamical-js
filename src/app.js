@@ -79,38 +79,92 @@ class CollisionConstraint{
             const n1 = p2.subtract(p1).normalize();
             const n2 = n1.invert();
 
+            //TODO: finc contact_point for points with different radius
             const cp = p2.add(p1).divide(2);
 
-            const cp1 = cp.add(cp.subtract(p1).scaleMagnitudeTo(point1.radius));
-            const cp2 = cp.add(cp.subtract(p2).scaleMagnitudeTo(point2.radius));
+            const cp1 = cp.subtract(cp.subtract(p1).scaleMagnitudeTo(point1.radius));
+            const cp2 = cp.subtract(cp.subtract(p2).scaleMagnitudeTo(point2.radius));
 
-            point2.resolveCollision(cp1, n1);
-            point1.resolveCollision(cp2, n2);
+            point1.resolveCollision(cp1, n1);
+            point2.resolveCollision(cp2, n2);
         }
     }
 }
 
-const p1 = new Point(renderer.CENTER.add(new Vector2(5,-50)), 20);
-const p2 = new Point(renderer.CENTER.add(new Vector2(-5, 50)), 20);
+class RigidConstraint{
+    constructor(point1, point2){
+        this.point1 = point1;
+        this.point2 = point2;
+        this.l = Vector2.distance(point1.pos, point2.pos);
+    }
+    check(){
+        const p1 = this.point1.pos;
+        const p2 = this.point2.pos;
+
+        let n1, n2;
+        let cp1, cp2;
+
+        const new_l = Vector2.distance(p1, p2);
+
+        if(new_l > this.l){
+            n1 = p2.subtract(p1).normalize();
+            n2 = n1.invert();
+
+            const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l)/2);
+
+            cp1 = p1.add(temp_cp);
+            cp2 = p2.add(temp_cp.invert());
+        }else if(new_l < this.l){
+            n1 = p1.subtract(p2).normalize();
+            n2 = n1.invert();
+
+            const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l)/2);
+
+            cp1 = p1.add(temp_cp);
+            cp2 = p2.add(temp_cp.invert());
+        }
+
+        if(n1){
+            //this.point1.resolveCollision(cp1, n1);
+            this.point2.resolveCollision(cp2, n2);
+        }
+    }
+}
+
+const p = [];
+for(let i=0; i<3; i++){
+    p.push(new Point(new Vector2(250 + i * 100, 250 - i * 50), 20));
+}
+
 const bound_box = new BoundBox(renderer.WIDTH, renderer.HEIGHT, renderer.CENTER);
 const collision_constraint = new CollisionConstraint();
+
+const rigid_constraint = [];
+for(let i=1; i<p.length; i++){
+    rigid_constraint.push(new RigidConstraint(p[i-1], p[i]));
+}
 
 renderer.update(({delta_time, context:c})=>{
     renderer.clear();
 
-    p1.applyForce(new Vector2(0, 9.8 * p1.mass));
-    p2.applyForce(new Vector2(0, 9.8 * p2.mass));
+    for(let i=1; i<p.length; i++){
+        p[i].applyForce(new Vector2(0, 9.8 * p[i].mass));
+    }
 
-    p1.updatePosition(delta_time * 0.01);
-    p2.updatePosition(delta_time * 0.01);
+    for(let i=0; i<p.length; i++){
+        p[i].updatePosition(delta_time * 0.01);
+    }
 
+    for(let i=0; i<rigid_constraint.length; i++){
+        rigid_constraint[i].check();
+    }
 
-    bound_box.checkPoint(p1);
-    bound_box.checkPoint(p2);
-    collision_constraint.checkCollision(p1, p2);
+    for(let i=0; i<p.length; i++){
+        bound_box.checkPoint(p[i]);
+    }
 
     c.fillStyle = '#e9c46a';
-    renderer.point(p1.pos, p1.radius);
-    c.fillStyle = '#e76f51';
-    renderer.point(p2.pos, p2.radius);
+    for(let i=0; i<p.length; i++){
+        renderer.point(p[i].pos, p[i].radius);
+    }
 });
