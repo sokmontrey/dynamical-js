@@ -101,38 +101,31 @@ class RigidConstraint{
         const p1 = this.point1.pos;
         const p2 = this.point2.pos;
 
-        let n1, n2;
         let cp1, cp2;
 
         const new_l = Vector2.distance(p1, p2);
 
         if(new_l > this.l){
-            n1 = p2.subtract(p1).normalize();
-            n2 = n1.invert();
-
             const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l)/2);
 
             cp1 = p1.add(temp_cp);
             cp2 = p2.add(temp_cp.invert());
         }else if(new_l < this.l){
-            n1 = p1.subtract(p2).normalize();
-            n2 = n1.invert();
-
             const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l)/2);
 
             cp1 = p1.add(temp_cp);
             cp2 = p2.add(temp_cp.invert());
         }
 
-        if(n1){
-            //this.point1.resolveCollision(cp1, n1);
-            this.point2.resolveCollision(cp2, n2);
+        if(cp1){
+            this.point1.resolveRigidConstraint(cp1);
+            this.point2.resolveRigidConstraint(cp2);
         }
     }
 }
 
 const p = [];
-for(let i=0; i<3; i++){
+for(let i=0; i<2; i++){
     p.push(new Point(new Vector2(250 + i * 100, 250 - i * 50), 20));
 }
 
@@ -144,11 +137,13 @@ for(let i=1; i<p.length; i++){
     rigid_constraint.push(new RigidConstraint(p[i-1], p[i]));
 }
 
+p[0].applyForce(new Vector2(50, 0))
+
 renderer.update(({delta_time, context:c})=>{
     renderer.clear();
 
-    for(let i=1; i<p.length; i++){
-        p[i].applyForce(new Vector2(0, 9.8 * p[i].mass));
+    for(let i=0; i<p.length; i++){
+        //p[i].applyForce(new Vector2(0, 9.8 * p[i].mass));
     }
 
     for(let i=0; i<p.length; i++){
