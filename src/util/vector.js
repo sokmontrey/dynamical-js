@@ -48,6 +48,10 @@ Vector2.distance = (a,b)=>{
 Vector2.clone = (a)=>{
     return new Vector2(a.x, a.y);
 }
+Vector2.assign = (a, b)=>{
+    a.x = b.x;
+    a.y = b.y;
+}
 Vector2.mirror = (a, n)=>{
     return Vector2.subtract(a,
         Vector2.multiply(
@@ -100,6 +104,9 @@ Vector2.prototype = {
     },
     clone: ()=>{
         return Vector2.clone(this);
+    },
+    assign: (other)=>{
+        Vector2.assign(this, other);
     },
     mirror: (n)=>{
         return Vector2.mirror(this, n);
