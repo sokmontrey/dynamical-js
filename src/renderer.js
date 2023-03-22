@@ -94,15 +94,18 @@ export default class Renderer{
 	}
 
 	get CENTER(){
-		return new Vector2(
-			this.width/2.0, 
-			this.height/2.0
-		);
+		return new Vector2(this.width/2.0, this.height/2.0);
 	}
 	get RANDOM(){
 		return new Vector2(
 			Math.random() * this.width, 
 			Math.random() * this.height 
 		);
+	}
+	get HEIGHT(){
+		return this.height;
+	}
+	get WIDTH(){
+		return this.width;
 	}
 }
