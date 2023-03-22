@@ -71,6 +71,15 @@ Vector2.cut = function(a, scalar){
     const l = Vector2.magnitude(a);
     return Vector2.multiply(a, (l - scalar) / l);
 }
+Vector2.expand = function(a, scalar){
+    const l = Vector2.magnitude(a);
+    return Vector2.multiply(a, (l + scalar) / l);
+}
+//Scalar the Vector2 to a certain length keeping the same angle
+Vector2.scaleMagnitudeTo = function(a, scalar){
+    const l = Vector2.magnitude(a);
+    return Vector2.multiply(a, scalar / l);
+}
 Vector2.isEqual = function(a, b){
     if(b instanceof Vector2) return a.x == b.x && a.y == b.y;
     else return a.x == b && a.y == b;
@@ -131,6 +140,12 @@ Vector2.prototype = {
     },
     cut: function(scalar){
         return Vector2.cut(this, scalar);
+    },
+    expand: function(scalar){
+        return Vector2.expand(this, scalar);
+    },
+    scaleMagnitudeTo: function(scalar){
+        return Vector2.scaleMagnitudeTo(this, scalar);
     },
     isEqual: function(other){
         return Vector2.isEqual(this, other);
