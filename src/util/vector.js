@@ -33,7 +33,7 @@ Vector2.magnitude = function(a){
     return Math.sqrt(a.x*a.x + a.y*a.y);
 }
 Vector2.normalize = function(a){
-    const mag = Vector2.mag(a);
+    const mag = Vector2.magnitude(a);
     return new Vector2(a.x/mag, a.y/mag);
 }
 Vector2.min = function(a,b){
