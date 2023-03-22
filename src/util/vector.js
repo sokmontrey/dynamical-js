@@ -59,13 +59,17 @@ Find a reflection vector A with V as the mirror
 Vector2.reflect = function(a, v){
     return Vector2.subtract(a,
         Vector2.multiply(
-            2,
             Vector2.multiply( 
                 v, 
                 Vector2.dot(a, v)
-            )
+            ),
+            2
         )
     );
+}
+Vector2.cut = function(a, scalar){
+    const l = Vector2.magnitude(a);
+    return Vector2.multiply(a, (l - scalar) / l);
 }
 Vector2.isEqual = function(a, b){
     if(b instanceof Vector2) return a.x == b.x && a.y == b.y;
@@ -124,6 +128,9 @@ Vector2.prototype = {
     },
     reflect: function(other){
         return Vector2.reflect(this, other);
+    },
+    cut: function(scalar){
+        return Vector2.cut(this, scalar);
     },
     isEqual: function(other){
         return Vector2.isEqual(this, other);
