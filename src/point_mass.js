@@ -1,7 +1,7 @@
 import { Vector2 } from "./util/vector.js";
 
-export default class Point{
-    constructor({x, y}, radius=10){
+export default class PointMass{
+    constructor({x, y}, radius=1){
         this.pos = new Vector2(x,y);
         this.old_pos = new Vector2(x, y);
         this.velocity = new Vector2(0,0);

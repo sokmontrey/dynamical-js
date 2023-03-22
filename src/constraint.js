@@ -1,5 +1,10 @@
 import { Vector2 } from "./util/vector.js";
 
+/*
+point: point mass
+p: position of point mass
+*/
+
 export class RigidConstraint{
     constructor(points){
         this.points = points;
@@ -105,7 +110,7 @@ export class CanvasConstraint{
     }
 }
 
-export class PointCollisionConstraint{
+export class PointMassCollisionConstraint{
     constructor(){}
     check(point1, point2){
         const p1 = point1.pos;

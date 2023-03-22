@@ -1,7 +1,7 @@
 import Renderer from './renderer.js';
 import { Vector2 } from './util/vector.js';
 import { RigidConstraint, CanvasConstraint } from './constraint.js';
-import Point from './point.js';
+import PointMass from './point_mass.js';
 
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
@@ -9,12 +9,11 @@ document.body.appendChild(canvas);
 const renderer = new Renderer(canvas);
 renderer.setBackground('#233d4d');
 
-
 const box = [
-    new Point(renderer.CENTER.add(new Vector2(0, -100)), 0),
-    new Point(renderer.CENTER.add(new Vector2(100,0)), 0),
-    new Point(renderer.CENTER.add(new Vector2(0, 100)), 0),
-    new Point(renderer.CENTER.add(new Vector2(-100, 0)), 0),
+    new PointMass(renderer.CENTER.add(new Vector2(0, -100))),
+    new PointMass(renderer.CENTER.add(new Vector2(100,0))),
+    new PointMass(renderer.CENTER.add(new Vector2(0, 100))),
+    new PointMass(renderer.CENTER.add(new Vector2(-100, 0))),
 ];
 const box_structure = new RigidConstraint([...box, box[0], box[2]]);
 
