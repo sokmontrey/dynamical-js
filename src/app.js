@@ -124,18 +124,24 @@ class RigidConstraint{
     }
 }
 
-const p = [];
-for(let i=0; i<2; i++){
-    p.push(new Point(new Vector2(250 + i * 100, 250 - i * 50), 20));
-}
+const p = [
+    new Point(renderer.CENTER.add(new Vector2(0, -100)), 10),
+    new Point(renderer.CENTER.add(new Vector2(100,0)), 10),
+    new Point(renderer.CENTER.add(new Vector2(0, 100)), 10),
+    new Point(renderer.CENTER.add(new Vector2(-100, 0)), 10),
+];
 
 const bound_box = new BoundBox(renderer.WIDTH, renderer.HEIGHT, renderer.CENTER);
 const collision_constraint = new CollisionConstraint();
 
-const rigid_constraint = [];
-for(let i=1; i<p.length; i++){
-    rigid_constraint.push(new RigidConstraint(p[i-1], p[i]));
-}
+const rigid_constraint = [
+    new RigidConstraint(p[0], p[1]),
+    new RigidConstraint(p[1], p[2]),
+    new RigidConstraint(p[2], p[3]),
+    new RigidConstraint(p[3], p[0]),
+    new RigidConstraint(p[0], p[2]),
+    new RigidConstraint(p[1], p[3]),
+];
 
 p[0].applyForce(new Vector2(50, 0))
 
@@ -143,7 +149,7 @@ renderer.update(({delta_time, context:c})=>{
     renderer.clear();
 
     for(let i=0; i<p.length; i++){
-        //p[i].applyForce(new Vector2(0, 9.8 * p[i].mass));
+        p[i].applyForce(new Vector2(0, 9.8 * p[i].mass));
     }
 
     for(let i=0; i<p.length; i++){
