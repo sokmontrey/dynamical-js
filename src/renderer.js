@@ -52,6 +52,7 @@ export default class Renderer{
 	){
 		this.c.beginPath();
 		this.c.arc(x, y, radius, 0, Math.PI * 2);
+		this.c.closePath();
 
 		if(fill) this.c.fillStyle = fill; 
 		this.c.fill();
@@ -63,14 +64,44 @@ export default class Renderer{
 		}
 	}
 
-	line({x, y}, thickness=2,
+	line({x: x1, y: y1}, {x: x2, y: y2}, thickness=2,
+		{
+			stroke=null, 
+		}={}
+	){
+		this.c.beginPath();
+		this.c.moveTo(x1, y1);
+		this.c.lineTo(x2, y2);
+		this.c.closePath();
+
+		stroke ? this.c.strokeStyle = stroke : null;
+		this.c.lineWidth = thickness;
+		this.c.stroke();
+	}
+
+	polygon(points, 
 		{
 			fill=null, 
 			stroke=null, 
 			stroke_width=null, 
-		}
+		}={}
 	){
+		this.c.beginPath();
+		this.c.moveTo(points[0].pos.x, points[0].pos.y);
+		for(let i=1; i<points.length; i++){
+			this.c.lineTo(points[i].pos.x, points[i].pos.y);
+		}
+		this.c.lineTo(points[0].pos.x, points[0].pos.y);
+		this.c.closePath();
 
+		if(fill) this.c.fillStyle = fill; 
+		this.c.fill();
+
+		if(stroke_width) {
+			stroke ? this.c.strokeStyle = stroke : null;
+			this.c.lineWidth = stroke_width;
+			this.c.stroke();
+		}
 	}
 
 	update(func=null){
