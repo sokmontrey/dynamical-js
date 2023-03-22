@@ -7,52 +7,52 @@ export function Vector2(x=0, y=0){
 Static Methods
 */
 
-Vector2.add = (a, b)=>{
+Vector2.add = function(a, b){
     if(b instanceof Vector2) return new Vector2(a.x + b.x, a.y+b.y);
     else return new Vector2(a.x+b, a.y+b);
 }
-Vector2.subtract = (a, b)=>{
+Vector2.subtract = function(a, b){
     if(b instanceof Vector2) return new Vector2(a.x-b.x, a.y-b.y);
     else return new Vector2(a.x-b, a.y-b);
 }
-Vector2.invert = (a)=>{
+Vector2.invert = function(a){
     return new Vector2(-a.x, -a.y);
 }
-Vector2.multiply = (a, b)=>{
+Vector2.multiply = function(a, b){
     if(b instanceof Vector2) return new Vector2(a.x*b.x, a.y*b.y);
     else return new Vector2(a.x*b, a.y*b);
 }
-Vector2.divide = (a, b)=>{
+Vector2.divide = function(a, b){
     if(b instanceof Vector2) return new Vector2(a.x/b.x, a.y/b.y);
     else return new Vector2(a.x/b, a.y/b);
 }
-Vector2.dot = (a, b)=>{
+Vector2.dot = function(a, b){
     return a.x*b.x + a.y*b.y;
 }
-Vector2.magnitude = (a)=>{
+Vector2.magnitude = function(a){
     return Math.sqrt(a.x*a.x + a.y*a.y);
 }
-Vector2.normalize = (a)=>{
+Vector2.normalize = function(a){
     const mag = Vector2.mag(a);
     return new Vector2(a.x/mag, a.y/mag);
 }
-Vector2.min = (a,b)=>{
+Vector2.min = function(a,b){
     return new Vector2(Math.min(a.x, b.x), Math.min(a.y, b.y));
 }
-Vector2.max= (a,b)=>{
+Vector2.max= function(a,b){
     return new Vector2(Math.max(a.x, b.x), Math.max(a.y, b.y));
 }
-Vector2.distance = (a,b)=>{
+Vector2.distance = function(a,b){
     return Vector2.magnitude(Vector2.subtract(a, b));
 }
-Vector2.clone = (a)=>{
+Vector2.clone = function(a){
     return new Vector2(a.x, a.y);
 }
-Vector2.assign = (a, b)=>{
+Vector2.assign = function(a, b){
     a.x = b.x;
     a.y = b.y;
 }
-Vector2.mirror = (a, n)=>{
+Vector2.mirror = function(a, n){
     return Vector2.subtract(a,
         Vector2.multiply(
             2,
@@ -69,46 +69,46 @@ Instance Methods
 */
 
 Vector2.prototype = {
-    add: (other)=>{
+    add: function(other){
         return Vector2.add(this, other);
     },
-    subtract: (other)=>{
+    subtract: function(other){
         return Vector2.subtract(this, other);
     },
-    invert: ()=>{
+    invert: function(){
         return Vector2.invert(this);
     },
-    multiply: (other)=>{
+    multiply: function(other){
         return Vector2.multiply(this, other);
     },
-    divide: (other)=>{
+    divide: function(other){
         return Vector2.divide(this, other);
     },
-    dot: (other)=>{
+    dot: function(other){
         return Vector2.dot(this, other);
     },
-    magnitude: ()=>{
+    magnitude: function(){
         return Vector2.magnitude(this);
     },
-    normalize: ()=>{
+    normalize: function(){
         return Vector2.normalize(this);
     },
-    min: ()=>{
+    min: function(){
         return Vector2.min(this);
     },
-    max: ()=>{
+    max: function(){
         return Vector2.max(this);
     },
-    distance: (other)=>{
+    distance: function(other){
         return Vector2.distance(this, other);
     },
-    clone: ()=>{
+    clone: function(){
         return Vector2.clone(this);
     },
-    assign: (other)=>{
+    assign: function(other){
         Vector2.assign(this, other);
     },
-    mirror: (n)=>{
+    mirror: function(n){
         return Vector2.mirror(this, n);
     },
 };
