@@ -6,7 +6,7 @@ const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
 
 const renderer = new Renderer(canvas);
-renderer.setBackground('#264653');
+renderer.setBackground('#233d4d');
 
 class BoundBox{
     constructor(width, height){
@@ -124,48 +124,49 @@ class RigidConstraint{
     }
 }
 
-const p = [
-    new Point(renderer.CENTER.add(new Vector2(0, -100)), 10),
-    new Point(renderer.CENTER.add(new Vector2(100,0)), 10),
-    new Point(renderer.CENTER.add(new Vector2(0, 100)), 10),
-    new Point(renderer.CENTER.add(new Vector2(-100, 0)), 10),
+const box = [
+    new Point(renderer.CENTER.add(new Vector2(0, -100)), 0),
+    new Point(renderer.CENTER.add(new Vector2(100,0)), 0),
+    new Point(renderer.CENTER.add(new Vector2(0, 100)), 0),
+    new Point(renderer.CENTER.add(new Vector2(-100, 0)), 0),
 ];
 
 const bound_box = new BoundBox(renderer.WIDTH, renderer.HEIGHT, renderer.CENTER);
 const collision_constraint = new CollisionConstraint();
 
 const rigid_constraint = [
-    new RigidConstraint(p[0], p[1]),
-    new RigidConstraint(p[1], p[2]),
-    new RigidConstraint(p[2], p[3]),
-    new RigidConstraint(p[3], p[0]),
-    new RigidConstraint(p[0], p[2]),
-    new RigidConstraint(p[1], p[3]),
+    new RigidConstraint(box[0], box[1]),
+    new RigidConstraint(box[1], box[2]),
+    new RigidConstraint(box[2], box[3]),
+    new RigidConstraint(box[3], box[0]),
+    new RigidConstraint(box[0], box[2]),
+    new RigidConstraint(box[1], box[3]),
 ];
-
-p[0].applyForce(new Vector2(50, 0))
 
 renderer.update(({delta_time, context:c})=>{
     renderer.clear();
 
-    for(let i=0; i<p.length; i++){
-        p[i].applyForce(new Vector2(0, 9.8 * p[i].mass));
+    for(let i=0; i<box.length; i++){
+        box[i].applyForce(new Vector2(0, 9.8 * box[i].mass));
     }
 
-    for(let i=0; i<p.length; i++){
-        p[i].updatePosition(delta_time * 0.01);
+    for(let i=0; i<box.length; i++){
+        box[i].updatePosition(delta_time * 0.01);
     }
 
     for(let i=0; i<rigid_constraint.length; i++){
         rigid_constraint[i].check();
     }
 
-    for(let i=0; i<p.length; i++){
-        bound_box.checkPoint(p[i]);
+    for(let i=0; i<box.length; i++){
+        bound_box.checkPoint(box[i]);
     }
 
-    c.fillStyle = '#e9c46a';
+    renderer.polygon(box, {stroke: '#fcca46', stroke_width: 2});
+    /*
     for(let i=0; i<p.length; i++){
         renderer.point(p[i].pos, p[i].radius);
+        renderer.line(p[i].pos, p[i<p.length-1?i+1:0].pos);
     }
+    */
 });
