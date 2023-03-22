@@ -1,102 +1,65 @@
 import Renderer from './renderer.js';
 import {Vector2} from './util/vector.js';
+import Point from './point.js';
 
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
 
 const renderer = new Renderer(canvas);
-renderer.setBackground('#232323');
-
-class Point{
-    constructor({x, y}, radius=10){
-        this.pos = new Vector2(x,y);
-        this.old_pos = new Vector2(x, y);
-        this.velocity = new Vector2(0,0);
-        this.acceleration = new Vector2(0,0);
-
-        this.mass = 1;
-        this.radius = radius;
-    }
-
-    applyForce(f){
-        this.acceleration = this.acceleration.add(f.divide(this.mass));
-    }
-    resolveCollision(contact_point, normal){
-        this.old_pos = this.pos.subtract(this.old_pos)
-            .reflect(normal)
-            .invert()
-            .add(contact_point);
-
-        this.pos.assign(contact_point);
-    }
-
-    updatePosition(delta_time){
-        this.velocity = this.pos.subtract(this.old_pos);
-
-        this.old_pos.assign(this.pos);
-
-        this.pos = this.pos
-            .add(this.velocity)
-            .add(this.acceleration.multiply(delta_time * delta_time));
-
-        this.acceleration.assign(new Vector2(0,0));
-    }
-}
+renderer.setBackground('#264653');
 
 class BoundBox{
-    constructor(width, height, position){
+    constructor(width, height){
         this.width = width;
         this.height = height;
-        //anchor is at the center
-        this.pos = position;
     }
 
     checkPoint(p){
         let contact_point = null;
         let n = null;
-        if(p.pos.y > this.height - p.radius){
+        if(p.pos.y > this.height){
             n = new Vector2(0, -1);
             if(p.old_pos.isVertical(p.pos)){
-                contact_point = new Vector2(p.pos.x, this.height-p.radius);
-            }else{
+                contact_point = new Vector2(p.pos.x, this.height);
+            } else{
                 contact_point = new Vector2(
                     p.pos.x 
-                    + (this.height-p.radius-p.pos.y) * (p.pos.x-p.old_pos.x) 
+                    + (this.height-p.pos.y) * (p.pos.x-p.old_pos.x) 
                     / (p.pos.y-p.old_pos.y),
-                    this.height-p.radius
+                    this.height
                 )
             }
-        } else if(p.pos.y < p.radius){
+        } else if(p.pos.y < 0){
             n = new Vector2(0, 1);
             if(p.old_pos.isVertical(p.pos)){
-                contact_point = new Vector2(p.pos.x, p.radius);
+                contact_point = new Vector2(p.pos.x, 0);
             }else{
                 contact_point = new Vector2(
                     p.pos.x 
-                    + (p.radius-p.pos.y) * (p.pos.x-p.old_pos.x) 
+                    + (-p.pos.y) * (p.pos.x-p.old_pos.x) 
                     / (p.pos.y-p.old_pos.y),
-                    p.radius
+                    0
                 )
             }
-        }else if (p.pos.x < p.radius){
+        }else if (p.pos.x < 0){
             n = new Vector2(1, 0);
             if(p.old_pos.isHorizontal(p.pos)){
-                contact_point = new Vector2(p.radius, p.pos.y);
+                contact_point = new Vector2(0, p.pos.y);
             }else{
                 contact_point = new Vector2(
-                    p.radius,
-                    (p.pos.y - p.old_pos.y) * (p.radius - p.pos.x) 
+                    0,
+                    (p.pos.y - p.old_pos.y) * (p.pos.x) 
                     / (p.pos.x - p.old_pos.x) + p.pos.y
                 );
             }
-        }else if(p.pos.x > this.width - p.radius){
+        }else if(p.pos.x > this.width){
             n = new Vector2(-1, 0);
             if(p.old_pos.isHorizontal(p.pos)){
-                contact_point = new Vector2(this.width - p.radius, p.pos.y);
+                contact_point = new Vector2(this.width, p.pos.y);
             }else{
                 contact_point = new Vector2(
-                    this.width - p.radius,
-                    (p.pos.y - p.old_pos.y) * (this.width - p.radius - p.pos.x) 
+                    this.width,
+                    (p.pos.y - p.old_pos.y) * (this.width- p.pos.x) 
                     / (p.pos.x - p.old_pos.x) + p.pos.y
                 );
             }
@@ -106,18 +69,48 @@ class BoundBox{
     }
 }
 
-const p = new Point(renderer.CENTER, 10);
-const bound_box = new BoundBox(renderer.WIDTH, renderer.HEIGHT, renderer.CENTER);
+class CollisionConstraint{
+    constructor(){}
+    checkCollision(point1, point2){
+        const p1 = point1.pos;
+        const p2 = point2.pos;
 
-p.applyForce(new Vector2(-50, 0))
+        if(Vector2.distance(p1, p2) < point1.radius + point2.radius){
+            const n1 = p2.subtract(p1).normalize();
+            const n2 = n1.invert();
+
+            const cp = p2.add(p1).divide(2);
+
+            const cp1 = cp.add(cp.subtract(p1).scaleMagnitudeTo(point1.radius));
+            const cp2 = cp.add(cp.subtract(p2).scaleMagnitudeTo(point2.radius));
+
+            point2.resolveCollision(cp1, n1);
+            point1.resolveCollision(cp2, n2);
+        }
+    }
+}
+
+const p1 = new Point(renderer.CENTER.add(new Vector2(5,-50)), 20);
+const p2 = new Point(renderer.CENTER.add(new Vector2(-5, 50)), 20);
+const bound_box = new BoundBox(renderer.WIDTH, renderer.HEIGHT, renderer.CENTER);
+const collision_constraint = new CollisionConstraint();
 
 renderer.update(({delta_time, context:c})=>{
     renderer.clear();
 
-    p.applyForce(new Vector2(0, 9.8 * p.mass));
-    bound_box.checkPoint(p);
-    p.updatePosition(delta_time * 0.01);
+    p1.applyForce(new Vector2(0, 9.8 * p1.mass));
+    p2.applyForce(new Vector2(0, 9.8 * p2.mass));
 
-    c.fillStyle = 'white';
-    renderer.point(p.pos, p.radius);
+    p1.updatePosition(delta_time * 0.01);
+    p2.updatePosition(delta_time * 0.01);
+
+
+    bound_box.checkPoint(p1);
+    bound_box.checkPoint(p2);
+    collision_constraint.checkCollision(p1, p2);
+
+    c.fillStyle = '#e9c46a';
+    renderer.point(p1.pos, p1.radius);
+    c.fillStyle = '#e76f51';
+    renderer.point(p2.pos, p2.radius);
 });
