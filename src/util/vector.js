@@ -52,13 +52,17 @@ Vector2.assign = function(a, b){
     a.x = b.x;
     a.y = b.y;
 }
-Vector2.mirror = function(a, n){
+/*
+Find a reflection vector A with V as the mirror
+    (imagine -A bound of surface of V)
+*/
+Vector2.reflect = function(a, v){
     return Vector2.subtract(a,
         Vector2.multiply(
             2,
             Vector2.multiply( 
-                n, 
-                -n.y*a.x + n.x*a.y
+                v, 
+                Vector2.dot(a, v)
             )
         )
     );
@@ -108,7 +112,7 @@ Vector2.prototype = {
     assign: function(other){
         Vector2.assign(this, other);
     },
-    mirror: function(n){
-        return Vector2.mirror(this, n);
+    reflect: function(other){
+        return Vector2.reflect(this, other);
     },
 };
