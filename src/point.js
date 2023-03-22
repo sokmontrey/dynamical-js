@@ -23,6 +23,9 @@ export default class Point{
 
         this.pos.assign(contact_point);
     }
+    resolveRigidConstraint(contact_point){
+        this.pos.assign(contact_point);
+    }
 
     updatePosition(delta_time){
         this.velocity = this.pos.subtract(this.old_pos);
