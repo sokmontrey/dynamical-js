@@ -67,6 +67,10 @@ Vector2.reflect = function(a, v){
         )
     );
 }
+Vector2.isEqual = function(a, b){
+    if(b instanceof Vector2) return a.x == b.x && a.y == b.y;
+    else return a.x == b && a.y == b;
+}
 
 /*
 Instance Methods
@@ -114,5 +118,8 @@ Vector2.prototype = {
     },
     reflect: function(other){
         return Vector2.reflect(this, other);
+    },
+    isEqual: function(other){
+        return Vector2.isEqual(this, other);
     },
 };
