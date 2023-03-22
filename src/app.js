@@ -78,6 +78,28 @@ class BoundBox{
                     p.radius
                 )
             }
+        }else if (p.pos.x < p.radius){
+            n = new Vector2(1, 0);
+            if(p.old_pos.isHorizontal(p.pos)){
+                contact_point = new Vector2(p.radius, p.pos.y);
+            }else{
+                contact_point = new Vector2(
+                    p.radius,
+                    (p.pos.y - p.old_pos.y) * (p.radius - p.pos.x) 
+                    / (p.pos.x - p.old_pos.x) + p.pos.y
+                );
+            }
+        }else if(p.pos.x > this.width - p.radius){
+            n = new Vector2(-1, 0);
+            if(p.old_pos.isHorizontal(p.pos)){
+                contact_point = new Vector2(this.width - p.radius, p.pos.y);
+            }else{
+                contact_point = new Vector2(
+                    this.width - p.radius,
+                    (p.pos.y - p.old_pos.y) * (this.width - p.radius - p.pos.x) 
+                    / (p.pos.x - p.old_pos.x) + p.pos.y
+                );
+            }
         }
         //TODO: check vertical wall collision
         if(contact_point) p.resolveCollision(contact_point, n);
@@ -87,7 +109,7 @@ class BoundBox{
 const p = new Point(renderer.CENTER, 10);
 const bound_box = new BoundBox(renderer.WIDTH, renderer.HEIGHT, renderer.CENTER);
 
-p.applyForce(new Vector2(20, 0))
+p.applyForce(new Vector2(-50, 0))
 
 renderer.update(({delta_time, context:c})=>{
     renderer.clear();
