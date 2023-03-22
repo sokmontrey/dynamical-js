@@ -71,6 +71,12 @@ Vector2.isEqual = function(a, b){
     if(b instanceof Vector2) return a.x == b.x && a.y == b.y;
     else return a.x == b && a.y == b;
 }
+Vector2.isVertical = function(a, b){
+    return a.x == b.x;
+}
+Vector2.isHorizontal= function(a, b){
+    return a.y == b.y;
+}
 
 /*
 Instance Methods
@@ -121,5 +127,11 @@ Vector2.prototype = {
     },
     isEqual: function(other){
         return Vector2.isEqual(this, other);
+    },
+    isVertical: function(other){
+        return Vector2.isVertical(this, other);
+    },
+    isHorizontal: function(other){
+        return Vector2.isHorizontal(this, other);
     },
 };
