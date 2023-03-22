@@ -13,6 +13,8 @@ export class RigidConstraint{
         for(let i=1; i<points.length; i++){
             this.l.push(Vector2.distance(points[i-1].pos, points[i].pos));
         }
+
+        this.spring_constant = 1;
     }
     check(){
         for(let i=1; i<this.points.length; i++){
@@ -27,12 +29,12 @@ export class RigidConstraint{
             const new_l = Vector2.distance(p1, p2);
 
             if(new_l > this.l[i-1]){
-                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l[i-1])/2);
+                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l[i-1])/2 * this.spring_constant);
 
                 cp1 = p1.add(temp_cp);
                 cp2 = p2.add(temp_cp.invert());
             }else if(new_l < this.l[i-1]){
-                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l[i-1])/2);
+                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l[i-1])/2 * this.spring_constant);
 
                 cp1 = p1.add(temp_cp);
                 cp2 = p2.add(temp_cp.invert());
@@ -45,7 +47,16 @@ export class RigidConstraint{
         }
     }
 }
-export class CanvasConstraint{
+export class SpringConstraint extends RigidConstraint{
+    constructor(points, spring_constant=0.3){
+        super(points);
+        this.spring_constant = spring_constant;
+    }
+    setSpringConstant(new_spring_constant){
+        this.spring_constant = new_spring_constant;
+    }
+}
+export class BoxConstraint{
     constructor(width, height, points){
         this.width = width;
         this.height = height;
