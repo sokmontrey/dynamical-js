@@ -16,18 +16,9 @@ const box = [
     new Point(renderer.CENTER.add(new Vector2(0, 100)), 0),
     new Point(renderer.CENTER.add(new Vector2(-100, 0)), 0),
 ];
+const box_structure = new RigidConstraint([...box, box[0], box[2]]);
 
 const canvas_container = new CanvasConstraint( renderer.WIDTH, renderer.HEIGHT, box);
-
-//TODO: better rigidConstraint constructor
-const rigid_constraint = [
-    new RigidConstraint(box[0], box[1]),
-    new RigidConstraint(box[1], box[2]),
-    new RigidConstraint(box[2], box[3]),
-    new RigidConstraint(box[3], box[0]),
-    new RigidConstraint(box[0], box[2]),
-    new RigidConstraint(box[1], box[3]),
-];
 
 renderer.update(({delta_time, context:c})=>{
     renderer.clear();
@@ -40,10 +31,7 @@ renderer.update(({delta_time, context:c})=>{
         box[i].updatePosition(delta_time * 0.01);
     }
 
-    for(let i=0; i<rigid_constraint.length; i++){
-        rigid_constraint[i].check();
-    }
-
+    box_structure.check();
     canvas_container.check();
 
     renderer.polygon(box, {stroke: '#fcca46', stroke_width: 2});

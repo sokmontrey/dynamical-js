@@ -1,34 +1,42 @@
 import { Vector2 } from "./util/vector.js";
 
 export class RigidConstraint{
-    constructor(point1, point2){
-        this.point1 = point1;
-        this.point2 = point2;
-        this.l = Vector2.distance(point1.pos, point2.pos);
+    constructor(points){
+        this.points = points;
+
+        this.l = [];
+        for(let i=1; i<points.length; i++){
+            this.l.push(Vector2.distance(points[i-1].pos, points[i].pos));
+        }
     }
     check(){
-        const p1 = this.point1.pos;
-        const p2 = this.point2.pos;
+        for(let i=1; i<this.points.length; i++){
+            const point1 = this.points[i-1];
+            const point2 = this.points[i];
 
-        let cp1, cp2;
+            const p1 = point1.pos;
+            const p2 = point2.pos;
 
-        const new_l = Vector2.distance(p1, p2);
+            let cp1, cp2;
 
-        if(new_l > this.l){
-            const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l)/2);
+            const new_l = Vector2.distance(p1, p2);
 
-            cp1 = p1.add(temp_cp);
-            cp2 = p2.add(temp_cp.invert());
-        }else if(new_l < this.l){
-            const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l)/2);
+            if(new_l > this.l[i-1]){
+                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l[i-1])/2);
 
-            cp1 = p1.add(temp_cp);
-            cp2 = p2.add(temp_cp.invert());
-        }
+                cp1 = p1.add(temp_cp);
+                cp2 = p2.add(temp_cp.invert());
+            }else if(new_l < this.l[i-1]){
+                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l[i-1])/2);
 
-        if(cp1){
-            this.point1.resolveRigidConstraint(cp1);
-            this.point2.resolveRigidConstraint(cp2);
+                cp1 = p1.add(temp_cp);
+                cp2 = p2.add(temp_cp.invert());
+            }
+
+            if(cp1){
+                point1.resolveRigidConstraint(cp1);
+                point2.resolveRigidConstraint(cp2);
+            }
         }
     }
 }
