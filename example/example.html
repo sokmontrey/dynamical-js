@@ -1,0 +1,129 @@
+<html>
+	<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Example</title>
+
+        <!-- Include the CodeMirror CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+
+        <!-- Include the Prism.js CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css" integrity="sha512-/mZ1FHPkg6EKcxo0fKXF51ak6Cr2ocgDi5ytaTBjsQZIH/RNs6GF6+oId/vPe3eJB836T36nXwVh/WBl/cWT4w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <!-- Include the CodeMirror and Prism.js libraries -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/javascript/javascript.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/nord.min.css" integrity="sha512-sPc4jmw78pt6HyMiyrEt3QgURcNRk091l3dZ9M309x4wM2QwnCI7bUtsLnnWXqwBMECE5YZTqV6qCDwmC2FMVA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <script src="https://cdn.tailwindcss.com"></script>
+
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap');
+			body{
+				padding-top: 2rem;
+				background-color: #2E3440;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+			}
+			canvas{
+                border-image: linear-gradient(#2E3440, #ffffff) 0.5;
+                border-width: 1.5px;
+                border-style: solid;
+			}
+            .CodeMirror{
+                font-size: 13px;
+				font-family: 'Fragment Mono', monospace;
+                height: 80vh;
+            }
+            .CodeMirror-scroll {
+                overflow-y: scroll;
+                overflow-x: auto;
+            }
+            button{
+                transition: all ease-in-out 0.3s;
+            }
+		</style>
+	</head>
+	<body>
+		<p class="text-white mb-5">Example</p>
+
+        <div>
+            <div class="flex">
+                <div>
+                    <canvas class="m-5 w-[30vw] h-[30vw]"></canvas>
+
+                    <button id="render-button" class="text-[#2E3440] bg-[#A3BE8C]
+                    font-bold 
+                    hover:px-5 hover:py-3 
+                    px-4 py-2 ml-5 rounded">Render</button>
+                </div>
+
+                <div name="editor">
+                    <textarea id="editor">
+const renderer = new Renderer(canvas[0]);
+renderer.setBackground('#2E3440');
+
+const square = [
+    new PointMass(renderer.CENTER.add(new Vector2(0, -100))),
+    new PointMass(renderer.CENTER.add(new Vector2(100,0))),
+    new PointMass(renderer.CENTER.add(new Vector2(0, 100))),
+    new PointMass(renderer.CENTER.add(new Vector2(-100, 0))),
+];
+const square_structure = new RigidConstraint([...square, square[0], square[2]]);
+
+const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, square);
+
+renderer.update(({delta_time, context:c})=>{
+    renderer.clear();
+
+    for(let i=0; i<square.length; i++){
+        square[i].applyForce(new Vector2(0, 9.8 * square[i].mass));
+    }
+
+    for(let i=0; i<square.length; i++){
+        square[i].updatePosition(delta_time);
+    }
+
+    square_structure.check();
+    canvas_container.check();
+
+    renderer.polygon(square, {fill:"#5E81AC"});
+});
+                    </textarea>
+                </div>
+            </div>
+        </div>
+
+        <script type="module">
+
+            import Renderer from '../src/renderer.js';
+            import { Vector2 } from '../src/util/vector.js';
+            import PointMass from '../src/point_mass.js';
+            import { RigidConstraint, BoxConstraint, SpringConstraint } from '../src/constraint.js';
+
+            const canvas = document.getElementsByTagName('canvas');
+
+            const editor = document.getElementById("editor");
+            const cm = CodeMirror.fromTextArea(editor, {
+                mode: "javascript",
+                lineNumbers: true,
+                viewportMargin: Infinity,
+                theme: "nord",
+            });
+            cm.highlighter = function(text, options) {
+                return Prism.highlight(text, Prism.languages.javascript, 'javascript');
+            };
+
+            eval(cm.getValue());
+            document.getElementById('render-button').addEventListener('click', ()=>{
+                eval(cm.getValue());
+            });
+        </script>
+
+	</body>
+</html>
