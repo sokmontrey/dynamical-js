@@ -112,7 +112,7 @@ export default class Renderer{
 	}
 
 	_animate(current_time) {
-		const delta_time = Math.min(current_time - this.last_time, 1000/30.0);
+		const delta_time = Math.min(current_time - this.last_time, 1000/30.0) * 0.01;
 		this.last_time = current_time;
 
 		if(this.update_function) {
