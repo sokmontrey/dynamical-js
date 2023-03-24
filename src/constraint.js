@@ -2,7 +2,7 @@ import { Vector2 } from "./util/vector.js";
 
 /*
 point: point mass
-p: position of point mass
+p: positionition of point mass
 */
 
 export class RigidConstraint{
@@ -11,7 +11,7 @@ export class RigidConstraint{
 
         this.l = [];
         for(let i=1; i<points.length; i++){
-            this.l.push(Vector2.distance(points[i-1].pos, points[i].pos));
+            this.l.push(Vector2.distance(points[i-1].position, points[i].position));
         }
 
         this.spring_constant = 1;
@@ -21,8 +21,8 @@ export class RigidConstraint{
             const point1 = this.points[i-1];
             const point2 = this.points[i];
 
-            const p1 = point1.pos;
-            const p2 = point2.pos;
+            const p1 = point1.position;
+            const p2 = point2.position;
 
             let cp1, cp2;
 
@@ -68,50 +68,50 @@ export class BoxConstraint{
             const p = this.points[i];
             let contact_point = null;
             let n = null;
-            if(p.pos.y > this.height){
+            if(p.position.y > this.height){
                 n = new Vector2(0, -1);
-                if(p.old_pos.isVertical(p.pos)){
-                    contact_point = new Vector2(p.pos.x, this.height);
+                if(p.old_position.isVertical(p.position)){
+                    contact_point = new Vector2(p.position.x, this.height);
                 } else{
                     contact_point = new Vector2(
-                        p.pos.x 
-                        + (this.height-p.pos.y) * (p.pos.x-p.old_pos.x) 
-                        / (p.pos.y-p.old_pos.y),
+                        p.position.x 
+                        + (this.height-p.position.y) * (p.position.x-p.old_position.x) 
+                        / (p.position.y-p.old_position.y),
                         this.height
                     )
                 }
-            } else if(p.pos.y < 0){
+            } else if(p.position.y < 0){
                 n = new Vector2(0, 1);
-                if(p.old_pos.isVertical(p.pos)){
-                    contact_point = new Vector2(p.pos.x, 0);
+                if(p.old_position.isVertical(p.position)){
+                    contact_point = new Vector2(p.position.x, 0);
                 }else{
                     contact_point = new Vector2(
-                        p.pos.x 
-                        + (-p.pos.y) * (p.pos.x-p.old_pos.x) 
-                        / (p.pos.y-p.old_pos.y),
+                        p.position.x 
+                        + (-p.position.y) * (p.position.x-p.old_position.x) 
+                        / (p.position.y-p.old_position.y),
                         0
                     )
                 }
-            }else if (p.pos.x < 0){
+            }else if (p.position.x < 0){
                 n = new Vector2(1, 0);
-                if(p.old_pos.isHorizontal(p.pos)){
-                    contact_point = new Vector2(0, p.pos.y);
+                if(p.old_position.isHorizontal(p.position)){
+                    contact_point = new Vector2(0, p.position.y);
                 }else{
                     contact_point = new Vector2(
                         0,
-                        (p.pos.y - p.old_pos.y) * (p.pos.x) 
-                        / (p.pos.x - p.old_pos.x) + p.pos.y
+                        (p.position.y - p.old_position.y) * (p.position.x) 
+                        / (p.position.x - p.old_position.x) + p.position.y
                     );
                 }
-            }else if(p.pos.x > this.width){
+            }else if(p.position.x > this.width){
                 n = new Vector2(-1, 0);
-                if(p.old_pos.isHorizontal(p.pos)){
-                    contact_point = new Vector2(this.width, p.pos.y);
+                if(p.old_position.isHorizontal(p.position)){
+                    contact_point = new Vector2(this.width, p.position.y);
                 }else{
                     contact_point = new Vector2(
                         this.width,
-                        (p.pos.y - p.old_pos.y) * (this.width- p.pos.x) 
-                        / (p.pos.x - p.old_pos.x) + p.pos.y
+                        (p.position.y - p.old_position.y) * (this.width- p.position.x) 
+                        / (p.position.x - p.old_position.x) + p.position.y
                     );
                 }
             }
@@ -124,8 +124,8 @@ export class BoxConstraint{
 export class PointMassCollisionConstraint{
     constructor(){}
     check(point1, point2){
-        const p1 = point1.pos;
-        const p2 = point2.pos;
+        const p1 = point1.position;
+        const p2 = point2.position;
 
         if(Vector2.distance(p1, p2) < point1.radius + point2.radius){
             const n1 = p2.subtract(p1).normalize();
