@@ -48,24 +48,65 @@
             button{
                 transition: all ease-in-out 0.3s;
             }
+            select{
+                outline: none;
+                transition: all ease-in-out 0.3s;
+            }
 		</style>
 	</head>
 	<body>
-		<p class="text-white mb-5">Example</p>
+		<p class="
+        text-white text-lg 
+        ">Dynamical JS</p>
+
+        <div class="
+        flex space-x-2 justify-center
+        mb-10
+        text-white
+        w-[10vw]
+        ">
+            <a href="/">Home</a>
+            <a class="text-[#5E81AC]">Example</a>
+            <a href="/about.html">About</a>
+        </div>
 
         <div>
             <div class="flex">
                 <div>
                     <canvas class="m-5 w-[30vw] h-[30vw]"></canvas>
 
-                    <button id="render-button" class="text-[#2E3440] bg-[#A3BE8C]
-                    font-bold 
-                    hover:px-5 hover:py-3 
-                    px-4 py-2 ml-5 rounded">Render</button>
+                    <div class="flex">
+                        <button id="render-button" class="text-[#2E3440] bg-[#A3BE8C]
+                        font-bold 
+                        hover:px-5 hover:py-3 
+                        px-4 py-2 ml-5 rounded">Render</button>
+                        <select id="select" class="
+                        text-white bg-transparent
+                        px-5 mx-5
+                        font-bold
+                        rounded
+                        hover:text-[#88C0D0]
+                        ">
+                        </select>
+                    </div>
                 </div>
 
                 <div name="editor">
                     <textarea id="editor">
+                    </textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <script type="module">
+            import Renderer from '../src/renderer.js';
+            import { Vector2 } from '../src/util/vector.js';
+            import PointMass from '../src/point_mass.js';
+            import { RigidConstraint, BoxConstraint, SpringConstraint } from '../src/constraint.js';
+
+            const examples = {
+                cube: `
 const renderer = new Renderer(canvas[0]);
 renderer.setBackground('#2E3440');
 
@@ -95,17 +136,80 @@ renderer.update(({delta_time, context:c})=>{
 
     renderer.polygon(square, {fill:"#5E81AC"});
 });
-                    </textarea>
-                </div>
-            </div>
-        </div>
+                `,
+                bridge: `const renderer = new Renderer(canvas[0]);
+renderer.setBackground('#2E3440');
 
-        <script type="module">
+const l = 150;
 
-            import Renderer from '../src/renderer.js';
-            import { Vector2 } from '../src/util/vector.js';
-            import PointMass from '../src/point_mass.js';
-            import { RigidConstraint, BoxConstraint, SpringConstraint } from '../src/constraint.js';
+const p1 = [
+	new PointMass(renderer.CENTER.add(new Vector2(-l/2, -l/3))),
+	new PointMass(renderer.CENTER.add(new Vector2(l/2, -l/3))),
+];
+
+const p2 = [
+	new PointMass(renderer.CENTER.add(new Vector2(-l, l/3)), 0, true),
+	new PointMass(renderer.CENTER.add(new Vector2(0, l/3))),
+	new PointMass(renderer.CENTER.add(new Vector2(l, l/3)), 0, true),
+];
+
+const P = new PointMass(renderer.CENTER.add(new Vector2(l/1.2, l/3)));
+
+const r1 = new RigidConstraint([p2[0], p1[0], p2[1], p1[1], p2[2]]);
+const r2 = new RigidConstraint([p2[0], p2[1], p2[2]]);
+const r3 = new RigidConstraint([p1[0], p1[1]]);
+const r4 = new RigidConstraint([p2[1], P]);
+
+const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, []);
+
+renderer.update(({delta_time, context:c})=>{
+	renderer.clear();
+
+  	for(let i=0; i<p1.length; i++){
+    	p1[i].applyForce(new Vector2(0, 9.8));
+    }
+  	p2[1].applyForce(new Vector2(0, 9.8));
+  	P.applyForce(new Vector2(0, 9.8));
+  
+  	for(let i=0; i<p1.length;i++){
+    	p1[i].updatePosition(delta_time);
+    }
+  	p2[1].updatePosition(delta_time);
+  	P.updatePosition(delta_time);
+  
+  	r1.check();
+  	r2.check();
+  	r3.check();
+  	r4.check();
+  
+  	c.fillStyle = 'white';
+  	for(let i=0; i<p1.length; i++){
+    	renderer.point(p1[i].position, 10);
+    }
+  	for(let i=0; i<p2.length; i++){
+    	renderer.point(p2[i].position, 10);
+    }
+  	renderer.point(P.position, 10);
+  
+  	c.strokeStyle = '#88C0D0';
+  	for(let i=1; i<r1.points.length; i++){
+    	renderer.line(r1.points[i-1].position, r1.points[i].position);
+    }
+  	for(let i=1; i<r2.points.length; i++){
+    	renderer.line(r2.points[i-1].position, r2.points[i].position);
+    }
+  	for(let i=1; i<r3.points.length; i++){
+    	renderer.line(r3.points[i-1].position, r3.points[i].position);
+    }
+    renderer.line(r4.points[0].position, r4.points[1].position);
+});
+                    `};
+
+            const select_ele = document.getElementById('select');
+            for(let name in examples){
+                select_ele.innerHTML = select_ele.innerHTML 
+                + `<option>${name}</option>`;
+            }
 
             const canvas = document.getElementsByTagName('canvas');
 
@@ -120,10 +224,20 @@ renderer.update(({delta_time, context:c})=>{
                 return Prism.highlight(text, Prism.languages.javascript, 'javascript');
             };
 
-            eval(cm.getValue());
-            document.getElementById('render-button').addEventListener('click', ()=>{
-                eval(cm.getValue());
+            cm.setValue(examples[select_ele.value]);
+            render();
+
+            select_ele.addEventListener('change', (e)=>{
+                cm.setValue(examples[e.target.value]);
+                render();
             });
+
+            document.getElementById('render-button').addEventListener('click', ()=>{
+                render();
+            });
+            function render(){
+                eval(cm.getValue());
+            }
         </script>
 
 	</body>
