@@ -2,56 +2,73 @@ import { Vector2 } from "./util/vector.js";
 
 export default class PointMass{
     constructor({x, y}, radius=1, is_static=false){
-        this.position = new Vector2(x,y);
-        this.old_position = new Vector2(x, y);
-        this.velocity = new Vector2(0,0);
-        this.acceleration = new Vector2(0,0);
+        this._position = new Vector2(x,y);
+        this._old_position = new Vector2(x, y);
+        this._velocity = new Vector2(0,0);
+        this._acceleration = new Vector2(0,0);
 
-        this.mass = 1;
-        this.radius = radius;
-        this.is_static = is_static;
+        this._mass = 1;
+        this._radius = radius;
+        this._is_static = is_static;
     }
 
     applyForce(f){
-        this.acceleration = this.acceleration.add(f.divide(this.mass));
+        if(this._is_static) return;
+
+        this._acceleration = this._acceleration.add(f.divide(this._mass));
     }
     resolveCollision(contact_point, normal){
-        //contact_point = contact_point.subtract(this.position.subtract(contact_point).expand(this.radius));
-        this.old_position = this.position.subtract(this.old_position)
+        if(this._is_static) return;
+
+        //contact_point = contact_point.subtract(this._position.subtract(contact_point).expand(this.radius));
+        this._old_position = this._position.subtract(this._old_position)
             .reflect(normal)
             .invert()
             .add(contact_point);
 
-        this.position.assign(contact_point);
+        this._position.assign(contact_point);
     }
     resolveRigidConstraint(contact_point){
-        this.position.assign(contact_point);
+        if(this._is_static) return;
+
+        this._position.assign(contact_point);
     }
 
-    updatepositionition(delta_time){
-        this.velocity = this.position.subtract(this.old_position);
+    updatePosition(delta_time){
+        if(this._is_static) return;
 
-        this.old_position.assign(this.position);
+        this._velocity = this._position.subtract(this._old_position);
 
-        this.position = this.position
-            .add(this.velocity)
-            .add(this.acceleration.multiply(delta_time * delta_time));
+        this._old_position.assign(this._position);
 
-        this.acceleration.assign(new Vector2(0,0));
+        this._position = this._position
+            .add(this._velocity)
+            .add(this._acceleration.multiply(delta_time * delta_time));
+
+        this._acceleration.assign(new Vector2(0,0));
     }
 
     set position(new_position){
-        if(!this.is_static) this.position = new_position;
-        return this.position;
+        if(!this._is_static) this._position = new_position;
     }
     set old_position(new_old_position){
-        if(!this.is_static) this.old_position = new_old_position;
-        return this.old_position;
+        if(!this._is_static) this._old_position = new_old_position;
     }
-    get position(){
-        return this.position;
+
+    get position(){ return this._position; }
+    get old_position(){ return this._old_position; }
+    get mass(){ return this._mass; }
+    get velocity(){ return this._velocity; }
+    get acceleration(){ return this._acceleration; }
+    get radius(){ return this._radius; }
+
+    setStatic(){
+        this._is_static = true;
     }
-    get old_position(){
-        return this.old_position;
+    setDynamic(){
+        this._is_static = false;
+    }
+    isStatic(){
+        return this._is_static;
     }
 }
