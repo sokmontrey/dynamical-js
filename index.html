@@ -5,8 +5,56 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        body{
+            padding-top: 2rem;
+            background-color: #2E3440;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        canvas{
+            border-image: linear-gradient(#2E3440, #ffffff) 0.5;
+            border-width: 1.5px;
+            border-style: solid;
+        }
+        .CodeMirror{
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+            height: 80vh;
+        }
+        .CodeMirror-scroll {
+            overflow-y: scroll;
+            overflow-x: auto;
+        }
+        button{
+            transition: all ease-in-out 0.3s;
+        }
+        select{
+            outline: none;
+            transition: all ease-in-out 0.3s;
+        }
+    </style>
 </head>
 <body>
-    <a href="./example/example.html">Example</a>
+    <div class="
+    flex space-x-2 justify-center
+    mb-10
+    text-white
+    w-[10vw]
+    ">
+        <a class="text-[#5E81AC]">Home</a>
+        <a href="/example/example.html">Example</a>
+        <a href="/about.html">About</a>
+    </div>
+
+    <p class="
+    text-white text-4xl
+    ">Dynamical JS</p>
 </body>
 </html>
