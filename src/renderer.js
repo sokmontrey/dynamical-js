@@ -3,44 +3,39 @@ import {Vector2} from './util/vector.js';
 export default class Renderer{
 
 	constructor(canvas, width=500, height=500){
-		this.canvas = canvas;
-		this.c = canvas.getContext('2d');
-		this.width = width;
-		this.height = height;
+		this._canvas = canvas;
+		this._context = canvas.getContext('2d');
+		this._width = width;
+		this._height = height;
 
 		/* color */
-		this.color_palette = [];
-		this.background_color = 'white';
+		this._background_color = 'white';
 
 		this.resize(width, height);
 		this.clear();
 
-		this.update_function;
-		this.last_time = 0;
+		this._update_function;
+		this._last_time = 0;
 		this._animate = this._animate.bind(this);
 	}
 
-	usePalette(color_palette=['#ff0000', '#00ff00', '#0000ff']){
-		this.color_palette = color_palette;
-	}
-
 	resize(width, height){
-		this.width = width;
-		this.height = height;
-		this.c.canvas.width = width;
-		this.c.canvas.height = height;
+		this._width = width;
+		this._height = height;
+		this._context.canvas.width = width;
+		this._context.canvas.height = height;
 		this.clear();
 	}
 
 	setBackground(background_color='white'){
-		this.background_color = background_color;
+		this._background_color = background_color;
 		this.clear();
 	}
 
 	clear(){
-		this.c.beginPath();
-		this.c.fillStyle = this.background_color;
-		this.c.fillRect(0,0, this.width, this.height);
+		this._context.beginPath();
+		this._context.fillStyle = this._background_color;
+		this._context.fillRect(0,0, this._width, this._height);
 	}
 
 	point({x, y}, radius=3,
@@ -50,17 +45,17 @@ export default class Renderer{
 			stroke_width=null, 
 		}={}
 	){
-		this.c.beginPath();
-		this.c.arc(x, y, radius, 0, Math.PI * 2);
-		this.c.closePath();
+		this._context.beginPath();
+		this._context.arc(x, y, radius, 0, Math.PI * 2);
+		this._context.closePath();
 
-		if(fill) this.c.fillStyle = fill; 
-		this.c.fill();
+		if(fill) this._context.fillStyle = fill; 
+		this._context.fill();
 
 		if(stroke_width) {
-			stroke ? this.c.strokeStyle = stroke : null;
-			this.c.lineWidth = stroke_width;
-			this.c.stroke();
+			stroke ? this._context.strokeStyle = stroke : null;
+			this._context.lineWidth = stroke_width;
+			this._context.stroke();
 		}
 	}
 
@@ -69,14 +64,14 @@ export default class Renderer{
 			stroke=null, 
 		}={}
 	){
-		this.c.beginPath();
-		this.c.moveTo(x1, y1);
-		this.c.lineTo(x2, y2);
-		this.c.closePath();
+		this._context.beginPath();
+		this._context.moveTo(x1, y1);
+		this._context.lineTo(x2, y2);
+		this._context.closePath();
 
-		stroke ? this.c.strokeStyle = stroke : null;
-		this.c.lineWidth = thickness;
-		this.c.stroke();
+		stroke ? this._context.strokeStyle = stroke : null;
+		this._context.lineWidth = thickness;
+		this._context.stroke();
 	}
 
 	polygon(points, 
@@ -86,57 +81,59 @@ export default class Renderer{
 			stroke_width=null, 
 		}={}
 	){
-		this.c.beginPath();
-		this.c.moveTo(points[0].position.x, points[0].position.y);
+		this._context.beginPath();
+		this._context.moveTo(points[0].position.x, points[0].position.y);
 		for(let i=1; i<points.length; i++){
-			this.c.lineTo(points[i].position.x, points[i].position.y);
+			this._context.lineTo(points[i].position.x, points[i].position.y);
 		}
-		this.c.lineTo(points[0].position.x, points[0].position.y);
-		this.c.closePath();
+		this._context.lineTo(points[0].position.x, points[0].position.y);
+		this._context.closePath();
 
-		if(fill) this.c.fillStyle = fill; 
-		this.c.fill();
+		if(fill) this._context.fillStyle = fill; 
+		this._context.fill();
 
 		if(stroke_width) {
-			stroke ? this.c.strokeStyle = stroke : null;
-			this.c.lineWidth = stroke_width;
-			this.c.stroke();
+			stroke ? this._context.strokeStyle = stroke : null;
+			this._context.lineWidth = stroke_width;
+			this._context.stroke();
 		}
 	}
 
 	update(func=null){
-		if(!this.update_function){
-			this.update_function = func;
+		if(!this._update_function){
+			this._update_function = func;
 			requestAnimationFrame(this._animate);
 		}
 	}
 
 	_animate(current_time) {
-		const delta_time = Math.min(current_time - this.last_time, 1000/30.0) * 0.01;
-		this.last_time = current_time;
+		const delta_time = Math.min(current_time - this._last_time, 1000/30.0) * 0.01;
+		this._last_time = current_time;
 
-		if(this.update_function) {
-			this.update_function({
+		if(this._update_function) {
+			this._update_function({
 				'delta_time': delta_time,
-				'context': this.c,
+				'context': this._context,
 			});
 		}
 		requestAnimationFrame(this._animate);
 	}
 
+	get context(){ return this._context; }
+
 	get CENTER(){
-		return new Vector2(this.width/2.0, this.height/2.0);
+		return new Vector2(this._width/2.0, this._height/2.0);
 	}
 	get RANDOM(){
 		return new Vector2(
-			Math.random() * this.width, 
-			Math.random() * this.height 
+			Math.random() * this._width, 
+			Math.random() * this._height 
 		);
 	}
 	get HEIGHT(){
-		return this.height;
+		return this._height;
 	}
 	get WIDTH(){
-		return this.width;
+		return this._width;
 	}
 }

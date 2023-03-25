@@ -7,34 +7,34 @@ p: positionition of point mass
 
 export class RigidConstraint{
     constructor(points){
-        this.points = points;
+        this._points = points;
 
-        this.l = [];
+        this._distance = [];
         for(let i=1; i<points.length; i++){
-            this.l.push(Vector2.distance(points[i-1].position, points[i].position));
+            this._distance.push(Vector2.distance(points[i-1].position, points[i].position));
         }
 
         this.spring_constant = 1;
     }
     check(){
-        for(let i=1; i<this.points.length; i++){
-            const point1 = this.points[i-1];
-            const point2 = this.points[i];
+        for(let i=1; i<this._points.length; i++){
+            const point1 = this._points[i-1];
+            const point2 = this._points[i];
 
             const p1 = point1.position;
             const p2 = point2.position;
 
             let cp1, cp2;
 
-            const new_l = Vector2.distance(p1, p2);
+            const current_distance = Vector2.distance(p1, p2);
 
-            if(new_l > this.l[i-1]){
-                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l[i-1])/2 * this.spring_constant);
+            if(current_distance > this._distance[i-1]){
+                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((current_distance - this._distance[i-1])/2 * this.spring_constant);
 
                 cp1 = p1.add(temp_cp);
                 cp2 = p2.add(temp_cp.invert());
-            }else if(new_l < this.l[i-1]){
-                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((new_l - this.l[i-1])/2 * this.spring_constant);
+            }else if(current_distance < this._distance[i-1]){
+                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((current_distance - this._distance[i-1])/2 * this.spring_constant);
 
                 cp1 = p1.add(temp_cp);
                 cp2 = p2.add(temp_cp.invert());
@@ -46,6 +46,8 @@ export class RigidConstraint{
             }
         }
     }
+
+    get points() { return this._points; }
 }
 export class SpringConstraint extends RigidConstraint{
     constructor(points, spring_constant=0.3){
@@ -60,12 +62,12 @@ export class BoxConstraint{
     constructor(width, height, points){
         this.width = width;
         this.height = height;
-        this.points = points;
+        this._points = points;
     }
 
     check(){
-        for(let i=0; i<this.points.length; i++){
-            const p = this.points[i];
+        for(let i=0; i<this._points.length; i++){
+            const p = this._points[i];
             let contact_point = null;
             let n = null;
             if(p.position.y > this.height){
