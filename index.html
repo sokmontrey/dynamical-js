@@ -18,11 +18,6 @@
             align-items: center;
             justify-content: center;
         }
-        canvas{
-            border-image: linear-gradient(#2E3440, #ffffff) 0.5;
-            border-width: 1.5px;
-            border-style: solid;
-        }
         .CodeMirror{
             font-size: 13px;
             font-family: 'JetBrains Mono', monospace;
@@ -43,7 +38,7 @@
 </head>
 <body>
     <div class="
-    flex space-x-2 justify-center
+    flex space-x-6 justify-center
     mb-10
     text-white
     w-[10vw]
@@ -53,8 +48,48 @@
         <a href="/about.html">About</a>
     </div>
 
-    <p class="
-    text-white text-4xl
-    ">Dynamical JS</p>
+    <canvas id="canvas"></canvas>
+
+    <p>Example</p>
+
+    <script type="module">
+        import Renderer from '../src/renderer.js';
+        import { Vector2 } from '../src/util/vector.js';
+        import PointMass from '../src/point_mass.js';
+        import { RigidConstraint, SpringConstraint } from '../src/constraint.js';
+
+        const canvas = document.getElementById('canvas');
+        const renderer = new Renderer(canvas);
+        renderer.setBackground('#2E3440');
+
+        const p1 = new PointMass(renderer.CENTER.add(new Vector2(0, -100)), 0, true);
+        const p2 = new PointMass(renderer.CENTER.add(new Vector2(150, -100)));
+
+        const r2 = new SpringConstraint([p1, p2]);
+
+        renderer.update(({delta_time, context:c})=>{
+            renderer.clear();
+
+            p2.applyForce(new Vector2(0, 9.8));
+            p2.updatePosition(delta_time);
+
+            r2.check();
+
+            c.strokeStyle = '#6b717d';
+            renderer.line(p1.position, p2.position);
+
+            renderer.point(p1.position, 20, {fill: "#2E3440"});
+            c.fillStyle = 'white';
+            c.font = '4rem serif';
+            const t1 = c.measureText("Dynamical");
+            c.fillText("Dynamical", p1.position.x - t1.width/2 ,p1.position.y);
+
+            renderer.point(p2.position, 50, {fill: "#2E3440"});
+            const t2 = c.measureText("JS");
+            c.fillStyle = 'white';
+            c.font = '3rem serif';
+            c.fillText("JS", p2.position.x - t2.width/2 ,p2.position.y);
+        });
+    </script>
 </body>
 </html>
