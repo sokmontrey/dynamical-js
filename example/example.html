@@ -182,7 +182,7 @@ renderer.update(({delta_time, context:c})=>{
   	r3.check();
   	r4.check();
   
-  	c.fillStyle = 'white';
+  	c.fillStyle = '#EBCB8B';
   	for(let i=0; i<p1.length; i++){
     	renderer.point(p1[i].position, 10);
     }
@@ -191,7 +191,7 @@ renderer.update(({delta_time, context:c})=>{
     }
   	renderer.point(P.position, 10);
   
-  	c.strokeStyle = '#88C0D0';
+  	c.strokeStyle = '#A3BE8C';
   	for(let i=1; i<r1.points.length; i++){
     	renderer.line(r1.points[i-1].position, r1.points[i].position);
     }
