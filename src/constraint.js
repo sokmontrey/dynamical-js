@@ -16,6 +16,7 @@ export class RigidConstraint{
             this._distance.push(Vector2.distance(points[i-1].position, points[i].position));
         }
 
+        //TODO: change the spring constant from stiffness to sfiffness or something
         this._spring_constant = 1;
     }
     check(){
