@@ -30,17 +30,18 @@ export class RigidConstraint{
 
             const current_distance = Vector2.distance(p1, p2);
 
-            if(current_distance > this._distance[i-1]){
-                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((current_distance - this._distance[i-1])/2 * this._spring_constant);
-
-                cp1 = p1.add(temp_cp);
-                cp2 = p2.add(temp_cp.invert());
-            }else if(current_distance < this._distance[i-1]){
+            if(current_distance != this._distance[i-1]){
                 const temp_cp = p2.subtract(p1).scaleMagnitudeTo((current_distance - this._distance[i-1])/2 * this._spring_constant);
 
                 cp1 = p1.add(temp_cp);
                 cp2 = p2.add(temp_cp.invert());
             }
+            // else if(current_distance < this._distance[i-1]){
+            //     const temp_cp = p2.subtract(p1).scaleMagnitudeTo((current_distance - this._distance[i-1])/2 * this._spring_constant);
+
+            //     cp1 = p1.add(temp_cp);
+            //     cp2 = p2.add(temp_cp.invert());
+            // }
 
             if(cp1){
                 point1.resolveRigidConstraint(cp1);
