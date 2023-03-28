@@ -63,7 +63,7 @@ Vector2.reflect = function(a, v){
                 v, 
                 Vector2.dot(a, v)
             ),
-            1
+            2
         )
     );
 }
