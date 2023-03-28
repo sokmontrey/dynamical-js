@@ -14,7 +14,7 @@ export class RigidConstraint{
             this._distance.push(Vector2.distance(points[i-1].position, points[i].position));
         }
 
-        this.spring_constant = 1;
+        this._spring_constant = 1;
     }
     check(){
         for(let i=1; i<this._points.length; i++){
@@ -29,12 +29,12 @@ export class RigidConstraint{
             const current_distance = Vector2.distance(p1, p2);
 
             if(current_distance > this._distance[i-1]){
-                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((current_distance - this._distance[i-1])/2 * this.spring_constant);
+                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((current_distance - this._distance[i-1])/2 * this._spring_constant);
 
                 cp1 = p1.add(temp_cp);
                 cp2 = p2.add(temp_cp.invert());
             }else if(current_distance < this._distance[i-1]){
-                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((current_distance - this._distance[i-1])/2 * this.spring_constant);
+                const temp_cp = p2.subtract(p1).scaleMagnitudeTo((current_distance - this._distance[i-1])/2 * this._spring_constant);
 
                 cp1 = p1.add(temp_cp);
                 cp2 = p2.add(temp_cp.invert());
@@ -52,17 +52,18 @@ export class RigidConstraint{
 export class SpringConstraint extends RigidConstraint{
     constructor(points, spring_constant=0.3){
         super(points);
-        this.spring_constant = spring_constant;
+        this._spring_constant = spring_constant;
     }
     setSpringConstant(new_spring_constant){
-        this.spring_constant = new_spring_constant;
+        this._spring_constant = new_spring_constant;
     }
 }
 
 export class BoxConstraint{
-    constructor(width, height, points=[]){
-        this.width = width;
-        this.height = height;
+    constructor(width, height, points=[], offset=new Vector2(0,0)){
+        this._offset = offset;
+        this._width = width;
+        this._height = height;
         this._points = points;
     }
 
@@ -75,16 +76,16 @@ export class BoxConstraint{
             const p = this._points[i];
             let contact_point = null;
             let n = null;
-            if(p.position.y > this.height){
+            if(p.position.y > this._height){
                 n = new Vector2(0, -1);
                 if(p.old_position.isVertical(p.position)){
-                    contact_point = new Vector2(p.position.x, this.height);
+                    contact_point = new Vector2(p.position.x, this._height);
                 } else{
                     contact_point = new Vector2(
                         p.position.x 
-                        + (this.height-p.position.y) * (p.position.x-p.old_position.x) 
+                        + (this._height-p.position.y) * (p.position.x-p.old_position.x) 
                         / (p.position.y-p.old_position.y),
-                        this.height
+                        this._height
                     )
                 }
             } else if(p.position.y < 0){
@@ -110,14 +111,14 @@ export class BoxConstraint{
                         / (p.position.x - p.old_position.x) + p.position.y
                     );
                 }
-            }else if(p.position.x > this.width){
+            }else if(p.position.x > this._width){
                 n = new Vector2(-1, 0);
                 if(p.old_position.isHorizontal(p.position)){
-                    contact_point = new Vector2(this.width, p.position.y);
+                    contact_point = new Vector2(this._width, p.position.y);
                 }else{
                     contact_point = new Vector2(
-                        this.width,
-                        (p.position.y - p.old_position.y) * (this.width- p.position.x) 
+                        this._width,
+                        (p.position.y - p.old_position.y) * (this._width- p.position.x) 
                         / (p.position.x - p.old_position.x) + p.position.y
                     );
                 }
