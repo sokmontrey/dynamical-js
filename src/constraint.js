@@ -5,6 +5,8 @@ point: point mass
 p: positionition of point mass
 */
 
+//TOOD: fix RigidConstraint act like Spring
+
 export class RigidConstraint{
     constructor(points){
         this._points = points;
@@ -74,11 +76,19 @@ export class BoxConstraint{
         this._points.push(point);
     }
 
+    /*
+    use the line equation:
+        y-y1 = (y2-y1) * (x-x1) / (x2-x1)
+    to find intersection 
+    between the box's border (line) 
+    and the segment (treat as a line) created by point mass's old and current position. 
+    */
     check(){
         for(let i=0; i<this._points.length; i++){
             const p = this._points[i];
             let contact_point = null;
             let n = null;
+
             if(p.position.y > this._height + this._offset_y){
                 n = new Vector2(0, -1);
                 if(p.old_position.isVertical(p.position)){
