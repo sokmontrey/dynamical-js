@@ -50,8 +50,8 @@ export default class PointMass{
         if(!this._is_static) this._old_position = new_old_position;
     }
 
-    get position(){ if(!this._is_static) return this._position; }
-    get old_position(){ if(!this._is_static) return this._old_position; }
+    get position(){ return this._position; }
+    get old_position(){ return this._old_position; }
     get mass(){ return this._mass; }
     get velocity(){ return this._velocity; }
     get acceleration(){ return this._acceleration; }
