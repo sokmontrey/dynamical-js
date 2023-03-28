@@ -61,9 +61,12 @@ export class SpringConstraint extends RigidConstraint{
 
 export class BoxConstraint{
     constructor(width, height, points=[], offset=new Vector2(0,0)){
-        this._offset = offset;
+        this._offset_x = offset.x;
+        this._offset_y = offset.y;
+
         this._width = width;
         this._height = height;
+
         this._points = points;
     }
 
@@ -76,50 +79,50 @@ export class BoxConstraint{
             const p = this._points[i];
             let contact_point = null;
             let n = null;
-            if(p.position.y > this._height){
+            if(p.position.y > this._height + this._offset_y){
                 n = new Vector2(0, -1);
                 if(p.old_position.isVertical(p.position)){
-                    contact_point = new Vector2(p.position.x, this._height);
+                    contact_point = new Vector2(p.position.x, this._height + this._offset_y);
                 } else{
                     contact_point = new Vector2(
                         p.position.x 
-                        + (this._height-p.position.y) * (p.position.x-p.old_position.x) 
-                        / (p.position.y-p.old_position.y),
-                        this._height
+                        + (this._height + this._offset_y -p.position.y) * (p.position.x-p.old_position.x) 
+                        / (p.position.y-p.old_position.y), // x component
+                        this._height + this._offset_y // y component
                     )
                 }
-            } else if(p.position.y < 0){
+            } else if(p.position.y < this._offset_y){
                 n = new Vector2(0, 1);
                 if(p.old_position.isVertical(p.position)){
-                    contact_point = new Vector2(p.position.x, 0);
+                    contact_point = new Vector2(p.position.x, this._offset_y);
                 }else{
                     contact_point = new Vector2(
                         p.position.x 
-                        + (-p.position.y) * (p.position.x-p.old_position.x) 
-                        / (p.position.y-p.old_position.y),
-                        0
+                        + (this._offset_y-p.position.y) * (p.position.x-p.old_position.x) 
+                        / (p.position.y-p.old_position.y), // x component
+                        this._offset_y // y component
                     )
                 }
-            }else if (p.position.x < 0){
+            }else if (p.position.x < this._offset_x){
                 n = new Vector2(1, 0);
                 if(p.old_position.isHorizontal(p.position)){
-                    contact_point = new Vector2(0, p.position.y);
+                    contact_point = new Vector2(this._offset_x, p.position.y);
                 }else{
                     contact_point = new Vector2(
-                        0,
-                        (p.position.y - p.old_position.y) * (p.position.x) 
-                        / (p.position.x - p.old_position.x) + p.position.y
+                        this._offset_x, // x component
+                        (p.position.y - p.old_position.y) * (this._offset_x - p.position.x) 
+                        / (p.position.x - p.old_position.x) + p.position.y // y component
                     );
                 }
-            }else if(p.position.x > this._width){
+            }else if(p.position.x > this._width + this._offset_x){
                 n = new Vector2(-1, 0);
                 if(p.old_position.isHorizontal(p.position)){
-                    contact_point = new Vector2(this._width, p.position.y);
+                    contact_point = new Vector2(this._width + this._offset_x, p.position.y);
                 }else{
                     contact_point = new Vector2(
-                        this._width,
-                        (p.position.y - p.old_position.y) * (this._width- p.position.x) 
-                        / (p.position.x - p.old_position.x) + p.position.y
+                        this._width + this._offset_x, // x component
+                        (p.position.y - p.old_position.y) * (this._width + this._offset_x- p.position.x) 
+                        / (p.position.x - p.old_position.x) + p.position.y // y component
                     );
                 }
             }
