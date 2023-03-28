@@ -58,11 +58,16 @@ export class SpringConstraint extends RigidConstraint{
         this.spring_constant = new_spring_constant;
     }
 }
+
 export class BoxConstraint{
-    constructor(width, height, points){
+    constructor(width, height, points=[]){
         this.width = width;
         this.height = height;
         this._points = points;
+    }
+
+    addPointMass(point){
+        this._points.push(point);
     }
 
     check(){
