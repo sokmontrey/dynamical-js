@@ -26,6 +26,9 @@ Vector2.divide = function(a, b){
     if(b instanceof Vector2) return new Vector2(a.x/b.x, a.y/b.y);
     else return new Vector2(a.x/b, a.y/b);
 }
+Vector2.reciprocal = function(a){
+    return new Vector2(1/a.x, 1/a.y);
+}
 Vector2.dot = function(a, b){
     return a.x*b.x + a.y*b.y;
 }
@@ -110,6 +113,9 @@ Vector2.prototype = {
     },
     divide: function(other){
         return Vector2.divide(this, other);
+    },
+    reciprocal: function(){
+        return Vector2.reciprocal(this);
     },
     dot: function(other){
         return Vector2.dot(this, other);
