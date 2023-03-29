@@ -32,7 +32,7 @@ export default class PointMass{
     updatePosition(delta_time){
         if(this._is_static) return;
 
-        this._velocity = this.velocity.add(this._position.subtract(this._old_position));
+        this._velocity = this._velocity.add(this._position.subtract(this._old_position));
 
         this._old_position.assign(this._position);
 
@@ -48,10 +48,13 @@ export default class PointMass{
     }
 
     set position(new_position){
-        if(!this._is_static) this._position = new_position;
+        if(!this._is_static) this._position.assign(new_position);
     }
     set old_position(new_old_position){
-        if(!this._is_static) this._old_position = new_old_position;
+        if(!this._is_static) this._old_position.assign(new_old_position);
+    }
+    set velocity(new_velocity){
+        if(!this._is_static) this._velocity.assign(new_velocity);
     }
 
     get position(){ return this._position; }
