@@ -27,20 +27,19 @@ export class RigidConstraint{
             const p1 = point1.position;
             const p2 = point2.position;
 
-            const current_distance = Vector2.distance(p1, p2);
+            const l2 = Vector2.distance(p1,p2);
+            const l1 = this._distance[i-1];
 
-            if(current_distance != this._distance[i-1]){
-                const correction_vector = p2.subtract(p1)
-                    .scaleMagnitudeTo(
-                        (current_distance - this._distance[i-1])
-                        / (2 * this._spring_constant)
-                    );
+            if(l2 != l1){
+                const k = 1;
 
-                const correction_point1 = p1.add(correction_vector);
-                const correction_point2 = p2.add(correction_vector.invert());
+                const error = Vector2.normalize(p1.subtract(p2)).multiply(k * (l1 - l2));
 
-                point1.position = correction_point1;
-                point2.position = correction_point2;
+                const new_p1 = p1.add(error.multiply(0.5));
+                const new_p2 = p2.subtract(error.multiply(0.5));
+
+                point1.position = new_p1;
+                point2.position = new_p2;
             }
         }
     }
