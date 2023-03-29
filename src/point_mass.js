@@ -1,20 +1,26 @@
 import { Vector2 } from "./util/vector.js";
 
 export default class PointMass{
-    constructor({x, y}, radius=1, is_static=false){
+    constructor(
+    {
+        x=0, y=0
+    }={}, 
+    {
+        radius=1, 
+        is_static=false,
+        mass=1,
+    }={}){
         this._position = new Vector2(x,y);
         this._old_position = new Vector2(x, y);
         this._velocity = new Vector2(0,0);
         this._acceleration = new Vector2(0,0);
 
-        this._mass = 1;
+        this._mass = mass;
         this._radius = radius;
         this._is_static = is_static;
     }
 
     applyForce(f){
-        if(this._is_static) return;
-
         this._acceleration = this._acceleration.add(f.divide(this._mass));
     }
     resolveCollision(contact_point, normal){
@@ -48,13 +54,16 @@ export default class PointMass{
     }
 
     set position(new_position){
-        if(!this._is_static) this._position.assign(new_position);
+        this._position.assign(new_position);
     }
     set old_position(new_old_position){
-        if(!this._is_static) this._old_position.assign(new_old_position);
+        this._old_position.assign(new_old_position);
     }
     set velocity(new_velocity){
-        if(!this._is_static) this._velocity.assign(new_velocity);
+        this._velocity.assign(new_velocity);
+    }
+    set mass(new_mass){
+        this._mass = new_mass;
     }
 
     get position(){ return this._position; }
