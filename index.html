@@ -60,7 +60,7 @@
         const renderer = new Renderer(canvas);
         renderer.setBackground('#2E3440');
 
-        const p1 = new PointMass(renderer.CENTER.add(new Vector2(0, -100)), 0, true);
+        const p1 = new PointMass(renderer.CENTER.add(new Vector2(0, -100)), {is_static: true});
         const p2 = new PointMass(renderer.CENTER.add(new Vector2(150, -100)));
 
         const r2 = new SpringConstraint([p1, p2]);
