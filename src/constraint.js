@@ -31,11 +31,9 @@ export class RigidConstraint{
             const l1 = this._distance[i-1];
 
             if(l2 != l1){
-                const k = 1;
-
                 const error = Vector2.normalize(
                     p1.subtract(p2)
-                ).multiply(k * (l1 - l2));
+                ).multiply(this._spring_constant * (l1 - l2));
 
                 const m1_reciprocal = 1 / point1.mass;
                 const m2_reciprocal = 1 / point2.mass;
