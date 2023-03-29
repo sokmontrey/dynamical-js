@@ -33,10 +33,22 @@ export class RigidConstraint{
             if(l2 != l1){
                 const k = 1;
 
-                const error = Vector2.normalize(p1.subtract(p2)).multiply(k * (l1 - l2));
+                const error = Vector2.normalize(
+                    p1.subtract(p2)
+                ).multiply(k * (l1 - l2));
 
-                const new_p1 = p1.add(error.multiply(0.5));
-                const new_p2 = p2.subtract(error.multiply(0.5));
+                const m1_reciprocal = 1 / point1.mass;
+                const m2_reciprocal = 1 / point2.mass;
+
+                // 1/m1 + 1/m2
+                const sum_reciprocal = m1_reciprocal + m2_reciprocal;
+
+                const new_p1 = p1.add(
+                    error.multiply(m1_reciprocal / sum_reciprocal)
+                );
+                const new_p2 = p2.subtract(
+                    error.multiply(m2_reciprocal / sum_reciprocal)
+                );
 
                 point1.position = new_p1;
                 point2.position = new_p2;
