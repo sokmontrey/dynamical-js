@@ -38,6 +38,19 @@
 </head>
 <body>
     <div class="
+    fixed bottom-0 right-0
+    p-2
+    ">
+        <p style="font-family: 'JetBrains Mono'" 
+        class="
+        text-sm text-white
+        ">Developed by Sokmontrey Sythat. 
+            <a target="_blank" href="https://github.com/sokmontrey/dynamical-js"
+            class="text-blue-400 underline">GitHub</a>
+        </p>
+    </div>
+
+    <div class="
     flex space-x-6 justify-center
     mb-10
     text-white
@@ -54,7 +67,7 @@
         import Renderer from '../src/renderer.js';
         import { Vector2 } from '../src/util/vector.js';
         import PointMass from '../src/point_mass.js';
-        import { RigidConstraint, SpringConstraint } from '../src/constraint.js';
+        import { DistanceConstraint} from '../src/constraint.js';
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
@@ -63,7 +76,7 @@
         const p1 = new PointMass(renderer.CENTER.add(new Vector2(0, -100)), {is_static: true});
         const p2 = new PointMass(renderer.CENTER.add(new Vector2(150, -100)));
 
-        const r2 = new SpringConstraint([p1, p2]);
+        const r2 = new DistanceConstraint([p1, p2]);
 
         renderer.update(({delta_time, context:c})=>{
             renderer.clear();

@@ -55,6 +55,19 @@
 		</style>
 	</head>
 	<body>
+        <div class="
+        fixed bottom-0 right-0
+        p-2
+        ">
+            <p style="font-family: 'JetBrains Mono'" 
+            class="
+            text-sm text-white
+            ">Developed by Sokmontrey Sythat. 
+                <a target="_blank" href="https://github.com/sokmontrey/dynamical-js"
+                class="text-blue-400 underline">GitHub</a>
+            </p>
+        </div>
+
 		<p class="
         text-white text-lg 
         ">Dynamical JS</p>
@@ -103,7 +116,7 @@
             import Renderer from '../src/renderer.js';
             import { Vector2 } from '../src/util/vector.js';
             import PointMass from '../src/point_mass.js';
-            import { RigidConstraint, BoxConstraint, SpringConstraint } from '../src/constraint.js';
+            import { DistanceConstraint, BoxConstraint, SpringConstraint } from '../src/constraint.js';
 
             const examples = {
                 cube: `
@@ -116,7 +129,7 @@ const square = [
     new PointMass(renderer.CENTER.add(new Vector2(0, 100))),
     new PointMass(renderer.CENTER.add(new Vector2(-100, 0))),
 ];
-const square_structure = new RigidConstraint([...square, square[0], square[2]]);
+const square_structure = new DistanceConstraint([...square, square[0], square[2]]);
 
 const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, square);
 
@@ -139,7 +152,8 @@ renderer.update(({delta_time, context:c})=>{
     renderer.polygon(square, {fill:"#D08770"});
 });
                 `,
-                bridge: `const renderer = new Renderer(canvas[0]);
+                bridge: `
+                const renderer = new Renderer(canvas[0]);
 renderer.setBackground('#2E3440');
 
 const l = 150;
@@ -157,10 +171,10 @@ const p2 = [
 
 const P = new PointMass(renderer.CENTER.add(new Vector2(l/1.2, l/3)));
 
-const r1 = new RigidConstraint([p2[0], p1[0], p2[1], p1[1], p2[2]]);
-const r2 = new RigidConstraint([p2[0], p2[1], p2[2]]);
-const r3 = new RigidConstraint([p1[0], p1[1]]);
-const r4 = new RigidConstraint([p2[1], P]);
+const r1 = new DistanceConstraint([p2[0], p1[0], p2[1], p1[1], p2[2]], {record_tension: true});
+const r2 = new DistanceConstraint([p2[0], p2[1], p2[2]], {record_tension: true});
+const r3 = new DistanceConstraint([p1[0], p1[1]], {record_tension: true});
+const r4 = new DistanceConstraint([p2[1], P], {record_tension: true});
 
 const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, []);
 
@@ -185,6 +199,13 @@ renderer.update(({delta_time, context:c})=>{
         P.updatePosition(delta_time*0.55);
     }
   
+    const all_constraint = [...r1.getConstraint(), ...r2.getConstraint(), ...r3.getConstraint(), ...r4.getConstraint()];
+    for(let each of all_constraint){
+        renderer.line(each.point1.position, each.point2.position, 
+        5, 
+        {stroke: \`rgb(\${each.tension * 191}, 97, 106)\`})
+    }
+
   	c.fillStyle = '#EBCB8B';
   	for(let i=0; i<p1.length; i++){
     	renderer.point(p1[i].position, 10);
@@ -194,19 +215,9 @@ renderer.update(({delta_time, context:c})=>{
     }
   	renderer.point(P.position, 10);
   
-  	c.strokeStyle = '#A3BE8C';
-  	for(let i=1; i<r1.points.length; i++){
-    	renderer.line(r1.points[i-1].position, r1.points[i].position);
-    }
-  	for(let i=1; i<r2.points.length; i++){
-    	renderer.line(r2.points[i-1].position, r2.points[i].position);
-    }
-  	for(let i=1; i<r3.points.length; i++){
-    	renderer.line(r3.points[i-1].position, r3.points[i].position);
-    }
-    renderer.line(r4.points[0].position, r4.points[1].position);
 });
-                    `};
+
+`};
 
             const select_ele = document.getElementById('select');
             for(let name in examples){

@@ -7,8 +7,11 @@ p: positionition of point mass
 
 //TOOD: fix RigidConstraint act like Spring
 
-export class RigidConstraint{
-    constructor(points){
+export class DistanceConstraint{
+    constructor(points, 
+    {
+        record_tension=false
+    }={}){
         this._points = points;
 
         this._distance = [];
@@ -18,6 +21,16 @@ export class RigidConstraint{
 
         //TODO: change the spring constant from stiffness to sfiffness or something
         this._spring_constant = 1;
+
+        this._is_record_tension = record_tension;
+        if(record_tension){
+            this._tensions = [];
+            this._total_tensions = 0;
+
+            for(let i=0; i<points.length-1; i++){
+                this._tensions.push(0);
+            }
+        }
     }
     check(){
         for(let i=1; i<this._points.length; i++){
@@ -31,9 +44,15 @@ export class RigidConstraint{
             const l1 = this._distance[i-1];
 
             if(l2 != l1){
+                const difference_in_length = (l1-l2);
                 const error = Vector2.normalize(
                     p1.subtract(p2)
-                ).multiply(this._spring_constant * (l1 - l2));
+                ).multiply(this._spring_constant * difference_in_length);
+
+                if(this._is_record_tension) {
+                    this._tensions[i-1] = this._tensions[i-1] + Math.abs(difference_in_length);
+                    this._total_tensions += Math.abs(difference_in_length);
+                }
 
                 const m1_reciprocal = 1 / point1.mass;
                 const m2_reciprocal = 1 / point2.mass;
@@ -48,17 +67,41 @@ export class RigidConstraint{
                     error.multiply(m2_reciprocal / sum_reciprocal)
                 );
 
-                point1.position = new_p1;
-                point2.position = new_p2;
+                point1.resolveDistanceConstraint(new_p1);
+                point2.resolveDistanceConstraint(new_p2);
             }
         }
     }
 
     get points() { return this._points; }
+
+    get tensions() { return this._tensions; }
+
+    getConstraint(){
+        const result = [];
+        for(let i=0; i<this._tensions.length; i++){
+            result.push({
+                point1: this._points[i],
+                point2: this._points[i+1],
+                distance: this._distance[i],
+                tension: this._tensions[i],
+                total_tension: this._total_tensions,
+            });
+        }
+        this.resetTension();
+        return result;
+    }
+
+    resetTension(){
+        for(let i=0; i<this._tensions.length; i++){
+            this._tensions[i] = 0;
+        }
+        this._total_tensions = 0;
+    }
 }
-export class SpringConstraint extends RigidConstraint{
-    constructor(points, spring_constant=0.3){
-        super(points);
+export class SpringConstraint extends DistanceConstraint{
+    constructor(points, {spring_constant=0.04, record_tension=false}={}){
+        super(points, {record_tension: record_tension});
         this._spring_constant = spring_constant;
     }
     setSpringConstant(new_spring_constant){

@@ -12,6 +12,7 @@ export default class PointMass{
         this._velocity = new Vector2(0,0);
         this._acceleration = new Vector2(0,0);
 
+
         this._mass = mass;
         this._radius = radius;
         this._is_static = is_static;
@@ -32,6 +33,11 @@ export default class PointMass{
             .add(contact_point);
 
         this._position.assign(contact_point);
+    }
+    resolveDistanceConstraint(new_position){
+        if(this._is_static) return;
+
+        this._position.assign(new_position);
     }
 
     updatePosition(delta_time){
