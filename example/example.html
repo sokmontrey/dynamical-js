@@ -119,7 +119,158 @@
             import { DistanceConstraint, BoxConstraint, SpringConstraint } from '../src/constraint.js';
 
             const examples = {
-                cube: `
+bridge: `
+const renderer = new Renderer(canvas[0]);
+renderer.setBackground('#2E3440');
+
+const l = 150;
+
+const p1 = [
+	new PointMass(renderer.CENTER.add(new Vector2(-l/2, -l/3))),
+	new PointMass(renderer.CENTER.add(new Vector2(l/2, -l/3))),
+];
+
+const p2 = [
+	new PointMass(renderer.CENTER.add(new Vector2(-l, l/3)), {is_static: true}),
+	new PointMass(renderer.CENTER.add(new Vector2(0, l/3))),
+	new PointMass(renderer.CENTER.add(new Vector2(l, l/3)), {is_static: true}),
+];
+
+const P = new PointMass(renderer.CENTER.add(new Vector2(l/1.2, l/3)));
+
+const r1 = new DistanceConstraint([p2[0], p1[0], p2[1], p1[1], p2[2]], {record_tension: true});
+const r2 = new DistanceConstraint([p2[0], p2[1], p2[2]], {record_tension: true});
+const r3 = new DistanceConstraint([p1[0], p1[1]], {record_tension: true});
+const r4 = new DistanceConstraint([p2[1], P], {record_tension: true});
+
+const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, []);
+
+renderer.update(({delta_time, context:c})=>{
+	renderer.clear();
+
+    delta_time *= 0.55
+
+  	for(let i=0; i<p1.length; i++){
+    	p1[i].applyForce(new Vector2(0, 9.8));
+    }
+  	p2[1].applyForce(new Vector2(0, 9.8));
+  	P.applyForce(new Vector2(0, 9.8));
+  
+    for(let iteration=0; iteration<4; iteration++){
+        r1.check();
+        r2.check();
+        r3.check();
+        r4.check();
+        for(let i=0; i<p1.length;i++){
+            p1[i].updatePosition(delta_time);
+        }
+        p2[1].updatePosition(delta_time);
+        P.updatePosition(delta_time);
+    }
+  
+    const all_constraint = [...r1.getConstraint(), ...r2.getConstraint(), ...r3.getConstraint(), ...r4.getConstraint()];
+    for(let each of all_constraint){
+        renderer.line(each.point1.position, each.point2.position, 
+        5, 
+        {stroke: \`rgb(\${each.tension * 191}, 97, 106)\`})
+    }
+
+  	c.fillStyle = '#EBCB8B';
+  	for(let i=0; i<p1.length; i++){
+    	renderer.point(p1[i].position, 10);
+    }
+  	for(let i=0; i<p2.length; i++){
+    	renderer.point(p2[i].position, 10);
+    }
+  	renderer.point(P.position, 10);
+  
+}); `,
+"square bridge": `
+
+const renderer = new Renderer(canvas[0]);
+renderer.setBackground('#2E3440');
+
+const l = 150;
+
+const p1 = [
+	new PointMass(renderer.CENTER.add(new Vector2(-l/2, -l/3))),
+	new PointMass(renderer.CENTER.add(new Vector2(0, -l/3))),
+	new PointMass(renderer.CENTER.add(new Vector2(l/2, -l/3))),
+];
+
+const p2 = [
+	new PointMass(renderer.CENTER.add(new Vector2(-l, l/3)), {is_static: true}),
+	new PointMass(renderer.CENTER.add(new Vector2(-l/2, l/3))),
+  	new PointMass(renderer.CENTER.add(new Vector2(0, l/3))),
+	new PointMass(renderer.CENTER.add(new Vector2(l/2, l/3))),
+	new PointMass(renderer.CENTER.add(new Vector2(l, l/3)), {is_static: true}),
+];
+
+const P = new PointMass(renderer.CENTER.add(new Vector2(l/1.2, l/3)));
+
+const r1 = new DistanceConstraint([p2[0], p1[0], p1[1], p1[2], p2[4]], {record_tension: true});
+const r2 = new DistanceConstraint([p2[0], p2[1], p2[2], p2[3], p2[4]], {record_tension: true});
+const r3 = new DistanceConstraint([p1[0], p2[1]], {record_tension: true});
+const r4 = new DistanceConstraint([p1[1], p2[2]], {record_tension: true});
+const r5 = new DistanceConstraint([p1[2], p2[3]], {record_tension: true});
+const r6 = new DistanceConstraint([p2[2], P], {record_tension: true});
+
+const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, []);
+
+renderer.update(({delta_time, context:c})=>{
+	renderer.clear();
+
+    delta_time *= 0.55
+
+  	for(let i=0; i<p1.length; i++){
+    	p1[i].applyForce(new Vector2(0, 9.8));
+    }
+  	for(let i=0; i<p2.length; i++){
+    	p2[i].applyForce(new Vector2(0, 9.8));
+    }
+  	P.applyForce(new Vector2(0, 9.8));
+  
+    for(let iteration=0; iteration<4; iteration++){
+        r1.check();
+        r2.check();
+        r3.check();
+        r4.check();
+      	r5.check();
+      	r6.check();
+        for(let i=0; i<p1.length;i++){
+            p1[i].updatePosition(delta_time);
+        }
+        for(let i=0; i<p2.length;i++){
+            p2[i].updatePosition(delta_time);
+        }
+        P.updatePosition(delta_time);
+    }
+  
+    const all_constraint = [...r1.getConstraint(), 
+                            ...r2.getConstraint(), 
+                            ...r3.getConstraint(), 
+                            ...r4.getConstraint(), 
+                            ...r5.getConstraint(),
+                           	...r6.getConstraint()
+                           ];
+    for(let each of all_constraint){
+        renderer.line(each.point1.position, each.point2.position, 
+        5, 
+        {stroke: \`rgb(\${each.tension * 191}, 97, 106)\`})
+    }
+
+  	c.fillStyle = '#EBCB8B';
+  	for(let i=0; i<p1.length; i++){
+    	renderer.point(p1[i].position, 10);
+    }
+  	for(let i=0; i<p2.length; i++){
+    	renderer.point(p2[i].position, 10);
+    }
+  	renderer.point(P.position, 10);
+  
+}); 
+`,
+cube: `
 const renderer = new Renderer(canvas[0]);
 renderer.setBackground('#2E3440');
 
@@ -151,73 +302,8 @@ renderer.update(({delta_time, context:c})=>{
 
     renderer.polygon(square, {fill:"#D08770"});
 });
-                `,
-                bridge: `
-                const renderer = new Renderer(canvas[0]);
-renderer.setBackground('#2E3440');
-
-const l = 150;
-
-const p1 = [
-	new PointMass(renderer.CENTER.add(new Vector2(-l/2, -l/3))),
-	new PointMass(renderer.CENTER.add(new Vector2(l/2, -l/3))),
-];
-
-const p2 = [
-	new PointMass(renderer.CENTER.add(new Vector2(-l, l/3)), {is_static: true}),
-	new PointMass(renderer.CENTER.add(new Vector2(0, l/3))),
-	new PointMass(renderer.CENTER.add(new Vector2(l, l/3)), {is_static: true}),
-];
-
-const P = new PointMass(renderer.CENTER.add(new Vector2(l/1.2, l/3)));
-
-const r1 = new DistanceConstraint([p2[0], p1[0], p2[1], p1[1], p2[2]], {record_tension: true});
-const r2 = new DistanceConstraint([p2[0], p2[1], p2[2]], {record_tension: true});
-const r3 = new DistanceConstraint([p1[0], p1[1]], {record_tension: true});
-const r4 = new DistanceConstraint([p2[1], P], {record_tension: true});
-
-const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, []);
-
-renderer.update(({delta_time, context:c})=>{
-	renderer.clear();
-
-  	for(let i=0; i<p1.length; i++){
-    	p1[i].applyForce(new Vector2(0, 9.8));
-    }
-  	p2[1].applyForce(new Vector2(0, 9.8));
-  	P.applyForce(new Vector2(0, 9.8));
-  
-    for(let iteration=0; iteration<4; iteration++){
-        r1.check();
-        r2.check();
-        r3.check();
-        r4.check();
-        for(let i=0; i<p1.length;i++){
-            p1[i].updatePosition(delta_time*0.55);
-        }
-        p2[1].updatePosition(delta_time*0.55);
-        P.updatePosition(delta_time*0.55);
-    }
-  
-    const all_constraint = [...r1.getConstraint(), ...r2.getConstraint(), ...r3.getConstraint(), ...r4.getConstraint()];
-    for(let each of all_constraint){
-        renderer.line(each.point1.position, each.point2.position, 
-        5, 
-        {stroke: \`rgb(\${each.tension * 191}, 97, 106)\`})
-    }
-
-  	c.fillStyle = '#EBCB8B';
-  	for(let i=0; i<p1.length; i++){
-    	renderer.point(p1[i].position, 10);
-    }
-  	for(let i=0; i<p2.length; i++){
-    	renderer.point(p2[i].position, 10);
-    }
-  	renderer.point(P.position, 10);
-  
-});
-
-`};
+`,
+};
 
             const select_ele = document.getElementById('select');
             for(let name in examples){
