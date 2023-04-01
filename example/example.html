@@ -42,8 +42,9 @@
                 height: 80vh;
             }
             .CodeMirror-scroll {
+                width: 50vw;
                 overflow-y: scroll;
-                overflow-x: auto;
+                overflow-x: scroll;
             }
             button{
                 transition: all ease-in-out 0.3s;
@@ -89,10 +90,14 @@
                     <canvas class="m-5 w-[30vw] h-[30vw]"></canvas>
 
                     <div class="flex">
-                        <button id="render-button" class="text-[#2E3440] bg-[#A3BE8C]
+                        <button id="render-button" 
+                        class="
+                        text-[#2E3440] bg-[#A3BE8C]
                         font-bold 
                         hover:px-5 hover:py-3 
-                        px-4 py-2 ml-5 rounded">Render</button>
+                        px-4 py-2 ml-5 rounded
+                        ">Render</button>
+
                         <select id="select" class="
                         text-white bg-transparent
                         px-5 mx-5
@@ -101,10 +106,26 @@
                         hover:text-[#88C0D0]
                         ">
                         </select>
+
+                        <div class="
+                        text-[#88C0D0]
+                        font-bold 
+                        px-4 py-2 ml-5 rounded
+                        ">
+                            <input class="
+                            w-[1.1rem] h-[1.1rem]
+                            rounded
+                            "
+                            type="checkbox" id="show-code-checkbox"/>
+
+                            <label class="
+                            pl-2
+                            ">Code</label>
+                        </div>
                     </div>
                 </div>
 
-                <div name="editor">
+                <div name="editor" id="editor-container">
                     <textarea id="editor">
                     </textarea>
                 </div>
@@ -168,7 +189,11 @@ renderer.update(({delta_time, context:c})=>{
         P.updatePosition(delta_time);
     }
   
-    const all_constraint = [...r1.getConstraint(), ...r2.getConstraint(), ...r3.getConstraint(), ...r4.getConstraint()];
+    const all_constraint = [...r1.getConstraint(), 
+        ...r2.getConstraint(), 
+        ...r3.getConstraint(), 
+        ...r4.getConstraint()
+    ];
     for(let each of all_constraint){
         renderer.line(each.point1.position, each.point2.position, 
         5, 
@@ -335,6 +360,16 @@ renderer.update(({delta_time, context:c})=>{
             document.getElementById('render-button').addEventListener('click', ()=>{
                 render();
             });
+
+            checkboxChanged();
+            document.getElementById('show-code-checkbox').addEventListener('change', (e)=>{
+                checkboxChanged();
+            });
+            function checkboxChanged(){
+                const checked = document.getElementById('show-code-checkbox').checked;
+                document.getElementById('editor-container').style = `display: ${checked ? 'block':'none'};`;
+            }
+
             function render(){
                 eval(cm.getValue());
             }
