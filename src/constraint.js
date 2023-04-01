@@ -25,7 +25,6 @@ export class DistanceConstraint{
         this._is_record_tension = record_tension;
         if(record_tension){
             this._tensions = [];
-            this._total_tensions = 0;
 
             for(let i=0; i<points.length-1; i++){
                 this._tensions.push(0);
@@ -51,7 +50,6 @@ export class DistanceConstraint{
 
                 if(this._is_record_tension) {
                     this._tensions[i-1] = this._tensions[i-1] + Math.abs(difference_in_length);
-                    this._total_tensions += Math.abs(difference_in_length);
                 }
 
                 const m1_reciprocal = 1 / point1.mass;
@@ -85,7 +83,6 @@ export class DistanceConstraint{
                 point2: this._points[i+1],
                 distance: this._distance[i],
                 tension: this._tensions[i],
-                total_tension: this._total_tensions,
             });
         }
         this.resetTension();
@@ -96,7 +93,6 @@ export class DistanceConstraint{
         for(let i=0; i<this._tensions.length; i++){
             this._tensions[i] = 0;
         }
-        this._total_tensions = 0;
     }
 }
 export class SpringConstraint extends DistanceConstraint{
