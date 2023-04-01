@@ -23,6 +23,11 @@ export default class PointMass{
 
         this._acceleration = this._acceleration.add(f.divide(this._mass));
     }
+    applyGravity(gx, gy){
+        if(this._is_static) return;
+
+        this.applyForce(Vector2.multiply(new Vector2(gx, gy), this.mass));
+    }
     resolveCollision(contact_point, normal){
         if(this._is_static) return;
 

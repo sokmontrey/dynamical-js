@@ -119,7 +119,7 @@
             import { DistanceConstraint, BoxConstraint, SpringConstraint } from '../src/constraint.js';
 
             const examples = {
-bridge: `
+"bridge": `
 const renderer = new Renderer(canvas[0]);
 renderer.setBackground('#2E3440');
 
@@ -151,10 +151,10 @@ renderer.update(({delta_time, context:c})=>{
     delta_time *= 0.55
 
   	for(let i=0; i<p1.length; i++){
-    	p1[i].applyForce(new Vector2(0, 9.8));
+    	p1[i].applyGravity(0, 9.8);
     }
   	p2[1].applyForce(new Vector2(0, 9.8));
-  	P.applyForce(new Vector2(0, 9.8));
+  	P.applyGravity(0, 9.8);
   
     for(let iteration=0; iteration<4; iteration++){
         r1.check();
@@ -223,12 +223,12 @@ renderer.update(({delta_time, context:c})=>{
     delta_time *= 0.55
 
   	for(let i=0; i<p1.length; i++){
-    	p1[i].applyForce(new Vector2(0, 9.8));
+    	p1[i].applyGravity(0, 9.8);
     }
   	for(let i=0; i<p2.length; i++){
-    	p2[i].applyForce(new Vector2(0, 9.8));
+    	p2[i].applyGravity(0, 9.8);
     }
-  	P.applyForce(new Vector2(0, 9.8));
+  	P.applyGravity(0, 9.8);
   
     for(let iteration=0; iteration<4; iteration++){
         r1.check();
@@ -270,7 +270,7 @@ renderer.update(({delta_time, context:c})=>{
   
 }); 
 `,
-cube: `
+"cube": `
 const renderer = new Renderer(canvas[0]);
 renderer.setBackground('#2E3440');
 
@@ -288,7 +288,7 @@ renderer.update(({delta_time, context:c})=>{
     renderer.clear();
 
     for(let i=0; i<square.length; i++){
-        square[i].applyForce(new Vector2(0, 9.8 * square[i].mass));
+        square[i].applyGravity(0, 9.8);
     }
 
 
