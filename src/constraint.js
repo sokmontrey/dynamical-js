@@ -5,7 +5,7 @@ point: point mass
 p: positionition of point mass
 */
 
-//TOOD: fix RigidConstraint act like Spring
+//TODO: check Stress over Tension 
 
 export class DistanceConstraint{
     constructor(points, 
