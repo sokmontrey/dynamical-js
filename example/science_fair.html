@@ -94,6 +94,7 @@ const r4 = new DistanceConstraint([p2[1], P], {record_tension: true});
 
 const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, []);
 
+
 renderer.update(({delta_time, context:c})=>{
 	renderer.clear();
 
@@ -122,11 +123,15 @@ renderer.update(({delta_time, context:c})=>{
         ...r3.getConstraint(), 
         ...r4.getConstraint()
     ];
+
+    let total_stress = 0;
     for(let each of all_constraint){
+        total_stress += each.tension;
         renderer.line(each.point1.position, each.point2.position, 
         5, 
-        {stroke: `rgb(${each.tension * 191}, 97, 106)`})
+        {stroke: `rgb(${each.tension * 191}, 97, 106)`});
     }
+    renderer.line(new Vector2(0, renderer.HEIGHT), Vector2.add(new Vector2(0,renderer.HEIGHT), new Vector2(total_stress * 15)), 30,{stroke:'#BF616A'} );
 
   	c.fillStyle = '#EBCB8B';
   	for(let i=0; i<p1.length; i++){
@@ -207,11 +212,15 @@ renderer.update(({delta_time, context:c})=>{
                             ...r5.getConstraint(),
                            	...r6.getConstraint()
                            ];
+
+    let total_stress = 0;
     for(let each of all_constraint){
+        total_stress += each.tension;
         renderer.line(each.point1.position, each.point2.position, 
         5, 
         {stroke: `rgb(${each.tension * 191}, 97, 106)`})
     }
+    renderer.line(new Vector2(0, renderer.HEIGHT), Vector2.add(new Vector2(0,renderer.HEIGHT), new Vector2(total_stress * 15)), 30,{stroke:'#BF616A'} );
 
   	c.fillStyle = '#EBCB8B';
   	for(let i=0; i<p1.length; i++){
