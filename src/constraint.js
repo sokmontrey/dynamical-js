@@ -1,4 +1,4 @@
-import { Vector2 } from "./util/vector.js";
+import { Vector2 } from "./util/dynamical-vector.js";
 
 /*
 point: point mass
