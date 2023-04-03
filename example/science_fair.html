@@ -7,6 +7,7 @@
     <title>Example2</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/gh/sokmontrey/dynamical-vector@master/dynamical-vector.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
@@ -65,7 +66,6 @@
     ">The <span class="text-[#BF616A]">red</span> bar at the bottom of each simulation indicated the total amount stresses experienced by each system.</p>
 
     <script type="module">
-        import {Vector2} from '../src/util/dynamical-vector.js';
         import Renderer from '../src/renderer.js';
         import PointMass from '../src/point_mass.js';
         import {DistanceConstraint, SpringConstraint, BoxConstraint} from '../src/constraint.js';

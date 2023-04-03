@@ -1,4 +1,3 @@
-import { Vector2 } from "./util/dynamical-vector.js";
 
 export default class PointMass{
     constructor({x, y}, 
