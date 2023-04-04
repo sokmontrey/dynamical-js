@@ -95,12 +95,11 @@ class Vector2{
         return a.y == b.y;
     }
 
-    static segmentIntersection(a, b, c, d){
+    static getLineIntersection(a, b, c, d){
         let slope1 = (b.y - a.y) / (b.x - a.x);
         let slope2 = (d.y - c.y) / (d.x - c.x);
 
-        let x = null;
-        let y = null;
+        let x, y;
 
         //use the formula: y - A.y = m (x - A.x)
         if(!isFinite(slope1)){ //AB segment is a vertical segment
@@ -109,32 +108,32 @@ class Vector2{
 
             x = a.x;
             y = slope2 * (a.x - c.x) + c.y;
-            if(((a.y > b.y) && (y > a.y || y < b.y)) || ((a.y < b.y) && (y < a.y || y > b.y))) return false;
-            if(!this.isPointOnSegment({x: x, y: y}, c, d)) return false;
         }else if(!isFinite(slope2)){ //CD segment is a vertical segment
             x = c.x;
             y = slope1 * (c.x - a.x) + a.y;
-
-            if(((c.y > d.y) && (y > c.y || y < d.y)) || ((c.y < d.y) && (y < c.y || y > d.y))) return false;
-            if(!this.isPointOnSegment({x: x, y: y}, a, b)) return false;
         }else{ //None of the the segment is a vertical segment
             x = (a.y - c.y + slope2 * c.x - slope1 * a.x) / (slope2 - slope1);
             y = slope1 * (x - a.x) + a.y;
-            if(!this.isPointOnSegment({x: x, y: y}, a, b)) return false;
-            if(!this.isPointOnSegment({x: x, y: y}, c, d)) return false;
         }
+
         return new Vector2(x, y);
     }
+    // static isPointBetweenSegment(p, a, b){
+    //     return (
+    //         p.x >= Math.min(a.x, b.x) &&
+    //         p.x <= Math.max(a.x, b.x) &&
+    //         p.y >= Math.min(a.y, b.y) &&
+    //         p.y <= Math.max(a.y, b.y)
+    //     );
+    // }
 
-    static isPointOnSegment({x, y}, {x:x1, y:y1}, {x:x2, y:y2}){
-        const AP = [x - x1, y - y1];
-        const AB = [x2 - x1, y2 - y1];
+    static isPointBehindLine(p, a, n){
+        //TODO: behind or on
+        return p.subtract(a).dot(n) <= 0;
+    }
 
-        const dot = AP[0] * AB[0] + AP[1] * AB[1];
-        const l = Math.sqrt(AB[0]**2 + AB[1]**2);
-
-        const pro = dot / l;
-        return 0 <= pro && pro <= l;
+    static isPointInfrontLine(p, a, n){
+        return p.subtract(a).dot(n) > 0;
     }
 
     /*
