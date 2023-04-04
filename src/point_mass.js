@@ -30,11 +30,13 @@ export default class PointMass{
     resolveCollision(contact_point, normal){
         if(this._is_static) return;
 
-        //contact_point = contact_point.subtract(this._position.subtract(contact_point).expand(this.radius));
-        this._old_position = this._position.subtract(this._old_position)
+        this._old_position.assign(
+            this._position
+            .subtract(this._old_position)
             .reflect(normal)
             .invert()
-            .add(contact_point);
+            .add(contact_point)
+        );
 
         this._position.assign(contact_point);
     }
