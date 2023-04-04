@@ -104,19 +104,43 @@ export class SpringConstraint extends DistanceConstraint{
     }
 }
 
-export class BoxConstraint{
-    constructor(width, height, points=[], offset=new Vector2(0,0)){
+export class ContainerConstraint{
+    constructor({
+        vertices=[],
+        points=[],
+        offset={x: 0, y:0},
+    }){
+
         this._offset_x = offset.x;
         this._offset_y = offset.y;
 
-        this._width = width;
-        this._height = height;
-
         this._points = points;
+        this._vertices = vertices;
     }
 
     addPointMass(point){
         this._points.push(point);
+    }
+
+    check(){
+        for(let i=0; i<this._points.length; i++){
+            const A = this._points[i].position;
+            const B = this._points[i].old_position;
+            const C = this._vertices[2];
+            const D = this._vertices[3];
+
+            const contact_point = Vector2.segmentIntersection(A, B, C, D);
+            const normal = new Vector2(0, -1);
+        }
+    }
+}
+
+export class BoxContainerConstraint extends ContainerConstraint{
+    constructor(width=500, height=500, points=[], offset=new Vector2(0,0)){
+        super(points, offset);
+
+        this._width = width;
+        this._height = height;
     }
 
     /*

@@ -37,7 +37,7 @@ export default class Renderer{
 		this._context.fillRect(0,0, this._width, this._height);
 	}
 
-	point({x, y}, radius=3,
+	point({x, y}={}, radius=3,
 		{ 
 			fill=null, 
 			stroke=null, 

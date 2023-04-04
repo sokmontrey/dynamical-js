@@ -68,7 +68,7 @@
     <script type="module">
         import Renderer from '../src/renderer.js';
         import PointMass from '../src/point_mass.js';
-        import {DistanceConstraint, SpringConstraint, BoxConstraint} from '../src/constraint.js';
+        import {DistanceConstraint, SpringConstraint, ContainerConstraint} from '../src/constraint.js';
 
         (()=>{
         const canvas = document.getElementById('canvas1');
@@ -96,7 +96,7 @@ const r2 = new DistanceConstraint([p2[0], p2[1], p2[2]], {record_tension: true})
 const r3 = new DistanceConstraint([p1[0], p1[1]], {record_tension: true});
 const r4 = new DistanceConstraint([p2[1], P], {record_tension: true});
 
-const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, []);
+const canvas_container = new ContainerConstraint( renderer.WIDTH, renderer.HEIGHT, []);
 
 
 renderer.update(({delta_time, context:c})=>{
@@ -178,7 +178,7 @@ const r4 = new DistanceConstraint([p1[1], p2[2]], {record_tension: true});
 const r5 = new DistanceConstraint([p1[2], p2[3]], {record_tension: true});
 const r6 = new DistanceConstraint([p2[2], P], {record_tension: true});
 
-const canvas_container = new BoxConstraint( renderer.WIDTH, renderer.HEIGHT, []);
+const canvas_container = new ContainerConstraint( renderer.WIDTH, renderer.HEIGHT, []);
 
 renderer.update(({delta_time, context:c})=>{
 	renderer.clear();
