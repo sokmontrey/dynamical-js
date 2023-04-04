@@ -15,7 +15,9 @@ export class DistanceConstraint{
 
         this._distance = [];
         for(let i=1; i<points.length; i++){
-            this._distance.push(Vector2.distance(points[i-1].position, points[i].position));
+            this._distance.push(Vector2.distance(
+                points[i-1].position, points[i].position
+            ));
         }
 
         //TODO: change the spring constant from stiffness to sfiffness or something
@@ -123,21 +125,48 @@ export class ContainerConstraint{
     }
 
     check(){
-        for(let i=0; i<this._points.length; i++){
-            const A = this._points[i].position;
-            const B = this._points[i].old_position;
-            const C = this._vertices[2];
-            const D = this._vertices[3];
+        for(
+        let point_index=0; 
+            point_index<this._points.length; 
+            point_index++
+        ){
 
-            const contact_point = Vector2.segmentIntersection(A, B, C, D);
-            const normal = new Vector2(0, -1);
+            const point = this._points[point_index];
+            const A = point.position;
+            const B = point.old_position;
+
+            for(let j=1; j<this._vertices.length; j++){
+                this._checkOne( point, A, B, 
+                    this._vertices[j-1], this._vertices[j]
+                );
+
+                if(j>=this._vertices.length-1){
+                    this._checkOne( point, A, B, 
+                        this._vertices[j], this._vertices[0]
+                    );
+                }
+            }
+        }
+    }
+    _checkOne(point, A, B, C, D){
+        const contact_point = Vector2.getLineIntersection(A, B, C, D);
+        const normal = new Vector2(C.y-D.y, D.x-C.x).normalize();
+
+        if(
+            contact_point && 
+            Vector2.isPointBehindLine(A, C, normal) 
+        ){
+            point.resolveCollision(contact_point, normal);
         }
     }
 }
 
 export class BoxContainerConstraint extends ContainerConstraint{
     constructor(width=500, height=500, points=[], offset=new Vector2(0,0)){
-        super(points, offset);
+        super({
+            points: points,
+            offset: offset,
+        });
 
         this._width = width;
         this._height = height;
@@ -153,8 +182,7 @@ export class BoxContainerConstraint extends ContainerConstraint{
     check(){
         for(let i=0; i<this._points.length; i++){
             const p = this._points[i];
-            let contact_point = null;
-            let n = null;
+            let contact_point, n;
 
             if(p.position.y > this._height + this._offset_y){
                 n = new Vector2(0, -1);
