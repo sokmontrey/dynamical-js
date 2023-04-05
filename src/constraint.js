@@ -166,74 +166,13 @@ export class BoxContainerConstraint extends ContainerConstraint{
         super({
             points: points,
             offset: offset,
+            vertices: [
+                offset,
+                new Vector2(offset.x + width, offset.y),
+                new Vector2(offset.x + width, offset.y + height),
+                new Vector2(offset.x, offset.y + height)
+            ]
         });
-
-        this._width = width;
-        this._height = height;
-    }
-
-    /*
-    use the line equation:
-        y-y1 = (y2-y1) * (x-x1) / (x2-x1)
-    to find intersection 
-    between the box's border (line) 
-    and the segment (treat as a line) created by point mass's old and current position. 
-    */
-    check(){
-        for(let i=0; i<this._points.length; i++){
-            const p = this._points[i];
-            let contact_point, n;
-
-            if(p.position.y > this._height + this._offset_y){
-                n = new Vector2(0, -1);
-                if(p.old_position.isVertical(p.position)){
-                    contact_point = new Vector2(p.position.x, this._height + this._offset_y);
-                } else{
-                    contact_point = new Vector2(
-                        p.position.x 
-                        + (this._height + this._offset_y -p.position.y) * (p.position.x-p.old_position.x) 
-                        / (p.position.y-p.old_position.y), // x component
-                        this._height + this._offset_y // y component
-                    )
-                }
-            } else if(p.position.y < this._offset_y){
-                n = new Vector2(0, 1);
-                if(p.old_position.isVertical(p.position)){
-                    contact_point = new Vector2(p.position.x, this._offset_y);
-                }else{
-                    contact_point = new Vector2(
-                        p.position.x 
-                        + (this._offset_y-p.position.y) * (p.position.x-p.old_position.x) 
-                        / (p.position.y-p.old_position.y), // x component
-                        this._offset_y // y component
-                    )
-                }
-            }else if (p.position.x < this._offset_x){
-                n = new Vector2(1, 0);
-                if(p.old_position.isHorizontal(p.position)){
-                    contact_point = new Vector2(this._offset_x, p.position.y);
-                }else{
-                    contact_point = new Vector2(
-                        this._offset_x, // x component
-                        (p.position.y - p.old_position.y) * (this._offset_x - p.position.x) 
-                        / (p.position.x - p.old_position.x) + p.position.y // y component
-                    );
-                }
-            }else if(p.position.x > this._width + this._offset_x){
-                n = new Vector2(-1, 0);
-                if(p.old_position.isHorizontal(p.position)){
-                    contact_point = new Vector2(this._width + this._offset_x, p.position.y);
-                }else{
-                    contact_point = new Vector2(
-                        this._width + this._offset_x, // x component
-                        (p.position.y - p.old_position.y) * (this._width + this._offset_x- p.position.x) 
-                        / (p.position.x - p.old_position.x) + p.position.y // y component
-                    );
-                }
-            }
-            //TODO: check vertical wall collision
-            if(contact_point) p.resolveCollision(contact_point, n);
-        }
     }
 }
 
