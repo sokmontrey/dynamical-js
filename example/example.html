@@ -89,6 +89,7 @@
         </div>
 
         <button id='reload-button' class='text-white'>Reload</button>
+        <select id='example-selector' class=''></select>
 
         <iframe id='iframe'
         class="
@@ -98,14 +99,26 @@
 
         <script>
 
-            const code = 
+            const examples = {
+'example1': 
 `import { Vector2 } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
 
 const canvas = document.getElementById('canvas');
 const renderer = new Renderer(canvas);
-`;
+renderer.setBackground('blue');
+`,
+'example2':
+`import { Vector2 } from '../src/util/dynamical_vector.js';
+import PointMass from '../src/point_mass.js';
+import Renderer from '../src/renderer.js';
+
+const canvas = document.getElementById('canvas');
+const renderer = new Renderer(canvas);
+renderer.setBackground('red');
+`,
+            }
 
             /*
                 essential part for running example/user generated code
@@ -124,7 +137,7 @@ const renderer = new Renderer(canvas);
             const script_container = iframe_doc.createElement('div');
             iframe_doc.body.appendChild(script_container);
 
-            function runScript(code){
+            function runCode(code){
                 /*
                     clear the container
                     create a new script element
@@ -161,18 +174,39 @@ const renderer = new Renderer(canvas);
             }
 
             /*
-                At the START
-            */
-            runScript(code);
-            renderCode(code);
-
-            /*
                 run the code from the EDITOR
+                when the reload button is clicked
             */
             document.getElementById('reload-button')
                 .addEventListener('click', function(){
-                    runScript(getEditorCode());
+                    runCode(getEditorCode());
                 });
+
+            /*
+                Mechanism for select and rerender different examples
+            */
+            const selector = document.getElementById('example-selector');
+
+            //List all the examples available
+            for(let example_name in examples){
+                selector.innerHTML += `<option>${example_name}</option>`
+            }
+
+            function getSelectorValue(){
+                return selector.value;
+            }
+
+            //rerender and run code with the selector is changed
+            selector.addEventListener('change', function(e){
+                renderCode(examples[getSelectorValue()]);
+                runCode(examples[getSelectorValue()]);
+            });
+
+            /*
+                render and run the default example in the selector
+            */
+            renderCode(examples[getSelectorValue()]);
+            runCode(examples[getSelectorValue()]);
         </script>
 	</body>
 </html>
