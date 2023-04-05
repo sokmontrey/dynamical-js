@@ -1,4 +1,4 @@
-
+import { Vector2 } from './util/dynamical_vector.js';
 /*
 point: point mass
 p: positionition of point mass
