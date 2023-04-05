@@ -83,6 +83,13 @@
             </p>
         </div>
 
+        <div name="editor" id="editor-container">
+            <textarea id="editor">
+            </textarea>
+        </div>
+
+        <button id='reload-button'>Reload</button>
+
         <iframe id='iframe'
         class="
         w-[100%]
@@ -90,13 +97,9 @@
         "> </iframe>
 
         <script>
-            const iframe = document.getElementById('iframe');
 
-            const iframe_win = iframe.contentWindow;
-            const iframe_doc = iframe.contentDocument;
-
-            const code = `
-import { Vector2 } from '../src/util/dynamical_vector.js';
+            const code = 
+`import { Vector2 } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
 
@@ -105,10 +108,46 @@ document.body.appendChild(canvas);
 
 const renderer = new Renderer(canvas);
 `;
-            const script = iframe_doc.createElement('script');
-            script.type='module';
-            script.innerHTML = code;
-            iframe_doc.body.appendChild(script);
+
+            /*
+                essential part for running example/user generated code
+            */
+            const iframe = document.getElementById('iframe');
+            const iframe_win = iframe.contentWindow;
+            const iframe_doc = iframe.contentDocument;
+
+            const script_container = iframe_doc.createElement('div');
+            iframe_doc.body.appendChild(script_container);
+
+            function runScript(code){
+                const script_ele = iframe_doc.createElement('script');
+                script_ele.type = 'module';
+                script_ele.innerHTML = code;
+
+                script_container.innerHTML = '';
+                script_container.appendChild(script_ele);
+            }
+
+            /*
+                text editor
+            */
+            const editor = document.getElementById("editor");
+            const cm = CodeMirror.fromTextArea(editor, {
+                mode: "javascript",
+                lineNumbers: true,
+                viewportMargin: Infinity,
+                theme: "nord",
+            });
+            cm.highlighter = function(text, options) {
+                return Prism.highlight(text, Prism.languages.javascript, 'javascript');
+            };
+
+            function renderCode(code){
+                cm.setValue(code);
+            }
+
+            runScript(code);
+            renderCode(code);
         </script>
 	</body>
 </html>
