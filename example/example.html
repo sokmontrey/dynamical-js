@@ -20,8 +20,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/nord.min.css" integrity="sha512-sPc4jmw78pt6HyMiyrEt3QgURcNRk091l3dZ9M309x4wM2QwnCI7bUtsLnnWXqwBMECE5YZTqV6qCDwmC2FMVA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- <script src="https://cdn.jsdelivr.net/gh/sokmontrey/dynamical-vector@master/dynamical-vector.js"></script> -->
-        <script src="../src/util/dynamical_vector.js"></script>
 
 		<style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
@@ -85,192 +83,32 @@
             </p>
         </div>
 
-		<p class="
-        text-white text-lg 
-        ">Dynamical JS</p>
+        <iframe id='iframe'
+        class="
+        w-[100%]
+        h-[100vh]
+        "> </iframe>
 
-        <div class="
-        flex space-x-6 justify-center
-        mb-10
-        text-white
-        w-[10vw]
-        ">
-            <a href="/">Home</a>
-            <a class="text-[#88C0D0]">Example</a>
-            <a href="/about.html">About</a>
-        </div>
+        <script>
+            const iframe = document.getElementById('iframe');
 
-        <div>
-            <div class="flex">
-                <div>
-                    <canvas class="m-5 w-[30vw] h-[30vw]"></canvas>
+            const iframe_win = iframe.contentWindow;
+            const iframe_doc = iframe.contentDocument;
 
-                    <div class="flex">
-                        <button id="render-button" 
-                        class="
-                        text-[#2E3440] bg-[#A3BE8C]
-                        font-bold 
-                        hover:px-5 hover:py-3 
-                        px-4 py-2 ml-5 rounded
-                        ">Render</button>
+            const code = `
+import { Vector2 } from '../src/util/dynamical_vector.js';
+import PointMass from '../src/point_mass.js';
+import Renderer from '../src/renderer.js';
 
-                        <select id="select" class="
-                        text-white bg-transparent
-                        px-5 mx-5
-                        font-bold
-                        rounded
-                        hover:text-[#88C0D0]
-                        ">
-                        </select>
+const canvas = document.createElement('canvas');
+document.body.appendChild(canvas);
 
-                        <div class="
-                        text-[#88C0D0]
-                        font-bold 
-                        px-4 py-2 ml-5 rounded
-                        ">
-                            <input class="
-                            w-[1.1rem] h-[1.1rem]
-                            rounded
-                            "
-                            type="checkbox" id="show-code-checkbox"/>
-
-                            <label class="
-                            pl-2
-                            ">Code</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div name="editor" id="editor-container">
-                    <textarea id="editor">
-                    </textarea>
-                </div>
-
-            </div>
-        </div>
-
-        <script type="module">
-            import Renderer from '../src/renderer.js';
-            import PointMass from '../src/point_mass.js';
-            import { DistanceConstraint, ContainerConstraint, SpringConstraint, BoxContainerConstraint } from '../src/constraint.js';
-
-            const examples = {
-"bridge": `
-const renderer = new Renderer(canvas[0]);
-renderer.setBackground('#2E3440');
-
-const l = 150;
-
-const p1 = [
-	new PointMass(renderer.CENTER.add(new Vector2(-l/2, -l/3))),
-	new PointMass(renderer.CENTER.add(new Vector2(l/2, -l/3))),
-];
-
-const p2 = [
-	new PointMass(renderer.CENTER.add(new Vector2(-l, l/3)), {is_static: true}),
-	new PointMass(renderer.CENTER.add(new Vector2(0, l/3))),
-	new PointMass(renderer.CENTER.add(new Vector2(l, l/3)), {is_static: true}),
-];
-
-const P = new PointMass(renderer.CENTER.add(new Vector2(l/1.2, l/3)));
-
-const r1 = new DistanceConstraint([p2[0], p1[0], p2[1], p1[1], p2[2]], {record_tension: true});
-const r2 = new DistanceConstraint([p2[0], p2[1], p2[2]], {record_tension: true});
-const r3 = new DistanceConstraint([p1[0], p1[1]], {record_tension: true});
-const r4 = new DistanceConstraint([p2[1], P], {record_tension: true});
-
-const canvas_container = new BoxContainerConstraint( renderer.WIDTH, renderer.HEIGHT, []);
-
-renderer.update(({delta_time, context:c})=>{
-	renderer.clear();
-
-    delta_time *= 0.55
-
-  	for(let i=0; i<p1.length; i++){
-    	p1[i].applyGravity(0, 9.8);
-    }
-  	p2[1].applyForce(new Vector2(0, 9.8));
-  	P.applyGravity(0, 9.8);
-  
-    for(let iteration=0; iteration<4; iteration++){
-        r1.check();
-        r2.check();
-        r3.check();
-        r4.check();
-        for(let i=0; i<p1.length;i++){
-            p1[i].updatePosition(delta_time);
-        }
-        p2[1].updatePosition(delta_time);
-        P.updatePosition(delta_time);
-    }
-  
-    const all_constraint = [...r1.getConstraint(), 
-        ...r2.getConstraint(), 
-        ...r3.getConstraint(), 
-        ...r4.getConstraint()
-    ];
-    for(let each of all_constraint){
-        renderer.line(each.point1.position, each.point2.position, 
-        5, 
-        {stroke: \`rgb(\${each.tension * 191}, 97, 106)\`})
-    }
-
-  	c.fillStyle = '#EBCB8B';
-  	for(let i=0; i<p1.length; i++){
-    	renderer.point(p1[i].position, 10);
-    }
-  	for(let i=0; i<p2.length; i++){
-    	renderer.point(p2[i].position, 10);
-    }
-  	renderer.point(P.position, 10);
-  
-}); `,
-};
-
-            const select_ele = document.getElementById('select');
-            for(let name in examples){
-                select_ele.innerHTML = select_ele.innerHTML 
-                + `<option>${name}</option>`;
-            }
-
-            const canvas = document.getElementsByTagName('canvas');
-
-            const editor = document.getElementById("editor");
-            const cm = CodeMirror.fromTextArea(editor, {
-                mode: "javascript",
-                lineNumbers: true,
-                viewportMargin: Infinity,
-                theme: "nord",
-            });
-            cm.highlighter = function(text, options) {
-                return Prism.highlight(text, Prism.languages.javascript, 'javascript');
-            };
-
-            cm.setValue(examples[select_ele.value]);
-            render();
-
-            select_ele.addEventListener('change', (e)=>{
-                cm.setValue(examples[e.target.value]);
-                render();
-            });
-
-            document.getElementById('render-button').addEventListener('click', ()=>{
-                render();
-            });
-
-            checkboxChanged();
-            document.getElementById('show-code-checkbox').addEventListener('change', (e)=>{
-                checkboxChanged();
-            });
-            function checkboxChanged(){
-                const checked = document.getElementById('show-code-checkbox').checked;
-                document.getElementById('editor-container').style = `display: ${checked ? 'block':'none'};`;
-            }
-
-            function render(){
-                eval(cm.getValue());
-            }
+const renderer = new Renderer(canvas);
+`;
+            const script = iframe_doc.createElement('script');
+            script.type='module';
+            script.innerHTML = code;
+            iframe_doc.body.appendChild(script);
         </script>
-
 	</body>
 </html>
