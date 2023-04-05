@@ -88,7 +88,7 @@
             </textarea>
         </div>
 
-        <button id='reload-button'>Reload</button>
+        <button id='reload-button' class='text-white'>Reload</button>
 
         <iframe id='iframe'
         class="
@@ -103,23 +103,34 @@
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
 
-const canvas = document.createElement('canvas');
-document.body.appendChild(canvas);
-
+const canvas = document.getElementById('canvas');
 const renderer = new Renderer(canvas);
 `;
 
             /*
                 essential part for running example/user generated code
             */
+            //get iframe element
             const iframe = document.getElementById('iframe');
             const iframe_win = iframe.contentWindow;
             const iframe_doc = iframe.contentDocument;
 
+            //inject a canvas element to the iframe
+            const canvas = iframe_doc.createElement('canvas');
+            canvas.id = 'canvas';
+            iframe_doc.body.appendChild(canvas);
+
+            //create a div container for the script element
             const script_container = iframe_doc.createElement('div');
             iframe_doc.body.appendChild(script_container);
 
             function runScript(code){
+                /*
+                    clear the container
+                    create a new script element
+                    put the new code into the script element
+                    put the script element back to the script container
+                */
                 const script_ele = iframe_doc.createElement('script');
                 script_ele.type = 'module';
                 script_ele.innerHTML = code;
@@ -145,9 +156,23 @@ const renderer = new Renderer(canvas);
             function renderCode(code){
                 cm.setValue(code);
             }
+            function getEditorCode(){
+                return cm.getValue();
+            }
 
+            /*
+                At the START
+            */
             runScript(code);
             renderCode(code);
+
+            /*
+                run the code from the EDITOR
+            */
+            document.getElementById('reload-button')
+                .addEventListener('click', function(){
+                    runScript(getEditorCode());
+                });
         </script>
 	</body>
 </html>
