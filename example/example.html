@@ -107,16 +107,6 @@ import Renderer from '../src/renderer.js';
 
 const canvas = document.getElementById('canvas');
 const renderer = new Renderer(canvas);
-renderer.setBackground('blue');
-`,
-'example2':
-`import { Vector2 } from '../src/util/dynamical_vector.js';
-import PointMass from '../src/point_mass.js';
-import Renderer from '../src/renderer.js';
-
-const canvas = document.getElementById('canvas');
-const renderer = new Renderer(canvas);
-renderer.setBackground('red');
 `,
             }
 
@@ -189,7 +179,9 @@ renderer.setBackground('red');
 
             //List all the examples available
             for(let example_name in examples){
-                selector.innerHTML += `<option>${example_name}</option>`
+                selector.innerHTML += `<option value='${example_name}'>
+${example_name}
+</option>`
             }
 
             function getSelectorValue(){
