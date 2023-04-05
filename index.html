@@ -69,40 +69,61 @@
     <script type="module">
         import Renderer from '../src/renderer.js';
         import PointMass from '../src/point_mass.js';
-        import { DistanceConstraint} from '../src/constraint.js';
+        import { CircleContainerConstraint, DistanceConstraint} from '../src/constraint.js';
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
         renderer.setBackground('#2E3440');
 
-        const p1 = new PointMass(renderer.CENTER.add(new Vector2(0, -100)), {is_static: true});
-        const p2 = new PointMass(renderer.CENTER.add(new Vector2(150, -100)));
+        const c = renderer.context;
+        const g = c.createLinearGradient(0,500,0,0);
+        g.addColorStop(0, "rgba(255,255,255,0.5)");
+        g.addColorStop(1, "rgba(46, 52, 64, 0.01)");
 
-        const r2 = new DistanceConstraint([p1, p2]);
 
-        renderer.update(({delta_time, context:c})=>{
+        c.font = "2rem 'JetBrains Mono'";
+        const text_width = c.measureText("Dynamical").width;
+        const text_width2 = c.measureText("JS").width;
+
+        const points = [
+            new PointMass(new Vector2(200, 150)),
+            new PointMass(new Vector2(200 + text_width, 150)),
+            new PointMass(new Vector2(200 + text_width + 100, 150)),
+        ]
+
+        const line = new DistanceConstraint(points);
+
+        const container = new CircleContainerConstraint(200, [points[0], points[1]], new Vector2(50, -50));
+
+        renderer.update(({delta_time, context: c})=>{
             renderer.clear();
+            c.fillStyle = g;
+            renderer.point(container._center,container._radius);
 
-            p2.applyForce(new Vector2(0, 9.8));
-            p2.updatePosition(delta_time);
+            for(let each of points){
+                each.applyGravity(0, 9.8);
+            }
+            for(let i=0; i<3; i++){
+                line.check();
+                container.check();
+                for(let each of points){
+                    each.updatePosition(delta_time*0.55);
+                }
+            }
 
-            r2.check();
+            renderer.line(points[1].position, points[2].position, 2, {stroke: 'gray'});
+            renderer.point(points[2].position, 5);
 
-            c.strokeStyle = '#6b717d';
-            renderer.line(p1.position, p2.position);
+            c.fillStyle='white';
+            const angle = Math.atan2(points[1].position.y - points[0].position.y, points[1].position.x - points[0].position.x);
+            c.translate(points[0].position.x, points[0].position.y);
+            c.rotate(angle);
+            c.fillText('Dynamical', 0, 0);
+            c.setTransform(1, 0, 0, 1, 0, 0);
 
-            renderer.point(p1.position, 20, {fill: "#2E3440"});
-            c.fillStyle = 'white';
-            c.font = '4rem serif';
-            const t1 = c.measureText("Dynamical");
-            c.fillText("Dynamical", p1.position.x - t1.width/2 ,p1.position.y);
-
-            renderer.point(p2.position, 50, {fill: "#2E3440"});
-            const t2 = c.measureText("JS");
-            c.fillStyle = 'white';
-            c.font = '3rem serif';
-            c.fillText("JS", p2.position.x - t2.width/2 ,p2.position.y);
+            c.fillText('JS', points[2].position.x - text_width2/2, points[2].position.y + text_width2);
         });
+
     </script>
 </body>
 </html>
