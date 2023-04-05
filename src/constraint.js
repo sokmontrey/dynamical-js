@@ -110,12 +110,7 @@ export class ContainerConstraint{
     constructor({
         vertices=[],
         points=[],
-        offset={x: 0, y:0},
     }){
-
-        this._offset_x = offset.x;
-        this._offset_y = offset.y;
-
         this._points = points;
         this._vertices = vertices;
     }
@@ -165,7 +160,6 @@ export class BoxContainerConstraint extends ContainerConstraint{
     constructor(width=500, height=500, points=[], offset=new Vector2(0,0)){
         super({
             points: points,
-            offset: offset,
             vertices: [
                 offset,
                 new Vector2(offset.x + width, offset.y),
@@ -173,6 +167,36 @@ export class BoxContainerConstraint extends ContainerConstraint{
                 new Vector2(offset.x, offset.y + height)
             ]
         });
+    }
+}
+
+export class CircleContainerConstraint extends ContainerConstraint{
+    constructor(radius=250, points=[], offset=new Vector2(0, 0)){
+        super({
+            points: points,
+            vertices: [],
+        });
+        this._radius = radius;
+        this._offset = offset;
+        this._center = offset.add(radius);
+    }
+    check(){
+        for(let point_index = 0;
+            point_index < this._points.length;
+            point_index ++
+        ){
+            const point = this._points[point_index];
+            const A = point.position;
+
+            const to_point = A.subtract(this._center);
+            const d = to_point.magnitude();
+            if(d >= this._radius){
+                const to_point_normal = to_point.normalize();
+                const contact_point = to_point_normal.multiply(this._radius).add(this._center);
+                const normal = to_point_normal.invert();
+                point.resolveCollision(contact_point, normal);
+            }
+        }
     }
 }
 
