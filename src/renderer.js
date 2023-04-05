@@ -1,4 +1,4 @@
-
+import { Vector2 } from "./util/dynamical_vector.js";
 export default class Renderer{
 
 	constructor(canvas, width=500, height=500){
