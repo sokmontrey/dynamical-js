@@ -149,9 +149,16 @@ export class ContainerConstraint{
         const contact_point = Vector2.getLineIntersection(A, B, C, D);
         const normal = new Vector2(C.y-D.y, D.x-C.x).normalize();
 
+        //resolve collision if contact_point exist AND
+        //if the container is closed loop:
+        //  the point must be behind the line
+        //Otherwise:
+        //  the point must be behind the line AND
+        //  the contact_point is between the segment
         if(
             contact_point && 
-            Vector2.isPointBehindLine(A, C, normal) 
+            Vector2.isPointBehindLine(A, C, normal) &&
+            (this._is_closed_loop ? true: Vector2.isPointBetweenSegment(contact_point, C, D))
         ){
             point.resolveCollision(contact_point, normal);
         }
