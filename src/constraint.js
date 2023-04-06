@@ -110,9 +110,11 @@ export class ContainerConstraint{
     constructor({
         vertices=[],
         points=[],
+        is_closed_loop=true,
     }){
         this._points = points;
         this._vertices = vertices;
+        this._is_closed_loop = is_closed_loop;
     }
 
     addPointMass(point){
@@ -134,12 +136,12 @@ export class ContainerConstraint{
                 this._checkOne( point, A, B, 
                     this._vertices[j-1], this._vertices[j]
                 );
+            }
 
-                if(j>=this._vertices.length-1){
-                    this._checkOne( point, A, B, 
-                        this._vertices[j], this._vertices[0]
-                    );
-                }
+            if(this._is_closed_loop){
+                this._checkOne(point, A, B, 
+                    this._vertices[this._vertices.length-1], this._vertices[0]
+                );
             }
         }
     }
