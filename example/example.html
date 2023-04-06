@@ -94,14 +94,14 @@
                 flex flex-col justify-center items-center
                 '>
                 <iframe id='iframe' class="
-                    w-[45vw] h-[45vw]
+                    w-[45vw] h-[70vh]
                     " scrolling="no"></iframe>
 
                 <div class='
-                    flex space-x-10
+                    flex items-center space-x-10
                     '>
                     <button id='reload-button' class='
-                        bg-[var(--secondary-color)] text-[var(--dark-font-color)]
+                        bg-[var(--secondary-color)] text-[var(--font-color)]
                         px-6 py-3
                         mt-2 ml-7
                         rounded font-bold
@@ -111,6 +111,16 @@
                         bg-[transparent] text-[var(--font-color)]
                         hover:text-[var(--accent-color)]
                         '></select>
+
+                    <div>
+                        <input class="
+                        w-[1.1rem] h-[1.1rem]
+                        rounded
+                        "
+                        type="checkbox" id="show-code-checkbox"/>
+
+                        <label class='text-white'>Code</label>
+                    </div>
                 </div>
             </div>
 
@@ -258,6 +268,19 @@ ${example_name}
             */
             renderCode(examples[getSelectorValue()]);
             runCode(examples[getSelectorValue()]);
+
+            /*
+                Mechamism for hide/show the code editor
+            */
+            document.getElementById('show-code-checkbox').addEventListener('change', (e)=>{
+                checkboxChanged();
+            });
+
+            function checkboxChanged(){
+                const is_checked = document.getElementById('show-code-checkbox').checked;
+                document.getElementById('editor-container').style = `display: ${is_checked ? 'block':'none'};`;
+            }
+            checkboxChanged();
         </script>
 	</body>
 </html>
