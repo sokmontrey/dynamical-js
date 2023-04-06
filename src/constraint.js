@@ -163,6 +163,14 @@ export class ContainerConstraint{
             point.resolveCollision(contact_point, normal);
         }
     }
+
+    get vertices() {return this._vertices; }
+    getVertex(index){ return this._vertices[index]; } 
+
+    getPoint(index){ return this._points[index]; }
+    get points(){ return this._points; }
+
+    get is_closed_loop(){ return this._is_closed_loop; }
 }
 
 export class BoxContainerConstraint extends ContainerConstraint{
