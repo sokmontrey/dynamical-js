@@ -104,7 +104,7 @@
                         bg-[var(--secondary-color)] text-[var(--font-color)]
                         px-6 py-3
                         mt-2 ml-7
-                        rounded font-bold
+                        rounded
                         '>Reload</button>
 
                     <select id='example-selector' class='
@@ -139,30 +139,61 @@
         <script>
 
             const examples = {
-'example1': 
+'point-mass': 
 `import { Vector2 } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
 import { ContainerConstraint } from '../src/constraint.js';
 
+/* Get canvas element */
 const canvas = document.getElementById('canvas');
+
+/* create a new renderer object */
 const renderer = new Renderer(canvas);
 renderer.setBackground('#191716');
 
-const p = new PointMass(new Vector2(250, 250));
+/* create a point mass with the initial position at the center */
+/* point mass take Vector2 as the argument for its initial position*/
+const point_mass = new PointMass(renderer.CENTER);
 
+/* 
+    Create a platform with the vertices start at bottom right 
+    and end at bottom left. This make the face of the platform facing upward.
+
+    The the is_closed_loop is set to false 
+
+    And the constraint is given the point_mass created to keep track of.
+*/
 const platform = new ContainerConstraint({
     vertices: [new Vector2(500,500), new Vector2(0,500)],
     is_closed_loop: false,
-    points: [p]
+    points: [point_mass]
 })
 
+/* LOOP */
 renderer.update(({delta_time})=>{
+    // clear the canvas at the start of every frame.
     renderer.clear();
-    p.applyGravity(0, 9.8);
-    p.updatePosition(delta_time);
+
+    /* 
+        apply gravity (0, 9.8)
+        position y value is up due to the canvas coordinating system
+    */
+    point_mass.applyGravity(0, 9.8);
+
+    /* 
+        Update the position of the point_mass with renderer's delta_time
+        The point_mass will update its position using Verlet integration method 
+    */
+    point_mass.updatePosition(delta_time);
+
+    /*
+        Call the check method on constraint
+    */
     platform.check();
-    renderer.point(p.position, 5, {fill: 'white'});
+
+    /* Visualize the position of point_mass */
+    renderer.point(point_mass.position, 5, {fill: 'white'});
 });
 `,
             };
