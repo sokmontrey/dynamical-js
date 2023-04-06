@@ -194,6 +194,9 @@ renderer.update(({delta_time})=>{
 
     /* Visualize the position of point_mass */
     renderer.point(point_mass.position, 5, {fill: 'white'});
+
+    /* Visualize the platform */
+    renderer.line(platform.getVertex(0), platform.getVertex(1), 3, {stroke: 'white'});
 });
 `,
             };
@@ -218,9 +221,6 @@ justify-content: center;
             //put a canvas element to the iframe
             const canvas = iframe_doc.createElement('canvas');
             canvas.id = 'canvas';
-            canvas.style=`
-border-bottom: solid 1px white;
-`;
             canvas_container.appendChild(canvas);
 
             //create a div container for the script element
