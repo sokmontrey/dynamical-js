@@ -5,13 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Example</title>
 
-        <!-- Include the CodeMirror CSS -->
+        <!-- CodeMirror CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
 
-        <!-- Include the Prism.js CSS -->
+        <!-- Prism.js CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css" integrity="sha512-/mZ1FHPkg6EKcxo0fKXF51ak6Cr2ocgDi5ytaTBjsQZIH/RNs6GF6+oId/vPe3eJB836T36nXwVh/WBl/cWT4w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        <!-- Include the CodeMirror and Prism.js libraries -->
+        <!-- CodeMirror and Prism.js libraries -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/javascript/javascript.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
@@ -83,19 +83,29 @@
             </p>
         </div>
 
-        <div name="editor" id="editor-container">
-            <textarea id="editor">
-            </textarea>
+        <div class='
+            flex flex-row
+            w-[100%] h-[100vh]
+            '>
+
+            <iframe id='iframe'
+            class="
+            w-[100%]
+            h-[100vh]
+            "></iframe>
+
+            <div>
+                <div name="editor" id="editor-container">
+                    <textarea id="editor">
+                    </textarea>
+                </div>
+
+                <div>
+                    <button id='reload-button' class='text-white'>Reload</button>
+                    <select id='example-selector' class=''></select>
+                </div>
+            </div>
         </div>
-
-        <button id='reload-button' class='text-white'>Reload</button>
-        <select id='example-selector' class=''></select>
-
-        <iframe id='iframe'
-        class="
-        w-[100%]
-        h-[100vh]
-        "> </iframe>
 
         <script>
 
@@ -108,7 +118,7 @@ import Renderer from '../src/renderer.js';
 const canvas = document.getElementById('canvas');
 const renderer = new Renderer(canvas);
 `,
-            }
+            };
 
             /*
                 essential part for running example/user generated code
@@ -118,10 +128,18 @@ const renderer = new Renderer(canvas);
             const iframe_win = iframe.contentWindow;
             const iframe_doc = iframe.contentDocument;
 
-            //inject a canvas element to the iframe
+            const canvas_container = iframe_doc.createElement('div');
+            iframe_doc.body.appendChild(canvas_container);
+            canvas_container.style = `
+display: flex;
+align-items: center;
+justify-content: center;
+`;
+
+            //put a canvas element to the iframe
             const canvas = iframe_doc.createElement('canvas');
             canvas.id = 'canvas';
-            iframe_doc.body.appendChild(canvas);
+            canvas_container.appendChild(canvas);
 
             //create a div container for the script element
             const script_container = iframe_doc.createElement('div');
