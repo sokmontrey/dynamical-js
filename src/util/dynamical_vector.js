@@ -118,14 +118,16 @@ export class Vector2{
 
         return new Vector2(x, y);
     }
-    // static isPointBetweenSegment(p, a, b){
-    //     return (
-    //         p.x >= Math.min(a.x, b.x) &&
-    //         p.x <= Math.max(a.x, b.x) &&
-    //         p.y >= Math.min(a.y, b.y) &&
-    //         p.y <= Math.max(a.y, b.y)
-    //     );
-    // }
+
+    // Pseudo
+    static isPointBetweenSegment(p, a, b){
+        return (
+            Math.ceil(p.x) >= Math.min(a.x, b.x) &&
+            Math.floor(p.x) <= Math.max(a.x, b.x) &&
+            Math.ceil(p.y) >= Math.min(a.y, b.y) && 
+            Math.floor(p.y) <= Math.max(a.y, b.y)
+        );
+    }
 
     static isPointBehindLine(p, a, n){
         //TODO: behind or on
