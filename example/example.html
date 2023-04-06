@@ -30,7 +30,7 @@
             --accent-color: #0DA;
             --secondary-color: #06B;
             --button-color: var(--accent-color);
-            --button-shadow-color: rgba(3, 161, 108, 0.4);
+            --button-shadow-color: rgba(0, 0, 0, 0.1);
             --font-color: white;
             --dark-font-color: var(--background-color);
             --panel-color: #302d2b;
@@ -47,7 +47,10 @@
         .CodeMirror{
             font-size: 13px;
             font-family: 'JetBrains Mono', monospace;
-            height: 80vh;
+            height: 90vh;
+            width: 45vw;
+            border-radius: 0.5rem;
+            padding-top: 1rem;
         }
         .CodeMirror-scroll {
             overflow-y: scroll;
@@ -84,27 +87,43 @@
         </div>
 
         <div class='
-            flex flex-row
-            w-[100%] h-[100vh]
+            flex flex-wrap justify-center items-center
             '>
 
-            <iframe id='iframe'
-            class="
-            w-[100%]
-            h-[100vh]
-            "></iframe>
+            <div class='
+                flex flex-col justify-center items-center
+                '>
+                <iframe id='iframe' class="
+                    w-[45vw] h-[45vw]
+                    " scrolling="no"></iframe>
 
-            <div>
+                <div class='
+                    flex space-x-10
+                    '>
+                    <button id='reload-button' class='
+                        bg-[var(--secondary-color)] text-[var(--dark-font-color)]
+                        px-6 py-3
+                        mt-2 ml-7
+                        rounded font-bold
+                        '>Reload</button>
+
+                    <select id='example-selector' class='
+                        bg-[transparent] text-[var(--font-color)]
+                        hover:text-[var(--accent-color)]
+                        '></select>
+                </div>
+            </div>
+
+            <div class='
+                flex-1
+                rounded-xl
+                '>
                 <div name="editor" id="editor-container">
                     <textarea id="editor">
                     </textarea>
                 </div>
-
-                <div>
-                    <button id='reload-button' class='text-white'>Reload</button>
-                    <select id='example-selector' class=''></select>
-                </div>
             </div>
+
         </div>
 
         <script>
@@ -114,9 +133,27 @@
 `import { Vector2 } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
+import { ContainerConstraint } from '../src/constraint.js';
 
 const canvas = document.getElementById('canvas');
 const renderer = new Renderer(canvas);
+renderer.setBackground('#191716');
+
+const p = new PointMass(new Vector2(250, 250));
+
+const platform = new ContainerConstraint({
+    vertices: [new Vector2(500,500), new Vector2(0,500)],
+    is_closed_loop: false,
+    points: [p]
+})
+
+renderer.update(({delta_time})=>{
+    renderer.clear();
+    p.applyGravity(0, 9.8);
+    p.updatePosition(delta_time);
+    platform.check();
+    renderer.point(p.position, 5, {fill: 'white'});
+});
 `,
             };
 
@@ -127,6 +164,7 @@ const renderer = new Renderer(canvas);
             const iframe = document.getElementById('iframe');
             const iframe_win = iframe.contentWindow;
             const iframe_doc = iframe.contentDocument;
+            iframe_doc.body.style = 'padding: 0; margin: 0;'
 
             const canvas_container = iframe_doc.createElement('div');
             iframe_doc.body.appendChild(canvas_container);
@@ -139,6 +177,9 @@ justify-content: center;
             //put a canvas element to the iframe
             const canvas = iframe_doc.createElement('canvas');
             canvas.id = 'canvas';
+            canvas.style=`
+border-bottom: solid 1px white;
+`;
             canvas_container.appendChild(canvas);
 
             //create a div container for the script element
