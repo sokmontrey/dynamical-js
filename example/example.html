@@ -76,19 +76,6 @@
 		</style>
 	</head>
 	<body>
-        <div class="
-        fixed bottom-0 right-0
-        p-2
-        ">
-            <p style="font-family: 'JetBrains Mono'" 
-            class="
-            text-sm text-white
-            ">Developed by Sokmontrey Sythat. 
-                <a target="_blank" href="https://github.com/sokmontrey/dynamical-js"
-                class="text-blue-400 underline">GitHub <i class="fa-brands fa-github"></i></a>
-            </p>
-        </div>
-
         <div class='
             flex justify-center items-stretch
             w-[100%] h-[calc(100vh-2rem)]
@@ -106,17 +93,28 @@
                     '>
                     <div class='
                         flex items-center justify-start
-                        bg-[var(--accent-color)]
                         text-[var(--dark-font-color)]
                         rounded-lg
                         '>
                         <a href='../index.html'>
                             <button class='
-                                py-2 mx-5
-                                rounded
+                                p-2 px-4
+                                bg-[var(--accent-color)]
+                                rounded-lg
                                 hover:text-[var(--font-color)]
                                 '>
                                 Dynamical
+                            </button>
+                        </a>
+                        <a href='https://github.com/sokmontrey/dynamical-js'>
+                            <button class='
+                                py-2 mx-5
+                                rounded
+                                text-[var(--font-color)]
+                                hover:text-[var(--secondary-color)]
+                                '>
+                                <i class="fa-brands fa-github"></i>
+                                GitHub
                             </button>
                         </a>
                     </div>
@@ -134,6 +132,7 @@
                             px-5 py-2 mx-5
                             rounded
                             '>
+                            <!--RELOAD-->
                             <i class="fa-solid fa-rotate-right"></i>
                         </button>
                     </div>
