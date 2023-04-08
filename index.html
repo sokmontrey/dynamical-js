@@ -157,7 +157,13 @@
 
         const line = new DistanceConstraint(points);
 
-        const container = new CircleContainerConstraint(200, [points[0], points[1]], new Vector2(50, -50));
+        // const container = new CircleSolidConstraint(200, [points[0], points[1]], new Vector2(50, -50));
+        const container = new CircleContainerConstraint({
+            points: [points[0], points[1]],
+            radius: 200,
+            offset: new Vector2(50, -50),
+            is_inverted: true
+        });
 
         renderer.update(({delta_time, context: c})=>{
             renderer.clear();
