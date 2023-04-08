@@ -155,7 +155,9 @@
             PointMass.create(200 + text_width + 100, 150)
         ];
 
-        const line = new DistanceConstraint(points);
+        const line = new DistanceConstraint({
+            points: points
+        });
 
         // const container = new CircleSolidConstraint(200, [points[0], points[1]], new Vector2(50, -50));
         const container = new CircleContainerConstraint({
