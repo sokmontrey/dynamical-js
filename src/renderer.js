@@ -81,11 +81,11 @@ export default class Renderer{
 		}={}
 	){
 		this._context.beginPath();
-		this._context.moveTo(points[0].position.x, points[0].position.y);
+		this._context.moveTo(points[0].x, points[0].y);
 		for(let i=1; i<points.length; i++){
-			this._context.lineTo(points[i].position.x, points[i].position.y);
+			this._context.lineTo(points[i].x, points[i].y);
 		}
-		this._context.lineTo(points[0].position.x, points[0].position.y);
+		this._context.lineTo(points[0].x, points[0].y);
 		this._context.closePath();
 
 		if(fill) this._context.fillStyle = fill; 
