@@ -156,7 +156,7 @@
 `import { Vector2 } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
-import { SolidConstraint } from '../src/constraint.js';
+import { BoxContainerConstraint } from '../src/constraint.js';
 
 /* Get canvas element */
 const canvas = document.getElementById('canvas');
@@ -170,17 +170,14 @@ renderer.setBackground('#252323');
 const point_mass = new PointMass(renderer.CENTER);
 
 /* 
-    Create a platform with the vertices start at bottom right 
-    and end at bottom left. This make the face of the platform facing upward.
-
-    The the is_closed_loop is set to false 
+    Create a platform with the vertices going around clockwise 
 
     And the constraint is given the point_mass created to keep track of.
 */
-const platform = new SolidConstraint({
+const platform = new BoxContainerConstraint({
     points: [point_mass],
-    vertices: [new Vector2(500,500), new Vector2(0,500)],
-    is_closed_loop: false,
+    width: 500, 
+    height: 500,
 });
 
 /* LOOP */
@@ -209,7 +206,7 @@ renderer.update(({delta_time})=>{
     renderer.point(point_mass.position, 5, {fill: '#D6D6B1'});
 
     /* Visualize the platform */
-    renderer.line(platform.getVertex(0), platform.getVertex(1), 3, {stroke: '#F45D01'});
+renderer.line(platform.vertices[2], platform.vertices[3], 3, {stroke: 'white'});
 });
 `,
             };
