@@ -106,18 +106,13 @@ export class SpringConstraint extends DistanceConstraint{
     }
 }
 
-export class SolidConstraint{
+export class ContainerConstraint{
     constructor({
         vertices=[],
         points=[],
-        //if is_inverted, 
-        //the point will have to be inside instead
-        is_inverted=false, 
     }){
         this._points = points;
         this._vertices = vertices;
-
-        this._is_inverted = is_inverted;
     }
 
     addPointMass(point){
@@ -133,75 +128,30 @@ export class SolidConstraint{
 
             redunduncy for small performance
         */
-        if(this._is_inverted){
-            for(let point_index=0; 
-                point_index<this._points.length; 
-                point_index++
-            ){
+        for(let point_index=0; 
+            point_index<this._points.length; 
+            point_index++
+        ){
 
-                const point = this._points[point_index];
-                const A = point.position;
-                const B = point.old_position;
-
-                for(let j=1; j<this._vertices.length; j++){
-                    this._invertedCheck( point, A, B, 
-                        this._vertices[j-1], this._vertices[j]
-                    );
-                }
-
-                this._invertedCheck(point, A, B, 
-                    this._vertices[this._vertices.length-1], this._vertices[0]
-                );
-            }
-        }else{
-            for(let point_index=0; 
-                point_index<this._points.length; 
-                point_index++
-            ){
-
-                const point = this._points[point_index];
-                const A = point.position;
-                const B = point.old_position;
-
-                for(let j=1; j<this._vertices.length; j++){
-                    this._solidCheck( point, A, B, 
-                        this._vertices[j-1], this._vertices[j]
-                    );
-                }
-
-                this._solidCheck(point, A, B, 
-                    this._vertices[this._vertices.length-1], this._vertices[0]
-                );
-            }
+            const point = this._points[point_index];
+            this.checkOnePoint(point);
         }
     }
     checkOnePoint(point){
         const A = point.position;
         const B = point.old_position;
 
-        if(this._is_inverted){
-            for(let j=1; j<this._vertices.length; j++){
-                this._invertedCheck( point, A, B, 
-                    this._vertices[j-1], this._vertices[j]
-                );
-            }
-
-            this._invertedCheck(point, A, B, 
-                this._vertices[this._vertices.length-1], this._vertices[0]
-            );
-        }else{
-            for(let j=1; j<this._vertices.length; j++){
-                this._solidCheck( point, A, B, 
-                    this._vertices[j-1], this._vertices[j]
-                );
-            }
-
-            this._solidCheck(point, A, B, 
-                this._vertices[this._vertices.length-1], this._vertices[0]
+        for(let j=1; j<this._vertices.length; j++){
+            this._check(point, A, B, 
+                this._vertices[j-1], this._vertices[j]
             );
         }
+
+        this._check(point, A, B, 
+            this._vertices[this._vertices.length-1], this._vertices[0]
+        );
     }
-    _invertedCheck(point, A, B, C, D){
+    _check(point, A, B, C, D){
         const contact_point = Vector2.getLineIntersection(A, B, C, D);
         const normal = new Vector2(C.y-D.y, D.x-C.x).normalize();
 
@@ -218,30 +168,7 @@ export class SolidConstraint{
         if(!Vector2.isPointBetweenSegment(contact_point, C, D)) 
             return;
 
-        point.resolveCollision(contact_point, normal.invert());
-    }
-
-    _solidCheck(point, A, B, C, D){
-        const contact_point = Vector2.getLineIntersection(A, B, C, D);
-        const normal = new Vector2(D.y-C.y, C.x-D.x).normalize();
-
-        //If, somehow, there are no contact_point,
-        //just skip
-        if(!contact_point) 
-            return;
-
-        if(Vector2.isPointInfrontLine(A, C, normal)) 
-            return;
-
-        //If the intersection is not even between the segment,
-        //Don't bother
-        if(!Vector2.isPointBetweenSegment(contact_point, C, D)) 
-            return;
-
-        if(!Vector2.isPointBetweenSegment(contact_point, A, B)) 
-            return;
-
-        point.resolveCollision(contact_point, normal.invert());
+        point.resolveCollision(contact_point, normal);
     }
 
     get vertices() {return this._vertices; }
@@ -249,13 +176,6 @@ export class SolidConstraint{
 
     getPoint(index){ return this._points[index]; }
     get points(){ return this._points; }
-}
-
-export class ContainerConstraint extends SolidConstraint{
-    constructor(params){
-        params.is_inverted = true;
-        super(params);
-    }
 }
 
 export class BoxContainerConstraint extends ContainerConstraint{
@@ -275,33 +195,26 @@ export class BoxContainerConstraint extends ContainerConstraint{
     }
 }
 
-export class CircleConstraint extends SolidConstraint{
-    constructor(radius=250, points=[], offset=new Vector2(0, 0)){
-        super({
-            points: points,
-            vertices: [],
-        });
-        this._radius = radius;
-        this._offset = offset;
-        this._center = offset.add(radius);
+export class CircleContainerConstraint extends ContainerConstraint{
+    constructor(params){
+        super(params);
+        this._radius = params.radius || 250;
+        this._offset = params.offset || new Vector2(0,0);
+        this._center = params.offset.add(params.radius);
     }
-    check(){
-        for(let point_index = 0;
-            point_index < this._points.length;
-            point_index ++
-        ){
-            const point = this._points[point_index];
-            const A = point.position;
+    checkOnePoint(point){
+        const A = point.position;
 
-            const to_point = A.subtract(this._center);
-            const d = to_point.magnitude();
-            if(d >= this._radius){
-                const to_point_normal = to_point.normalize();
-                const contact_point = to_point_normal.multiply(this._radius).add(this._center);
-                const normal = to_point_normal.invert();
-                point.resolveCollision(contact_point, normal);
-            }
-        }
+        const to_point = A.subtract(this._center);
+        const d = to_point.magnitude();
+
+        if(d < this._radius) return;
+
+        const to_point_normal = to_point.normalize();
+        const contact_point = to_point_normal.multiply(this._radius)
+            .add(this._center);
+        const normal = to_point_normal.invert();
+        point.resolveCollision(contact_point, normal);
     }
 }
 
