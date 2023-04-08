@@ -24,12 +24,18 @@
         const renderer = new Renderer(canvas);
         renderer.setBackground('white');
 
-        const p = new PointMass(new Vector2(250, 10));
+        const p = new PointMass(new Vector2(250, 0));
+        // const container = new SolidConstraint({
+        //     vertices: [new Vector2(490, 200), new Vector2(250, 450), new Vector2(10,200)],
+        //     points: [p],
+        //     is_closed_loop: false,
+        //     is_inverted: false,
+        // });
         const container = new SolidConstraint({
-            vertices: [new Vector2(490, 200), new Vector2(250, 450), new Vector2(10,200)],
+            vertices: [new Vector2(0, 250), new Vector2(500, 250), 
+                new Vector2(500, 300), new Vector2(0, 300)],
             points: [p],
-            is_closed_loop: false,
-            is_inverted: false
+            is_inverted:false 
         });
 
         renderer.update(({delta_time})=>{
@@ -41,6 +47,10 @@
             container.check();
 
             renderer.point(p.position, 10, {fill: 'black'});
+            renderer.line(container.getVertex(0), container.getVertex(1), 3, {stroke: 'black'})
+            renderer.line(container.getVertex(1), container.getVertex(2), 3, {stroke: 'black'})
+            renderer.line(container.getVertex(2), container.getVertex(3), 3, {stroke: 'black'})
+            renderer.line(container.getVertex(3), container.getVertex(0), 3, {stroke: 'black'})
         });
     </script>
 </body>

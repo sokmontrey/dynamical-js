@@ -110,15 +110,13 @@ export class SolidConstraint{
     constructor({
         vertices=[],
         points=[],
-        is_closed_loop=true,
         //if is_inverted, 
-        //the point will have to be outside instead
+        //the point will have to be inside instead
         is_inverted=false, 
     }){
         this._points = points;
         this._vertices = vertices;
 
-        this._is_closed_loop = is_closed_loop;
         this._is_inverted = is_inverted;
     }
 
@@ -127,51 +125,91 @@ export class SolidConstraint{
     }
 
     check(){
-        for(let point_index=0; 
-            point_index<this._points.length; 
-            point_index++
-        ){
+        /*
+            Use if statement outside the for loop to avoid
+            running if statement for every points
+        */
+        if(this._is_inverted){
+            for(let point_index=0; 
+                point_index<this._points.length; 
+                point_index++
+            ){
 
-            const point = this._points[point_index];
-            const A = point.position;
-            const B = point.old_position;
+                const point = this._points[point_index];
+                const A = point.position;
+                const B = point.old_position;
 
-            for(let j=1; j<this._vertices.length; j++){
-                this._checkOne( point, A, B, 
-                    this._vertices[j-1], this._vertices[j]
-                );;
+                for(let j=1; j<this._vertices.length; j++){
+                    this._invertedCheck( point, A, B, 
+                        this._vertices[j-1], this._vertices[j]
+                    );
+                }
+
+                this._invertedCheck(point, A, B, 
+                    this._vertices[this._vertices.length-1], this._vertices[0]
+                );
             }
+        }else{
+            for(let point_index=0; 
+                point_index<this._points.length; 
+                point_index++
+            ){
 
-            if(this._is_closed_loop){
-                this._checkOne(point, A, B, 
+                const point = this._points[point_index];
+                const A = point.position;
+                const B = point.old_position;
+
+                for(let j=1; j<this._vertices.length; j++){
+                    this._solidCheck( point, A, B, 
+                        this._vertices[j-1], this._vertices[j]
+                    );
+                }
+
+                this._solidCheck(point, A, B, 
                     this._vertices[this._vertices.length-1], this._vertices[0]
                 );
             }
         }
     }
-    _checkOne(point, A, B, C, D){
+    _invertedCheck(point, A, B, C, D){
         const contact_point = Vector2.getLineIntersection(A, B, C, D);
         const normal = new Vector2(C.y-D.y, D.x-C.x).normalize();
 
         //If, somehow, there are no contact_point,
         //just skip
-        if(!contact_point) return;
+        if(!contact_point) 
+            return;
 
-        //If the shape is inverted,
-        //the point has to be outside
-        //  Which mean if it is already outside the constraint,
-        //      just skip
-        //  Otherwise continue
-        //But if the shape is not inverted,
-        //the point has to be inside
-        if(this._is_inverted 
-            ? Vector2.isPointBehindLine(A, C, normal)
-            : Vector2.isPointInfrontLine(A, C, normal)
-        ) return;
+        if(Vector2.isPointInfrontLine(A, C, normal)) 
+            return;
 
         //If the intersection is not even between the segment,
         //Don't bother
-        if(!Vector2.isPointBetweenSegment(contact_point, C, D)) return;
+        if(!Vector2.isPointBetweenSegment(contact_point, C, D)) 
+            return;
+
+        point.resolveCollision(contact_point, normal.invert());
+    }
+
+    _solidCheck(point, A, B, C, D){
+        const contact_point = Vector2.getLineIntersection(A, B, C, D);
+        const normal = new Vector2(D.y-C.y, C.x-D.x).normalize();
+
+        //If, somehow, there are no contact_point,
+        //just skip
+        if(!contact_point) 
+            return;
+
+        if(Vector2.isPointInfrontLine(A, C, normal)) 
+            return;
+
+        //If the intersection is not even between the segment,
+        //Don't bother
+        if(!Vector2.isPointBetweenSegment(contact_point, C, D)) 
+            return;
+
+        if(!Vector2.isPointBetweenSegment(contact_point, A, B)) 
+            return;
 
         point.resolveCollision(contact_point, normal.invert());
     }
@@ -181,8 +219,6 @@ export class SolidConstraint{
 
     getPoint(index){ return this._points[index]; }
     get points(){ return this._points; }
-
-    get is_closed_loop(){ return this.is_closed_loop; }
 }
 
 export class RectangleConstraint extends SolidConstraint{
