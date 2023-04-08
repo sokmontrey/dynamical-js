@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Example2</title>
 
-    <!-- <script src="https://cdn.jsdelivr.net/gh/sokmontrey/dynamical-vector@master/dynamical-vector.min.js"></script> -->
-    <script src="../src/util/dynamical_vector.js"></script>
-
     <style>
         body{
             background-color: #191c22;
@@ -18,51 +15,33 @@
 <body>
     <canvas id="canvas"></canvas>
     <script type="module">
-        import Renderer from '../src/renderer.js';
+        import { Vector2 } from '../src/util/dynamical_vector.js';
+        import Renderer from '../src/renderer.js'
         import PointMass from '../src/point_mass.js';
-        import {DistanceConstraint, SpringConstraint, ContainerConstraint, BoxContainerConstraint, CircleContainerConstraint} from '../src/constraint.js';
+        import { SolidConstraint } from '../src/constraint.js';
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
+        renderer.setBackground('white');
 
-        renderer.setBackground('#2E3440');
+        const p = new PointMass(new Vector2(250, 10));
+        const container = new SolidConstraint({
+            vertices: [new Vector2(490, 200), new Vector2(250, 450), new Vector2(10,200)],
+            points: [p],
+            is_closed_loop: false,
+            is_inverted: false
+        });
 
-        const square = [
-            new PointMass(renderer.CENTER.add(new Vector2(100, -50))),
-            new PointMass(renderer.CENTER.add(new Vector2(150,0))),
-            new PointMass(renderer.CENTER.add(new Vector2(100, 50))),
-            new PointMass(renderer.CENTER.add(new Vector2(50, 0))),
-        ];
-
-        const square_structure = new DistanceConstraint([...square, square[0], square[2], square[3], square[1]], {record_tension: true});
-
-        // const canvas_container = new BoxContainerConstraint(500, 500, square);
-        const canvas_container = new CircleContainerConstraint(250, square);
-
-        renderer.update(({delta_time, context:c})=>{
+        renderer.update(({delta_time})=>{
             renderer.clear();
 
-            for(let i=0; i<square.length; i++){
-                square[i].applyGravity(0, 9.8);
-            }
+            p.applyGravity(0, 9.8);
+            p.updatePosition(delta_time);
 
-            for(let i=0; i<3; i++){
-                square_structure.check();
-                canvas_container.check();
+            container.check();
 
-                for(let j=0; j<square.length; j++){
-                    square[j].updatePosition(delta_time*0.55);
-                }
-            }
-
-            renderer.polygon(square, {fill:"#D08770"});
-
-            const constraints = square_structure.getConstraint();
-            for(let each of constraints){
-                renderer.line(each.point1.position, each.point2.position, 0,{stroke: `rgb(${each.tension * 255}, 0,0)`});
-            }
+            renderer.point(p.position, 10, {fill: 'black'});
         });
-                        
     </script>
 </body>
 </html>

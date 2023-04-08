@@ -135,7 +135,7 @@ export class Vector2{
     }
 
     static isPointInfrontLine(p, a, n){
-        return p.subtract(a).dot(n) > 0;
+        return p.subtract(a).dot(n) >= 0;
     }
 
     /*

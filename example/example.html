@@ -156,7 +156,7 @@
 `import { Vector2 } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
-import { ContainerConstraint } from '../src/constraint.js';
+import { SolidConstraint } from '../src/constraint.js';
 
 /* Get canvas element */
 const canvas = document.getElementById('canvas');
@@ -177,11 +177,11 @@ const point_mass = new PointMass(renderer.CENTER);
 
     And the constraint is given the point_mass created to keep track of.
 */
-const platform = new ContainerConstraint({
+const platform = new SolidConstraint({
+    points: [point_mass],
     vertices: [new Vector2(500,500), new Vector2(0,500)],
     is_closed_loop: false,
-    points: [point_mass]
-})
+});
 
 /* LOOP */
 renderer.update(({delta_time})=>{

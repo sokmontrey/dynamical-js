@@ -106,15 +106,20 @@ export class SpringConstraint extends DistanceConstraint{
     }
 }
 
-export class ContainerConstraint{
+export class SolidConstraint{
     constructor({
         vertices=[],
         points=[],
         is_closed_loop=true,
+        //if is_inverted, 
+        //the point will have to be outside instead
+        is_inverted=false, 
     }){
         this._points = points;
         this._vertices = vertices;
+
         this._is_closed_loop = is_closed_loop;
+        this._is_inverted = is_inverted;
     }
 
     addPointMass(point){
@@ -122,8 +127,7 @@ export class ContainerConstraint{
     }
 
     check(){
-        for(
-        let point_index=0; 
+        for(let point_index=0; 
             point_index<this._points.length; 
             point_index++
         ){
@@ -135,7 +139,7 @@ export class ContainerConstraint{
             for(let j=1; j<this._vertices.length; j++){
                 this._checkOne( point, A, B, 
                     this._vertices[j-1], this._vertices[j]
-                );
+                );;
             }
 
             if(this._is_closed_loop){
@@ -149,19 +153,27 @@ export class ContainerConstraint{
         const contact_point = Vector2.getLineIntersection(A, B, C, D);
         const normal = new Vector2(C.y-D.y, D.x-C.x).normalize();
 
-        //resolve collision if contact_point exist AND
-        //if the container is closed loop:
-        //  the point must be behind the line
-        //Otherwise:
-        //  the point must be behind the line AND
-        //  the contact_point is between the segment
-        if(
-            contact_point && 
-            Vector2.isPointBehindLine(A, C, normal) &&
-            (this._is_closed_loop ? true: Vector2.isPointBetweenSegment(contact_point, C, D))
-        ){
-            point.resolveCollision(contact_point, normal);
-        }
+        //If, somehow, there are no contact_point,
+        //just skip
+        if(!contact_point) return;
+
+        //If the shape is inverted,
+        //the point has to be outside
+        //  Which mean if it is already outside the constraint,
+        //      just skip
+        //  Otherwise continue
+        //But if the shape is not inverted,
+        //the point has to be inside
+        if(this._is_inverted 
+            ? Vector2.isPointBehindLine(A, C, normal)
+            : Vector2.isPointInfrontLine(A, C, normal)
+        ) return;
+
+        //If the intersection is not even between the segment,
+        //Don't bother
+        if(!Vector2.isPointBetweenSegment(contact_point, C, D)) return;
+
+        point.resolveCollision(contact_point, normal.invert());
     }
 
     get vertices() {return this._vertices; }
@@ -170,10 +182,10 @@ export class ContainerConstraint{
     getPoint(index){ return this._points[index]; }
     get points(){ return this._points; }
 
-    get is_closed_loop(){ return this._is_closed_loop; }
+    get is_closed_loop(){ return this.is_closed_loop; }
 }
 
-export class BoxContainerConstraint extends ContainerConstraint{
+export class RectangleConstraint extends SolidConstraint{
     constructor(width=500, height=500, points=[], offset=new Vector2(0,0)){
         super({
             points: points,
@@ -187,7 +199,7 @@ export class BoxContainerConstraint extends ContainerConstraint{
     }
 }
 
-export class CircleContainerConstraint extends ContainerConstraint{
+export class CircleConstraint extends SolidConstraint{
     constructor(radius=250, points=[], offset=new Vector2(0, 0)){
         super({
             points: points,
@@ -217,24 +229,24 @@ export class CircleContainerConstraint extends ContainerConstraint{
     }
 }
 
-export class PointMassCollisionConstraint{
-    constructor(){}
-    check(point1, point2){
-        const p1 = point1.position;
-        const p2 = point2.position;
-
-        if(Vector2.distance(p1, p2) < point1.radius + point2.radius){
-            const n1 = p2.subtract(p1).normalize();
-            const n2 = n1.invert();
-
-            //TODO: finc contact_point for points with different radius
-            const cp = p2.add(p1).divide(2);
-
-            const cp1 = cp.subtract(cp.subtract(p1).scaleMagnitudeTo(point1.radius));
-            const cp2 = cp.subtract(cp.subtract(p2).scaleMagnitudeTo(point2.radius));
-
-            point1.resolveCollision(cp1, n1);
-            point2.resolveCollision(cp2, n2);
-        }
-    }
-}
+// export class PointMassCollisionConstraint{
+//     constructor(){}
+//     check(point1, point2){
+//         const p1 = point1.position;
+//         const p2 = point2.position;
+//
+//         if(Vector2.distance(p1, p2) < point1.radius + point2.radius){
+//             const n1 = p2.subtract(p1).normalize();
+//             const n2 = n1.invert();
+//
+//             //TODO: finc contact_point for points with different radius
+//             const cp = p2.add(p1).divide(2);
+//
+//             const cp1 = cp.subtract(cp.subtract(p1).scaleMagnitudeTo(point1.radius));
+//             const cp2 = cp.subtract(cp.subtract(p2).scaleMagnitudeTo(point2.radius));
+//
+//             point1.resolveCollision(cp1, n1);
+//             point2.resolveCollision(cp2, n2);
+//         }
+//     }
+// }
