@@ -128,6 +128,10 @@ export class SolidConstraint{
         /*
             Use if statement outside the for loop to avoid
             running if statement for every points
+
+            Not using checkOnePoint method for the same reason
+
+            redunduncy for small performance
         */
         if(this._is_inverted){
             for(let point_index=0; 
@@ -169,6 +173,32 @@ export class SolidConstraint{
                     this._vertices[this._vertices.length-1], this._vertices[0]
                 );
             }
+        }
+    }
+    checkOnePoint(point){
+        const A = point.position;
+        const B = point.old_position;
+
+        if(this._is_inverted){
+            for(let j=1; j<this._vertices.length; j++){
+                this._invertedCheck( point, A, B, 
+                    this._vertices[j-1], this._vertices[j]
+                );
+            }
+
+            this._invertedCheck(point, A, B, 
+                this._vertices[this._vertices.length-1], this._vertices[0]
+            );
+        }else{
+            for(let j=1; j<this._vertices.length; j++){
+                this._solidCheck( point, A, B, 
+                    this._vertices[j-1], this._vertices[j]
+                );
+            }
+
+            this._solidCheck(point, A, B, 
+                this._vertices[this._vertices.length-1], this._vertices[0]
+            );
         }
     }
     _invertedCheck(point, A, B, C, D){
@@ -221,17 +251,27 @@ export class SolidConstraint{
     get points(){ return this._points; }
 }
 
-export class RectangleConstraint extends SolidConstraint{
-    constructor(width=500, height=500, points=[], offset=new Vector2(0,0)){
-        super({
-            points: points,
-            vertices: [
-                offset,
-                new Vector2(offset.x + width, offset.y),
-                new Vector2(offset.x + width, offset.y + height),
-                new Vector2(offset.x, offset.y + height)
-            ]
-        });
+export class ContainerConstraint extends SolidConstraint{
+    constructor(params){
+        params.is_inverted = true;
+        super(params);
+    }
+}
+
+export class BoxContainerConstraint extends ContainerConstraint{
+    constructor(params){
+        const w = params.width || 500;
+        const h = params.height || 500;
+        const offset = params.offset || new Vector2(0,0);
+
+        params.vertices = [
+            offset, 
+            offset.add(new Vector2(w, 0)), 
+            offset.add(new Vector2(w, h)), 
+            offset.add(new Vector2(0, h))
+        ]
+
+        super(params);
     }
 }
 

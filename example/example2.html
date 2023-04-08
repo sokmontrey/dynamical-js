@@ -18,7 +18,7 @@
         import { Vector2 } from '../src/util/dynamical_vector.js';
         import Renderer from '../src/renderer.js'
         import PointMass from '../src/point_mass.js';
-        import { SolidConstraint } from '../src/constraint.js';
+        import { BoxContainerConstraint, SolidConstraint, ContainerConstraint } from '../src/constraint.js';
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
@@ -31,11 +31,11 @@
         //     is_closed_loop: false,
         //     is_inverted: false,
         // });
-        const container = new SolidConstraint({
-            vertices: [new Vector2(0, 250), new Vector2(500, 250), 
-                new Vector2(500, 300), new Vector2(0, 300)],
+        const container = new BoxContainerConstraint({
+            width: 500,
+            height: 500,
+            offset: new Vector2(0,0),
             points: [p],
-            is_inverted:false 
         });
 
         renderer.update(({delta_time})=>{
