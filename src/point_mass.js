@@ -1,20 +1,24 @@
 import { Vector2 } from './util/dynamical_vector.js';
 export default class PointMass{
-    constructor({x, y}, 
-    {
-        radius=1, 
+    constructor({
+        position=new Vector2(0,0),
         is_static=false,
         mass=1,
-    }={}){
-        this._position = new Vector2(x,y);
-        this._old_position = new Vector2(x, y);
+    }){
+        this._position = new Vector2(position.x,position.y);
+        this._old_position = new Vector2(position.x, position.y);
         this._velocity = new Vector2(0,0);
         this._acceleration = new Vector2(0,0);
 
 
         this._mass = mass;
-        this._radius = radius;
         this._is_static = is_static;
+    }
+
+    static create(x=0, y=0){
+        return new PointMass({
+            position: (x instanceof Vector2) ? x : new Vector2(x, y) 
+        });
     }
 
     applyForce(f){
@@ -22,10 +26,15 @@ export default class PointMass{
 
         this._acceleration = this._acceleration.add(f.divide(this._mass));
     }
-    applyGravity(gx, gy){
+    applyGravity(x=0, y=9.8){
         if(this._is_static) return;
 
-        this.applyForce(Vector2.multiply(new Vector2(gx, gy), this.mass));
+        this.applyForce(
+            Vector2.multiply(
+                x instanceof Vector2 ? x : new Vector2(x, y), 
+                this.mass
+            )
+        );
     }
     resolveCollision(contact_point, normal){
         if(this._is_static) return;
@@ -64,6 +73,7 @@ export default class PointMass{
         this._acceleration.y = 0;
     }
 
+    /* Lib interface */
     set position(new_position){
         if(!this._is_static) this._position.assign(new_position);
     }
@@ -79,13 +89,22 @@ export default class PointMass{
     get mass(){ return this._mass; }
     get velocity(){ return this._velocity; }
     get acceleration(){ return this._acceleration; }
-    get radius(){ return this._radius; }
 
-    setStatic(){
+    setMass(new_mass){
+        this._mass = new_mass;
+    }
+    static(){
         this._is_static = true;
     }
-    setDynamic(){
-        this._is_static = false;
+
+    setPosition(new_position){
+        this.position = new_position;
+    }
+    setOldPosition(new_old_position){
+        this.old_position = new_old_position;
+    }
+    setVelocity(new_velocity){
+        this.velocity = new_velocity;
     }
     isStatic(){
         return this._is_static;

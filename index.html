@@ -150,10 +150,10 @@
         const text_width2 = c.measureText(word2).width;
 
         const points = [
-            new PointMass(new Vector2(200, 150)),
-            new PointMass(new Vector2(200 + text_width, 150)),
-            new PointMass(new Vector2(200 + text_width + 100, 150)),
-        ]
+            PointMass.create(200, 150),
+            PointMass.create(200 + text_width, 150),
+            PointMass.create(200 + text_width + 100, 150)
+        ];
 
         const line = new DistanceConstraint(points);
 
@@ -171,7 +171,7 @@
             renderer.point(container._center,container._radius);
 
             for(let each of points){
-                each.applyGravity(0, 9.8);
+                each.applyGravity(new Vector2(0, 9.8));
             }
             for(let i=0; i<3; i++){
                 line.check();
