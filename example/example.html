@@ -170,11 +170,10 @@ renderer.setBackground('#252323');
 const point_mass = new PointMass(renderer.CENTER);
 
 /* 
-    Create a platform with the vertices going around clockwise 
-
-    And the constraint is given the point_mass created to keep track of.
+    Create a container constraint for the scence
+    The constraint is given the point_mass created to keep track of.
 */
-const platform = new BoxContainerConstraint({
+const container = new BoxContainerConstraint({
     points: [point_mass],
     width: 500, 
     height: 500,
@@ -200,13 +199,29 @@ renderer.update(({delta_time})=>{
     /*
         Call the check method on constraint
     */
-    platform.check();
+    container.check();
 
-    /* Visualize the position of point_mass */
-    renderer.point(point_mass.position, 5, {fill: '#D6D6B1'});
+    /* 
+        Visualize the position of point_mass 
+        point_mass does not have any real geometrical properties
+        It is just a 0D point
+        But we draw as a circle with the radius of 10
+    */
+    renderer.point(point_mass.position, 10, {fill: '#D6D6B1'});
 
-    /* Visualize the platform */
-renderer.line(platform.vertices[2], platform.vertices[3], 3, {stroke: 'white'});
+    /* Visualize the container*/
+    for(let i=1; i<container.vertices.length; i++){
+        renderer.line(
+            container.getVertex(i-1), container.getVertex(i), 
+            10, {stroke: '#D6D6B1'}
+        );
+    }
+
+    renderer.line(
+        container.getVertex(container.vertices.length-1), 
+        container.getVertex(0), 
+        10, {stroke: '#D6D6B1'}
+    );
 });
 `,
             };
