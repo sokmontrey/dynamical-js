@@ -92,19 +92,25 @@ export default class PointMass{
 
     setMass(new_mass){
         this._mass = new_mass;
+        return this;
     }
     static(){
         this._is_static = true;
+        return this;
     }
 
     setPosition(new_position){
         this.position = new_position;
+        return this;
     }
     setOldPosition(new_old_position){
         this.old_position = new_old_position;
     }
-    setVelocity(new_velocity){
-        this.velocity = new_velocity;
+    setVelocity(x, y){
+        if(x instanceof Vector2) this._velocity = x;
+        else this._velocity = new Vector2(x, y);
+
+        return this;
     }
     isStatic(){
         return this._is_static;
