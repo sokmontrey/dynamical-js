@@ -18,9 +18,39 @@ export class Constraint{
         this._points.push(point);
     }
 
-    static create(type, points){
-        if (type === 'distance') {
-            return { };
+    static create(type, points, params = {}){
+        if(type === "rigid"){
+
+            return new DistanceConstraint({
+                points: points,
+                record_stress: params.record_stress || false,
+                spring_constant: 1,
+            });
+
+        }else if(type === "spring"){
+
+            return new DistanceConstraint({
+                points: points,
+                record_stress: params.record_stress || false,
+                spring_constant: params.spring_constant || 10,
+            });
+
+        }else if(type === "rectangle_container"){
+
+            const offset = params.offset || new Vector2(0,0);
+            const w = params.width || 500;
+            const h = params.height || 500;
+
+            return new ContainerConstraint({
+                points: points,
+                vertices: [
+                    offset,
+                    offset.add(new Vector2(w, 0)),
+                    offset.add(new Vector2(w, h)),
+                    offset.add(new Vector2(0, h))
+                ]
+            });
+
         }
     }
 
