@@ -35,6 +35,13 @@ export class Constraint{
                 spring_constant: params.spring_constant || 10,
             });
 
+        }else if(type === "container"){
+
+            return new ContainerConstraint({
+                points: points,
+                vertices: params.vertices || []
+            })
+
         }else if(type === "rectangle_container"){
 
             const offset = params.offset || new Vector2(0,0);
@@ -49,6 +56,14 @@ export class Constraint{
                     offset.add(new Vector2(w, h)),
                     offset.add(new Vector2(0, h))
                 ]
+            });
+
+        }else if(type === "circle_container"){
+
+            return new CircleContainerConstraint({
+                points: points,
+                radius: params.radius || 250,
+                offset: params.offset || new Vector2(0,0),
             });
 
         }
@@ -96,13 +111,14 @@ export class DistanceConstraint extends Constraint{
 
             if(l2 != l1){
                 const difference_in_length = (l1-l2);
-                const error = Vector2.normalize(
-                    p1.subtract(p2)
-                ).multiply( (1/this._spring_constant) * difference_in_length );
 
                 if(this._is_record_stress) {
                     this._stresses[i-1] = this._stresses[i-1] + Math.abs(difference_in_length);
                 }
+
+                const error = Vector2.normalize(
+                    p1.subtract(p2)
+                ).multiply( (1/this._spring_constant) * difference_in_length );
 
                 const m1_reciprocal = 1 / point1.mass;
                 const m2_reciprocal = 1 / point2.mass;
@@ -151,6 +167,10 @@ export class ContainerConstraint extends Constraint{
         super(params);
 
         this._vertices = params.vertices || [];
+    }
+
+    addVertex(new_vertex){
+        this._vertices.push(new_vertex);
     }
 
     check(){
