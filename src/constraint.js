@@ -4,7 +4,10 @@ point: point mass
 p: positionition of point mass
 */
 
+//TODO: test spring constraint
+
 export class Constraint{
+
     constructor({
         points = []
     }){
@@ -13,6 +16,12 @@ export class Constraint{
 
     addPointMass(point){
         this._points.push(point);
+    }
+
+    static create(type, points){
+        if (type === 'distance') {
+            return { };
+        }
     }
 
     get points(){ return this._points; }
@@ -157,23 +166,6 @@ export class ContainerConstraint extends Constraint{
 
     getPoint(index){ return this._points[index]; }
     get points(){ return this._points; }
-}
-
-export class BoxContainerConstraint extends ContainerConstraint{
-    constructor(params){
-        const w = params.width || 500;
-        const h = params.height || 500;
-        const offset = params.offset || new Vector2(0,0);
-
-        params.vertices = [
-            offset, 
-            offset.add(new Vector2(w, 0)), 
-            offset.add(new Vector2(w, h)), 
-            offset.add(new Vector2(0, h))
-        ];
-
-        super(params);
-    }
 }
 
 export class CircleContainerConstraint extends ContainerConstraint{
