@@ -156,7 +156,7 @@
 `import { Vector2 } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
-import { BoxContainerConstraint } from '../src/constraint.js';
+import { Constraint } from '../src/constraint.js';
 
 /* Get canvas element */
 const canvas = document.getElementById('canvas');
@@ -172,12 +172,14 @@ const point_mass = PointMass.create(250,250);
 /* 
     Create a container constraint for the scence
     The constraint is given the point_mass created to keep track of.
+    The default width and height of the container is 500
+    If we want the width and height to be different, just pass in the additional properties
+        {
+            width: 500,
+            height: 500,
+        }
 */
-const container = new BoxContainerConstraint({
-    points: [point_mass],
-    width: 500, 
-    height: 500,
-});
+const container = Constraint.create('rectangle_container', [point_mass]);
 
 /* LOOP */
 renderer.update(({delta_time})=>{

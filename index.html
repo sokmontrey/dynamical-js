@@ -131,7 +131,7 @@
         import  { Vector2 } from './src/util/dynamical_vector.js';
         import Renderer from '../src/renderer.js';
         import PointMass from '../src/point_mass.js';
-        import { CircleContainerConstraint, DistanceConstraint} from '../src/constraint.js';
+        import { Constraint } from '../src/constraint.js';
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
@@ -155,17 +155,15 @@
             PointMass.create(200 + text_width + 100, 150)
         ];
 
-        const line = new DistanceConstraint({
-            points: points
-        });
+        const line = Constraint.create('rigid', points);
 
-        // const container = new CircleSolidConstraint(200, [points[0], points[1]], new Vector2(50, -50));
-        const container = new CircleContainerConstraint({
-            points: [points[0], points[1]],
-            radius: 200,
-            offset: new Vector2(50, -50),
-            is_inverted: true
-        });
+        const container = Constraint.create('circle_container', 
+            [points[0], points[1]], 
+            {
+                radius: 200,
+                offset: new Vector2(50, -50),
+            }
+        )
 
         renderer.update(({delta_time, context: c})=>{
             renderer.clear();
@@ -175,17 +173,18 @@
             for(let each of points){
                 each.applyGravity(new Vector2(0, 9.8));
             }
+
             for(let i=0; i<3; i++){
-                line.check();
-                container.check();
                 for(let each of points){
                     each.updatePosition(delta_time*0.55);
                 }
+                line.check();
+                container.check();
             }
 
             renderer.line(points[1].position, points[2].position, 2, {stroke: 'gray'});
-            renderer.point(points[2].position, 5);
             renderer.point(points[1].position, 5);
+            renderer.point(points[2].position, 5);
 
             c.fillStyle='white';
             const angle = Math.atan2(points[1].position.y - points[0].position.y, points[1].position.x - points[0].position.x);
