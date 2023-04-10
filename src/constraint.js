@@ -118,7 +118,7 @@ export class DistanceConstraint extends Constraint{
 
                 const error = Vector2.normalize(
                     p1.subtract(p2)
-                ).multiply( (1/this._spring_constant) * difference_in_length );
+                ).multiply( (this._spring_constant) * difference_in_length );
 
                 const m1_reciprocal = 1 / point1.mass;
                 const m2_reciprocal = 1 / point2.mass;
@@ -231,9 +231,9 @@ export class CircleContainerConstraint extends ContainerConstraint{
             const A = point.position;
 
             const to_point = A.subtract(this._center);
-            const d = to_point.magnitude();
+            const distance = to_point.magnitude();
 
-            if(d < this._radius) continue;
+            if(distance < this._radius) continue;
 
             const to_point_normal = to_point.normalize();
             const contact_point = to_point_normal.multiply(this._radius).add(this._center);
