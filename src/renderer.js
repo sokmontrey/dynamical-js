@@ -65,8 +65,10 @@ export default class Renderer{
 	line({
         start=new Vector(0,0),
         end=new Vector(50,50),
-        thickness=2,
-        stroke=null
+
+        fill=null,
+        stroke=null,
+        stroke_width=2
     }){
         const 
             x1 = start.x,
@@ -80,17 +82,17 @@ export default class Renderer{
 		this._context.closePath();
 
 		stroke ? this._context.strokeStyle = stroke : null;
-		this._context.lineWidth = thickness;
+		this._context.lineWidth = stroke_width;
 		this._context.stroke();
 	}
 
-	polygon(points, 
-		{
-			fill=null, 
-			stroke=null, 
-			stroke_width=null, 
-		}={}
-	){
+	polygon({
+        points=[],
+
+        fill=null, 
+        stroke=null, 
+        stroke_width=null, 
+    }){
 		this._context.beginPath();
 		this._context.moveTo(points[0].x, points[0].y);
 		for(let i=1; i<points.length; i++){

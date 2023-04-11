@@ -220,7 +220,7 @@ renderer.update(({delta_time})=>{
         renderer.line({
             start: container.getVertex(i-1), 
             end: container.getVertex(i), 
-            thickness: 10, 
+            stroke_width: 10, 
             stroke: '#D6D6B1'
         });
     }
@@ -228,7 +228,7 @@ renderer.update(({delta_time})=>{
     renderer.line({
         start: container.getVertex(container.vertices.length-1), 
         end: container.getVertex(0), 
-        thickness: 10,
+        stroke_width: 10,
         stroke: '#D6D6B1'
     });
 });
