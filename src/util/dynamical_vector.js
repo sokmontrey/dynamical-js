@@ -1,4 +1,4 @@
-export class Vector2{
+export class Vector{
     constructor(x=0, y=0){
         this.x = x;
         this.y = y;
@@ -9,26 +9,26 @@ export class Vector2{
     */
 
     static add (a, b){
-        if(b instanceof Vector2) return new Vector2(a.x + b.x, a.y+b.y);
-        else return new Vector2(a.x+b, a.y+b);
+        if(b instanceof Vector) return new Vector(a.x + b.x, a.y+b.y);
+        else return new Vector(a.x+b, a.y+b);
     }
     static subtract (a, b){
-        if(b instanceof Vector2) return new Vector2(a.x-b.x, a.y-b.y);
-        else return new Vector2(a.x-b, a.y-b);
+        if(b instanceof Vector) return new Vector(a.x-b.x, a.y-b.y);
+        else return new Vector(a.x-b, a.y-b);
     }
     static invert (a){
-        return new Vector2(-a.x, -a.y);
+        return new Vector(-a.x, -a.y);
     }
     static multiply (a, b){
-        if(b instanceof Vector2) return new Vector2(a.x*b.x, a.y*b.y);
-        else return new Vector2(a.x*b, a.y*b);
+        if(b instanceof Vector) return new Vector(a.x*b.x, a.y*b.y);
+        else return new Vector(a.x*b, a.y*b);
     }
     static divide (a, b){
-        if(b instanceof Vector2) return new Vector2(a.x/b.x, a.y/b.y);
-        else return new Vector2(a.x/b, a.y/b);
+        if(b instanceof Vector) return new Vector(a.x/b.x, a.y/b.y);
+        else return new Vector(a.x/b, a.y/b);
     }
     static reciprocal (a){
-        return new Vector2(1/a.x, 1/a.y);
+        return new Vector(1/a.x, 1/a.y);
     }
     static dot (a, b){
         return a.x*b.x + a.y*b.y;
@@ -37,20 +37,20 @@ export class Vector2{
         return Math.sqrt(a.x*a.x + a.y*a.y);
     }
     static normalize (a){
-        const mag = Vector2.magnitude(a);
-        return new Vector2(a.x/mag, a.y/mag);
+        const mag = Vector.magnitude(a);
+        return new Vector(a.x/mag, a.y/mag);
     }
     static min (a,b){
-        return new Vector2(Math.min(a.x, b.x), Math.min(a.y, b.y));
+        return new Vector(Math.min(a.x, b.x), Math.min(a.y, b.y));
     }
     static max(a,b){
-        return new Vector2(Math.max(a.x, b.x), Math.max(a.y, b.y));
+        return new Vector(Math.max(a.x, b.x), Math.max(a.y, b.y));
     }
     static distance (a,b){
-        return Vector2.magnitude(Vector2.subtract(a, b));
+        return Vector.magnitude(Vector.subtract(a, b));
     }
     static clone (a){
-        return new Vector2(a.x, a.y);
+        return new Vector(a.x, a.y);
     }
     static assign (a, b){
         a.x = b.x;
@@ -61,31 +61,31 @@ export class Vector2{
         (imagine -A bound of surface of V)
     */
     static reflect (a, v){
-        return Vector2.subtract(a,
-            Vector2.multiply(
-                Vector2.multiply( 
+        return Vector.subtract(a,
+            Vector.multiply(
+                Vector.multiply( 
                     v, 
-                    Vector2.dot(a, v)
+                    Vector.dot(a, v)
                 ),
                 2
             )
         );
     }
     static cut (a, scalar){
-        const l = Vector2.magnitude(a);
-        return Vector2.multiply(a, (l - scalar) / l);
+        const l = Vector.magnitude(a);
+        return Vector.multiply(a, (l - scalar) / l);
     }
     static expand (a, scalar){
-        const l = Vector2.magnitude(a);
-        return Vector2.multiply(a, (l + scalar) / l);
+        const l = Vector.magnitude(a);
+        return Vector.multiply(a, (l + scalar) / l);
     }
-    //Scalar the Vector2 to a certain length keeping the same angle
+    //Scalar the Vectorto a certain length keeping the same angle
     static scaleMagnitudeTo (a, scalar){
-        const l = Vector2.magnitude(a);
-        return Vector2.multiply(a, scalar / l);
+        const l = Vector.magnitude(a);
+        return Vector.multiply(a, scalar / l);
     }
     static isEqual (a, b){
-        if(b instanceof Vector2) return a.x == b.x && a.y == b.y;
+        if(b instanceof Vector) return a.x == b.x && a.y == b.y;
         else return a.x == b && a.y == b;
     }
     static isVertical (a, b){
@@ -116,7 +116,7 @@ export class Vector2{
             y = slope1 * (x - a.x) + a.y;
         }
 
-        return new Vector2(x, y);
+        return new Vector(x, y);
     }
 
     // Pseudo
@@ -143,66 +143,66 @@ export class Vector2{
     */
 
     add (other){
-        return Vector2.add(this, other);
+        return Vector.add(this, other);
     }
     subtract (other){
-        return Vector2.subtract(this, other);
+        return Vector.subtract(this, other);
     }
     invert (){
-        return Vector2.invert(this);
+        return Vector.invert(this);
     }
     multiply (other){
-        return Vector2.multiply(this, other);
+        return Vector.multiply(this, other);
     }
     divide (other){
-        return Vector2.divide(this, other);
+        return Vector.divide(this, other);
     }
     reciprocal (){
-        return Vector2.reciprocal(this);
+        return Vector.reciprocal(this);
     }
     dot (other){
-        return Vector2.dot(this, other);
+        return Vector.dot(this, other);
     }
     magnitude (){
-        return Vector2.magnitude(this);
+        return Vector.magnitude(this);
     }
     normalize (){
-        return Vector2.normalize(this);
+        return Vector.normalize(this);
     }
     min (){
-        return Vector2.min(this);
+        return Vector.min(this);
     }
     max (){
-        return Vector2.max(this);
+        return Vector.max(this);
     }
     distance (other){
-        return Vector2.distance(this, other);
+        return Vector.distance(this, other);
     }
     clone (){
-        return Vector2.clone(this);
+        return Vector.clone(this);
     }
     assign (other){
-        Vector2.assign(this, other);
+        Vector.assign(this, other);
     }
     reflect (other){
-        return Vector2.reflect(this, other);
+        return Vector.reflect(this, other);
     }
     cut (scalar){
-        return Vector2.cut(this, scalar);
+        return Vector.cut(this, scalar);
     }
     expand (scalar){
-        return Vector2.expand(this, scalar);
+        return Vector.expand(this, scalar);
     }
     scaleMagnitudeTo (scalar){
-        return Vector2.scaleMagnitudeTo(this, scalar);
+        return Vector.scaleMagnitudeTo(this, scalar);
     }
     isEqual (other){
-        return Vector2.isEqual(this, other);
+        return Vector.isEqual(this, other);
     }
     isVertical (other){
-        return Vector2.isVertical(this, other);
+        return Vector.isVertical(this, other);
     }
     isHorizontal (other){
-        return Vector2.isHorizontal(this, other);
+        return Vector.isHorizontal(this, other);
     }
 }

@@ -1,14 +1,14 @@
-import { Vector2 } from './util/dynamical_vector.js';
+import { Vector} from './util/dynamical_vector.js';
 export default class PointMass{
     constructor({
-        position=new Vector2(0,0),
+        position=new Vector(0,0),
         is_static=false,
         mass=1,
     }){
-        this._position = new Vector2(position.x,position.y);
-        this._old_position = new Vector2(position.x, position.y);
-        this._velocity = new Vector2(0,0);
-        this._acceleration = new Vector2(0,0);
+        this._position = new Vector(position.x,position.y);
+        this._old_position = new Vector(position.x, position.y);
+        this._velocity = new Vector(0,0);
+        this._acceleration = new Vector(0,0);
 
 
         this._mass = mass;
@@ -17,7 +17,7 @@ export default class PointMass{
 
     static create(x=0, y=0){
         return new PointMass({
-            position: (x instanceof Vector2) ? x : new Vector2(x, y) 
+            position: (x instanceof Vector) ? x : new Vector(x, y) 
         });
     }
 
@@ -30,8 +30,8 @@ export default class PointMass{
         if(this._is_static) return;
 
         this.applyForce(
-            Vector2.multiply(
-                x instanceof Vector2 ? x : new Vector2(x, y), 
+            Vector.multiply(
+                x instanceof Vector? x : new Vector(x, y), 
                 this.mass
             )
         );
@@ -107,8 +107,8 @@ export default class PointMass{
         this.old_position = new_old_position;
     }
     setVelocity(x, y){
-        if(x instanceof Vector2) this._velocity = x;
-        else this._velocity = new Vector2(x, y);
+        if(x instanceof Vector) this._velocity = x;
+        else this._velocity = new Vector(x, y);
 
         return this;
     }

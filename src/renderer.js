@@ -1,4 +1,4 @@
-import { Vector2 } from "./util/dynamical_vector.js";
+import { Vector} from "./util/dynamical_vector.js";
 export default class Renderer{
 
 	constructor(canvas, width=500, height=500){
@@ -38,7 +38,7 @@ export default class Renderer{
 	}
 
 	circle({ 
-        position=new Vector2(0,0),
+        position=new Vector(0,0),
         radius=3,
 
         fill=null, 
@@ -63,8 +63,8 @@ export default class Renderer{
 	}
 
 	line({
-        start=new Vector2(0,0),
-        end=new Vector2(50,50),
+        start=new Vector(0,0),
+        end=new Vector(50,50),
         thickness=2,
         stroke=null
     }){
@@ -132,10 +132,10 @@ export default class Renderer{
 	get context(){ return this._context; }
 
 	get CENTER(){
-		return new Vector2(this._width/2.0, this._height/2.0);
+		return new Vector(this._width/2.0, this._height/2.0);
 	}
 	get RANDOM(){
-		return new Vector2(
+		return new Vector(
 			Math.random() * this._width, 
 			Math.random() * this._height 
 		);

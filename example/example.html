@@ -153,7 +153,7 @@
 
             const examples = {
                 'point-mass': 
-`import { Vector2 } from '../src/util/dynamical_vector.js';
+`import { Vector } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
 import { Constraint } from '../src/constraint.js';
@@ -166,7 +166,7 @@ const renderer = new Renderer(canvas);
 renderer.setBackground('#252323');
 
 /* create a point mass with the initial position at the center */
-/* point mass take Vector2 as the argument for its initial position*/
+/* point mass take Vector as the argument for its initial position*/
 const point_mass = PointMass.create(250,250);
 
 /* 

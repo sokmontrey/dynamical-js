@@ -128,7 +128,7 @@
     </div>
 
     <script type="module">
-        import  { Vector2 } from './src/util/dynamical_vector.js';
+        import  { Vector} from './src/util/dynamical_vector.js';
         import Renderer from '../src/renderer.js';
         import PointMass from '../src/point_mass.js';
         import { Constraint } from '../src/constraint.js';
@@ -161,7 +161,7 @@
             [points[0], points[1]], 
             {
                 radius: 200,
-                offset: new Vector2(50, -50),
+                offset: new Vector(50, -50),
             }
         )
 
@@ -174,7 +174,7 @@
             });
 
             for(let each of points){
-                each.applyGravity(new Vector2(0, 9.8));
+                each.applyGravity(new Vector(0, 9.8));
             }
 
             for(let i=0; i<3; i++){

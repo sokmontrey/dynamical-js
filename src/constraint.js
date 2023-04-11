@@ -1,4 +1,4 @@
-import { Vector2 } from './util/dynamical_vector.js';
+import { Vector} from './util/dynamical_vector.js';
 /*
 point: point mass
 p: positionition of point mass
@@ -44,7 +44,7 @@ export class Constraint{
 
         }else if(type === "rectangle_container"){
 
-            const offset = params.offset || new Vector2(0,0);
+            const offset = params.offset || new Vector(0,0);
             const w = params.width || 500;
             const h = params.height || 500;
 
@@ -52,9 +52,9 @@ export class Constraint{
                 points: points,
                 vertices: [
                     offset,
-                    offset.add(new Vector2(w, 0)),
-                    offset.add(new Vector2(w, h)),
-                    offset.add(new Vector2(0, h))
+                    offset.add(new Vector(w, 0)),
+                    offset.add(new Vector(w, h)),
+                    offset.add(new Vector(0, h))
                 ]
             });
 
@@ -63,7 +63,7 @@ export class Constraint{
             return new CircleContainerConstraint({
                 points: points,
                 radius: params.radius || 250,
-                offset: params.offset || new Vector2(0,0),
+                offset: params.offset || new Vector(0,0),
             });
 
         }
@@ -86,7 +86,7 @@ export class DistanceConstraint extends Constraint{
 
         /* Setup equilabrium distance for each constraint */
         for(let i=1; i< this._points.length; i++){
-            this._distance.push(Vector2.distance(
+            this._distance.push(Vector.distance(
                 this._points[i-1].position, this._points[i].position
             ));
         }
@@ -106,7 +106,7 @@ export class DistanceConstraint extends Constraint{
             const p1 = point1.position;
             const p2 = point2.position;
 
-            const l2 = Vector2.distance(p1,p2);
+            const l2 = Vector.distance(p1,p2);
             const l1 = this._distance[i-1];
 
             if(l2 != l1){
@@ -116,7 +116,7 @@ export class DistanceConstraint extends Constraint{
                     this._stresses[i-1] = this._stresses[i-1] + Math.abs(difference_in_length);
                 }
 
-                const error = Vector2.normalize(
+                const error = Vector.normalize(
                     p1.subtract(p2)
                 ).multiply( (this._spring_constant) * difference_in_length );
 
@@ -192,20 +192,20 @@ export class ContainerConstraint extends Constraint{
     }
 
     _check(point, A, B, C, D){
-        const contact_point = Vector2.getLineIntersection(A, B, C, D);
-        const normal = new Vector2(C.y-D.y, D.x-C.x).normalize();
+        const contact_point = Vector.getLineIntersection(A, B, C, D);
+        const normal = new Vector(C.y-D.y, D.x-C.x).normalize();
 
         //If, somehow, there are no contact_point,
         //just skip
         if(!contact_point) 
             return;
 
-        if(Vector2.isPointInfrontLine(A, C, normal)) 
+        if(Vector.isPointInfrontLine(A, C, normal)) 
             return;
 
         //If the intersection is not even between the segment,
         //Don't bother
-        // if(!Vector2.isPointBetweenSegment(contact_point, C, D)) 
+        // if(!Vector.isPointBetweenSegment(contact_point, C, D)) 
         //     return;
 
         point.resolveCollision(contact_point, normal);
@@ -222,7 +222,7 @@ export class CircleContainerConstraint extends ContainerConstraint{
     constructor(params){
         super(params);
         this._radius = params.radius || 250;
-        this._offset = params.offset || new Vector2(0,0);
+        this._offset = params.offset || new Vector(0,0);
         this._center = params.offset.add(params.radius);
     }
     check(){
