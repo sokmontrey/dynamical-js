@@ -52,14 +52,7 @@ export default class Renderer{
 		this._context.arc(x, y, radius, 0, Math.PI * 2);
 		this._context.closePath();
 
-		if(fill) this._context.fillStyle = fill; 
-		this._context.fill();
-
-		if(stroke_width) {
-			stroke ? this._context.strokeStyle = stroke : null;
-			this._context.lineWidth = stroke_width;
-			this._context.stroke();
-		}
+        this._styleContext(fill, stroke, stroke_width);
 	}
 
 	line({
@@ -81,9 +74,7 @@ export default class Renderer{
 		this._context.lineTo(x2, y2);
 		this._context.closePath();
 
-		stroke ? this._context.strokeStyle = stroke : null;
-		this._context.lineWidth = stroke_width;
-		this._context.stroke();
+        this._styleContext(fill, stroke, stroke_width);
 	}
 
 	polygon({
@@ -101,14 +92,7 @@ export default class Renderer{
 		this._context.lineTo(points[0].x, points[0].y);
 		this._context.closePath();
 
-		if(fill) this._context.fillStyle = fill; 
-		this._context.fill();
-
-		if(stroke_width) {
-			stroke ? this._context.strokeStyle = stroke : null;
-			this._context.lineWidth = stroke_width;
-			this._context.stroke();
-		}
+        this._styleContext(fill, stroke, stroke_width);
 	}
 
 	update(func=null){
@@ -117,6 +101,17 @@ export default class Renderer{
 			requestAnimationFrame(this._animate);
 		}
 	}
+
+    _styleContext(fill, stroke, stroke_width){
+		if(fill) this._context.fillStyle = fill; 
+		this._context.fill();
+
+		if(stroke_width) {
+			stroke ? this._context.strokeStyle = stroke : null;
+			this._context.lineWidth = stroke_width;
+            this._context.stroke();
+		}
+    }
 
 	_animate(current_time) {
 		const delta_time = Math.min(current_time - this._last_time, 1000/30.0) * 0.01;
