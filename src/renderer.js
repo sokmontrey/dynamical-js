@@ -37,13 +37,17 @@ export default class Renderer{
 		this._context.fillRect(0,0, this._width, this._height);
 	}
 
-	point({x, y}={}, radius=3,
-		{ 
-			fill=null, 
-			stroke=null, 
-			stroke_width=null, 
-		}={}
-	){
+	circle({ 
+        position=new Vector2(0,0),
+        radius=3,
+
+        fill=null, 
+        stroke=null, 
+        stroke_width=null, 
+    }){
+        const x = position.x,
+            y = position.y;
+
 		this._context.beginPath();
 		this._context.arc(x, y, radius, 0, Math.PI * 2);
 		this._context.closePath();
@@ -58,11 +62,18 @@ export default class Renderer{
 		}
 	}
 
-	line({x: x1, y: y1}, {x: x2, y: y2}, thickness=2,
-		{
-			stroke=null, 
-		}={}
-	){
+	line({
+        start=new Vector2(0,0),
+        end=new Vector2(50,50),
+        thickness=2,
+        stroke=null
+    }){
+        const 
+            x1 = start.x,
+            y1 = start.y,
+            x2 = end.x,
+            y2 = end.y;
+
 		this._context.beginPath();
 		this._context.moveTo(x1, y1);
 		this._context.lineTo(x2, y2);
