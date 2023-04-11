@@ -1,7 +1,8 @@
 export class Vector{
-    constructor(x=0, y=0){
+    constructor(x=0, y=0, z=0){
         this.x = x;
         this.y = y;
+        this.z = z;
     }
 
     /*
@@ -9,52 +10,63 @@ export class Vector{
     */
 
     static add (a, b){
-        if(b instanceof Vector) return new Vector(a.x + b.x, a.y+b.y);
-        else return new Vector(a.x+b, a.y+b);
+        if(b instanceof Vector) return new Vector(a.x + b.x, a.y+b.y, a.z+b.z);
+        else return new Vector(a.x+b, a.y+b, a.z+b);
     }
     static subtract (a, b){
-        if(b instanceof Vector) return new Vector(a.x-b.x, a.y-b.y);
-        else return new Vector(a.x-b, a.y-b);
+        if(b instanceof Vector) return new Vector(a.x-b.x, a.y-b.y, a.z-b.z);
+        else return new Vector(a.x-b, a.y-b, a.z-b);
     }
     static invert (a){
-        return new Vector(-a.x, -a.y);
+        return new Vector(-a.x, -a.y, -a.z);
     }
     static multiply (a, b){
-        if(b instanceof Vector) return new Vector(a.x*b.x, a.y*b.y);
-        else return new Vector(a.x*b, a.y*b);
+        if(b instanceof Vector) return new Vector(a.x*b.x, a.y*b.y, a.z*b.z);
+        else return new Vector(a.x*b, a.y*b, a.z*b);
     }
     static divide (a, b){
-        if(b instanceof Vector) return new Vector(a.x/b.x, a.y/b.y);
-        else return new Vector(a.x/b, a.y/b);
+        //TODO: divide by zero
+        if(b instanceof Vector) return new Vector(a.x/b.x, a.y/b.y, a.z/b.z);
+        else return new Vector(a.x/b, a.y/b, a.z/b);
     }
     static reciprocal (a){
-        return new Vector(1/a.x, 1/a.y);
+        //TODO: divide by zero
+        return new Vector(1/a.x, 1/a.y, 1/a.z);
     }
     static dot (a, b){
-        return a.x*b.x + a.y*b.y;
+        return a.x*b.x + a.y*b.y + a.z*b.z;
     }
     static magnitude (a){
-        return Math.sqrt(a.x*a.x + a.y*a.y);
+        return Math.sqrt((a.x*a.x) + (a.y*a.y) + (a.z*a.z));
     }
     static normalize (a){
         const mag = Vector.magnitude(a);
-        return new Vector(a.x/mag, a.y/mag);
+        return new Vector(a.x/mag, a.y/mag, a.z/mag);
     }
     static min (a,b){
-        return new Vector(Math.min(a.x, b.x), Math.min(a.y, b.y));
+        return new Vector(
+            Math.min(a.x, b.x), 
+            Math.min(a.y, b.y), 
+            Math.min(a.z, b.z)
+        );
     }
     static max(a,b){
-        return new Vector(Math.max(a.x, b.x), Math.max(a.y, b.y));
+        return new Vector(
+            Math.max(a.x, b.x), 
+            Math.max(a.y, b.y),
+            Math.max(a.z, b.z)
+        );
     }
     static distance (a,b){
         return Vector.magnitude(Vector.subtract(a, b));
     }
     static clone (a){
-        return new Vector(a.x, a.y);
+        return new Vector(a.x, a.y, a.z);
     }
     static assign (a, b){
         a.x = b.x;
         a.y = b.y;
+        a.z = b.z;
     }
     /*
     Find a reflection vector A with V as the mirror
@@ -85,14 +97,8 @@ export class Vector{
         return Vector.multiply(a, scalar / l);
     }
     static isEqual (a, b){
-        if(b instanceof Vector) return a.x == b.x && a.y == b.y;
-        else return a.x == b && a.y == b;
-    }
-    static isVertical (a, b){
-        return a.x == b.x;
-    }
-    static isHorizontal(a, b){
-        return a.y == b.y;
+        if(b instanceof Vector) return a.x == b.x && a.y == b.y && a.z == b.y;
+        else return a.x == b && a.y == b && a.z == b;
     }
 
     static getLineIntersection(a, b, c, d){

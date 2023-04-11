@@ -7,9 +7,8 @@ export default class PointMass{
     }){
         this._position = new Vector(position.x,position.y);
         this._old_position = new Vector(position.x, position.y);
-        this._velocity = new Vector(0,0);
-        this._acceleration = new Vector(0,0);
-
+        this._velocity = new Vector(0,0,0);
+        this._acceleration = new Vector(0,0,0);
 
         this._mass = mass;
         this._is_static = is_static;
@@ -46,7 +45,6 @@ export default class PointMass{
             .invert()
             .add(contact_point)
         );
-
         this._position.assign(contact_point);
     }
     resolveDistanceConstraint(new_position){

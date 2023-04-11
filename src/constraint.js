@@ -222,8 +222,10 @@ export class CircleContainerConstraint extends ContainerConstraint{
     constructor(params){
         super(params);
         this._radius = params.radius || 250;
-        this._offset = params.offset || new Vector(0,0);
+        this._offset = params.offset || new Vector(0,0,0);
+
         this._center = params.offset.add(params.radius);
+        this._center.z = 0;
     }
     check(){
         for(let i=0; i<this._points.length; i++){
