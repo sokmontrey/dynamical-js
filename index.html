@@ -167,7 +167,8 @@
 
         renderer.update(({delta_time, context: c})=>{
             renderer.clear();
-            c.fillStyle = g;
+
+            renderer.setFillStyle(g);
             renderer.circle({
                 position: container._center,
                 radius: container._radius
@@ -188,7 +189,7 @@
             renderer.line({
                 start: points[1].position, 
                 end: points[2].position, 
-                thickness: 2, 
+                line_width: 2, 
                 stroke: 'gray'
             });
 
@@ -202,14 +203,14 @@
                 radius: 5
             });
 
-            c.fillStyle='white';
+            renderer.setFillStyle('white');
             const angle = Math.atan2(points[1].position.y - points[0].position.y, points[1].position.x - points[0].position.x);
             c.translate(points[0].position.x, points[0].position.y);
             c.rotate(angle);
             c.fillText(word1, 0, 0);
             c.setTransform(1, 0, 0, 1, 0, 0);
 
-            c.fillStyle='#F45D01';
+            renderer.setFillStyle('#F45D01');
             c.fillText(word2, points[2].position.x - text_width2/2, points[2].position.y + text_width2/4);
         });
 

@@ -43,7 +43,7 @@ export default class Renderer{
 
         fill=null, 
         stroke=null, 
-        stroke_width=null, 
+        line_width=null, 
     }){
         const x = position.x,
             y = position.y;
@@ -52,7 +52,7 @@ export default class Renderer{
 		this._context.arc(x, y, radius, 0, Math.PI * 2);
 		this._context.closePath();
 
-        this._styleContext(fill, stroke, stroke_width);
+        this._styleContext(fill, stroke, line_width);
 	}
 
 	line({
@@ -61,7 +61,7 @@ export default class Renderer{
 
         fill=null,
         stroke=null,
-        stroke_width=2
+        line_width=2
     }){
         const 
             x1 = start.x,
@@ -74,7 +74,7 @@ export default class Renderer{
 		this._context.lineTo(x2, y2);
 		this._context.closePath();
 
-        this._styleContext(fill, stroke, stroke_width);
+        this._styleContext(fill, stroke, line_width);
 	}
 
 	polygon({
@@ -82,7 +82,7 @@ export default class Renderer{
 
         fill=null, 
         stroke=null, 
-        stroke_width=null, 
+        line_width=null, 
     }){
 		this._context.beginPath();
 		this._context.moveTo(points[0].x, points[0].y);
@@ -92,8 +92,29 @@ export default class Renderer{
 		this._context.lineTo(points[0].x, points[0].y);
 		this._context.closePath();
 
-        this._styleContext(fill, stroke, stroke_width);
+        this._styleContext(fill, stroke, line_width);
 	}
+
+    fill(){
+        this._context.fill();
+        return this;
+    }
+    stroke(){
+        this._context.stroke();
+        return this;
+    }
+    setLineWidth(line_width=3){
+        this._context.lineWidth = line_width;
+        return this;
+    }
+    setStrokeStyle(color='gray'){
+        this._context.strokeStyle = color;
+        return this;
+    }
+    setFillStyle(color='white'){
+        this._context.fillStyle = color;
+        return this;
+    }
 
 	update(func=null){
 		if(!this._update_function){
@@ -102,13 +123,13 @@ export default class Renderer{
 		}
 	}
 
-    _styleContext(fill, stroke, stroke_width){
+    _styleContext(fill, stroke, line_width){
 		if(fill) this._context.fillStyle = fill; 
 		this._context.fill();
 
-		if(stroke_width) {
+		if(line_width) {
 			stroke ? this._context.strokeStyle = stroke : null;
-			this._context.lineWidth = stroke_width;
+			this._context.lineWidth = line_width;
             this._context.stroke();
 		}
     }
