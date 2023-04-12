@@ -211,24 +211,25 @@ renderer.update(({delta_time})=>{
     */
     renderer.circle({
         position: point_mass.position, 
-        radius: 10, 
-        fill: '#D6D6B1'
+        radius: 6, 
     });
+    renderer.setFillStyle('#D6D6B1').fill();
 
     /* Visualize the container*/
+    renderer.setStrokeStyle('#D6D6B1');
     for(let i=1; i<container.vertices.length; i++){
         renderer.line({
             start: container.getVertex(i-1), 
             end: container.getVertex(i), 
-            stroke: '#D6D6B1'
         });
+        renderer.stroke();
     }
 
     renderer.line({
         start: container.getVertex(container.vertices.length-1), 
         end: container.getVertex(0), 
-        stroke: '#D6D6B1'
     });
+    renderer.stroke();
 });
 `,
             };

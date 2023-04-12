@@ -52,6 +52,7 @@ export default class Renderer{
 	line({
         start=new Vector(0,0),
         end=new Vector(50,50),
+        line_width=3,
     }){
         const 
             x1 = start.x,
@@ -63,6 +64,8 @@ export default class Renderer{
 		this._context.moveTo(x1, y1);
 		this._context.lineTo(x2, y2);
 		this._context.closePath();
+
+        this._context.lineWidth= line_width;
 	}
 
 	polygon({

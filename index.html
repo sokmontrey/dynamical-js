@@ -168,11 +168,11 @@
         renderer.update(({delta_time, context: c})=>{
             renderer.clear();
 
-            renderer.setFillStyle(g);
             renderer.circle({
                 position: container._center,
                 radius: container._radius
             });
+            renderer.setFillStyle(g).fill();
 
             for(let each of points){
                 each.applyGravity(new Vector(0, 9.8));
@@ -190,18 +190,20 @@
                 start: points[1].position, 
                 end: points[2].position, 
                 line_width: 2, 
-                stroke: 'gray'
             });
+            renderer.setStrokeStyle('gray').stroke();
 
             renderer.circle({
                 position: points[1].position, 
                 radius: 5
             });
+            renderer.setFillStyle('gray').fill();
 
             renderer.circle({
                 position: points[2].position, 
                 radius: 5
             });
+            renderer.fill();
 
             renderer.setFillStyle('white');
             const angle = Math.atan2(points[1].position.y - points[0].position.y, points[1].position.x - points[0].position.x);
