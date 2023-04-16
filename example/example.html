@@ -182,7 +182,7 @@ const point_mass = PointMass.create(250,250);
 const container = Constraint.create('rectangle_container', [point_mass]);
 
 /* LOOP */
-renderer.update(()=>{
+renderer.update((delta_time)=>{
     // clear the canvas at the start of every frame.
     renderer.clear();
 
@@ -196,7 +196,7 @@ renderer.update(()=>{
         Update the position of the point_mass with renderer's delta_time
         The point_mass will update its position using Verlet integration method 
     */
-    point_mass.updatePosition(0.25);
+    point_mass.updatePosition(delta_time);
 
     /*
         Call the check method on constraint
