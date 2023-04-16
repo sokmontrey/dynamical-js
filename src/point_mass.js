@@ -53,16 +53,18 @@ export default class PointMass{
         this._position.assign(new_position);
     }
 
-    updatePosition(delta_time){
+    updatePosition(delta_time=0.25){
         if(this._is_static) return;
 
-        this._velocity = this._velocity.add(this._position.subtract(this._old_position));
-
+        this._velocity = this._velocity.add(
+            this._position.subtract(this._old_position)
+        );
+        
         this._old_position.assign(this._position);
 
         this._position = this._position
-            .add(this._velocity)
-            .add(this._acceleration.multiply(delta_time * delta_time));
+            .add(this._acceleration.multiply(delta_time * delta_time))
+            .add(this._velocity);
 
         this._velocity.x = 0;
         this._velocity.y = 0;
