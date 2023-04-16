@@ -191,6 +191,7 @@ export class ContainerConstraint extends Constraint{
         }
     }
 
+    //check for one point with one segment
     _check(point, A, B, C, D){
         const contact_point = Vector.getLineIntersection(A, B, C, D);
         const normal = new Vector(C.y-D.y, D.x-C.x).normalize();
