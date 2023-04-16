@@ -113,10 +113,7 @@ export default class Renderer{
 		this._last_time = current_time;
 
 		if(this._update_function) {
-			this._update_function({
-				'delta_time': delta_time,
-				'context': this._context,
-			});
+			this._update_function(delta_time);
 		}
 		requestAnimationFrame(this._animate);
 	}
