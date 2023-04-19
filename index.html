@@ -155,7 +155,10 @@
             PointMass.create(200 + text_width + 100, 150)
         ];
 
-        const line = Constraint.create('rigid', points);
+        const line = Constraint.create('rigid')
+            .addPointMass(points[0])
+            .addPointMass(points[1])
+            .addPointMass(points[2]);
 
         const container = Constraint.create('circle_container', 
             [points[0], points[1]], 
@@ -215,7 +218,6 @@
             renderer.setFillStyle('#F45D01');
             c.fillText(word2, points[2].position.x - text_width2/2, points[2].position.y + text_width2/4);
         });
-
     </script>
 </body>
 </html>

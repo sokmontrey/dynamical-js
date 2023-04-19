@@ -81,23 +81,23 @@ export class DistanceConstraint extends Constraint{
 
         this._distance = [];
         this._spring_constant = params.spring_constant || 1;
-        this._is_record_stress = params.record_stress || false;
-        this._stresses = [];
+    }
+    addPointMass(point){
+        this._points.push(point);
 
-        /* Setup equilabrium distance for each constraint */
-        for(let i=1; i< this._points.length; i++){
+        const l = this._points.length;
+
+        if(l > 1){
             this._distance.push(Vector.distance(
-                this._points[i-1].position, this._points[i].position
+                this._points[l-2].position, point.position
             ));
         }
-
-        /* Setup stress record */
-        if(this._is_record_stress){
-            for(let i=0; i<points.length-1; i++){
-                this._stresses.push(0);
-            }
-        }
+        return this;
     }
+    setSpringConstant(spring_constant){
+        this._spring_constant = spring_constant;
+    }
+
     check(){
         for(let i=1; i<this._points.length; i++){
             const point1 = this._points[i-1];
@@ -136,28 +136,6 @@ export class DistanceConstraint extends Constraint{
                 point1.resolveDistanceConstraint(new_p1);
                 point2.resolveDistanceConstraint(new_p2);
             }
-        }
-    }
-
-    get stresses() { return this._stresses; }
-
-    getConstraint(){
-        const result = [];
-        for(let i=0; i<this._stresses.length; i++){
-            result.push({
-                point1: this._points[i],
-                point2: this._points[i+1],
-                distance: this._distance[i],
-                stress: this._stresses[i],
-            });
-        }
-        this.resetStress();
-        return result;
-    }
-
-    resetStress(){
-        for(let i=0; i<this._stresses.length; i++){
-            this._stresses[i] = 0;
         }
     }
 }
@@ -224,8 +202,26 @@ export class CircleContainerConstraint extends ContainerConstraint{
         super(params);
         this._radius = params.radius || 250;
         this._offset = params.offset || new Vector(0,0,0);
+        this.calculateCenter();
+    }
+    setRadius(radius){
+        this._radius = radius;
 
-        this._center = params.offset.add(params.radius);
+        this._calculateCenter();
+        return this;
+    }
+    setOffset(offset, y=null){
+        if(offset instanceof Vector){
+            this._offset.assign(offset);
+        }else{
+            this._offset.assign(new Vector(offset, y));
+        }
+
+        this._calculateCenter();
+        return this;
+    }
+    _calculateCenter(){
+        this._center = this._offset.add(this._radius);
         this._center.z = 0;
     }
     check(){
