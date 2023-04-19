@@ -15,6 +15,16 @@ export class Constraint{
     }
 
     addPointMass(point){
+        if(point instanceof Array){
+            for(let each of point) this._addPointMass(each);
+        }else{
+            this._addPointMass(point);
+        }
+
+        return this;
+    }
+
+    _addPointMass(point){
         this._points.push(point);
     }
 
@@ -82,7 +92,7 @@ export class DistanceConstraint extends Constraint{
         this._distance = [];
         this._spring_constant = params.spring_constant || 1;
     }
-    addPointMass(point){
+    _addPointMass(point){
         this._points.push(point);
 
         const l = this._points.length;
@@ -92,10 +102,13 @@ export class DistanceConstraint extends Constraint{
                 this._points[l-2].position, point.position
             ));
         }
+
         return this;
     }
     setSpringConstant(spring_constant){
         this._spring_constant = spring_constant;
+
+        return this;
     }
 
     check(){
@@ -147,8 +160,18 @@ export class ContainerConstraint extends Constraint{
         this._vertices = params.vertices || [];
     }
 
-    addVertex(new_vertex){
-        this._vertices.push(new_vertex);
+    addVertex(vertex, y=null){
+        if(vertex instanceof Vector){
+            this._vertices.push(vertex);
+        } else if (new_vertex instanceof Array){
+            for(let each of vertex){
+                this._vertices.push(each);
+            }
+        } else {
+            this._vertices.push(new Vector(vertex, y));
+        }
+
+        return this;
     }
 
     check(){
@@ -202,12 +225,12 @@ export class CircleContainerConstraint extends ContainerConstraint{
         super(params);
         this._radius = params.radius || 250;
         this._offset = params.offset || new Vector(0,0,0);
-        this.calculateCenter();
+        this._calculateCenter();
     }
     setRadius(radius){
         this._radius = radius;
-
         this._calculateCenter();
+
         return this;
     }
     setOffset(offset, y=null){
@@ -216,8 +239,8 @@ export class CircleContainerConstraint extends ContainerConstraint{
         }else{
             this._offset.assign(new Vector(offset, y));
         }
-
         this._calculateCenter();
+
         return this;
     }
     _calculateCenter(){
