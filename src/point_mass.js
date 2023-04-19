@@ -20,11 +20,50 @@ export default class PointMass{
         });
     }
 
-    applyForce(f){
+    setMass(mass){
+        this._mass = mass;
+        return this;
+    }
+    static(){
+        this._is_static = true;
+        return this;
+    }
+
+    setPosition(position, y=null){
+        if(position instanceof Vector)
+            this.position = position;
+        else
+            this.position.assign(new Vector(position, y));
+
+        return this;
+    }
+    setOldPosition(old_position, y=null){
+        if(old_position instanceof Vector)
+            this.old_position = old_position;
+        else
+            this.old_position.assign(new Vector(old_position, y));
+
+        return this;
+    }
+    setVelocity(velocity, y=null){
+        if(velocity instanceof Vector) this._velocity = velocity;
+        else this._velocity = new Vector(velocity, y);
+
+        return this;
+    }
+    applyForce(force, y=null){
         if(this._is_static) return;
 
-        this._acceleration = this._acceleration.add(f.divide(this._mass));
+        this._acceleration = this._acceleration.add(
+            (force instanceof Vector 
+                ? force 
+                : new Vector(force, y)
+            ).divide(this._mass)
+        );
+
+        return this;
     }
+
     applyGravity(x=0, y=9.8){
         if(this._is_static) return;
 
@@ -34,6 +73,8 @@ export default class PointMass{
                 this.mass
             )
         );
+
+        return this;
     }
     resolveCollision(contact_point, normal){
         if(this._is_static) return;
@@ -89,30 +130,4 @@ export default class PointMass{
     get mass(){ return this._mass; }
     get velocity(){ return this._velocity; }
     get acceleration(){ return this._acceleration; }
-
-    setMass(new_mass){
-        this._mass = new_mass;
-        return this;
-    }
-    static(){
-        this._is_static = true;
-        return this;
-    }
-
-    setPosition(new_position){
-        this.position = new_position;
-        return this;
-    }
-    setOldPosition(new_old_position){
-        this.old_position = new_old_position;
-    }
-    setVelocity(x, y){
-        if(x instanceof Vector) this._velocity = x;
-        else this._velocity = new Vector(x, y);
-
-        return this;
-    }
-    isStatic(){
-        return this._is_static;
-    }
 }
