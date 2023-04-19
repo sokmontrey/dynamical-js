@@ -156,17 +156,13 @@
         ];
 
         const line = Constraint.create('rigid')
+            .addPointMass(points);
+
+        const container = Constraint.create('circle_container')
             .addPointMass(points[0])
             .addPointMass(points[1])
-            .addPointMass(points[2]);
-
-        const container = Constraint.create('circle_container', 
-            [points[0], points[1]], 
-            {
-                radius: 200,
-                offset: new Vector(50, -50),
-            }
-        )
+            .setRadius(200)
+            .setOffset(new Vector(50, -50));
 
         renderer.update((delta_time)=>{
             renderer.clear();
