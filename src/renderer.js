@@ -69,14 +69,14 @@ export default class Renderer{
 	}
 
 	polygon({
-        points=[],
+        vertices=[],
     }){
 		this._context.beginPath();
-		this._context.moveTo(points[0].x, points[0].y);
-		for(let i=1; i<points.length; i++){
-			this._context.lineTo(points[i].x, points[i].y);
+		this._context.moveTo(vertices[0].x, vertices[0].y);
+		for(let i=1; i<vertices.length; i++){
+			this._context.lineTo(vertices[i].x, vertices[i].y);
 		}
-		this._context.lineTo(points[0].x, points[0].y);
+		this._context.lineTo(vertices[0].x, vertices[0].y);
 		this._context.closePath();
 	}
 
