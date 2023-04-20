@@ -42,7 +42,7 @@ export class Constraint{
             return new DistanceConstraint({
                 points: points,
                 record_stress: params.record_stress || false,
-                spring_constant: params.spring_constant || 10,
+                spring_constant: params.spring_constant || 0.1,
             });
 
         }else if(type === "container"){

@@ -152,6 +152,87 @@
         <script>
 
             const examples = {
+                'brigde': 
+`import { Vector } from '../src/util/dynamical_vector.js';
+import PointMass from '../src/point_mass.js';
+import Renderer from '../src/renderer.js';
+import { Constraint } from '../src/constraint.js';
+
+const canvas = document.getElementById('canvas');
+
+const renderer = new Renderer(canvas);
+renderer.setBackground('#252323');
+
+const s = 150;
+const points = [
+    PointMass.create(250-s/2  , 250-s/3),
+    PointMass.create(250+s/2  , 250-s/3),
+
+    PointMass.create(250-2*s/2, 250+s/3).static(),
+    PointMass.create(250      , 250+s/3),
+    PointMass.create(250+2*s/2, 250+s/3).static(),
+
+    PointMass.create(250+2*s/3, 250+s/3)
+];
+
+const connections = [
+    Constraint.create('rigid')
+        .addPointMass(points[2])
+        .addPointMass(points[0])
+        .addPointMass(points[1])
+        .addPointMass(points[4]),
+    
+    Constraint.create('rigid')
+        .addPointMass(points[2])
+        .addPointMass(points[3])
+        .addPointMass(points[4]),
+    
+    Constraint.create('rigid')
+        .addPointMass(points[0])
+        .addPointMass(points[3])
+        .addPointMass(points[1]),
+
+    Constraint.create('rigid')
+        .addPointMass(points[3])
+        .addPointMass(points[5]),
+];
+
+renderer.update((delta_time)=>{
+    renderer.clear();
+    
+    for(let i in points){
+        points[i].applyGravity();
+    }
+    for(let iter=0; iter<3; iter++){
+        for(let i in points){
+            points[i].updatePosition(delta_time*0.6);
+        }
+        for(let i in connections){
+            connections[i].check();
+        }
+    }
+
+    for(let each of connections){
+        const points = each.points;
+        for(let j=1; j<points.length; j++){
+            renderer.line({
+                start: points[j].position,
+                end: points[j-1].position,
+                line_width: 5
+            });
+            renderer.setStrokeStyle('#d6d6b1').stroke();
+        }
+    }
+
+    for(let i in points){
+        renderer.circle({
+            position: points[i].position,
+            radius: 8
+        });
+        renderer.setFillStyle('#188edc').fill();
+    }
+});
+`,
                 'point-mass': 
 `import { Vector } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
