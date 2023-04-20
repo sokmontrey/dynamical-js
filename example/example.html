@@ -180,21 +180,25 @@ const connections = [
         .addPointMass(points[2])
         .addPointMass(points[0])
         .addPointMass(points[1])
-        .addPointMass(points[4]),
+        .addPointMass(points[4])
+        .recordStress(),
     
     Constraint.create('rigid')
         .addPointMass(points[2])
         .addPointMass(points[3])
-        .addPointMass(points[4]),
+        .addPointMass(points[4])
+        .recordStress(),
     
     Constraint.create('rigid')
         .addPointMass(points[0])
         .addPointMass(points[3])
-        .addPointMass(points[1]),
+        .addPointMass(points[1])
+        .recordStress(),
 
     Constraint.create('rigid')
         .addPointMass(points[3])
-        .addPointMass(points[5]),
+        .addPointMass(points[5])
+        .recordStress(),
 ];
 
 renderer.update((delta_time)=>{
@@ -212,15 +216,16 @@ renderer.update((delta_time)=>{
         }
     }
 
-    for(let each of connections){
-        const points = each.points;
+    for(let each_connection of connections){
+        const points = each_connection.points;
         for(let j=1; j<points.length; j++){
             renderer.line({
                 start: points[j].position,
                 end: points[j-1].position,
                 line_width: 5
             });
-            renderer.setStrokeStyle('#d6d6b1').stroke();
+            const stress = each_connection.getStress(j-1);
+            renderer.setStrokeStyle(\`rgb(\${stress * 500}, 63, 63)\`).stroke();
         }
     }
 
