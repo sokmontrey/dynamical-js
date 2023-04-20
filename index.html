@@ -162,7 +162,8 @@
             .addPointMass(points[0])
             .addPointMass(points[1])
             .setRadius(200)
-            .setOffset(new Vector(50, -50));
+            .setOffset(new Vector(50, -50))
+            .setFrictionConstant(0.01);
 
         renderer.update((delta_time)=>{
             renderer.clear();
