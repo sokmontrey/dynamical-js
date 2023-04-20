@@ -52,6 +52,12 @@ export default class PointMass{
 
         return this;
     }
+    addVelocity(velocity, y=null){
+        if(velocity instanceof Vector) this._velocity = this._velocity.add(velocity);
+        else this._velocity = this.velocity.add(new Vector(velocity, y));
+
+        return this;
+    }
     applyForce(force, y=null){
         if(this._is_static) return;
 
@@ -88,6 +94,19 @@ export default class PointMass{
             .add(contact_point)
         );
         this._position.assign(contact_point);
+    }
+    resolveFriction(normal, friction_constant){
+        if(this._is_static) return;
+
+        const v = this._position.subtract(this._old_position);
+
+        //p is a normalized vector pointing parrallel to the surface
+        const p = new Vector(normal.y, -normal.x);
+        const opposing_v = p.multiply(v.dot(p))
+            .invert()
+            .multiply(friction_constant);
+
+        this.addVelocity(opposing_v );
     }
     resolveDistanceConstraint(new_position){
         if(this._is_static) return;

@@ -148,6 +148,7 @@ export class DistanceConstraint extends Constraint{
                         : error.multiply(m2_reciprocal / sum_reciprocal)
                 );
                 point2.resolveDistanceConstraint(new_p2);
+
             }
         }
     }
@@ -158,6 +159,7 @@ export class ContainerConstraint extends Constraint{
         super(params);
 
         this._vertices = params.vertices || [];
+        this._friction_constant = params.friction_constant || 0.05;
     }
 
     addVertex(vertex, y=null){
@@ -170,6 +172,11 @@ export class ContainerConstraint extends Constraint{
         } else {
             this._vertices.push(new Vector(vertex, y));
         }
+
+        return this;
+    }
+    setFrictionConstant(friction_constant){
+        this._friction_constant = friction_constant;
 
         return this;
     }
@@ -211,6 +218,7 @@ export class ContainerConstraint extends Constraint{
         //     return;
 
         point.resolveCollision(contact_point, normal);
+        point.resolveFriction(normal, this._friction_constant);
     }
 
     get vertices() {return this._vertices; }
@@ -262,6 +270,7 @@ export class CircleContainerConstraint extends ContainerConstraint{
             const normal = to_point_normal.invert();
 
             point.resolveCollision(contact_point, normal);
+            point.resolveFriction(normal, this._friction_constant);
         }
     }
 }

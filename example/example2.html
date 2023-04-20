@@ -25,12 +25,12 @@
         const renderer = new Renderer(canvas);
         renderer.setBackground('#252323');
 
-        const p1 = PointMass.create(250,250).static();
-        const p2 = PointMass.create(400,300);
+        const p1 = PointMass.create(250,200);
+        const p2 = PointMass.create(255,300);
 
         const r = Constraint.create('rigid')
             .addPointMass(p1)
-            .addPointMass(p2);
+            .addPointMass(p2)
 
         const container = Constraint.create('rectangle_container')
             .addPointMass(p1)
