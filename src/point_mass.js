@@ -28,6 +28,7 @@ export default class PointMass{
         this._is_static = true;
         return this;
     }
+    isStatic(){ return this._is_static; }
 
     setPosition(position, y=null){
         if(position instanceof Vector)

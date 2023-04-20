@@ -125,10 +125,6 @@ export class DistanceConstraint extends Constraint{
             if(l2 != l1){
                 const difference_in_length = (l1-l2);
 
-                if(this._is_record_stress) {
-                    this._stresses[i-1] = this._stresses[i-1] + Math.abs(difference_in_length);
-                }
-
                 const error = Vector.normalize(
                     p1.subtract(p2)
                 ).multiply( (this._spring_constant) * difference_in_length );
@@ -140,13 +136,17 @@ export class DistanceConstraint extends Constraint{
                 const sum_reciprocal = m1_reciprocal + m2_reciprocal;
 
                 const new_p1 = p1.add(
-                    error.multiply(m1_reciprocal / sum_reciprocal)
+                    point2.isStatic()
+                        ? error
+                        : error.multiply(m1_reciprocal / sum_reciprocal)
                 );
-                const new_p2 = p2.subtract(
-                    error.multiply(m2_reciprocal / sum_reciprocal)
-                );
-
                 point1.resolveDistanceConstraint(new_p1);
+
+                const new_p2 = p2.subtract(
+                    point1.isStatic()
+                        ? error
+                        : error.multiply(m2_reciprocal / sum_reciprocal)
+                );
                 point2.resolveDistanceConstraint(new_p2);
             }
         }
