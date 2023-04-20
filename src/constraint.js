@@ -16,17 +16,19 @@ export class Constraint{
 
     addPointMass(point){
         if(point instanceof Array){
-            for(let each of point) this._addPointMass(each);
+            for(let each of point) {
+                this._points.push(each);
+                this._addPointMass(each);
+            }
         }else{
+            this._points.push(point);
             this._addPointMass(point);
         }
 
         return this;
     }
 
-    _addPointMass(point){
-        this._points.push(point);
-    }
+    _addPointMass(point){ return; }
 
     static create(type, points, params = {}){
         if(type === "rigid"){
@@ -91,24 +93,51 @@ export class DistanceConstraint extends Constraint{
 
         this._distance = [];
         this._spring_constant = params.spring_constant || 1;
-    }
-    _addPointMass(point){
-        this._points.push(point);
 
+        this._stresses = [];
+        const is_record_stress = params.is_record_stress || false;
+        if(is_record_stress) this.recordStress();
+    }
+    _addLength(){
         const l = this._points.length;
 
         if(l > 1){
             this._distance.push(Vector.distance(
-                this._points[l-2].position, point.position
+                this._points[l-2].position, this._points[l-1].position
             ));
         }
 
+    }
+    _addStress(){
+        while(this._points.length > 1 && 
+            this._stresses.length < this._points.length
+        ){
+            this._stresses.push(0);
+        }
+    }
+    _addPointMass(point){
+        this._addLength();
+        this._addStress();
+    }
+
+    recordStress(){
+        this._is_record_stress = true;
+        this._addStress();
+
         return this;
     }
+
     setSpringConstant(spring_constant){
         this._spring_constant = spring_constant;
 
         return this;
+    }
+
+    getStress(index){
+        return this._stresses[index];
+    }
+    _checkStress(index, value){
+        this._stresses[index] = Math.abs(value);
     }
 
     check(){
@@ -128,6 +157,8 @@ export class DistanceConstraint extends Constraint{
                 const error = Vector.normalize(
                     p1.subtract(p2)
                 ).multiply( (this._spring_constant) * difference_in_length );
+
+                this._checkStress(i-1, error.magnitude());
 
                 const m1_reciprocal = 1 / point1.mass;
                 const m2_reciprocal = 1 / point2.mass;
