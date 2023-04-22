@@ -162,10 +162,10 @@ export class DistanceConstraint extends Constraint{
             const point1 = this._points[i-1];
             const point2 = this._points[i];
 
-            this._check(point1, point2, i-1);
+            this._checkPoint(point1, point2, i-1);
         }
     }
-    _check(point1, point2, distance_index){
+    _checkPoint(point1, point2, distance_index){
         const p1 = point1.position;
         const p2 = point2.position;
 
@@ -201,7 +201,7 @@ export class DistanceConstraint extends Constraint{
                     : error.multiply(m2_reciprocal / sum_reciprocal)
             );
 
-            this._resolve(
+            this._resolvePoint(
                 point1, point2, 
                 new_p1, new_p2
             );
@@ -209,7 +209,7 @@ export class DistanceConstraint extends Constraint{
             this._checkStress(stress_index, error.magnitude());
         }
     }
-    _resolve(point1, point2, new_p1, new_p2){
+    _resolvePoint(point1, point2, new_p1, new_p2){
         point1.applyDistanceConstraint(new_p1);
         point2.applyDistanceConstraint(new_p2);
     }
@@ -258,7 +258,7 @@ export class ContainerConstraint extends Constraint{
             const point = this._points[i];
 
             for(let i=1; i<this._vertices.length; i++){
-                this._check(
+                this._checkPoint(
                     point,
                     point.position, 
                     point.old_position, 
@@ -267,7 +267,7 @@ export class ContainerConstraint extends Constraint{
                 );
             }
 
-            this._check(
+            this._checkPoint(
                 point,
                 point.position, 
                 point.old_position, 
@@ -278,7 +278,7 @@ export class ContainerConstraint extends Constraint{
     }
 
     //check for one point with one segment
-    _check(point, A, B, C, D){
+    _checkPoint(point, A, B, C, D){
         const contact_point = Vector.getLineIntersection(A, B, C, D);
         const normal = new Vector(C.y-D.y, D.x-C.x).normalize();
 
@@ -295,9 +295,9 @@ export class ContainerConstraint extends Constraint{
         // if(!Vector.isPointBetweenSegment(contact_point, C, D)) 
         //     return;
 
-        this._resolve(point, contact_point, normal);
+        this._resolvePoint(point, contact_point, normal);
     }
-    _resolve(point, contact_point, normal){
+    _resolvePoint(point, contact_point, normal){
         point.applyCollision(
             this,
             contact_point,
@@ -344,10 +344,10 @@ export class CircleContainerConstraint extends ContainerConstraint{
     check(){
         for(let i=0; i<this._points.length; i++){
             const point = this._points[i];
-            this._check(point);
+            this._checkPoint(point);
         }
     }
-    _check(point){
+    _checkPoint(point){
         const A = point.position;
 
         const to_point = A.subtract(this._center);
@@ -359,9 +359,9 @@ export class CircleContainerConstraint extends ContainerConstraint{
         const contact_point = to_point_normal.multiply(this._radius).add(this._center);
         const normal = to_point_normal.invert();
 
-        this._resolve(point, contact_point, normal);
+        this._resolvePoint(point, contact_point, normal);
     }
-    _resolve(point, contact_point, normal){
+    _resolvePoint(point, contact_point, normal){
         point.applyCollision(
             this,
             contact_point, 
