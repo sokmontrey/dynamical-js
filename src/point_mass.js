@@ -16,6 +16,7 @@ export default class PointMass extends Abstract{
 
         this._mass = mass;
         this._is_static = is_static;
+        this._onCollision = (other)=>{};
     }
 
     static create(x=0, y=0){
@@ -56,6 +57,10 @@ export default class PointMass extends Abstract{
 
         return this;
     }
+    setOnCollision(onCollision_callback){
+        this._onCollision = onCollision_callback;
+        return this;
+    }
     addVelocity(velocity, y=null){
         if(velocity instanceof Vector) this._velocity = this._velocity.add(velocity);
         else this._velocity = this.velocity.add(new Vector(velocity, y));
@@ -88,11 +93,13 @@ export default class PointMass extends Abstract{
         return this;
     }
     applyCollision(
-        other_name, 
+        other, 
         contact_point, 
         normal, 
         friction_constant
     ){
+        this._onCollision(other);
+
         if(this._is_static) return;
 
         this._resolveCollision(contact_point, normal);

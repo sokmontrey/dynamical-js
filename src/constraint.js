@@ -299,7 +299,7 @@ export class ContainerConstraint extends Constraint{
     }
     _resolve(point, contact_point, normal){
         point.applyCollision(
-            this._name || "container",
+            this,
             contact_point,
             normal,
             this._friction_constant,
@@ -363,7 +363,7 @@ export class CircleContainerConstraint extends ContainerConstraint{
     }
     _resolve(point, contact_point, normal){
         point.applyCollision(
-            this._name || "container",
+            this,
             contact_point, 
             normal,
             this._friction_constant,
