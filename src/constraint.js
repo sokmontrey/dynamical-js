@@ -300,6 +300,13 @@ export class CircleContainerConstraint extends ContainerConstraint{
 
         return this;
     }
+    getAll(){
+        return {
+            points: this._points,
+            radius: this._radius,
+            center: this._center,
+        };
+    }
     _calculateCenter(){
         this._center = this._offset.add(this._radius);
         this._center.z = 0;
