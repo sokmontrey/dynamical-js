@@ -210,8 +210,8 @@ export class DistanceConstraint extends Constraint{
         }
     }
     _resolve(point1, point2, new_p1, new_p2){
-        point1.resolveDistanceConstraint(new_p1);
-        point2.resolveDistanceConstraint(new_p2);
+        point1.applyDistanceConstraint(new_p1);
+        point2.applyDistanceConstraint(new_p2);
     }
 }
 
@@ -298,8 +298,12 @@ export class ContainerConstraint extends Constraint{
         this._resolve(point, contact_point, normal);
     }
     _resolve(point, contact_point, normal){
-        point.resolveCollision(contact_point, normal);
-        point.resolveFriction(normal, this._friction_constant);
+        point.applyCollision(
+            this._name || "container",
+            contact_point,
+            normal,
+            this._friction_constant,
+        );
     }
 }
 
@@ -358,7 +362,11 @@ export class CircleContainerConstraint extends ContainerConstraint{
         this._resolve(point, contact_point, normal);
     }
     _resolve(point, contact_point, normal){
-        point.resolveCollision(contact_point, normal);
-        point.resolveFriction(normal, this._friction_constant);
+        point.applyCollision(
+            this._name || "container",
+            contact_point, 
+            normal,
+            this._friction_constant,
+        );
     }
 }

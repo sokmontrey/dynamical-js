@@ -87,9 +87,19 @@ export default class PointMass extends Abstract{
 
         return this;
     }
-    resolveCollision(contact_point, normal){
+    applyCollision(
+        other_name, 
+        contact_point, 
+        normal, 
+        friction_constant
+    ){
         if(this._is_static) return;
 
+        this._resolveCollision(contact_point, normal);
+        this._resolveFriction(normal, friction_constant);
+    }
+
+    _resolveCollision(contact_point, normal){
         this._old_position.assign(
             this._position
             .subtract(this._old_position)
@@ -99,8 +109,7 @@ export default class PointMass extends Abstract{
         );
         this._position.assign(contact_point);
     }
-    resolveFriction(normal, friction_constant){
-        if(this._is_static) return;
+    _resolveFriction(normal, friction_constant){
 
         const v = this._position.subtract(this._old_position);
 
@@ -112,9 +121,12 @@ export default class PointMass extends Abstract{
 
         this.addVelocity(opposing_v );
     }
-    resolveDistanceConstraint(new_position){
+    applyDistanceConstraint(new_position){
         if(this._is_static) return;
 
+        this._resolveDistanceConstraint(new_position);
+    }
+    _resolveDistanceConstraint(new_position){
         this._position.assign(new_position);
     }
 
