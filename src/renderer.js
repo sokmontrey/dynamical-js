@@ -47,6 +47,8 @@ export default class Renderer{
 		this._context.beginPath();
 		this._context.arc(x, y, radius, 0, Math.PI * 2);
 		this._context.closePath();
+
+        return this;
 	}
 
 	line({
@@ -66,6 +68,8 @@ export default class Renderer{
 		this._context.closePath();
 
         this._context.lineWidth= line_width;
+
+        return this;
 	}
 
 	polygon({
@@ -78,6 +82,8 @@ export default class Renderer{
 		}
 		this._context.lineTo(vertices[0].x, vertices[0].y);
 		this._context.closePath();
+
+        return this;
 	}
 
     fill(){

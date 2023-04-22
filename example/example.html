@@ -219,13 +219,12 @@ renderer.update((delta_time)=>{
     for(let each_connection of connections){
         const points = each_connection.points;
         for(let j=1; j<points.length; j++){
+            const stress = each_connection.getStress(j-1);
             renderer.line({
                 start: points[j].position,
                 end: points[j-1].position,
                 line_width: 5
-            });
-            const stress = each_connection.getStress(j-1);
-            renderer.setStrokeStyle(\`rgb(\${stress * 500}, 63, 63)\`).stroke();
+            }).setStrokeStyle(\`rgb(\${stress * 500}, 63, 63)\`).stroke();
         }
     }
 
@@ -233,8 +232,7 @@ renderer.update((delta_time)=>{
         renderer.circle({
             position: points[i].position,
             radius: 8
-        });
-        renderer.setFillStyle('#188edc').fill();
+        }).setFillStyle('#188edc').fill();
     }
 });
 `,
@@ -294,8 +292,7 @@ renderer.update((delta_time)=>{
     renderer.circle({
         position: point_mass.position, 
         radius: 6, 
-    });
-    renderer.setFillStyle('#D6D6B1').fill();
+    }).setFillStyle('#D6D6B1').fill();
 
     /* Visualize the container*/
     renderer.setStrokeStyle('#D6D6B1');
@@ -303,15 +300,13 @@ renderer.update((delta_time)=>{
         renderer.line({
             start: container.getVertex(i-1), 
             end: container.getVertex(i), 
-        });
-        renderer.stroke();
+        }).stroke();
     }
 
     renderer.line({
         start: container.getVertex(container.vertices.length-1), 
         end: container.getVertex(0), 
-    });
-    renderer.stroke();
+    }).stroke();
 });
 `,
             };
