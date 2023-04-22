@@ -1,3 +1,4 @@
+import Abstract from './abstract.js';
 import { Vector} from './util/dynamical_vector.js';
 /*
 point: point mass
@@ -6,11 +7,13 @@ p: positionition of point mass
 
 //TODO: test spring constraint
 
-export class Constraint{
+export class Constraint extends Abstract{
 
     constructor({
         points = []
     }){
+        super();
+
         this._points = points;
     }
 

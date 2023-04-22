@@ -1,10 +1,14 @@
+import Abstract from './abstract.js';
 import { Vector} from './util/dynamical_vector.js';
-export default class PointMass{
+
+export default class PointMass extends Abstract{
     constructor({
         position=new Vector(0,0),
         is_static=false,
         mass=1,
     }){
+        super();
+
         this._position = new Vector(position.x,position.y);
         this._old_position = new Vector(position.x, position.y);
         this._velocity = new Vector(0,0,0);
