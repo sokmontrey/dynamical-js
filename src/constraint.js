@@ -124,7 +124,8 @@ export class DistanceConstraint extends Constraint{
     }
 
     _checkStress(index, value){
-        this._stresses[index] = Math.abs(value);
+        if(this._is_record_stress)
+            this._stresses[index] = Math.abs(value);
     }
 
     recordStress(){
@@ -161,43 +162,56 @@ export class DistanceConstraint extends Constraint{
             const point1 = this._points[i-1];
             const point2 = this._points[i];
 
-            const p1 = point1.position;
-            const p2 = point2.position;
-
-            const l2 = Vector.distance(p1,p2);
-            const l1 = this._distance[i-1];
-
-            if(l2 != l1){
-                const difference_in_length = (l1-l2);
-
-                const error = Vector.normalize(
-                    p1.subtract(p2)
-                ).multiply( (this._spring_constant) * difference_in_length );
-
-                this._checkStress(i-1, error.magnitude());
-
-                const m1_reciprocal = 1 / point1.mass;
-                const m2_reciprocal = 1 / point2.mass;
-
-                // 1/m1 + 1/m2
-                const sum_reciprocal = m1_reciprocal + m2_reciprocal;
-
-                const new_p1 = p1.add(
-                    point2.isStatic()
-                        ? error
-                        : error.multiply(m1_reciprocal / sum_reciprocal)
-                );
-                point1.resolveDistanceConstraint(new_p1);
-
-                const new_p2 = p2.subtract(
-                    point1.isStatic()
-                        ? error
-                        : error.multiply(m2_reciprocal / sum_reciprocal)
-                );
-                point2.resolveDistanceConstraint(new_p2);
-
-            }
+            this._check(point1, point2, i-1);
         }
+    }
+    _check(point1, point2, distance_index){
+        const p1 = point1.position;
+        const p2 = point2.position;
+
+        const l1 = this._distance[distance_index];
+        const l2 = Vector.distance(p1, p2);
+
+        const m1 = point1.mass;
+        const m2 = point2.mass;
+
+        if(l2 != l1){
+            const difference_in_length = (l1-l2);
+
+            const error = Vector.normalize(
+                p1.subtract(p2)
+            ).multiply( (this._spring_constant) * difference_in_length );
+
+
+            const m1_reciprocal = 1 / m1
+            const m2_reciprocal = 1 / m2;
+
+            // 1/m1 + 1/m2
+            const sum_reciprocal = m1_reciprocal + m2_reciprocal;
+
+            const new_p1 = p1.add(
+                point2.isStatic()
+                    ? error
+                    : error.multiply(m1_reciprocal / sum_reciprocal)
+            );
+
+            const new_p2 = p2.subtract(
+                point1.isStatic()
+                    ? error
+                    : error.multiply(m2_reciprocal / sum_reciprocal)
+            );
+
+            this._resolve(
+                point1, point2, 
+                new_p1, new_p2
+            );
+            const stress_index = distance_index;
+            this._checkStress(stress_index, error.magnitude());
+        }
+    }
+    _resolve(point1, point2, new_p1, new_p2){
+        point1.resolveDistanceConstraint(new_p1);
+        point2.resolveDistanceConstraint(new_p2);
     }
 }
 
@@ -242,17 +256,23 @@ export class ContainerConstraint extends Constraint{
     check(){
         for(let i=0; i<this._points.length; i++){
             const point = this._points[i];
-            const A = point.position;
-            const B = point.old_position;
 
             for(let i=1; i<this._vertices.length; i++){
-                this._check(point, A, B, 
-                    this._vertices[i-1], this._vertices[i]
+                this._check(
+                    point,
+                    point.position, 
+                    point.old_position, 
+                    this._vertices[i-1], 
+                    this._vertices[i]
                 );
             }
 
-            this._check(point, A, B, 
-                this._vertices[this._vertices.length-1], this._vertices[0]
+            this._check(
+                point,
+                point.position, 
+                point.old_position, 
+                this._vertices[this._vertices.length-1], 
+                this._vertices[0]
             );
         }
     }
@@ -265,16 +285,19 @@ export class ContainerConstraint extends Constraint{
         //If, somehow, there are no contact_point,
         //just skip
         if(!contact_point) 
-            return;
+            return false;
 
         if(Vector.isPointInfrontLine(A, C, normal)) 
-            return;
+            return false;
 
         //If the intersection is not even between the segment,
         //Don't bother
         // if(!Vector.isPointBetweenSegment(contact_point, C, D)) 
         //     return;
 
+        this._resolve(point, contact_point, normal);
+    }
+    _resolve(point, contact_point, normal){
         point.resolveCollision(contact_point, normal);
         point.resolveFriction(normal, this._friction_constant);
     }
@@ -317,19 +340,25 @@ export class CircleContainerConstraint extends ContainerConstraint{
     check(){
         for(let i=0; i<this._points.length; i++){
             const point = this._points[i];
-            const A = point.position;
-
-            const to_point = A.subtract(this._center);
-            const distance = to_point.magnitude();
-
-            if(distance < this._radius) continue;
-
-            const to_point_normal = to_point.normalize();
-            const contact_point = to_point_normal.multiply(this._radius).add(this._center);
-            const normal = to_point_normal.invert();
-
-            point.resolveCollision(contact_point, normal);
-            point.resolveFriction(normal, this._friction_constant);
+            this._check(point);
         }
+    }
+    _check(point){
+        const A = point.position;
+
+        const to_point = A.subtract(this._center);
+        const distance = to_point.magnitude();
+
+        if(distance < this._radius) return false;
+
+        const to_point_normal = to_point.normalize();
+        const contact_point = to_point_normal.multiply(this._radius).add(this._center);
+        const normal = to_point_normal.invert();
+
+        this._resolve(point, contact_point, normal);
+    }
+    _resolve(point, contact_point, normal){
+        point.resolveCollision(contact_point, normal);
+        point.resolveFriction(normal, this._friction_constant);
     }
 }
