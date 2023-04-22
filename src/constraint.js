@@ -120,6 +120,10 @@ export class DistanceConstraint extends Constraint{
         this._addStress();
     }
 
+    _checkStress(index, value){
+        this._stresses[index] = Math.abs(value);
+    }
+
     recordStress(){
         this._is_record_stress = true;
         this._addStress();
@@ -136,8 +140,17 @@ export class DistanceConstraint extends Constraint{
     getStress(index){
         return this._stresses[index];
     }
-    _checkStress(index, value){
-        this._stresses[index] = Math.abs(value);
+    getAll(){
+        const result = [];
+        for(let i=0; i<this._distance.length; i++){
+            result.push({
+                distance: this._distance[i],
+                point1: this._points[i],
+                point2: this._points[i+1],
+                stress: this._is_record_stress? this._stresses[i] : null,
+            });
+        }
+        return result;
     }
 
     check(){
@@ -212,6 +225,17 @@ export class ContainerConstraint extends Constraint{
         return this;
     }
 
+    get vertices() { return this._vertices; }
+    getVertex(index){ return this._vertices[index]; } 
+
+    getAll(){
+        return {
+            vertices: this._vertices,
+            points: this._points,
+            friction_constant: this._friction_constant,
+        }
+    }
+
     check(){
         for(let i=0; i<this._points.length; i++){
             const point = this._points[i];
@@ -251,12 +275,6 @@ export class ContainerConstraint extends Constraint{
         point.resolveCollision(contact_point, normal);
         point.resolveFriction(normal, this._friction_constant);
     }
-
-    get vertices() {return this._vertices; }
-    getVertex(index){ return this._vertices[index]; } 
-
-    getPoint(index){ return this._points[index]; }
-    get points(){ return this._points; }
 }
 
 export class CircleContainerConstraint extends ContainerConstraint{
