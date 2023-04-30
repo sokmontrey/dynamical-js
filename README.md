@@ -1,5 +1,7 @@
 _An attempt to build a Physic Engine from scratch in JavaScript._
 
+NOTE! : the system doesn't conserve energy. Total energy declined overtime.
+
 # How does this work?
 
 This is a point-mass based 2d engine. This mean that any object can be formed by points that are hold together by Constraints. 
