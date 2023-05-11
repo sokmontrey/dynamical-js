@@ -7,9 +7,9 @@ export default class Composite extends Abstract{
     constructor(){
         super();
 
-        this._offset = new Vector(0,0);
-        this._points = {};
-        this._connections = [];
+        this._offset        = new Vector(0,0);
+        this._points        = {};
+        this._connections   = [];
         this._container;
     }
 

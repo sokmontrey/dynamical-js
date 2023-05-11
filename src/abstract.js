@@ -1,7 +1,7 @@
 export default class Abstract{
     constructor(){
-        this._name = null;
-        this._renderer = null;
+        this._name      = null;
+        this._renderer  = null;
     }
 
     setRenderer(renderer){

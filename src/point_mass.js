@@ -2,27 +2,24 @@ import Abstract from './abstract.js';
 import { Vector} from './util/dynamical_vector.js';
 
 export default class PointMass extends Abstract{
-    constructor({
-        position=new Vector(0,0),
-        is_static=false,
-        mass=1,
-    }){
+    constructor(){
         super();
 
-        this._position = new Vector(position.x,position.y);
-        this._old_position = new Vector(position.x, position.y);
-        this._velocity = new Vector(0,0,0);
-        this._acceleration = new Vector(0,0,0);
-        this._mass = mass;
+        this._position      =  new Vector(0,0);
+        this._old_position  =  new Vector(0,0);
+        this._velocity      =  new Vector(0,0,0);
+        this._acceleration  =  new Vector(0,0,0);
+        this._mass          =  1;
 
-        this._is_static = is_static;
-        this._onCollision = (other)=>{};
+        this._is_static     =  false;
+        this._onCollision   =  (other)=>{};
     }
 
     static create(x=0, y=0){
-        return new PointMass({
-            position: (x instanceof Vector) ? x : new Vector(x, y) 
-        });
+        const position = (x instanceof Vector) ? x : new Vector(x, y) 
+        return new PointMass()
+            .setPosition(position)
+            .setOldPosition(position);
     }
 
     setMass(mass){

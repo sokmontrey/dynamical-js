@@ -9,12 +9,9 @@ p: positionition of point mass
 
 export class Constraint extends Abstract{
 
-    constructor({
-        points = []
-    }){
+    constructor(){
         super();
-
-        this._points = points;
+        this._points = [];
     }
 
     addPointMass(point){
@@ -91,15 +88,13 @@ export class Constraint extends Abstract{
 * Each batch is the actual information indicating which points connecting together
 * */
 export class DistanceConstraint extends Constraint{
-    constructor(params){
-        super(params);
+    constructor(){
+        super();
 
-        this._distance = [];
-        this._spring_constant = params.spring_constant || 1;
-
-        this._stresses = [];
-        const is_record_stress = params.is_record_stress || false;
-        if(is_record_stress) this.recordStress();
+        this._distance          =   [];
+        this._stresses          =   [];
+        this._spring_constant   =   1;
+        this._is_record_stress  =   false;
     }
     _addLength(){
         const l = this._points.length;
@@ -216,11 +211,11 @@ export class DistanceConstraint extends Constraint{
 }
 
 export class ContainerConstraint extends Constraint{
-    constructor(params){
-        super(params);
+    constructor(){
+        super();
 
-        this._vertices = params.vertices || [];
-        this._friction_constant = params.friction_constant || 0.05;
+        this._vertices          =   [];
+        this._friction_constant =   0.05;
     }
 
     addVertex(vertex, y=null){
@@ -308,10 +303,13 @@ export class ContainerConstraint extends Constraint{
 }
 
 export class CircleContainerConstraint extends ContainerConstraint{
-    constructor(params){
-        super(params);
-        this._radius = params.radius || 250;
-        this._offset = params.offset || new Vector(0,0,0);
+    constructor(){
+        super();
+
+        this._radius    =   250;
+        this._offset    =   new Vector(0,0,0);
+        this._center    =   new Vector(0,0,0);
+
         this._calculateCenter();
     }
     setRadius(radius){
