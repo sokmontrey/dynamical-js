@@ -15,65 +15,46 @@
 <body>
     <canvas id="canvas"></canvas>
     <script type="module">
+        //TODO:
+        // - remove params entirly and use only .add .set pattern
+        // - limit distance_constraint to contain only two point_mass
+        // - limit container_constraint to check only the point that is passed in (container_constraint should not store any point)
+        // - create a new division of constraint called "composite" constraint 
+        //      - these are the type of constraint that do realtime check or only check the point passed in
+        //      - this should also contain the "rectangle and circle container" constraint
+        // - add is_broken to distance constraint
+        // - fix the inconvinient with all of the vector argument
+        // - proper getter
+
         import { Vector } from '../src/util/dynamical_vector.js';
         import PointMass from '../src/point_mass.js';
         import Renderer from '../src/renderer.js';
         import { Constraint } from '../src/constraint.js';
+        import Composite from '../src/composite.js';
 
         const canvas = document.getElementById('canvas');
 
         const renderer = new Renderer(canvas);
         renderer.setBackground('#252323');
 
-        const p1 = PointMass.create(250,200);
-        const p2 = PointMass.create(255,300);
-
-        const r = Constraint.create('rigid')
-            .addPointMass(p1)
-            .addPointMass(p2)
-
-        const container = Constraint.create('rectangle_container')
-            .addPointMass(p1)
-            .addPointMass(p2);
+        const box = new Composite()
+            .setContainer(Constraint.create('rectangle_container'))
+            .setOffset(new Vector(250,250))
+            .addPointMass('a', new Vector(0, -50))
+            .addPointMass('b', new Vector(50, 0))
+            .addPointMass('c', new Vector(0, +50))
+            .addPointMass('d', new Vector(-50, 0))
+            .connect('a', 'b')
+            .connect('b', 'c')
+            .connect('c', 'd')
+            .connect('d', 'a')
+            .connect('a', 'c')
 
         renderer.update((delta_time)=>{
             renderer.clear();
 
-            p1.applyGravity(0, 9.8);
-            p1.updatePosition(delta_time);
-
-            p2.applyGravity(0, 9.8);
-            p2.updatePosition(delta_time);
-
-            container.check();
-            r.check();
-
-            renderer.circle({
-                position: p1.position, 
-                radius: 6, 
-            });
-            renderer.setFillStyle('#D6D6B1').fill();
-
-            renderer.circle({
-                position: p2.position, 
-                radius: 6, 
-            });
-            renderer.setFillStyle('#D6D6B1').fill();
-
-            renderer.setStrokeStyle('#D6D6B1');
-            for(let i=1; i<container.vertices.length; i++){
-                renderer.line({
-                    start: container.getVertex(i-1), 
-                    end: container.getVertex(i), 
-                });
-                renderer.stroke();
-            }
-
-            renderer.line({
-                start: container.getVertex(container.vertices.length-1), 
-                end: container.getVertex(0), 
-            });
-            renderer.stroke();
+            box.update(delta_time);
+            box.draw(renderer);
         });
 
     </script>
