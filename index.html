@@ -155,15 +155,15 @@
             PointMass.create(200 + text_width + 100, 150)
         ];
 
-        const line = Constraint.create('rigid')
-            .addPointMass(points);
+        const connections = [
+            Constraint.create('rigid').setPointMass(points[0], points[1]),
+            Constraint.create('rigid').setPointMass(points[1], points[2]),
+        ]
 
         const container = Constraint.create('circle_container')
-            .addPointMass(points[0])
-            .addPointMass(points[1])
             .setRadius(200)
             .setOffset(new Vector(50, -50))
-            .setFrictionConstant(0.01);
+            .setFrictionConstant(0.0);
 
         renderer.update((delta_time)=>{
             renderer.clear();
@@ -181,8 +181,11 @@
                 for(let each of points){
                     each.updatePosition(delta_time*0.55);
                 }
-                line.check();
-                container.check();
+                for(let each of connections){
+                    each.check();
+                }
+                container.check(points[0]);
+                container.check(points[1]);
             }
 
             renderer.line({
