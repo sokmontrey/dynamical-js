@@ -178,29 +178,17 @@ const points = [
 ];
 
 const connections = [
-    Constraint.create('rigid')
-        .addPointMass(points[2])
-        .addPointMass(points[0])
-        .addPointMass(points[1])
-        .addPointMass(points[4])
-        .recordStress(),
-    
-    Constraint.create('rigid')
-        .addPointMass(points[2])
-        .addPointMass(points[3])
-        .addPointMass(points[4])
-        .recordStress(),
-    
-    Constraint.create('rigid')
-        .addPointMass(points[0])
-        .addPointMass(points[3])
-        .addPointMass(points[1])
-        .recordStress(),
+    Constraint.create('rigid').setPointMass(points[2], points[0]),
+    Constraint.create('rigid').setPointMass(points[0], points[1]),
+    Constraint.create('rigid').setPointMass(points[1], points[4]),
 
-    Constraint.create('rigid')
-        .addPointMass(points[3])
-        .addPointMass(points[5])
-        .recordStress(),
+    Constraint.create('rigid').setPointMass(points[2], points[3]),
+    Constraint.create('rigid').setPointMass(points[3], points[4]),
+
+    Constraint.create('rigid').setPointMass(points[0], points[3]),
+    Constraint.create('rigid').setPointMass(points[3], points[1]),
+
+    Constraint.create('rigid').setPointMass(points[3], points[5]),
 ];
 
 renderer.update((delta_time)=>{
@@ -219,7 +207,7 @@ renderer.update((delta_time)=>{
     }
 
     for(let each_connection of connections){
-        const points = each_connection.points;
+        const points = each_connection.getPoints();
         for(let j=1; j<points.length; j++){
             const stress = each_connection.getStress(j-1);
             renderer.line({
@@ -260,8 +248,7 @@ const point_mass = PointMass.create(250,250);
     The constraint is given the point_mass created to keep track of.
     The default width and height of the container is 500
 */
-const container = Constraint.create('rectangle_container')
-    .addPointMass(point_mass);
+const container = Constraint.create('rectangle_container');
 
 /* LOOP */
 renderer.update((delta_time)=>{
@@ -283,7 +270,7 @@ renderer.update((delta_time)=>{
     /*
         Call the check method on constraint
     */
-    container.check();
+    container.check(point_mass);
 
     /* 
         Visualize the position of point_mass 
@@ -298,7 +285,7 @@ renderer.update((delta_time)=>{
 
     /* Visualize the container*/
     renderer.setStrokeStyle('#D6D6B1');
-    for(let i=1; i<container.vertices.length; i++){
+    for(let i=1; i<container.getVertices().length; i++){
         renderer.line({
             start: container.getVertex(i-1), 
             end: container.getVertex(i), 
@@ -306,7 +293,7 @@ renderer.update((delta_time)=>{
     }
 
     renderer.line({
-        start: container.getVertex(container.vertices.length-1), 
+        start: container.getVertex(container.getVertices().length-1), 
         end: container.getVertex(0), 
     }).stroke();
 });
