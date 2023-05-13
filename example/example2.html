@@ -38,23 +38,17 @@
         renderer.setBackground('#252323');
 
         const box = new Composite()
-            .setContainer(Constraint.create('rectangle_container'))
-            .setOffset(new Vector(250,250))
-            .addPointMass('a', new Vector(0, -50))
-            .addPointMass('b', new Vector(50, 0))
-            .addPointMass('c', new Vector(0, +50))
-            .addPointMass('d', new Vector(-50, 0))
-            .connect('a', 'b')
-            .connect('b', 'c')
-            .connect('c', 'd')
-            .connect('d', 'a')
-            .connect('a', 'c')
+            .setPosition(new Vector(250, 250))
+            .createVertex(new Vector(0, -50))
+            .createVertex(new Vector(50, 0))
+            .createVertex(new Vector(0, 50))
+            .createVertex(new Vector(-50, 0))
 
         renderer.update((delta_time)=>{
             renderer.clear();
-
-            box.update(delta_time);
-            box.draw(renderer);
+            //
+            // box.update(delta_time);
+            // box.draw(renderer);
         });
 
     </script>
