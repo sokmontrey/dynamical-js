@@ -74,6 +74,13 @@ export class DistanceConstraint extends Constraint{
         this._stress            =   0;
 
         this._spring_constant   =   1;
+        this._is_broken = false;
+    }
+
+    break(){
+        this._is_broken = true;
+
+        return this;
     }
 
     setSpringConstant(spring_constant){
@@ -103,6 +110,8 @@ export class DistanceConstraint extends Constraint{
     getStress(){ return this._stress; }
 
     check(){
+        if(this._is_broken) return;
+
         const point1 = this._point1;
         const point2 = this._point2;
 
