@@ -152,6 +152,90 @@
         <script>
 
             const examples = {
+                'cloth (experiment)':
+`//NOTE: This is just an experimentation with the library
+import { Vector } from '../src/util/dynamical_vector.js';
+import PointMass from '../src/point_mass.js';
+import Renderer from '../src/renderer.js';
+import { Constraint } from '../src/constraint.js';
+import Composite from '../src/composite.js';
+
+const canvas = document.getElementById('canvas');
+
+const renderer = new Renderer(canvas);
+renderer.setBackground('#252323');
+
+const space = 10;
+
+const cloth = new Composite();
+
+for(let i=0; i<30; i++){
+    for(let j=0; j<20; j++){
+        const point = PointMass.create(
+            (i * space) + 100, (j * space) + 100
+        ).setName(\`\${i}-\${j}\`);
+
+        if(j == 0) point.static();
+
+        cloth.addPointMass(point);
+
+        if(j != 0){
+            cloth.connect(\`\${i}-\${j}\`, \`\${i}-\${j-1}\`, 0.05)
+        }
+
+        if(i != 0){
+            cloth.connect(\`\${i}-\${j}\`, \`\${i-1}-\${j}\`, 0.05);
+        }
+    }
+}
+
+const points = cloth._points;
+
+const m_pos = points['29-19'].position;
+let is_follow = false;
+canvas.addEventListener("mousemove", function (evt) {
+    var mousePos = getMousePos(canvas, evt);
+    m_pos.x = mousePos.x 
+    m_pos.y = mousePos.y
+}, false);
+
+canvas.addEventListener("mousedown", ()=> is_follow = true);
+canvas.addEventListener("mouseup", ()=> is_follow = false);
+
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+renderer.update((delta_time)=>{
+    renderer.clear();
+
+    if(is_follow){
+        points['29-19'].setPosition(m_pos);
+        points['29-19'].setOldPosition(m_pos);
+    }
+
+    for(let i=0; i<10; i++){
+        cloth.update(delta_time * 0.1);
+    }
+
+    const connections = cloth._connections;
+    for(let i=0; i<connections.length; i++){
+        const points = connections[i].getPoints();
+        const r = i/connections.length;
+        renderer.line({
+            start: points[0].position,
+            end: points[1].position,
+            line_width: 0.9
+        }).setStrokeStyle(\`rgb(
+            \${r * 255}, 
+            \${150}, 
+            \${129})\`).stroke();
+    }
+});
+`,
                 'brigde': 
 `
 //TODO: Explainations
