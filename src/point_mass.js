@@ -7,7 +7,6 @@ export default class PointMass extends Abstract{
 
         this._position      =  new Vector(0,0);
         this._old_position  =  new Vector(0,0);
-        this._velocity      =  new Vector(0,0,0);
         this._acceleration  =  new Vector(0,0,0);
         this._mass          =  1;
 
@@ -49,8 +48,8 @@ export default class PointMass extends Abstract{
         return this;
     }
     setVelocity(velocity, y=null){
-        if(velocity instanceof Vector) this._velocity = velocity;
-        else this._velocity = new Vector(velocity, y);
+        if(velocity instanceof Vector) this._old_position = this._position.subtract(velocity);
+        else this._old_position = this._position.add(new Vector(velocity, y));
 
         return this;
     }
@@ -59,8 +58,8 @@ export default class PointMass extends Abstract{
         return this;
     }
     addVelocity(velocity, y=null){
-        if(velocity instanceof Vector) this._velocity = this._velocity.add(velocity);
-        else this._velocity = this.velocity.add(new Vector(velocity, y));
+        if(velocity instanceof Vector) this._old_position.subtract(velocity);
+        else this._old_position.subtract(new Vector(velocity, y));
 
         return this;
     }
@@ -137,18 +136,13 @@ export default class PointMass extends Abstract{
     updatePosition(delta_time=0.25){
         if(this._is_static) return;
 
-        this._velocity = this._velocity.add(
-            this._position.subtract(this._old_position)
-        );
+        const velocity = this._position.subtract(this._old_position);
         
         this._old_position.assign(this._position);
 
         this._position = this._position
-            .add(this._acceleration.multiply(delta_time * delta_time))
-            .add(this._velocity);
-
-        this._velocity.x = 0;
-        this._velocity.y = 0;
+            .add(velocity)
+            .add(this._acceleration.multiply(delta_time * delta_time));
 
         this._acceleration.x = 0;
         this._acceleration.y = 0;
