@@ -29,5 +29,13 @@ export default class Abstract{
 
     setRenderer(renderer){
         this.graphic.renderer = renderer;
+
+        return this;
+    }
+
+    setName(name){
+        this.name = name;
+
+        return this;
     }
 }
