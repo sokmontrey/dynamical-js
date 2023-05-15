@@ -11,7 +11,7 @@ export default class PointMass extends Abstract{
         this._mass          =  1;
 
         this._is_static     =  false;
-        this._onCollision   =  (other)=>{};
+        this._onCollision   =  ()=>{};
     }
 
     static create(x=0, y=0){
@@ -29,27 +29,25 @@ export default class PointMass extends Abstract{
         this._is_static = true;
         return this;
     }
-    isStatic(){ return this._is_static; }
 
-    setPosition(position, y=null){
-        if(position instanceof Vector)
-            this.position = position;
-        else
-            this.position.assign(new Vector(position, y));
+    setPosition(position){
+        if(this._is_static) return this;
+
+        this._position.assign(position);
 
         return this;
     }
-    setOldPosition(old_position, y=null){
-        if(old_position instanceof Vector)
-            this.old_position = old_position;
-        else
-            this.old_position.assign(new Vector(old_position, y));
+    setOldPosition(old_position){
+        if(this._is_static) return this;
+
+        this._old_position.assign(old_position);
 
         return this;
     }
-    setVelocity(velocity, y=null){
-        if(velocity instanceof Vector) this._old_position = this._position.subtract(velocity);
-        else this._old_position = this._position.add(new Vector(velocity, y));
+    setVelocity(velocity){
+        if(this._is_static) return this;
+
+        this._old_position.assign(this._position.subtract(velocity));
 
         return this;
     }
@@ -57,31 +55,29 @@ export default class PointMass extends Abstract{
         this._onCollision = onCollision_callback;
         return this;
     }
-    addVelocity(velocity, y=null){
-        if(velocity instanceof Vector) this._old_position.subtract(velocity);
-        else this._old_position.subtract(new Vector(velocity, y));
+    addVelocity(velocity){
+        if(this._is_static) return this;
+
+        this._old_position.assign(this._old_position.subtract(velocity));
 
         return this;
     }
-    applyForce(force, y=null){
-        if(this._is_static) return;
-
+    applyForce(force){
+        if(this._is_static) return this;
+        
         this._acceleration = this._acceleration.add(
-            (force instanceof Vector 
-                ? force 
-                : new Vector(force, y)
-            ).divide(this._mass)
+            force.divide(this._mass)
         );
 
         return this;
     }
 
-    applyGravity(x=0, y=9.8){
-        if(this._is_static) return;
-
+    applyGravity(gravity=new Vector(0, 9.8)){
+        if(this._is_static) return this;
+        
         this.applyForce(
             Vector.multiply(
-                x instanceof Vector? x : new Vector(x, y), 
+                gravity,
                 this.mass
             )
         );
@@ -96,12 +92,19 @@ export default class PointMass extends Abstract{
     ){
         this._onCollision(other);
 
-        if(this._is_static) return;
+        if(this._is_static) return this;
 
         this._resolveCollision(contact_point, normal);
         this._resolveFriction(normal, friction_constant);
+
+        return this;
     }
 
+    applyDistanceConstraint(new_position){
+        if(this._is_static) return;
+
+        this._resolveDistanceConstraint(new_position);
+    }
     _resolveCollision(contact_point, normal){
         this._old_position.assign(
             this._position
@@ -124,11 +127,6 @@ export default class PointMass extends Abstract{
 
         this.addVelocity(opposing_v );
     }
-    applyDistanceConstraint(new_position){
-        if(this._is_static) return;
-
-        this._resolveDistanceConstraint(new_position);
-    }
     _resolveDistanceConstraint(new_position){
         this._position.assign(new_position);
     }
@@ -148,20 +146,9 @@ export default class PointMass extends Abstract{
         this._acceleration.y = 0;
     }
 
-    /* Lib interface */
-    set position(new_position){
-        if(!this._is_static) this._position.assign(new_position);
-    }
-    set old_position(new_old_position){
-        if(!this._is_static) this._old_position.assign(new_old_position);
-    }
-    set velocity(new_velocity){
-        if(!this._is_static) this._velocity.assign(new_velocity);
-    }
-
-    get position(){ return this._position; }
-    get old_position(){ return this._old_position; }
+    get position(){ return this._position.clone(); }
+    get old_position(){ return this._old_position.clone(); }
     get mass(){ return this._mass; }
-    get velocity(){ return this._velocity; }
-    get acceleration(){ return this._acceleration; }
+    get acceleration(){ return this._acceleration.clone(); }
+    isStatic(){ return this._is_static; }
 }

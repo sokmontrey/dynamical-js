@@ -343,7 +343,7 @@ renderer.update((delta_time)=>{
         apply gravity (0, 9.8)
         position y value is down due to the canvas coordinating system
     */
-    point_mass.applyGravity(0, 9.8);
+    point_mass.applyGravity(new Vector(0, 9.8));
 
     /* 
         Update the position of the point_mass with renderer's delta_time
@@ -360,7 +360,7 @@ renderer.update((delta_time)=>{
         Visualize the position of point_mass 
         point_mass does not have any real geometrical properties
         It is just a 0D point
-        But we draw as a circle with the radius of 10
+        But we draw as a circle with the radius of 10 to visualize it
     */
     renderer.circle({
         position: point_mass.position, 

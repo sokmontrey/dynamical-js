@@ -50,7 +50,7 @@ export default class Composite extends Abstract{
         }
 
         for(let point_name in this._points){
-            this._points[point_name].applyGravity(delta_time);
+            this._points[point_name].applyGravity();
         }
 
         for(let connections of this._connections){

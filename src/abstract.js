@@ -12,7 +12,8 @@ export default class Abstract{
         this._name = name;
         return this;
     }
-    getName(){
+    
+    get name(){
         return this._name;
     }
 }
