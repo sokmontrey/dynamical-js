@@ -146,6 +146,17 @@ export default class PointMass extends Abstract{
         this._acceleration.y = 0;
     }
 
+    draw(radius=5){
+        const circle = this.graphic.renderer.circle({
+            position: this._position,
+            radius: radius,
+        });
+
+        this.graphic.applyStyle(circle);
+
+        return circle;
+    }
+
     get position(){ return this._position.clone(); }
     get old_position(){ return this._old_position.clone(); }
     get mass(){ return this._mass; }

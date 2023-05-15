@@ -109,6 +109,18 @@ export class DistanceConstraint extends Constraint{
     getPoints(){ return [this._point1, this._point2]; }
     getStress(){ return this._stress; }
 
+    draw(line_width){
+        line_width = line_width || this.graphic.line_width;
+
+        const line = this.graphic.renderer.line({
+            start: this._point1.position,
+            end: this._point2.position,
+            line_width: line_width
+        }).setStrokeStyle(this.graphic.stroke_style).stroke();
+
+        return line;
+    }
+
     check(){
         if(this._is_broken) return;
 
@@ -194,6 +206,16 @@ export class ContainerConstraint extends Constraint{
 
     getVertices(){ return this._vertices; }
     getVertex(index){ return this._vertices[index]; } 
+
+    draw(){
+        const polygon = this.graphic.renderer.polygon({
+            vertices: this._vertices
+        });
+
+        this.graphic.applyStyle(polygon);
+
+        return polygon;
+    }
 
     check(point){
         const P1 = point.position;
@@ -281,6 +303,16 @@ export class CircleContainerConstraint extends ContainerConstraint{
     _calculateCenter(){
         this._center = this._offset.add(this._radius);
         this._center.z = 0;
+    }
+    draw(){
+        const circle = this.graphic.renderer.circle({
+            position: this._center,
+            radius: this._radius,
+        });
+
+        this.graphic.applyStyle(circle);
+
+        return circle;
     }
     check(point){
         const P = point.position;

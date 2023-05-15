@@ -15,109 +15,19 @@
 <body>
     <canvas id="canvas"></canvas>
     <script type="module">
-        //TODO:
-        // - remove params entirly and use only .add .set pattern
-        // - limit distance_constraint to contain only two point_mass
-        // - limit container_constraint to check only the point that is passed in (container_constraint should not store any point)
-        // - create a new division of constraint called "composite" constraint 
-        //      - these are the type of constraint that do realtime check or only check the point passed in
-        //      - this should also contain the "rectangle and circle container" constraint
-        // - add is_broken to distance constraint
-        // - fix the inconvinient with all of the vector argument
-        // - proper getter
-
         import { Vector } from '../src/util/dynamical_vector.js';
         import PointMass from '../src/point_mass.js';
         import Renderer from '../src/renderer.js';
         import { Constraint } from '../src/constraint.js';
-        import Composite from '../src/composite.js';
 
         const canvas = document.getElementById('canvas');
-
         const renderer = new Renderer(canvas);
-        renderer.setBackground('#252323');
 
-        const container = Constraint.create('rectangle_container');
+        renderer.setBackground('black');
 
-        // const box = new Composite()
-        //     .setOffset(new Vector(250, 250))
-        //     .createVertex(new Vector(0, -50))
-        //     .createVertex(new Vector(50, 0))
-        //     .createVertex(new Vector(0, 50))
-        //     .createVertex(new Vector(-50, 0))
-        //     .connect(0, 1)
-        //     .connect(1, 2)
-        //     .connect(2, 3)
-        //     .connect(3, 0)
-        //     .connect(0, 2)
-        //     .connect(1, 3)
-        //
-        // box.setRenderer(renderer);
-
-        const space = 10;
-
-        const cloth = new Composite()
-            .setRenderer(renderer); 
-
-        for(let i=0; i<30; i++){
-            for(let j=0; j<20; j++){
-                const point = PointMass.create(
-                    (i * space) + 100, (j * space) + 100
-                ).setName(`${i}-${j}`);
-
-                if(j == 0) point.static();
-
-                cloth.addPointMass(point);
-
-                if(j != 0){
-                    cloth.connect(`${i}-${j}`, `${i}-${j-1}`, 0.05)
-                }
-
-                if(i != 0){
-                    cloth.connect(`${i}-${j}`, `${i-1}-${j}`, 0.05);
-                }
-            }
-        }
-
-        const points = cloth._points;
-
-        const m_pos = points['29-19'].position;
-        let is_follow = false;
-        canvas.addEventListener("mousemove", function (evt) {
-            var mousePos = getMousePos(canvas, evt);
-            m_pos.x = mousePos.x 
-            m_pos.y = mousePos.y
-        }, false);
-
-        canvas.addEventListener("mousedown", ()=> is_follow = true);
-        canvas.addEventListener("mouseup", ()=> is_follow = false);
-
-        //Get Mouse Position
-        function getMousePos(canvas, evt) {
-            var rect = canvas.getBoundingClientRect();
-            return {
-                x: evt.clientX - rect.left,
-                y: evt.clientY - rect.top
-            };
-        }
         renderer.update((delta_time)=>{
             renderer.clear();
-
-            if(is_follow){
-                points['29-19'].setPosition(m_pos);
-                points['29-19'].setOldPosition(m_pos);
-            }
-
-            for(let i=0; i<10; i++){
-                // box.checkConstraint(container)
-                //     .update(delta_time * 0.1);
-                cloth.checkConstraint(container)
-                    .update(delta_time * 0.1);
-            }
-
-            // box.draw();
-            cloth.draw();
-        });
+        })
 
     </script>
 </body>

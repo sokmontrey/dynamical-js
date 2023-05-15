@@ -19,7 +19,7 @@ export default class Composite extends Abstract{
     }
 
     addPointMass(point){
-        const name = point.getName() || Object.keys(this._points).length();
+        const name = point.name || Object.keys(this._points).length();
         this._points[name] = point;
 
         return this;
