@@ -190,8 +190,10 @@ for(let i=0; i<30; i++){
 }
 
 const points = cloth._points;
+points['29-19'].setPosition(new Vector(500,500));
+points['29-19'].setOldPosition(new Vector(500, 500));
 
-const m_pos = points['29-19'].position;
+const m_pos = new Vector(0,0);
 let is_follow = false;
 canvas.addEventListener("mousemove", function (evt) {
     var mousePos = getMousePos(canvas, evt);
