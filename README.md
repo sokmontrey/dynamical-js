@@ -1,4 +1,4 @@
-_An attempt to build a Physic Engine from scratch in JavaScript._
+A 2D JavaScript physic engine
 
 NOTE! : the system doesn't conserve energy. Total energy declined overtime.
 
