@@ -4,19 +4,22 @@ NOTE! : the system doesn't conserve energy. Total energy declined overtime.
 
 # How does this work?
 
-This is a point-mass based 2d engine. This mean that any object can be formed by points that are hold together by Constraints. 
+This is a point-mass aggregated based 2D physic engine. Any objects can be made up of points connected together with "Distance" constraints.
 
 ## PointMass
 
-Each point contain its current position, old position (position from last timestep), acceleration, mass, and a few more properties. The `updatePosition` method uses Verlet integration in order to update the point position using only the previous position, current position, and acceleration. Verlet integration is easy to implement and it takes care of all the dynamic automatically. 
+A point mass is an object that contain many physical properties such as position, velocity, acceleration, mass, etc. Each frame of the simulation, the position of the point-mass will be updated using a certain numerical integration method to get a behaviour like how a ball would move in real life. Dynamical JS use Verlet's integration to update the position of all of its point mass. This integration method is unique as it calculate the velocity of the point using its previous and current position. This is great when it come to collision resolution and dynamic. Verlet's integration will take care of all the dynamic automatically as long as the point's previous and current position is manipulated in a conservative way. 
 
 ## Constraint
+Constraints are mathematical equations that limit the movement of points. There are a few important type of constraint in Dynamical JS.
 
-### RigidConstraint
-Rigid rod connect points together with their initial distance from each other.
-### SpringConstraint
-Connect points together with springs. SpringConstraint is similar to RigidConstraint except it has the `spring_constant` which tell how stiff the spring is. `spring_constant` can be from 0 to 1, 1 is the stiffest value and 0 is the most flexible spring.
-### ContainerConstraint
-This Constraint can be used to contain all the point inside the canvas. ContainerConstraint is like a room containing **specified** objects, preventing them from leaving the area.
+### Distance Constraint
+This Constraint limit the movement of two point-masses. It makes sure that the two points stays in a certain distance away from one another. It also make sure that the points will not move away from the constraint distance apart. Distance Constraint can be rigid (like a solid stick) or spring by setting the `spring_constant` properties.
+
+```js
+0 < spring_constant <= 1
+//1: very rigid
+//0: very springy
+```
 
 Live Demo: [Dynamical JS](https://dynamical.netlify.app/)
