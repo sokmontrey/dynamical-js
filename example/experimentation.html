@@ -26,16 +26,16 @@
 
         renderer.setBackground('black');
 
-        const cube = new Composite()
-        .setOffset(new Vector(250,250))
-        .createVertex(new Vector(0, -100))
-        .createVertex(new Vector(100, 0))
 
         const container = Constraint.create('rectangle_container');
+        const cube = Composite.create('rectangle')
         cube.addConstraint(container);
 
         renderer.update((delta_time)=>{
             renderer.clear();
+
+            cube.update(delta_time);
+            cube.draw(renderer);
         });
     </script>
 </body>

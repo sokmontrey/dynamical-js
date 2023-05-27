@@ -33,6 +33,35 @@ export default class Composite extends Abstract{
         };
     }
 
+    static create(type, params={}){
+        if(type === "rectangle"){
+            const offset = params.position || new Vector(250,250); 
+            const w = params.width || 90;
+            const h = params.height || 70;
+
+            const composite = new Composite()
+            .setOffset(offset)
+
+            composite
+                .createVertex(new Vector(-w/2, -h/2))
+                .createVertex(new Vector( w/2, -h/2))
+                .createVertex(new Vector( w/2,  h/2))
+                .createVertex(new Vector(-w/2,  h/2))
+            ;
+
+            composite
+                .connect(0, 1)
+                .connect(1, 2)
+                .connect(2, 3)
+                .connect(3, 0)
+                .connect(0, 2)
+                .connect(1, 3)
+            ;
+
+            return composite;
+        }
+    }
+
     setOffset(offset){
         this._initial_offset = offset;
 
