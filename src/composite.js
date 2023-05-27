@@ -36,6 +36,8 @@ export default class Composite extends Abstract{
     static create(type, params={}){
         if(type === "rectangle"){
             const offset = params.position || new Vector(250,250); 
+            const angle = params.angle || 0;
+
             const w = params.width || 90;
             const h = params.height || 70;
 
@@ -43,10 +45,30 @@ export default class Composite extends Abstract{
             .setOffset(offset)
 
             composite
-                .createVertex(new Vector(-w/2, -h/2))
-                .createVertex(new Vector( w/2, -h/2))
-                .createVertex(new Vector( w/2,  h/2))
-                .createVertex(new Vector(-w/2,  h/2))
+                .createVertex(new Vector(
+                    (-w/2) * Math.cos(angle) - 
+                    (-h/2) * Math.sin(angle),
+                    (-w/2) * Math.sin(angle) + 
+                    (-h/2) * Math.cos(angle)
+                ))
+                .createVertex(new Vector(
+                    ( w/2) * Math.cos(angle) - 
+                    (-h/2) * Math.sin(angle),
+                    ( w/2) * Math.sin(angle) + 
+                    (-h/2) * Math.cos(angle)
+                ))
+                .createVertex(new Vector(
+                    ( w/2) * Math.cos(angle) - 
+                    ( h/2) * Math.sin(angle),
+                    ( w/2) * Math.sin(angle) + 
+                    ( h/2) * Math.cos(angle)
+                ))
+                .createVertex(new Vector(
+                    (-w/2) * Math.cos(angle) - 
+                    ( h/2) * Math.sin(angle),
+                    (-w/2) * Math.sin(angle) + 
+                    ( h/2) * Math.cos(angle)
+                ))
             ;
 
             composite

@@ -28,7 +28,9 @@
 
 
         const container = Constraint.create('rectangle_container');
-        const cube = Composite.create('rectangle')
+        const cube = Composite.create('rectangle', {
+            angle: Math.PI / 4
+        })
         cube.addConstraint(container);
 
         renderer.update((delta_time)=>{
