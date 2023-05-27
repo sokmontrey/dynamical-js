@@ -12,6 +12,11 @@ export default class Composite extends Abstract{
         this._connections       = [];
         this._constraints       = [];
 
+        this._is_gravity        = true;
+        this._gravity           = new Vector(0, 9.8);
+
+        this._is_static         = false;
+
         this.graphic = {
             ...this.graphic,
             
@@ -30,6 +35,29 @@ export default class Composite extends Abstract{
 
     setOffset(offset){
         this._initial_offset = offset;
+
+        return this;
+    }
+
+    static(){
+        this._is_static = true;
+
+        for(let point_name in this._points){
+            this._points[point_name].static();
+        }
+
+        return this;
+    }
+
+    setGravity(gravity=new Vector(0, 9.8)){
+        this._is_gravity = true;
+        this._gravity = gravity;
+
+        return this;
+    }
+
+    disableGravity(){
+        this._is_gravity = false;
 
         return this;
     }
@@ -66,6 +94,10 @@ export default class Composite extends Abstract{
         return this;
     }
 
+    getConnection(index){
+        return this._connections[index];
+    }
+
     setRenderer(renderer){
         this.graphic.renderer = renderer;
 
@@ -80,24 +112,30 @@ export default class Composite extends Abstract{
         return this;
     }
 
-    update(delta_time){
-        for(let point_name in this._points){
-            this._points[point_name].updatePosition(delta_time);
-        }
+    update(delta_time, iteration=3){
+        delta_time /= iteration;
+        for(let i=0; i<iteration; i++){
+            for(let point_name in this._points){
+                this._points[point_name].updatePosition(delta_time);
+            }
 
-        for(let point_name in this._points){
-            this._points[point_name].applyGravity();
-        }
+            if(this._is_gravity){
+                for(let point_name in this._points){
+                    this._points[point_name].applyGravity(
+                        this._gravity
+                    );
+                }
+            }
 
-        for(let i=0; i<this._connections.length; i++){
-            this._connections[i].check();
-        }
+            for(let i=0; i<this._connections.length; i++){
+                this._connections[i].check();
+            }
 
-        for(let i=0; i<this._constraints.length; i++){
-            const constraint = this._constraints[i];
-            this.checkConstraint(constraint);
+            for(let i=0; i<this._constraints.length; i++){
+                const constraint = this._constraints[i];
+                this.checkConstraint(constraint);
+            }
         }
-
         return this;
     }
 
@@ -150,3 +188,4 @@ export default class Composite extends Abstract{
         return this;
     }
 }
+

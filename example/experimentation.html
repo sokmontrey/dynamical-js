@@ -30,23 +30,12 @@
         .setOffset(new Vector(250,250))
         .createVertex(new Vector(0, -100))
         .createVertex(new Vector(100, 0))
-        .createVertex(new Vector(0, 100))
-        .createVertex(new Vector(-100, 0));
-
-        cube.connect(0, 1);
-        cube.connect(1, 2);
-        cube.connect(2, 3);
-        cube.connect(3, 0);
-        cube.connect(0, 2);
 
         const container = Constraint.create('rectangle_container');
         cube.addConstraint(container);
 
         renderer.update((delta_time)=>{
             renderer.clear();
-
-            cube.update(delta_time);
-            cube.draw(renderer);
         });
     </script>
 </body>
