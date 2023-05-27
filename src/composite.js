@@ -10,6 +10,7 @@ export default class Composite extends Abstract{
         this._initial_offset    = new Vector(0,0);
         this._points            = {};
         this._connections       = [];
+        this._constraints       = [];
 
         this.graphic = {
             ...this.graphic,
@@ -40,6 +41,12 @@ export default class Composite extends Abstract{
         return this;
     }
 
+    addConstraint(constraint){
+        this._constraints.push(constraint);
+
+        return this;
+    }
+
     createVertex(vertex, name){
         name = name || Object.keys(this._points).length;
 
@@ -54,7 +61,7 @@ export default class Composite extends Abstract{
                 this._points[point1_name],
                 this._points[point2_name]
             ).setSpringConstant(spring_constant)
-        )
+        );
 
         return this;
     }
@@ -82,10 +89,14 @@ export default class Composite extends Abstract{
             this._points[point_name].applyGravity();
         }
 
-        for(let connections of this._connections){
-            connections.check();
+        for(let i=0; i<this._connections.length; i++){
+            this._connections[i].check();
         }
 
+        for(let i=0; i<this._constraints.length; i++){
+            const constraint = this._constraints[i];
+            this.checkConstraint(constraint);
+        }
 
         return this;
     }
@@ -98,14 +109,14 @@ export default class Composite extends Abstract{
         return this;
     }
 
-    draw(){
+    draw(renderer=this.graphic.renderer){
         const vertices = [];
         if(this.graphic.is_fill){
             for(let point_name in this._points){
                 vertices.push(this._points[point_name].position);
             }
 
-            this.graphic.renderer.polygon({
+            renderer.polygon({
                 vertices: vertices,
             }).setFillStyle(this.graphic.fill_color).fill();
         }
@@ -113,7 +124,7 @@ export default class Composite extends Abstract{
         if(this.graphic.is_wireframe){
             for(let i=0; i<this._connections.length; i++){
                 const [point1, point2] = this._connections[i].getPoints();
-                this.graphic.renderer.line({
+                renderer.line({
                     start: point1.position,
                     end: point2.position,
                     line_width: this.graphic.wireframe_thickness,
@@ -129,7 +140,7 @@ export default class Composite extends Abstract{
             }
 
             for(let i=0; i<vertices.length; i++){
-                this.graphic.renderer.circle({
+                renderer.circle({
                     position: vertices[i],
                     radius: this.graphic.vertex_size,
                 }).setFillStyle(this.graphic.vertex_color).fill();
