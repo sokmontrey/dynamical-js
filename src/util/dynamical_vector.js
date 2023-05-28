@@ -152,6 +152,26 @@ export class Vector{
         return false;
     }
 
+    static isSegmentIntersect(a, b, c, d){
+        //resource: https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+        const p = a;
+        const q = c;
+        const r = b.subtract(a);
+        const s = d.subtract(c);
+
+        const pq = q.subtract(p);
+        const rxs = Vector.cross(r, s);
+
+        const t = Vector.cross(pq, s) / rxs;
+        const u = Vector.cross(pq, r) / rxs;
+
+        return (
+            rxs != 0 && 
+            0 <= t && t <= 1 &&
+            0 <= u && u <= 1
+        );
+    }
+
     // Pseudo
     static isPointBetweenSegment(p, a, b){
         return (
