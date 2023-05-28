@@ -143,10 +143,10 @@ export class Vector{
 
         if(
             rxs != 0 && 
-            0 <= t && t <= 1 &&
+            0 <= t && t <= 2 &&
             0 <= u && u <= 1
         ){
-            return p.add(r.multiply(t));
+            return q.add(s.multiply(u));
         }
 
         return false;
@@ -167,8 +167,8 @@ export class Vector{
 
         return (
             rxs != 0 && 
-            0 <= t && t <= 1 &&
-            0 <= u && u <= 1
+            0 <= t && t <= 2 &&
+            0 <= u && u <= 2
         );
     }
 
