@@ -31,7 +31,7 @@ export class Constraint extends Abstract{
 
         }else if(type === "container"){
 
-            const constraint = new ContainerConstraint();
+            const constraint = new SolidConstraint().invert();
             if(params.vertices){
                 for(let vertex of params.vertices)
                     container.addPointMass(vertex);
@@ -44,7 +44,8 @@ export class Constraint extends Abstract{
             const w = params.width || 500;
             const h = params.height || 500;
 
-            return new ContainerConstraint()
+            return new SolidConstraint()
+                .invert()
                 .addVertex( offset )
                 .addVertex( offset.add(new Vector(w, 0)) )
                 .addVertex( offset.add(new Vector(w, h)) )
@@ -181,12 +182,18 @@ export class DistanceConstraint extends Constraint{
     }
 }
 
-export class ContainerConstraint extends Constraint{
+export class SolidConstraint extends Constraint{
     constructor(){
         super();
 
         this._vertices          =   [];
         this._friction_constant =   0.05;
+        this._is_inverted       =   false;
+    }
+    invert(){
+        this._is_inverted = !this._is_inverted;
+
+        return this;
     }
 
     addVertex(vertex, y=null){
@@ -197,6 +204,9 @@ export class ContainerConstraint extends Constraint{
         }
 
         return this;
+    }
+    setVertices(vertices){
+        this._vertices = vertices;
     }
     setFrictionConstant(friction_constant){
         this._friction_constant = friction_constant;
@@ -228,14 +238,33 @@ export class ContainerConstraint extends Constraint{
 
             // TODO: && outside
             if(contact_point){
-                point.applyCollision(
-                    this,
-                    contact_point,
-                    normal,
-                    this._friction_constant,
-                );
+                if(this._verifyIntersection(P1, P2, normal)){
+                    point.applyCollision(
+                        this,
+                        contact_point,
+                        normal,
+                        this._friction_constant,
+                    );
+                }
             }
         });
+    }
+    _verifyIntersection(P1, P2, normal){
+        return P1.subtract(P2).dot(normal) < 0;
+    }
+    //check for one point with one segment
+    _checkEachVertex(P1, P2, V1, V2){
+        const contact_point = Vector.getSegmentIntersection(P1, P2, V1, V2);
+        const normal = this._calculateNormal(V1, V2);
+
+        return [contact_point, normal];
+    }
+
+    _calculateNormal(V1, V2){
+        if(this._is_inverted)
+            return new Vector(V1.y-V2.y, V2.x-V1.x).normalize();
+        else
+            return new Vector(V2.y-V1.y, V1.x-V2.x).normalize();
     }
 
     _verticesIterator(callback){
@@ -248,17 +277,9 @@ export class ContainerConstraint extends Constraint{
             this._vertices[this._vertices.length-1], this._vertices[0]
         );
     }
-
-    //check for one point with one segment
-    _checkEachVertex(P1, P2, V1, V2){
-        const contact_point = Vector.getSegmentIntersection(P1, P2, V1, V2);
-        const normal = new Vector(V1.y-V2.y, V2.x-V1.x).normalize();
-
-        return [contact_point, normal];
-    }
 }
 
-export class CircleContainerConstraint extends ContainerConstraint{
+export class CircleContainerConstraint extends SolidConstraint{
     constructor(){
         super();
 
