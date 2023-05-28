@@ -238,5 +238,9 @@ export default class Composite extends Abstract{
 
         return this;
     }
+
+    getPoints(){
+        return this._points;
+    }
 }
 

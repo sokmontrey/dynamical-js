@@ -207,6 +207,8 @@ export class SolidConstraint extends Constraint{
     }
     setVertices(vertices){
         this._vertices = vertices;
+
+        return this;
     }
     setFrictionConstant(friction_constant){
         this._friction_constant = friction_constant;
