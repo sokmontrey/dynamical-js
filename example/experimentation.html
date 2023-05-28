@@ -18,7 +18,7 @@
         import { Vector } from '../src/util/dynamical_vector.js';
         import PointMass from '../src/point_mass.js';
         import Renderer from '../src/renderer.js';
-        import { Constraint } from '../src/constraint.js';
+        import { Constraint, SolidConstraint } from '../src/constraint.js';
         import Composite from '../src/composite.js';
 
         const canvas = document.getElementById('canvas');
@@ -27,17 +27,48 @@
         renderer.setBackground('black');
 
 
-        const container = Constraint.create('rectangle_container');
-        const cube = Composite.create('rectangle', {
-            angle: Math.PI / 4
-        })
-        cube.addConstraint(container);
 
-        renderer.update((delta_time)=>{
+        const cube1 = Composite.create('rectangle', {
+            angle: Math.PI / 4,
+            position: new Vector(250, 100)
+        })
+
+        const cube2 = Composite.create('rectangle', {
+            angle: Math.PI / 5,
+            position: new Vector(250, 300)
+        })
+
+        const container = Constraint.create('rectangle_container');
+
+        // const p1 = cube1.getPoints();
+        // const v1 = [];
+        // for(let point_name in p1){
+        //     v1.push(p1[point_name].getReferenceToPosition());
+        // }
+        //
+        // const p2 = cube2.getPoints();
+        // const v2 = [];
+        // for(let point_name in p2){
+        //     v2.push(p2[point_name].getReferenceToPosition());
+        // }
+        //
+        // const cc1 = new SolidConstraint().setVertices(v1);
+        // const cc2 = new SolidConstraint().setVertices(v2);
+        //
+        // cube1.addConstraint(cc2);
+        // cube2.addConstraint(cc1);
+
+        cube1.addConstraint(container);
+        cube2.addConstraint(container);
+
+        renderer.update(function(delta_time){
             renderer.clear();
 
-            cube.update(delta_time);
-            cube.draw(renderer);
+            cube1.update(delta_time);
+            cube1.draw(renderer);
+
+            cube2.update(delta_time);
+            cube2.draw(renderer);
         });
     </script>
 </body>
