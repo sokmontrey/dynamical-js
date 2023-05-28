@@ -158,6 +158,7 @@ export default class PointMass extends Abstract{
     }
 
     get position(){ return this._position.clone(); }
+    getReferenceToPosition(){ return this._position; }
     get old_position(){ return this._old_position.clone(); }
     get mass(){ return this._mass; }
     get acceleration(){ return this._acceleration.clone(); }
