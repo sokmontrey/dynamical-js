@@ -2,6 +2,7 @@ import Abstract from './abstract.js';
 import { DistanceConstraint } from './constraint.js';
 import PointMass from './point_mass.js';
 import { Vector } from './util/dynamical_vector.js';
+import { SolidConstraint } from './constraint.js';
 
 export default class Composite extends Abstract{
     constructor(){
@@ -10,12 +11,13 @@ export default class Composite extends Abstract{
         this._initial_offset    = new Vector(0,0);
         this._points            = {};
         this._connections       = [];
-        this._constraints       = [];
+        this._collider          = null;
 
         this._is_gravity        = true;
         this._gravity           = new Vector(0, 9.8);
 
         this._is_static         = false;
+
 
         this.graphic = {
             ...this.graphic,
@@ -90,6 +92,23 @@ export default class Composite extends Abstract{
         return this;
     }
 
+    setCollider(collider_constraint){
+        this._collider = collider_constraint
+
+        return this;
+    }
+    initCollider(){
+        this._collider = new SolidConstraint();
+
+        for(let point_name in this._points){
+            this._collider.addVertex(()=> 
+                this._points[point_name].position
+            );
+        }
+
+        return this;
+    }
+
     static(){
         this._is_static = true;
 
@@ -116,12 +135,6 @@ export default class Composite extends Abstract{
     addPointMass(point){
         const name = point.name || Object.keys(this._points).length();
         this._points[name] = point;
-
-        return this;
-    }
-
-    addConstraint(constraint){
-        this._constraints.push(constraint);
 
         return this;
     }
@@ -163,39 +176,52 @@ export default class Composite extends Abstract{
         return this;
     }
 
-    update(delta_time, iteration=3){
-        delta_time /= iteration;
-        for(let i=0; i<iteration; i++){
+    updatePosition(delta_time){
+        for(let point_name in this._points){
+            this._points[point_name].updatePosition(delta_time);
+        }
+        return this;
+    }
+
+    applyConnections(){
+        for(let i=0; i<this._connections.length; i++){
+            this._connections[i].check();
+        }
+
+        return this;
+    }
+
+    applyGravity(){
+        if(this._is_gravity){
             for(let point_name in this._points){
-                this._points[point_name].updatePosition(delta_time);
-            }
-
-            if(this._is_gravity){
-                for(let point_name in this._points){
-                    this._points[point_name].applyGravity(
-                        this._gravity
-                    );
-                }
-            }
-
-            for(let i=0; i<this._connections.length; i++){
-                this._connections[i].check();
-            }
-
-            for(let i=0; i<this._constraints.length; i++){
-                const constraint = this._constraints[i];
-                this.checkConstraint(constraint);
+                this._points[point_name].applyGravity(
+                    this._gravity
+                );
             }
         }
         return this;
     }
 
-    checkConstraint(constraint){
+    applyCollision(other){
+        this.checkConstraint(other.getCollider());
+
+        return this;
+    }
+
+    applyConstraint(constraint){
         for(let point_name in this._points){
             constraint.check(this._points[point_name]);
         }
 
         return this;
+    }
+
+    getCollider(){
+        const collider = new SolidConstraint();
+        for(let point_name in this._points){
+            collider.addVertex(this._points[point_name].position)
+        }
+        return collider;
     }
 
     draw(renderer=this.graphic.renderer){
