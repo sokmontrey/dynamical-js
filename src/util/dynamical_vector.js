@@ -36,6 +36,9 @@ export class Vector{
     static dot (a, b){
         return a.x*b.x + a.y*b.y + a.z*b.z;
     }
+    static cross (a, b){
+        return a.x * b.y - a.y * b.x;
+    }
     static magnitude (a){
         return Math.sqrt((a.x*a.x) + (a.y*a.y) + (a.z*a.z));
     }
@@ -125,6 +128,30 @@ export class Vector{
         return new Vector(x, y);
     }
 
+    static getSegmentIntersection(a, b, c, d){
+        //resource: https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+        const p = a;
+        const q = c;
+        const r = b.subtract(a);
+        const s = d.subtract(c);
+
+        const pq = q.subtract(p);
+        const rxs = Vector.cross(r, s);
+
+        const t = Vector.cross(pq, s) / rxs;
+        const u = Vector.cross(pq, r) / rxs;
+
+        if(
+            rxs != 0 && 
+            0 <= t && t <= 1 &&
+            0 <= u && u <= 1
+        ){
+            return p.add(r.multiply(t));
+        }
+
+        return false;
+    }
+
     // Pseudo
     static isPointBetweenSegment(p, a, b){
         return (
@@ -168,6 +195,9 @@ export class Vector{
     }
     dot (other){
         return Vector.dot(this, other);
+    }
+    cross( other ){
+        return Vector.cross(this, other);
     }
     magnitude (){
         return Vector.magnitude(this);

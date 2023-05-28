@@ -33,8 +33,12 @@
         })
         cube.addConstraint(container);
 
+        let g = 9.8;
+
         renderer.update((delta_time)=>{
             renderer.clear();
+
+            cube.setGravity(new Vector(0, g));
 
             cube.update(delta_time);
             cube.draw(renderer);

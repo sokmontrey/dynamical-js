@@ -226,7 +226,8 @@ export class ContainerConstraint extends Constraint{
                 P1, P2, V1, V2
             );
 
-            if(this._verifyIntersecption(contact_point, normal, P1, V1)){
+            // TODO: && outside
+            if(contact_point){
                 point.applyCollision(
                     this,
                     contact_point,
@@ -248,26 +249,9 @@ export class ContainerConstraint extends Constraint{
         );
     }
 
-    _verifyIntersecption(contact_point, normal, P1, V1){
-        //If, somehow, there are no contact_point,
-        //just skip
-        if(!contact_point) 
-            return false;
-
-        if(Vector.isPointInfrontLine(P1, V1, normal)) 
-            return false;
-
-        //If the intersection is not even between the segment,
-        //Don't bother
-        // if(!Vector.isPointBetweenSegment(contact_point, C, D)) 
-        //     return;
-
-        return true;
-    }
-
     //check for one point with one segment
     _checkEachVertex(P1, P2, V1, V2){
-        const contact_point = Vector.getLineIntersection(P1, P2, V1, V2);
+        const contact_point = Vector.getSegmentIntersection(P1, P2, V1, V2);
         const normal = new Vector(V1.y-V2.y, V2.x-V1.x).normalize();
 
         return [contact_point, normal];
