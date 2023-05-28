@@ -26,10 +26,8 @@
 
         renderer.setBackground('black');
 
-
-
         const cube1 = Composite.create('rectangle', {
-            angle: Math.PI / 4,
+            angle: -Math.PI / 3,
             position: new Vector(250, 100)
         })
 
@@ -38,36 +36,37 @@
             position: new Vector(250, 300)
         })
 
-        const container = Constraint.create('rectangle_container');
+        const container = new SolidConstraint().invert()
+        .addVertex(0,0)
+        .addVertex(500,0)
+        .addVertex(500,400)
+        .addVertex(250, 500)
+        .addVertex(0,300)
 
-        // const p1 = cube1.getPoints();
-        // const v1 = [];
-        // for(let point_name in p1){
-        //     v1.push(p1[point_name].getReferenceToPosition());
-        // }
-        //
-        // const p2 = cube2.getPoints();
-        // const v2 = [];
-        // for(let point_name in p2){
-        //     v2.push(p2[point_name].getReferenceToPosition());
-        // }
-        //
-        // const cc1 = new SolidConstraint().setVertices(v1);
-        // const cc2 = new SolidConstraint().setVertices(v2);
-        //
-        // cube1.addConstraint(cc2);
-        // cube2.addConstraint(cc1);
-
-        cube1.addConstraint(container);
-        cube2.addConstraint(container);
+        cube1.initCollider();
+        cube2.initCollider();
 
         renderer.update(function(delta_time){
             renderer.clear();
 
-            cube1.update(delta_time);
-            cube1.draw(renderer);
+            delta_time /= 5;
+            for(let i=0; i<5; i++){
 
-            cube2.update(delta_time);
+                cube2
+                .applyGravity()
+                .applyConstraint(cube1.getCollider())
+                .applyConstraint(container)
+                .updatePosition(delta_time)
+                .applyConnections()
+                cube1
+                .applyGravity()
+                .applyConstraint(cube2.getCollider())
+                .applyConstraint(container)
+                .updatePosition(delta_time)
+                .applyConnections()
+            }
+
+            cube1.draw(renderer);
             cube2.draw(renderer);
         });
     </script>

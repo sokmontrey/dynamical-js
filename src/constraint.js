@@ -186,9 +186,10 @@ export class SolidConstraint extends Constraint{
     constructor(){
         super();
 
-        this._vertices          =   [];
-        this._friction_constant =   0.05;
-        this._is_inverted       =   false;
+        this._vertices              =   [];
+        this._friction_constant     =   0.05;
+        this._is_inverted           =   false;
+        this._is_signal_vertex      =   false;
     }
     invert(){
         this._is_inverted = !this._is_inverted;
@@ -197,7 +198,10 @@ export class SolidConstraint extends Constraint{
     }
 
     addVertex(vertex, y=null){
-        if(vertex instanceof Vector){
+        if(typeof vertex === 'function'){
+            this._vertices.push(vertex);
+            this._is_signal_vertex = true;
+        } else if (vertex instanceof Vector){
             this._vertices.push(vertex);
         } else {
             this._vertices.push(new Vector(vertex, y));
@@ -233,7 +237,7 @@ export class SolidConstraint extends Constraint{
         const P1 = point.position;
         const P2 = point.old_position;
 
-        this._verticesIterator((V1, V2)=>{
+        this._verticesIterator(this._vertices, (V1, V2)=>{
             const [contact_point, normal] = this._checkEachVertex(
                 P1, P2, V1, V2
             );
@@ -269,15 +273,26 @@ export class SolidConstraint extends Constraint{
             return new Vector(V2.y-V1.y, V1.x-V2.x).normalize();
     }
 
-    _verticesIterator(callback){
-        for(let i=1; i<this._vertices.length; i++){
+    _verticesIterator(vertices, callback){
+        if(this._is_signal_vertex){
+            for(let i=1; i<this._vertices.length; i++){
+                callback(
+                    vertices[i-1](), vertices[i]()
+                );
+            }
             callback(
-                this._vertices[i-1], this._vertices[i]
+                vertices[vertices.length-1](), vertices[0]()
+            );
+        } else {
+            for(let i=1; i<this._vertices.length; i++){
+                callback(
+                    vertices[i-1], vertices[i]
+                );
+            }
+            callback(
+                vertices[vertices.length-1], vertices[0]
             );
         }
-        callback(
-            this._vertices[this._vertices.length-1], this._vertices[0]
-        );
     }
 }
 
