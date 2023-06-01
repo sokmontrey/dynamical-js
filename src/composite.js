@@ -10,14 +10,13 @@ export default class Composite extends Abstract{
 
         this._initial_offset    = new Vector(0,0);
         this._points            = {};
+        this._offsets           = {};
         this._connections       = [];
-        this._collider          = null;
 
         this._is_gravity        = true;
         this._gravity           = new Vector(0, 9.8);
 
         this._is_static         = false;
-
 
         this.graphic = {
             ...this.graphic,
@@ -92,23 +91,6 @@ export default class Composite extends Abstract{
         return this;
     }
 
-    setCollider(collider_constraint){
-        this._collider = collider_constraint
-
-        return this;
-    }
-    initCollider(){
-        this._collider = new SolidConstraint();
-
-        for(let point_name in this._points){
-            this._collider.addVertex(()=> 
-                this._points[point_name].position
-            );
-        }
-
-        return this;
-    }
-
     static(){
         this._is_static = true;
 
@@ -142,7 +124,10 @@ export default class Composite extends Abstract{
     createVertex(vertex, name){
         name = name || Object.keys(this._points).length;
 
-        this._points[name] = PointMass.create(vertex.add(this._initial_offset));
+        const position = vertex.add(this._initial_offset);
+
+        this._points[name] = PointMass.create(position);
+        this._offsets[name] = position;
 
         return this;
     }
@@ -208,20 +193,20 @@ export default class Composite extends Abstract{
         return this;
     }
 
+    testCollision(constraint){
+        for(let point_name in this._points){
+            constraint.check(this._points[point_name], ()=>{
+                this.graphic.fill_color = 'red';
+            });
+        }
+    }
+
     applyConstraint(constraint){
         for(let point_name in this._points){
             constraint.check(this._points[point_name]);
         }
 
         return this;
-    }
-
-    getCollider(){
-        const collider = new SolidConstraint();
-        for(let point_name in this._points){
-            collider.addVertex(this._points[point_name].position)
-        }
-        return collider;
     }
 
     draw(renderer=this.graphic.renderer){
@@ -263,6 +248,14 @@ export default class Composite extends Abstract{
         }
 
         return this;
+    }
+
+    getCollider(){
+        const collider = new SolidConstraint();
+        for(let point_name in this._points){
+            collider.addVertex(this._points[point_name].position);
+        }
+        return collider;
     }
 
     getPoints(){

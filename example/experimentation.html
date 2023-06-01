@@ -27,48 +27,46 @@
         renderer.setBackground('black');
 
         const cube1 = Composite.create('rectangle', {
-            angle: -Math.PI / 3,
-            position: new Vector(250, 100)
-        })
+            angle: Math.PI/ 3
+        });
 
         const cube2 = Composite.create('rectangle', {
-            angle: Math.PI / 5,
-            position: new Vector(250, 300)
-        })
+            angle: Math.PI / 4,
+            width: 100,
+            height: 100,
+        });
 
-        const container = new SolidConstraint().invert()
-        .addVertex(0,0)
-        .addVertex(500,0)
-        .addVertex(500,400)
-        .addVertex(250, 500)
-        .addVertex(0,300)
+        const mouse_pos = new Vector(0,0);
 
-        cube1.initCollider();
-        cube2.initCollider();
+        window.addEventListener('mousemove', (evt)=>{
+            var rect = canvas.getBoundingClientRect();
+            const x = evt.clientX - rect.left;
+            const y = evt.clientY - rect.top;
 
-        renderer.update(function(delta_time){
-            renderer.clear();
+            const new_mouse_pos = new Vector(x,y);
 
-            delta_time /= 5;
-            for(let i=0; i<5; i++){
-
-                cube2
-                .applyGravity()
-                .applyConstraint(cube1.getCollider())
-                .applyConstraint(container)
-                .updatePosition(delta_time)
-                .applyConnections()
-                cube1
-                .applyGravity()
-                .applyConstraint(cube2.getCollider())
-                .applyConstraint(container)
-                .updatePosition(delta_time)
-                .applyConnections()
+            const points = cube1._points;
+            const offsets = cube1._offsets;
+            const initial_offset = cube1._initial_offset;
+            for(let point_name in points){
+                const point = points[point_name];
+                const offset = offsets[point_name];
+                point.setPosition(mouse_pos.add(offset).subtract(initial_offset));
             }
+
+            mouse_pos.assign(new_mouse_pos);
+        });
+
+        renderer.update((delta_time)=>{
+            renderer.clear();
+            const c1 = cube1.getCollider();
 
             cube1.draw(renderer);
             cube2.draw(renderer);
-        });
+
+            cube2.testCollision(c1);
+        })
+
     </script>
 </body>
 </html>
