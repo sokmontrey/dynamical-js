@@ -193,14 +193,6 @@ export default class Composite extends Abstract{
         return this;
     }
 
-    testCollision(constraint){
-        for(let point_name in this._points){
-            constraint.check(this._points[point_name], ()=>{
-                this.graphic.fill_color = 'red';
-            });
-        }
-    }
-
     applyConstraint(constraint){
         for(let point_name in this._points){
             constraint.check(this._points[point_name]);
