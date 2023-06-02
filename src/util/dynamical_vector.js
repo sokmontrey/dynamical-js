@@ -29,6 +29,9 @@ export class Vector{
         if(b instanceof Vector) return new Vector(a.x/b.x, a.y/b.y, a.z/b.z);
         else return new Vector(a.x/b, a.y/b, a.z/b);
     }
+    static lerp(a, b, t){
+        return Vector.add(a, Vector.subtract(b, a).multiply(t));
+    }
     static reciprocal (a){
         //TODO: divide by zero
         return new Vector(1/a.x, 1/a.y, 1/a.z);
@@ -82,7 +85,7 @@ export class Vector{
                     v, 
                     Vector.dot(a, v)
                 ),
-                1.5
+                1.2
             )
         );
     }
@@ -102,93 +105,6 @@ export class Vector{
     static isEqual (a, b){
         if(b instanceof Vector) return a.x == b.x && a.y == b.y && a.z == b.y;
         else return a.x == b && a.y == b && a.z == b;
-    }
-
-    static getLineIntersection(a, b, c, d){
-        let slope1 = (b.y - a.y) / (b.x - a.x);
-        let slope2 = (d.y - c.y) / (d.x - c.x);
-
-        let x, y;
-
-        //use the formula: y - A.y = m (x - A.x)
-        if(!isFinite(slope1)){ //AB segment is a vertical segment
-            // the second segment is also vertical. 
-            if(!isFinite(slope2)) return false; 
-
-            x = a.x;
-            y = slope2 * (a.x - c.x) + c.y;
-        }else if(!isFinite(slope2)){ //CD segment is a vertical segment
-            x = c.x;
-            y = slope1 * (c.x - a.x) + a.y;
-        }else{ //None of the the segment is a vertical segment
-            x = (a.y - c.y + slope2 * c.x - slope1 * a.x) / (slope2 - slope1);
-            y = slope1 * (x - a.x) + a.y;
-        }
-
-        return new Vector(x, y);
-    }
-
-    static getSegmentIntersection(a, b, c, d){
-        //resource: https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-        const p = a;
-        const q = c;
-        const r = b.subtract(a);
-        const s = d.subtract(c);
-
-        const pq = q.subtract(p);
-        const rxs = Vector.cross(r, s);
-
-        const t = Vector.cross(pq, s) / rxs;
-        const u = Vector.cross(pq, r) / rxs;
-
-        if(
-            rxs != 0 && 
-            0 <= t && t <= 2 &&
-            0 <= u && u <= 1
-        ){
-            return q.add(s.multiply(u));
-        }
-
-        return false;
-    }
-
-    static isSegmentIntersect(a, b, c, d){
-        //resource: https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-        const p = a;
-        const q = c;
-        const r = b.subtract(a);
-        const s = d.subtract(c);
-
-        const pq = q.subtract(p);
-        const rxs = Vector.cross(r, s);
-
-        const t = Vector.cross(pq, s) / rxs;
-        const u = Vector.cross(pq, r) / rxs;
-
-        return (
-            rxs != 0 && 
-            0 <= t && t <= 2 &&
-            0 <= u && u <= 2
-        );
-    }
-
-    // Pseudo
-    static isPointBetweenSegment(p, a, b){
-        return (
-            Math.ceil(p.x) >= Math.min(a.x, b.x) &&
-            Math.floor(p.x) <= Math.max(a.x, b.x) &&
-            Math.ceil(p.y) >= Math.min(a.y, b.y) && 
-            Math.floor(p.y) <= Math.max(a.y, b.y)
-        );
-    }
-
-    static isPointBehindLine(p, a, n){
-        //TODO: behind or on
-        return p.subtract(a).dot(n) <= 0;
-    }
-
-    static isPointInfrontLine(p, a, n){
-        return p.subtract(a).dot(n) >= 0;
     }
 
     /*
