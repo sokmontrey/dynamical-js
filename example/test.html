@@ -27,18 +27,21 @@
         renderer.setBackground('black');
 
         const c = new Container()
-
-        const p = PointMass.create(220, 100);
+        const cube = Composite.create('rectangle', {
+            width: 100,
+            height: 100,
+            angle: Math.PI/3
+        })
 
         renderer.update((delta_time)=>{
             renderer.clear();
 
-            p.applyGravity();
-            p.updatePosition(delta_time);
+            cube.applyGravity();
+            cube.updatePosition(delta_time);
+            cube.applyConnections();
+            cube.applyConstraint(c);
 
-            c.check(p);
-
-            p.draw(5, renderer);
+            cube.draw(renderer);
             c.draw(renderer)
         });
     </script>
