@@ -29,27 +29,14 @@
         const c = new Container()
 
         const p = PointMass.create(220, 100);
-        //
-        // canvas.addEventListener('mousemove', (evt)=>{
-        //     renderer.clear();
-        //
-        //     var rect = canvas.getBoundingClientRect();
-        //     const x = evt.clientX - rect.left;
-        //     const y = evt.clientY - rect.top;
-        //
-        //     p.setPosition(new Vector(x, y));
-        //     p.updatePosition();
-        //     c.check(p);
-        //
-        //     p.draw(5, renderer);
-        //     c.draw(renderer);
-        // });
 
         renderer.update((delta_time)=>{
             renderer.clear();
 
             p.applyGravity();
             p.updatePosition(delta_time);
+
+            c.check(p);
 
             p.draw(5, renderer);
             c.draw(renderer)

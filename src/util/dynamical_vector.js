@@ -85,7 +85,7 @@ export class Vector{
                     v, 
                     Vector.dot(a, v)
                 ),
-                1.2
+                1
             )
         );
     }
@@ -105,6 +105,29 @@ export class Vector{
     static isEqual (a, b){
         if(b instanceof Vector) return a.x == b.x && a.y == b.y && a.z == b.y;
         else return a.x == b && a.y == b && a.z == b;
+    }
+
+    static getLineIntersection(a, b, c, d){
+        const m1 = (b.y-a.y)/(b.x-a.x);
+        const m2 = (d.y-c.y)/(d.x-c.x);
+
+        const result = new Vector(0,0);
+
+        //use the formula: y - A.y = m (x - A.x)
+        if(!isFinite(m1)){ //AB segment is a vertical segment
+            // the second segment is also vertical. 
+            if(!isFinite(m2)) return false; 
+            result.x = a.x;
+            result.y = m2 * (a.x - c.x) + c.y;
+        }else if(!isFinite(m2)){ //CD segment is a vertical segment
+            result.x = c.x;
+            result.y = m1 * (c.x - a.x) + a.y;
+        }else{ //None of the the segment is a vertical segment
+            result.x = (a.y - c.y + m2 * c.x - m1 * a.x) / (m2 - m1);
+            result.y = m1 * (result.x - a.x) + a.y;
+        }
+
+        return result;
     }
 
     /*

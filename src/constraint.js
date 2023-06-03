@@ -36,16 +36,15 @@ export class Constraint extends Abstract{
             const h = params.height || 500;
 
             return new Container()
-                .addVertex( offset )
-                .addVertex( offset.add(new Vector(w, 0)) )
-                .addVertex( offset.add(new Vector(w, h)) )
-                .addVertex( offset.add(new Vector(0, h)) );
+                .setOfffset(offset)
+                .setWidth(w)
+                .setHeight(h);
 
         }else if(type === "circle_container"){
             
-            const constraint = new CircleContainerConstraint();
-            if( params.radius ) container.setRadius(params.radius);
-            if( params.offset ) container.setOffset(params.offset);
+            const constraint = new CircleContainer();
+            if( params.radius ) constraint.setRadius(params.radius);
+            if( params.offset ) constraint.setOffset(params.offset);
             return constraint;
 
         }
@@ -179,13 +178,55 @@ export class Container extends Constraint{
         this._width                 =   500;
         this._height                =   500;
         this._offset                =   new Vector(0,0);
-        this._friction_constant     =   0.0;
+        this._friction_constant     =   0.01;
+
+        this._vertices              =   [
+            new Vector(0,0),
+            new Vector(0,0),
+            new Vector(0,0),
+            new Vector(0,0),
+        ];
+        this._bounds                =   [0,0,0,0];
+        this._normals               =   [
+            new Vector( 0,  1),
+            new Vector(-1,  0),
+            new Vector( 0, -1),
+            new Vector( 1,  0),
+        ];
 
         this.graphic.is_fill = false;
         this.graphic.is_stroke = true;
+
+        this._calculateVertices();
+        this._calculateBounds();
     }
+
+    _calculateVertices(){
+        this._vertices[0] = this._offset;
+        this._vertices[1] = this._offset.add(
+            new Vector(this._width, 0)
+        );
+        this._vertices[2] = this._offset.add(
+            new Vector(this._width, this._height)
+        );
+        this._vertices[3] = this._offset.add(
+            new Vector(0, this._height)
+        );
+    }
+    _calculateBounds(){
+        this._bounds = [
+            this._offset.y,
+            this._offset.x + this._width,
+            this._offset.y + this._height,
+            this._offset.x,
+        ];
+    }
+
     setWidth(width){
         this._width = width;
+
+        this._calculateVertices();
+        this._calculateBounds();
 
         return this;
     }
@@ -193,11 +234,17 @@ export class Container extends Constraint{
     setHeight(height){
         this._height = height;
 
+        this._calculateVertices();
+        this._calculateBounds();
+
         return this;
     }
 
     setOfffset(offset){
         this._offset = offset;
+
+        this._calculateVertices();
+        this._calculateBounds();
 
         return this;
     }
@@ -225,6 +272,28 @@ export class Container extends Constraint{
     check(point){
         const P1 = point.position;
         const P2 = point.old_position;
+
+        for(let i=0; i<4; i++){
+            const axis = (i % 2 == 0) ? P1.y : P1.x;
+            const condition = (i == 0 || i == 3) 
+            ? (axis < this._bounds[i])
+            : (axis > this._bounds[i]);
+
+            if(condition){
+                const contact_point = Vector.getLineIntersection(
+                    P1, P2, 
+                    this._vertices[i],
+                    this._vertices[i > 2 ? 0 : i+1]
+                );
+                const normal = this._normals[i];
+                point.applyCollision(
+                    this,
+                    contact_point,
+                    normal,
+                    this._friction_constant,
+                );
+            }
+        }
     }
 }
 
