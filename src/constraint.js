@@ -256,12 +256,7 @@ export class Container extends Constraint{
 
     draw(renderer=this.graphic.renderer){
         const polygon = renderer.polygon({
-            vertices: [
-                this._offset,
-                this._offset.add(new Vector(this._width, 0)),
-                this._offset.add(new Vector(this._width, this._height)),
-                this._offset.add(new Vector(0, this._height)),
-            ]
+            vertices: this._vertices
         });
 
         this.graphic.applyStyle(polygon);
@@ -327,8 +322,8 @@ export class CircleContainer extends Container{
         this._center = this._offset.add(this._radius);
         this._center.z = 0;
     }
-    draw(){
-        const circle = this.graphic.renderer.circle({
+    draw(renderer=this.graphic.renderer){
+        const circle = renderer.circle({
             position: this._center,
             radius: this._radius,
         });
