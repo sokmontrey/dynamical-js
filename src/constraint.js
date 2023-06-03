@@ -31,31 +31,20 @@ export class Constraint extends Abstract{
 
         }else if(type === "container"){
 
-            const constraint = new SolidConstraint().invert();
-            if(params.vertices){
-                for(let vertex of params.vertices)
-                    container.addPointMass(vertex);
-            }
-            return constraint;
-
-        }else if(type === "rectangle_container"){
-
             const offset = params.offset || new Vector(0,0);
             const w = params.width || 500;
             const h = params.height || 500;
 
-            return new SolidConstraint()
-                .invert()
-                .addVertex( offset )
-                .addVertex( offset.add(new Vector(w, 0)) )
-                .addVertex( offset.add(new Vector(w, h)) )
-                .addVertex( offset.add(new Vector(0, h)) );
+            return new Container()
+                .setOfffset(offset)
+                .setWidth(w)
+                .setHeight(h);
 
         }else if(type === "circle_container"){
             
-            const constraint = new CircleContainerConstraint();
-            if( params.radius ) container.setRadius(params.radius);
-            if( params.offset ) container.setOffset(params.offset);
+            const constraint = new CircleContainer();
+            if( params.radius ) constraint.setRadius(params.radius);
+            if( params.offset ) constraint.setOffset(params.offset);
             return constraint;
 
         }
@@ -182,35 +171,80 @@ export class DistanceConstraint extends Constraint{
     }
 }
 
-export class SolidConstraint extends Constraint{
+export class Container extends Constraint{
     constructor(){
         super();
 
-        this._vertices              =   [];
-        this._friction_constant     =   0.05;
-        this._is_inverted           =   false;
-        this._is_signal_vertex      =   false;
+        this._width                 =   500;
+        this._height                =   500;
+        this._offset                =   new Vector(0,0);
+        this._friction_constant     =   0.01;
+
+        this._vertices              =   [
+            new Vector(0,0),
+            new Vector(0,0),
+            new Vector(0,0),
+            new Vector(0,0),
+        ];
+        this._bounds                =   [0,0,0,0];
+        this._normals               =   [
+            new Vector( 0,  1),
+            new Vector(-1,  0),
+            new Vector( 0, -1),
+            new Vector( 1,  0),
+        ];
+
+        this.graphic.is_fill = false;
+        this.graphic.is_stroke = true;
+
+        this._calculateVertices();
+        this._calculateBounds();
     }
-    invert(){
-        this._is_inverted = !this._is_inverted;
+
+    _calculateVertices(){
+        this._vertices[0] = this._offset;
+        this._vertices[1] = this._offset.add(
+            new Vector(this._width, 0)
+        );
+        this._vertices[2] = this._offset.add(
+            new Vector(this._width, this._height)
+        );
+        this._vertices[3] = this._offset.add(
+            new Vector(0, this._height)
+        );
+    }
+    _calculateBounds(){
+        this._bounds = [
+            this._offset.y,
+            this._offset.x + this._width,
+            this._offset.y + this._height,
+            this._offset.x,
+        ];
+    }
+
+    setWidth(width){
+        this._width = width;
+
+        this._calculateVertices();
+        this._calculateBounds();
 
         return this;
     }
 
-    addVertex(vertex, y=null){
-        if(typeof vertex === 'function'){
-            this._vertices.push(vertex);
-            this._is_signal_vertex = true;
-        } else if (vertex instanceof Vector){
-            this._vertices.push(vertex);
-        } else {
-            this._vertices.push(new Vector(vertex, y));
-        }
+    setHeight(height){
+        this._height = height;
+
+        this._calculateVertices();
+        this._calculateBounds();
 
         return this;
     }
-    setVertices(vertices){
-        this._vertices = vertices;
+
+    setOfffset(offset){
+        this._offset = offset;
+
+        this._calculateVertices();
+        this._calculateBounds();
 
         return this;
     }
@@ -220,11 +254,8 @@ export class SolidConstraint extends Constraint{
         return this;
     }
 
-    getVertices(){ return this._vertices; }
-    getVertex(index){ return this._vertices[index]; } 
-
-    draw(){
-        const polygon = this.graphic.renderer.polygon({
+    draw(renderer=this.graphic.renderer){
+        const polygon = renderer.polygon({
             vertices: this._vertices
         });
 
@@ -237,66 +268,31 @@ export class SolidConstraint extends Constraint{
         const P1 = point.position;
         const P2 = point.old_position;
 
-        this._verticesIterator(this._vertices, (V1, V2)=>{
-            const [contact_point, normal] = this._checkEachVertex(
-                P1, P2, V1, V2
-            );
+        for(let i=0; i<4; i++){
+            const axis = (i % 2 == 0) ? P1.y : P1.x;
+            const condition = (i == 0 || i == 3) 
+            ? (axis < this._bounds[i])
+            : (axis > this._bounds[i]);
 
-            // TODO: && outside
-            if(contact_point){
-                if(this._verifyIntersection(P1, P2, normal)){
-                    point.applyCollision(
-                        this,
-                        contact_point,
-                        normal,
-                        this._friction_constant,
-                    );
-                }
-            }
-        });
-    }
-    _verifyIntersection(P1, P2, normal){
-        return P1.subtract(P2).dot(normal) < 0;
-    }
-    //check for one point with one segment
-    _checkEachVertex(P1, P2, V1, V2){
-        const contact_point = Vector.getSegmentIntersection(P1, P2, V1, V2);
-        const normal = this._calculateNormal(V1, V2);
-
-        return [contact_point, normal];
-    }
-
-    _calculateNormal(V1, V2){
-        if(this._is_inverted)
-            return new Vector(V1.y-V2.y, V2.x-V1.x).normalize();
-        else
-            return new Vector(V2.y-V1.y, V1.x-V2.x).normalize();
-    }
-
-    _verticesIterator(vertices, callback){
-        if(this._is_signal_vertex){
-            for(let i=1; i<this._vertices.length; i++){
-                callback(
-                    vertices[i-1](), vertices[i]()
+            if(condition){
+                const contact_point = Vector.getLineIntersection(
+                    P1, P2, 
+                    this._vertices[i],
+                    this._vertices[i > 2 ? 0 : i+1]
+                );
+                const normal = this._normals[i];
+                point.applyCollision(
+                    this,
+                    contact_point,
+                    normal,
+                    this._friction_constant,
                 );
             }
-            callback(
-                vertices[vertices.length-1](), vertices[0]()
-            );
-        } else {
-            for(let i=1; i<this._vertices.length; i++){
-                callback(
-                    vertices[i-1], vertices[i]
-                );
-            }
-            callback(
-                vertices[vertices.length-1], vertices[0]
-            );
         }
     }
 }
 
-export class CircleContainerConstraint extends SolidConstraint{
+export class CircleContainer extends Container{
     constructor(){
         super();
 
@@ -326,8 +322,8 @@ export class CircleContainerConstraint extends SolidConstraint{
         this._center = this._offset.add(this._radius);
         this._center.z = 0;
     }
-    draw(){
-        const circle = this.graphic.renderer.circle({
+    draw(renderer=this.graphic.renderer){
+        const circle = renderer.circle({
             position: this._center,
             radius: this._radius,
         });

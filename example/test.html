@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example2</title>
+
+    <style>
+        body{
+            background-color: #191c22;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script type="module">
+        import { Vector } from '../src/util/dynamical_vector.js';
+        import PointMass from '../src/point_mass.js';
+        import Renderer from '../src/renderer.js';
+        import { Constraint, Container } from '../src/constraint.js';
+        import Composite from '../src/composite.js';
+
+        const canvas = document.getElementById('canvas');
+        const renderer = new Renderer(canvas);
+
+        renderer.setBackground('black');
+
+        const c = new Container()
+
+        const p = PointMass.create(220, 100);
+
+        renderer.update((delta_time)=>{
+            renderer.clear();
+
+            p.applyGravity();
+            p.updatePosition(delta_time);
+
+            c.check(p);
+
+            p.draw(5, renderer);
+            c.draw(renderer)
+        });
+    </script>
+</body>
+</html>
