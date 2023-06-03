@@ -336,7 +336,7 @@ const point_mass = PointMass.create(250,250);
     The constraint is given the point_mass created to keep track of.
     The default width and height of the container is 500
 */
-const container = Constraint.create('rectangle_container');
+const container = Constraint.create('container');
 
 /* LOOP */
 renderer.update((delta_time)=>{
@@ -366,24 +366,10 @@ renderer.update((delta_time)=>{
         It is just a 0D point
         But we draw as a circle with the radius of 10 to visualize it
     */
-    renderer.circle({
-        position: point_mass.position, 
-        radius: 6, 
-    }).setFillStyle('#D6D6B1').fill();
+    point_mass.draw(5, renderer);
 
     /* Visualize the container*/
-    renderer.setStrokeStyle('#D6D6B1');
-    for(let i=1; i<container.getVertices().length; i++){
-        renderer.line({
-            start: container.getVertex(i-1), 
-            end: container.getVertex(i), 
-        }).stroke();
-    }
-
-    renderer.line({
-        start: container.getVertex(container.getVertices().length-1), 
-        end: container.getVertex(0), 
-    }).stroke();
+    container.draw(renderer);
 });
 `,
             };
