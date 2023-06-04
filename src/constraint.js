@@ -372,10 +372,84 @@ export class CompositeCollider extends Constraint{
 
     check(point){
         const P1 = point.position;
-        const P2 = point.old_position;
         const point_vertices = this._composite.getPointsArray();
         const vertices = point_vertices.map((point)=> point.position);
         const bounds = Vector.getBounds(vertices);
         if(!Vector.isPointInBounds(P1, bounds)) return false;
+
+        const P2 = new Vector(bounds.ux + 2, P1.y);
+        let intersection_count = 0;
+
+        let closest_edge = null;
+        let closest_distance = Infinity;
+        let normal = null;
+        let contact_point = null;
+
+        Vector.edgeIterator(vertices, (V1, V2)=>{
+            if(this._isSegmentIntersect(P1, P2, V1, V2)){
+                intersection_count ++;
+            }
+
+            const closest_point = Vector.closestPointOnSegment(
+                P1, V1, V2
+            );
+            const distance = Vector.distance(
+                P1, 
+                closest_point
+            );
+
+            if (distance < closest_distance) {
+                closest_distance = distance;
+                closest_edge = { V1, V2 };
+
+                const edge_vector = Vector.subtract(V2, V1);
+                const edge_normal = Vector.normalize(
+                    Vector.perpendicular(edge_vector)
+                    );
+                normal = edge_normal;
+                contact_point = closest_point;
+            }
+        });
+
+        if(intersection_count % 2 != 0) return false;
+
+        console.log("inside")
+
+        return [contact_point, normal]
+    }
+    _isSegmentIntersect(P1, P2, V1, V2) {
+        const d1 = this._direction(P1, P2, V1);
+        const d2 = this._direction(P1, P2, V2);
+        const d3 = this._direction(V1, V2, P1);
+        const d4 = this._direction(V1, V2, P2);
+
+        if ((d1 > 0 && d2 < 0) || 
+            (d1 < 0 && d2 > 0) || 
+            (d3 > 0 && d4 < 0) || 
+            (d3 < 0 && d4 > 0)) {
+
+            return true;
+        } else if (d1 === 0 && 
+            Vector.isPointOnSegment(P1, P2, V1)) {
+
+            return true; 
+        } else if (d2 === 0 && 
+            Vector.isPointOnSegment(P1, P2, V2)) {
+
+            return true;
+        } else if (d3 === 0 && 
+            Vector.isPointOnSegment(V1, V2, P1)) {
+
+            return true;
+        } else if (d4 === 0 && 
+            Vector.isPointOnSegment(V1, V2, P2)) {
+
+            return true;
+        }
+        return false; 
+    }
+
+    _direction(P, Q, R) {
+        return (R.x - P.x) * (Q.y - P.y) - (Q.x - P.x) * (R.y - P.y);
     }
 }

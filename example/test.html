@@ -32,6 +32,9 @@
             height: 100,
             angle: Math.PI/3
         });
+        cube.graphic.is_fill = false;
+        cube.graphic.is_wireframe = true;
+        cube.graphic.renderer = renderer;
 
         const mouse_pos = new Vector(0,0);
         const point = PointMass.create(0,0).static();
@@ -57,9 +60,21 @@
             cube.applyConnections();
             cube.applyConstraint(c);
 
-            collider.check(point);
+            const r = collider.check(point);
 
-            cube.draw(renderer);
+            if(r){
+                renderer.circle({
+                    position: r[0],
+                    radius: 5
+                }).setFillStyle('white').fill()
+
+                renderer.line({
+                    start: point.position,
+                    end: point.position.add(r[1].multiply(50))
+                }).setStrokeStyle('white').stroke()
+            }
+
+            cube.draw();
             c.draw(renderer)
             point.draw(5, renderer);
         });

@@ -74,6 +74,9 @@ export class Vector{
         a.y = b.y;
         a.z = b.z;
     }
+    static perpendicular(a){
+        return new Vector(a.y, -a.x);
+    }
     /*
     Find a reflection vector A with V as the mirror
         (imagine -A bound of surface of V)
@@ -150,12 +153,32 @@ export class Vector{
         return p.x >= bounds.lx && p.x <= bounds.ux &&
         p.y >= bounds.ly && p.y < bounds.uy;
     }
+    static isPointOnSegment(P, Q, R){
+        return R.x >= Math.min(P.x, Q.x) && R.x <= Math.max(P.x, Q.x) && R.y >= Math.min(P.y, Q.y) && R.y <= Math.max(P.y, Q.y);
+    }
 
     static edgeIterator(vertices, callback){
         for(let i=0; i<vertices.length-1; i++){
             callback(vertices[i], vertices[i+1]);
         }
         callback(vertices[vertices.length-1], vertices[0]);
+    }
+    static distancePointToSegment(P, V1, V2){
+        const closest_point = Vector.closestPointOnSegment(P, V1, V2);
+        return Vector.distance(P, closest_point);
+    }
+    static closestPointOnSegment(P, V1, V2){
+        const edge_vector = Vector.subtract(V2, V1);
+        const point_vector = Vector.subtract(P, V1);
+        const t = Vector.dot(point_vector, edge_vector) / Vector.dot(edge_vector, edge_vector);
+
+        if (t <= 0) {
+            return V1;
+        } else if (t >= 1) {
+            return V2;
+        } else {
+            return Vector.add(V1, Vector.multiply(edge_vector, t));
+        }
     }
     /*
     Instance Methods
