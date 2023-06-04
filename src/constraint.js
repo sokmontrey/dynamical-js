@@ -152,20 +152,16 @@ export class DistanceConstraint extends Constraint{
             spring_constant * difference_in_length 
         );
 
-        const m1_reciprocal = 1 / m1;
-        const m2_reciprocal = 1 / m2;
-
-        // 1/m1 + 1/m2
-        const sum_reciprocal = m1_reciprocal + m2_reciprocal;
+        const sum_m = m1 + m2;
 
         const new_p1 = p1.add(
             is_point2_static ? error
-                : error.multiply(m1_reciprocal / sum_reciprocal)
+                : error.multiply(m2 / sum_m)
         );
 
         const new_p2 = p2.subtract(
             is_point1_static ? error
-                : error.multiply(m2_reciprocal / sum_reciprocal)
+                : error.multiply(m1 / sum_m)
         );
         return [new_p1, new_p2];
     }
@@ -178,7 +174,7 @@ export class Container extends Constraint{
         this._width                 =   500;
         this._height                =   500;
         this._offset                =   new Vector(0,0);
-        this._friction_constant     =   0.01;
+        this._friction_constant     =   0.0;
 
         this._vertices              =   [
             new Vector(0,0),
@@ -355,5 +351,146 @@ export class CircleContainer extends Container{
         const normal = to_point_normal.invert();
 
         return [contact_point, normal];
+    }
+}
+
+export class CompositeCollider extends Constraint{
+    constructor(){
+        super();
+
+        this._composite         = null;
+        this._friction_constant = 0.01;
+    }
+
+    setComposite(composite){
+        this._composite = composite;
+        return this;
+    }
+
+    check(point){
+        const P1 = point.position;
+        const point_vertices = this._composite.getPointsArray();
+        const vertices = point_vertices.map((point)=> point.position);
+        const bounds = Vector.getBounds(vertices);
+        if(!Vector.isPointInBounds(P1, bounds)) return false;
+
+        const P2 = new Vector(bounds.ux, P1.y);
+
+        let intersection_count = 0;
+        let closest_distance = Infinity;
+        let closest_edge = null;
+        let closest_edge_index = null;
+        let contact_point = null;
+
+        Vector.edgeIterator(vertices, (V1, V2, i1, i2)=>{
+            if(this._isSegmentIntersect(P1, P2, V1, V2)){
+                intersection_count ++;
+            }
+
+            const closest_point = Vector.closestPointOnSegment(
+                P1, V1, V2
+            );
+            const distance = Vector.distance(
+                P1, 
+                closest_point
+            );
+
+            if (distance < closest_distance) {
+                closest_distance = distance;
+                closest_edge = {V1, V2};
+                closest_edge_index = {i1, i2};
+                contact_point = closest_point;
+            }
+        });
+
+        if(intersection_count % 2 != 0) return false;
+
+        const V1 = closest_edge.V1;
+        const V2 = closest_edge.V2;
+        const V1_point = point_vertices[closest_edge_index.i1];
+        const V2_point = point_vertices[closest_edge_index.i2];
+
+        const correction_vector = contact_point.subtract(P1);
+        const m1 = point.mass;
+        const m2 = V1_point.mass + V2_point.mass;
+
+        const sum_m = m1 + m2;
+        const correction_P1 = correction_vector.multiply(m2 / sum_m);
+        const correction_V = correction_vector.invert().multiply(m1 / sum_m);
+        const new_P1 = P1.add(correction_P1);
+
+        const V1_d = Vector.distance(
+            new_P1, V1
+        );
+        const V2_d = Vector.distance(
+            new_P1, V2
+        );
+
+        const V_d_sum = V1_d + V2_d;
+
+        const new_V1 = V1.add(correction_V.multiply(V2_d/V_d_sum));
+        const new_V2 = V2.add(correction_V.multiply(V1_d/V_d_sum));
+        const normal = correction_vector.normalize();
+
+        V1_point.applyCollision(
+            this, 
+            new_V1, 
+            normal,
+            this._friction_constant,
+        )
+        V2_point.applyCollision(
+            this, 
+            new_V2, 
+            normal,
+            this._friction_constant,
+        )
+        point.applyCollision(
+            this,
+            new_P1,
+            normal.invert(),
+            this._friction_constant,
+        )
+        return [
+            contact_point, 
+            closest_edge, 
+            new_P1,
+            new_V1,
+            new_V2
+        ];
+    }
+    _isSegmentIntersect(P1, P2, V1, V2) {
+        const d1 = this._direction(P1, P2, V1);
+        const d2 = this._direction(P1, P2, V2);
+        const d3 = this._direction(V1, V2, P1);
+        const d4 = this._direction(V1, V2, P2);
+
+        if ((d1 > 0 && d2 < 0) || 
+            (d1 < 0 && d2 > 0) || 
+            (d3 > 0 && d4 < 0) || 
+            (d3 < 0 && d4 > 0)) {
+
+            return true;
+        } else if (d1 === 0 && 
+            Vector.isPointOnSegment(P1, P2, V1)) {
+
+            return true; 
+        } else if (d2 === 0 && 
+            Vector.isPointOnSegment(P1, P2, V2)) {
+
+            return true;
+        } else if (d3 === 0 && 
+            Vector.isPointOnSegment(V1, V2, P1)) {
+
+            return true;
+        } else if (d4 === 0 && 
+            Vector.isPointOnSegment(V1, V2, P2)) {
+
+            return true;
+        }
+        return false; 
+    }
+
+    _direction(P, Q, R) {
+        return (R.x - P.x) * (Q.y - P.y) - (Q.x - P.x) * (R.y - P.y);
     }
 }

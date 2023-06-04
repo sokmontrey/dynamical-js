@@ -31,15 +31,11 @@ export default class PointMass extends Abstract{
     }
 
     setPosition(position){
-        if(this._is_static) return this;
-
         this._position.assign(position);
 
         return this;
     }
     setOldPosition(old_position){
-        if(this._is_static) return this;
-
         this._old_position.assign(old_position);
 
         return this;
