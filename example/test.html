@@ -18,7 +18,7 @@
         import { Vector } from '../src/util/dynamical_vector.js';
         import PointMass from '../src/point_mass.js';
         import Renderer from '../src/renderer.js';
-        import { Constraint, Container } from '../src/constraint.js';
+        import { Constraint, Container, CompositeCollider } from '../src/constraint.js';
         import Composite from '../src/composite.js';
 
         const canvas = document.getElementById('canvas');
@@ -31,18 +31,37 @@
             width: 100,
             height: 100,
             angle: Math.PI/3
-        })
+        });
+
+        const mouse_pos = new Vector(0,0);
+        const point = PointMass.create(0,0).static();
+        canvas.addEventListener('mousemove', (evt)=>{
+            var rect = canvas.getBoundingClientRect();
+            const x = evt.clientX - rect.left;
+            const y = evt.clientY - rect.top;
+            mouse_pos.x = x;
+            mouse_pos.y = y;
+        });
+
+        const collider = new CompositeCollider()
+        .setComposite(cube);
 
         renderer.update((delta_time)=>{
             renderer.clear();
+
+            point.setPosition(mouse_pos);
+            point.setOldPosition(mouse_pos);
 
             cube.applyGravity();
             cube.updatePosition(delta_time);
             cube.applyConnections();
             cube.applyConstraint(c);
 
+            collider.check(point);
+
             cube.draw(renderer);
             c.draw(renderer)
+            point.draw(5, renderer);
         });
     </script>
 </body>

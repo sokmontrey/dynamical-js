@@ -130,6 +130,27 @@ export class Vector{
         return result;
     }
 
+    static getBounds(vertices){
+        const result = {
+            lx:Number.MAX_VALUE, 
+            ly:Number.MAX_VALUE, 
+            ux:0, uy:0,
+        };
+
+        for(let i=0; i<vertices.length; i++){
+            result.lx = Math.min(result.lx, vertices[i].x);
+            result.ly = Math.min(result.ly, vertices[i].y);
+            result.ux = Math.max(result.ux, vertices[i].x);
+            result.uy = Math.max(result.uy, vertices[i].y);
+        }
+        return result;
+    }
+
+    static isPointInBounds(p , bounds){
+        return p.x >= bounds.lx && p.x <= bounds.ux &&
+        p.y >= bounds.ly && p.y < bounds.uy;
+    }
+
     /*
     Instance Methods
     */

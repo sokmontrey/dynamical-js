@@ -357,3 +357,25 @@ export class CircleContainer extends Container{
         return [contact_point, normal];
     }
 }
+
+export class CompositeCollider extends Constraint{
+    constructor(){
+        super();
+
+        this._composite         = null;
+    }
+
+    setComposite(composite){
+        this._composite = composite;
+        return this;
+    }
+
+    check(point){
+        const P1 = point.position;
+        const P2 = point.old_position;
+        const point_vertices = this._composite.getPointsArray();
+        const vertices = point_vertices.map((point)=> point.position);
+        const bounds = Vector.getBounds(vertices);
+        if(!Vector.isPointInBounds(P1, bounds)) return false;
+    }
+}
