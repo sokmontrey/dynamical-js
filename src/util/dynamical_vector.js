@@ -88,7 +88,7 @@ export class Vector{
                     v, 
                     Vector.dot(a, v)
                 ),
-                1
+                2
             )
         );
     }
@@ -151,7 +151,7 @@ export class Vector{
 
     static isPointInBounds(p , bounds){
         return p.x >= bounds.lx && p.x <= bounds.ux &&
-        p.y >= bounds.ly && p.y < bounds.uy;
+        p.y >= bounds.ly && p.y <= bounds.uy;
     }
     static isPointOnSegment(P, Q, R){
         return R.x >= Math.min(P.x, Q.x) && R.x <= Math.max(P.x, Q.x) && R.y >= Math.min(P.y, Q.y) && R.y <= Math.max(P.y, Q.y);
@@ -159,9 +159,11 @@ export class Vector{
 
     static edgeIterator(vertices, callback){
         for(let i=0; i<vertices.length-1; i++){
-            callback(vertices[i], vertices[i+1]);
+            callback(vertices[i], vertices[i+1],
+            i, i+1);
         }
-        callback(vertices[vertices.length-1], vertices[0]);
+        callback(vertices[vertices.length-1], vertices[0],
+        vertices.length-1, 0);
     }
     static distancePointToSegment(P, V1, V2){
         const closest_point = Vector.closestPointOnSegment(P, V1, V2);

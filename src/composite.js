@@ -76,8 +76,8 @@ export default class Composite extends Abstract{
                 .connect(1, 2)
                 .connect(2, 3)
                 .connect(3, 0)
-                .connect(0, 2)
                 .connect(1, 3)
+                .connect(0, 2)
             ;
 
             return composite;

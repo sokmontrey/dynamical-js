@@ -27,14 +27,27 @@
         renderer.setBackground('black');
 
         const c = new Container()
-        const cube = Composite.create('rectangle', {
+        const cube1 = Composite.create('rectangle', {
             width: 100,
-            height: 100,
+            height:100,
+            position: new Vector(250, 100),
             angle: Math.PI/3
         });
-        cube.graphic.is_fill = false;
-        cube.graphic.is_wireframe = true;
-        cube.graphic.renderer = renderer;
+        cube1.graphic.is_fill = false;
+        cube1.graphic.is_wireframe = true;
+        cube1.graphic.is_vertex = true;
+        cube1.graphic.renderer = renderer;
+
+        const cube2 = Composite.create('rectangle', {
+            width: 100,
+            height:100,
+            position: new Vector(250, 300),
+            angle: Math.PI/5
+        });
+        cube2.graphic.is_fill = false;
+        cube2.graphic.is_wireframe = true;
+        cube2.graphic.is_vertex = true;
+        cube2.graphic.renderer = renderer;
 
         const mouse_pos = new Vector(0,0);
         const point = PointMass.create(0,0).static();
@@ -46,35 +59,39 @@
             mouse_pos.y = y;
         });
 
-        const collider = new CompositeCollider()
-        .setComposite(cube);
+        const collider1 = new CompositeCollider()
+        .setComposite(cube1);
+        const collider2 = new CompositeCollider()
+        .setComposite(cube2);
 
         renderer.update((delta_time)=>{
             renderer.clear();
 
-            point.setPosition(mouse_pos);
-            point.setOldPosition(mouse_pos);
+            delta_time /= 5
+            for(let i=0; i<5; i++){
+                point.setPosition(mouse_pos);
+                point.setOldPosition(mouse_pos);
 
-            cube.applyGravity();
-            cube.updatePosition(delta_time);
-            cube.applyConnections();
-            cube.applyConstraint(c);
+                cube1.applyGravity();
+                cube2.applyGravity();
 
-            const r = collider.check(point);
+                cube1.updatePosition(delta_time);
+                cube2.updatePosition(delta_time);
 
-            if(r){
-                renderer.circle({
-                    position: r[0],
-                    radius: 5
-                }).setFillStyle('white').fill()
+                cube1.applyConnections();
+                cube2.applyConnections();
 
-                renderer.line({
-                    start: point.position,
-                    end: point.position.add(r[1].multiply(50))
-                }).setStrokeStyle('white').stroke()
+                cube1.applyConstraint(c);
+                cube2.applyConstraint(c);
+
+                cube1.applyConstraint(collider2);
+                cube2.applyConstraint(collider1);
+
+                collider2.check(point)
             }
 
-            cube.draw();
+            cube1.draw();
+            cube2.draw();
             c.draw(renderer)
             point.draw(5, renderer);
         });
