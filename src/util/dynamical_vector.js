@@ -151,6 +151,12 @@ export class Vector{
         p.y >= bounds.ly && p.y < bounds.uy;
     }
 
+    static edgeIterator(vertices, callback){
+        for(let i=0; i<vertices.length-1; i++){
+            callback(vertices[i], vertices[i+1]);
+        }
+        callback(vertices[vertices.length-1], vertices[0]);
+    }
     /*
     Instance Methods
     */
