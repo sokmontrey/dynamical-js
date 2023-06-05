@@ -174,7 +174,7 @@ export class Container extends Constraint{
         this._width                 =   500;
         this._height                =   500;
         this._offset                =   new Vector(0,0);
-        this._friction_constant     =   0.0;
+        this._friction_constant     =   0.05;
 
         this._vertices              =   [
             new Vector(0,0),
@@ -359,7 +359,7 @@ export class CompositeCollider extends Constraint{
         super();
 
         this._composite         = null;
-        this._friction_constant = 0.01;
+        this._friction_constant = 0.05;
     }
 
     setComposite(composite){
@@ -403,7 +403,7 @@ export class CompositeCollider extends Constraint{
             }
         });
 
-        if(intersection_count % 2 != 0) return false;
+        if(intersection_count % 2 == 0) return false;
 
         const V1 = closest_edge.V1;
         const V2 = closest_edge.V2;
@@ -435,62 +435,29 @@ export class CompositeCollider extends Constraint{
         V1_point.applyCollision(
             this, 
             new_V1, 
-            normal,
+            normal.invert(),
             this._friction_constant,
         )
         V2_point.applyCollision(
             this, 
             new_V2, 
-            normal,
-            this._friction_constant,
-        )
-        point.applyCollision(
-            this,
-            new_P1,
             normal.invert(),
             this._friction_constant,
         )
-        return [
-            contact_point, 
-            closest_edge, 
+        
+        point.applyCollision(
+            this,
             new_P1,
-            new_V1,
-            new_V2
-        ];
+            normal,
+            this._friction_constant,
+        )
     }
     _isSegmentIntersect(P1, P2, V1, V2) {
-        const d1 = this._direction(P1, P2, V1);
-        const d2 = this._direction(P1, P2, V2);
-        const d3 = this._direction(V1, V2, P1);
-        const d4 = this._direction(V1, V2, P2);
+        const intersection = Vector.getLineIntersection(
+            P1, P2, V1, V2
+        );
 
-        if ((d1 > 0 && d2 < 0) || 
-            (d1 < 0 && d2 > 0) || 
-            (d3 > 0 && d4 < 0) || 
-            (d3 < 0 && d4 > 0)) {
-
-            return true;
-        } else if (d1 === 0 && 
-            Vector.isPointOnSegment(P1, P2, V1)) {
-
-            return true; 
-        } else if (d2 === 0 && 
-            Vector.isPointOnSegment(P1, P2, V2)) {
-
-            return true;
-        } else if (d3 === 0 && 
-            Vector.isPointOnSegment(V1, V2, P1)) {
-
-            return true;
-        } else if (d4 === 0 && 
-            Vector.isPointOnSegment(V1, V2, P2)) {
-
-            return true;
-        }
-        return false; 
-    }
-
-    _direction(P, Q, R) {
-        return (R.x - P.x) * (Q.y - P.y) - (Q.x - P.x) * (R.y - P.y);
+        return Vector.isPointOnSegment(P1, P2, intersection) 
+            && Vector.isPointOnSegment(V1, V2, intersection);
     }
 }

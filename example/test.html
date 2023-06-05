@@ -69,6 +69,7 @@
 
             delta_time /= 5
             for(let i=0; i<5; i++){
+
                 point.setPosition(mouse_pos);
                 point.setOldPosition(mouse_pos);
 
@@ -81,10 +82,10 @@
                 cube1.applyConstraint(c);
                 cube2.applyConstraint(c);
 
+                collider1.check(point)
+
                 cube1.applyConstraint(collider2);
                 cube2.applyConstraint(collider1);
-
-                collider2.check(point)
 
                 cube1.updatePosition(delta_time);
                 cube2.updatePosition(delta_time);
