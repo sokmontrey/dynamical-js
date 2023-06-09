@@ -374,7 +374,7 @@ export class CompositeCollider extends Constraint{
         const bounds = Vector.getBounds(vertices);
         if(!Vector.isPointInBounds(P1, bounds)) return false;
 
-        const P2 = new Vector(bounds.ux, P1.y);
+        const P2 = new Vector(P1.x, bounds.uy + 5);
 
         let intersection_count = 0;
         let closest_distance = Infinity;
@@ -425,7 +425,6 @@ export class CompositeCollider extends Constraint{
         const V2_d = Vector.distance(
             new_P1, V2
         );
-
         const V_d_sum = V1_d + V2_d;
 
         const new_V1 = V1.add(correction_V.multiply(V2_d/V_d_sum));
@@ -453,11 +452,23 @@ export class CompositeCollider extends Constraint{
         )
     }
     _isSegmentIntersect(P1, P2, V1, V2) {
-        const intersection = Vector.getLineIntersection(
-            P1, P2, V1, V2
-        );
+        // const intersection = Vector.getLineIntersection(
+        //     P1, P2, V1, V2
+        // );
 
-        return Vector.isPointOnSegment(P1, P2, intersection) 
-            && Vector.isPointOnSegment(V1, V2, intersection);
+        if(P1.x > Math.max(V1.x, V2.x) || P1.x < Math.min(V1.x, V2.x))
+            return false;
+
+        const m = Vector.slope(V1, V2);
+        if(!isFinite(m)){
+        }else{
+            const y = m * (P1.x - V1.x) + V1.y; 
+            if(y <= P2.y && y >= P1.y) return true;
+        }
+
+        return false;
+
+        // return Vector.isPointOnSegment(P1, P2, intersection) 
+        //     && Vector.isPointOnSegment(V1, V2, intersection);
     }
 }
