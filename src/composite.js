@@ -124,6 +124,14 @@ export default class Composite extends Abstract{
         return this;
     }
 
+    setVelocity(velocity){
+        for(let point_name in this._points){
+            this._points[point_name].setVelocity(velocity);
+        }
+
+        return this;
+    }
+
     disableGravity(){
         this._is_gravity = false;
 
