@@ -99,10 +99,10 @@ export class DistanceConstraint extends Constraint{
     getPoints(){ return [this._point1, this._point2]; }
     getStress(){ return this._stress; }
 
-    draw(line_width){
+    draw(line_width=2, renderer=this.graphic.renderer){
         line_width = line_width || this.graphic.line_width;
 
-        const line = this.graphic.renderer.line({
+        const line = renderer.line({
             start: this._point1.position,
             end: this._point2.position,
             line_width: line_width
