@@ -99,10 +99,10 @@ export class DistanceConstraint extends Constraint{
     getPoints(){ return [this._point1, this._point2]; }
     getStress(){ return this._stress; }
 
-    draw(line_width){
+    draw(line_width=2, renderer=this.graphic.renderer){
         line_width = line_width || this.graphic.line_width;
 
-        const line = this.graphic.renderer.line({
+        const line = renderer.line({
             start: this._point1.position,
             end: this._point2.position,
             line_width: line_width
@@ -376,6 +376,63 @@ export class CompositeCollider extends Constraint{
 
         const P2 = new Vector(P1.x, bounds.uy + 5);
 
+        const { 
+            closest_edge,
+            closest_edge_index, 
+            contact_point 
+        } = this._isPointInPolygon(vertices, P1, P2);
+
+        if(!closest_edge) return false;
+
+        const V1 = closest_edge.V1;
+        const V2 = closest_edge.V2;
+        const V1_point = point_vertices[closest_edge_index.i1];
+        const V2_point = point_vertices[closest_edge_index.i2];
+
+        const correction_vector = contact_point.subtract(P1);
+        const m1 = point.mass;
+        const m2 = V1_point.mass + V2_point.mass;
+
+        const sum_m = m1 + m2;
+        const correction_P1 = correction_vector.multiply(m2 / sum_m);
+        const correction_V = correction_vector.invert().multiply(m1 / sum_m);
+        const new_P1 = P1.add(correction_P1);
+
+        const V1_d = Vector.distance(
+            new_P1, V1
+        );
+        const V2_d = Vector.distance(
+            new_P1, V2
+        );
+        const V_d_sum = V1_d + V2_d;
+
+        const new_V1 = V1.add(correction_V.multiply(V2_d/V_d_sum));
+        const new_V2 = V2.add(correction_V.multiply(V1_d/V_d_sum));
+        const normal = correction_vector.normalize();
+
+        /*-----------Resolve------------*/ 
+
+        V1_point.applyCollision(
+            this, 
+            new_V1, 
+            normal.invert(),
+            this._friction_constant,
+        )
+        V2_point.applyCollision(
+            this, 
+            new_V2, 
+            normal.invert(),
+            this._friction_constant,
+        )
+        point.applyCollision(
+            this,
+            new_P1,
+            normal,
+            this._friction_constant,
+        )
+    }
+
+    _isPointInPolygon(vertices, P1, P2){
         let intersection_count = 0;
         let closest_distance = Infinity;
         let closest_edge = null;
@@ -405,52 +462,13 @@ export class CompositeCollider extends Constraint{
 
         if(intersection_count % 2 == 0) return false;
 
-        const V1 = closest_edge.V1;
-        const V2 = closest_edge.V2;
-        const V1_point = point_vertices[closest_edge_index.i1];
-        const V2_point = point_vertices[closest_edge_index.i2];
-
-        const correction_vector = contact_point.subtract(P1);
-        const m1 = point.mass;
-        const m2 = V1_point.mass + V2_point.mass;
-
-        const sum_m = m1 + m2;
-        const correction_P1 = correction_vector.multiply(m2 / sum_m);
-        const correction_V = correction_vector.invert().multiply(m1 / sum_m);
-        const new_P1 = P1.add(correction_P1);
-
-        const V1_d = Vector.distance(
-            new_P1, V1
-        );
-        const V2_d = Vector.distance(
-            new_P1, V2
-        );
-        const V_d_sum = V1_d + V2_d;
-
-        const new_V1 = V1.add(correction_V.multiply(V2_d/V_d_sum));
-        const new_V2 = V2.add(correction_V.multiply(V1_d/V_d_sum));
-        const normal = correction_vector.normalize();
-
-        V1_point.applyCollision(
-            this, 
-            new_V1, 
-            normal.invert(),
-            this._friction_constant,
-        )
-        V2_point.applyCollision(
-            this, 
-            new_V2, 
-            normal.invert(),
-            this._friction_constant,
-        )
-        
-        point.applyCollision(
-            this,
-            new_P1,
-            normal,
-            this._friction_constant,
-        )
+        return {
+            closest_edge,
+            closest_edge_index,
+            contact_point,
+        };
     }
+
     _isSegmentIntersect(P1, P2, V1, V2) {
         // const intersection = Vector.getLineIntersection(
         //     P1, P2, V1, V2

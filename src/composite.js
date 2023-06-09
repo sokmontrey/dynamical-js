@@ -108,6 +108,30 @@ export default class Composite extends Abstract{
         return this;
     }
 
+    setPosition(position){
+        for(let point_name in this._points){
+            this._points[point_name].setPosition(position);
+        }
+
+        return this;
+    }
+
+    setOldPosition(old_position){
+        for(let point_name in this._points){
+            this._points[point_name].setOldPosition(old_position);
+        }
+
+        return this;
+    }
+
+    setVelocity(velocity){
+        for(let point_name in this._points){
+            this._points[point_name].setVelocity(velocity);
+        }
+
+        return this;
+    }
+
     disableGravity(){
         this._is_gravity = false;
 
@@ -125,6 +149,8 @@ export default class Composite extends Abstract{
         for(let point_name in this._points){
             this._points[point_name].applyForce(force)
         }
+
+        return this;
     }
 
     createVertex(vertex, name){
