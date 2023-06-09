@@ -109,6 +109,9 @@ export class Vector{
         if(b instanceof Vector) return a.x == b.x && a.y == b.y && a.z == b.y;
         else return a.x == b && a.y == b && a.z == b;
     }
+    static slope(a, b){
+        return (b.y - a.y)/(b.x - a.x);
+    }
 
     static getLineIntersection(a, b, c, d){
         const m1 = (b.y-a.y)/(b.x-a.x);

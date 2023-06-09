@@ -24,7 +24,7 @@
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
 
-        renderer.setBackground('black');
+        renderer.setBackground('#252422');
 
         const c = new Container()
         const cube1 = Composite.create('rectangle', {
@@ -33,9 +33,10 @@
             position: new Vector(250, 100),
             angle: Math.PI/3
         });
-        cube1.graphic.is_fill = false;
         cube1.graphic.is_wireframe = true;
-        cube1.graphic.is_vertex = true;
+        cube1.graphic.wireframe_thickness = 3;
+        cube1.graphic.fill_color = '#ccc5b9';
+        cube1.graphic.wireframe_color = '#eb5e28';
         cube1.graphic.renderer = renderer;
 
         const cube2 = Composite.create('rectangle', {
@@ -44,19 +45,36 @@
             position: new Vector(250, 300),
             angle: Math.PI/5
         });
-        cube2.graphic.is_fill = false;
         cube2.graphic.is_wireframe = true;
-        cube2.graphic.is_vertex = true;
+        cube2.graphic.wireframe_thickness = 3;
+        cube2.graphic.fill_color = '#eb5e28';
+        cube2.graphic.wireframe_color = '#ccc5b9';
         cube2.graphic.renderer = renderer;
 
         const mouse_pos = new Vector(0,0);
-        const point = PointMass.create(0,0).static();
+        const point = PointMass.create(250,0).static();
         canvas.addEventListener('mousemove', (evt)=>{
             var rect = canvas.getBoundingClientRect();
             const x = evt.clientX - rect.left;
             const y = evt.clientY - rect.top;
             mouse_pos.x = x;
             mouse_pos.y = y;
+        });
+
+        window.addEventListener('keypress', function(evt){
+            const f = 500;
+            if(evt.code === "KeyA"){
+                point.applyForce(new Vector(-1 * f,0))
+            }
+            if(evt.code === "KeyD"){
+                point.applyForce(new Vector( 1 * f,0))
+            }
+            if(evt.code === "KeyW"){
+                point.applyForce(new Vector(0,-1 * f))
+            }
+            if(evt.code === "KeyS"){
+                point.applyForce(new Vector(0, 1 * f))
+            }
         });
 
         const collider1 = new CompositeCollider()
@@ -67,10 +85,15 @@
         renderer.update((delta_time)=>{
             renderer.clear();
 
-            delta_time /= 5
-            for(let i=0; i<5; i++){
+            delta_time /= 10;
+            for(let i=0; i<10; i++){
+
                 point.setPosition(mouse_pos);
                 point.setOldPosition(mouse_pos);
+
+                // point.applyGravity();
+                // point.updatePosition(delta_time);
+                // c.check(point);
 
                 cube1.applyGravity();
                 cube2.applyGravity();
@@ -78,13 +101,14 @@
                 cube1.applyConnections();
                 cube2.applyConnections();
 
-                cube1.applyConstraint(c);
-                cube2.applyConstraint(c);
+                collider1.check(point)
+                collider2.check(point)
 
                 cube1.applyConstraint(collider2);
                 cube2.applyConstraint(collider1);
 
-                collider2.check(point)
+                cube1.applyConstraint(c);
+                cube2.applyConstraint(c);
 
                 cube1.updatePosition(delta_time);
                 cube2.updatePosition(delta_time);
@@ -93,7 +117,7 @@
             cube1.draw();
             cube2.draw();
             c.draw(renderer)
-            point.draw(5, renderer);
+            // point.draw(5, renderer);
         });
     </script>
 </body>
