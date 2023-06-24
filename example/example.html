@@ -324,54 +324,45 @@ import { Constraint } from '../src/constraint.js';
 const canvas = document.getElementById('canvas');
 
 /* create a new renderer object */
+/* 500 x 500 by default */
 const renderer = new Renderer(canvas);
+/* set canvas background */
 renderer.setBackground('#252323');
 
-/* create a point mass with the initial position at the center */
-/* point mass take Vector as the argument for its initial position*/
+/* create PointMass at x=250, y=250 (default center) */ 
 const point_mass = PointMass.create(250,250);
 
-/* 
-    Create a container constraint for the scence
-    The constraint is given the point_mass created to keep track of.
-    The default width and height of the container is 500
-*/
+/* create a container constraint 500 x 500 by default */
 const container = Constraint.create('container');
 
 /* LOOP */
 renderer.update((delta_time)=>{
-    // clear the canvas at the start of every frame.
+    /* clear the canvas */
     renderer.clear();
 
-    /* 
-        apply gravity (0, 9.8)
-        position y value is down due to the canvas coordinating system
-    */
+  	/* apply gravity to point_mass downward */
     point_mass.applyGravity(new Vector(0, 9.8));
 
-    /* 
-        Update the position of the point_mass with renderer's delta_time
-        The point_mass will update its position using Verlet integration method 
-    */
+    /* update point_mass position for the current frame*/
     point_mass.updatePosition(delta_time);
 
-    /*
-        Call the check method on constraint
+    /* 
+    	check if point_mass is inside the container 
+  		container constraint will automatically resolve the collision 
     */
     container.check(point_mass);
 
     /* 
-        Visualize the position of point_mass 
-        point_mass does not have any real geometrical properties
-        It is just a 0D point
-        But we draw as a circle with the radius of 10 to visualize it
+    	draw a circle at the position of the point_mass 
+    	radius = 5
     */
     point_mass.draw(5, renderer);
 
-    /* Visualize the container*/
+    /* Visualize the container */
     container.draw(renderer);
 });
-`,
+`
+,
             };
 
             /*
