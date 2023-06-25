@@ -330,7 +330,10 @@ const renderer = new Renderer(canvas);
 /* set canvas background */
 renderer.setBackground('#252323');
 
-const square = Composite.create('square');
+const square = Composite.create('square', {
+    position: new Vector(250, 100),
+    angle: Math.PI/5,
+});
 
 /* create a container constraint 500 x 500 by default */
 const container = Constraint.create('container');
@@ -339,7 +342,22 @@ const container = Constraint.create('container');
 renderer.update((delta_time)=>{
     /* clear the canvas */
     renderer.clear();
+    
+    /* apply Constraint and update point_mass position multiple times each frame 
+    to get a more stable result*/
+    delta_time /= 10;
+    for(let i=0; i<10; i++){
+        square.applyGravity();
+        /* make sure that the object holding itself */
+        square.applyConnections();
+        /* make sure that the object doesn't fall out of the container */
+        square.applyConstraint(container);
+        /* update all the point_mass position */
+        square.updatePosition(delta_time);
+    }
 
+    /* visualize the object */
+    square.draw(renderer);
 
     /* Visualize the container */
     container.draw(renderer);
