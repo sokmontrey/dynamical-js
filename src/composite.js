@@ -82,6 +82,21 @@ export default class Composite extends Abstract{
             ;
 
             return composite;
+        }else if( type === 'square' || type === 'cube'){
+            const offset = params.position || new Vector(250,250); 
+            const angle = params.angle || 0;
+
+            const w = params.size || 50;
+            const h = w;
+
+            const composite = Composite.create('rectangle', {
+                position: offset,
+                width: w,
+                height: h,
+                angle: angle,
+            });
+
+            return composite;
         }
     }
 

@@ -27,12 +27,11 @@
         renderer.setBackground('#252422');
 
         const c = new Container()
-        const cube1 = Composite.create('rectangle', {
-            width: 100,
-            height:100,
-            position: new Vector(250, 100),
+        const cube1 = Composite.create('cube', {
+            size: 50, 
             angle: Math.PI/3
         });
+
         cube1.graphic.is_wireframe = true;
         cube1.graphic.wireframe_thickness = 3;
         cube1.graphic.fill_color = '#ccc5b9';
@@ -42,9 +41,10 @@
         const cube2 = Composite.create('rectangle', {
             width: 100,
             height:100,
-            position: new Vector(250, 300),
+            position: new Vector(250, 400),
             angle: Math.PI/5
         });
+
         cube2.graphic.is_wireframe = true;
         cube2.graphic.wireframe_thickness = 3;
         cube2.graphic.fill_color = '#eb5e28';
