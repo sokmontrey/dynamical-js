@@ -7,7 +7,7 @@ p: positionition of point mass
 
 //TODO: test spring constraint
 
-export class Constraint extends Abstract{
+export default class Constraint extends Abstract{
 
     constructor(){
         super();

@@ -157,7 +157,7 @@
 import { Vector } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
-import { Constraint } from '../src/constraint.js';
+import Constraint from '../src/constraint.js';
 import Composite from '../src/composite.js';
 
 const canvas = document.getElementById('canvas');
@@ -246,7 +246,7 @@ renderer.update((delta_time)=>{
 import { Vector } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
-import { Constraint } from '../src/constraint.js';
+import Constraint from '../src/constraint.js';
 
 const canvas = document.getElementById('canvas');
 
@@ -314,11 +314,43 @@ renderer.update((delta_time)=>{
     }
 });
 `,
+                'square':
+`import { Vector } from '../src/util/dynamical_vector.js';
+import PointMass from '../src/point_mass.js';
+import Renderer from '../src/renderer.js';
+import Composite from '../src/composite.js';
+import Constraint from '../src/constraint.js';
+
+/* Get canvas element */
+const canvas = document.getElementById('canvas');
+
+/* create a new renderer object */
+/* 500 x 500 by default */
+const renderer = new Renderer(canvas);
+/* set canvas background */
+renderer.setBackground('#252323');
+
+const square = Composite.create('square');
+
+/* create a container constraint 500 x 500 by default */
+const container = Constraint.create('container');
+
+/* LOOP */
+renderer.update((delta_time)=>{
+    /* clear the canvas */
+    renderer.clear();
+
+
+    /* Visualize the container */
+    container.draw(renderer);
+});
+
+`,
                 'point-mass': 
 `import { Vector } from '../src/util/dynamical_vector.js';
 import PointMass from '../src/point_mass.js';
 import Renderer from '../src/renderer.js';
-import { Constraint } from '../src/constraint.js';
+import Constraint from '../src/constraint.js';
 
 /* Get canvas element */
 const canvas = document.getElementById('canvas');
