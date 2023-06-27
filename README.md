@@ -1,6 +1,8 @@
 A 2D JavaScript physic engine
 
-NOTE! : the system doesn't conserve energy. Total energy declined overtime.
+NOTE! : 
+- This is not an official Documentation. 
+- The system doesn't conserve energy. Total energy declined overtime.
 
 # How does this work?
 
@@ -21,5 +23,19 @@ This Constraint limit the movement of two point-masses. It makes sure that the t
 //1: very rigid
 //0: very springy
 ```
+
+## Composite
+A composite is a object consisted of vertices connected together using distance constraint. 
+
+## Control Flow
+There are specific order for which physic operations (check constraint, update position, etc) should be perform. By not following this control flow, the simulation could break down very easily.
+
+For each frame and each iteration:
+1. Apply Forces
+2. Check All the constraints
+    a. Distance Constraint
+    b. Container and\or Collider Constraint
+3. Update point_mass postion
+4. Render
 
 Live Demo: [Dynamical JS](https://dynamical.netlify.app/)
