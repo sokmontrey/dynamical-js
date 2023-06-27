@@ -26,9 +26,10 @@
 
         renderer.setBackground('#252422');
 
-        const c = new Container()
+        const c = new Container();
+
         const cube1 = Composite.create('cube', {
-            size: 50, 
+            side: 50, 
             angle: Math.PI/3
         });
 
@@ -50,6 +51,16 @@
         cube2.graphic.fill_color = '#eb5e28';
         cube2.graphic.wireframe_color = '#ccc5b9';
         cube2.graphic.renderer = renderer;
+
+        const circle1 = Composite.create('circle', {
+            radius: 50,
+            position: new Vector(150, 150)
+        });
+        circle1.graphic.is_wireframe = true;
+        circle1.graphic.wireframe_thickness = 3;
+        circle1.graphic.fill_color = '#eb5e28';
+        circle1.graphic.wireframe_color = '#ccc5b9';
+        circle1.graphic.renderer = renderer;
 
         const mouse_pos = new Vector(0,0);
         const point = PointMass.create(250,0).static();

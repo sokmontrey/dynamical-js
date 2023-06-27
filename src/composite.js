@@ -86,7 +86,7 @@ export default class Composite extends Abstract{
             const offset = params.position || new Vector(250,250); 
             const angle = params.angle || 0;
 
-            const w = params.size || 50;
+            const w = params.side || 50;
             const h = w;
 
             const composite = Composite.create('rectangle', {
@@ -95,6 +95,16 @@ export default class Composite extends Abstract{
                 height: h,
                 angle: angle,
             });
+
+            return composite;
+        }else if( type === 'circle'){
+            const offset = params.position || new Vector(250,250);
+            const radius = params.radius || 50;
+
+            const composite = new CircleComposite()
+                .setOffset(offset)
+                .setRadius(radius)
+            ;
 
             return composite;
         }
@@ -297,6 +307,32 @@ export default class Composite extends Abstract{
     }
     getPointNames(){
         return Object.keys(this._points);
+    }
+}
+
+export class CircleComposite extends Composite {
+    constructor(){
+        super();
+
+        this._initial_offset    = new Vector(250,250);
+        this._radius            = 50;
+
+        this._points            = {
+            'center': new PointMass()
+            .setPosition()
+        }
+    }
+
+    setRadius(radius){
+        this._radius = radius;
+
+        return this;
+    }
+
+    setOffset(offset){
+        this._initial_offset = offset;
+
+        return this;
     }
 }
 
