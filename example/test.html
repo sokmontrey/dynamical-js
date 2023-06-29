@@ -108,6 +108,7 @@
 
                 cube1.applyGravity();
                 cube2.applyGravity();
+                circle1.applyGravity();
 
                 cube1.applyConnections();
                 cube2.applyConnections();
@@ -123,10 +124,12 @@
 
                 cube1.updatePosition(delta_time);
                 cube2.updatePosition(delta_time);
+                circle1.updatePosition(delta_time);
             }
 
             cube1.draw();
             cube2.draw();
+            circle1.draw();
             c.draw(renderer)
             // point.draw(5, renderer);
         });
