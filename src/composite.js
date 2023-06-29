@@ -16,6 +16,7 @@ export default class Composite extends Abstract{
         this._gravity           = new Vector(0, 9.8);
 
         this._is_static         = false;
+        this._is_circle_composite = false;
 
         this.graphic = {
             ...this.graphic,
@@ -31,6 +32,9 @@ export default class Composite extends Abstract{
             wireframe_thickness: 1,
             vertex_size: 3,
         };
+    }
+    isCircle(){
+        return this._is_circle_composite;
     }
 
     static create(type, params={}){
@@ -319,7 +323,7 @@ export class CircleComposite extends Composite {
 
         this._points            = {
             'center': new PointMass()
-            .setPosition()
+            .setPosition(this._initial_offset)
         }
     }
 
@@ -331,6 +335,27 @@ export class CircleComposite extends Composite {
 
     setOffset(offset){
         this._initial_offset = offset;
+        this.setPosition(offset);
+        this.setOldPosition(offset);
+
+        return this;
+    }
+
+    draw(renderer=this.graphic.renderer){
+
+        //TODO: wireframe
+        const circle = renderer.circle({
+            position: this._points['center'].position,
+            radius: this._radius,
+        });
+
+        if(this.graphic.is_fill){
+            circle.setFillStyle(this.graphic.fill_color).fill();
+        }
+
+        if(this.graphic.is_wireframe){
+            circle.setStrokeStyle(this.graphic.wireframe_color).stroke();
+        }
 
         return this;
     }
