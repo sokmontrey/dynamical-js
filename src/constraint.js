@@ -368,8 +368,16 @@ export class CompositeCollider extends Constraint{
     }
 
     check(point){
+        if(!this._composite.isCircle()){
+            PolygonCollider.check(point, this);
+        }
+    }
+}
+
+class PolygonCollider {
+    static check(point, constraint){
         const P1 = point.position;
-        const point_vertices = this._composite.getPointsArray();
+        const point_vertices = constraint._composite.getPointsArray();
         const vertices = point_vertices.map((point)=> point.position);
         const bounds = Vector.getBounds(vertices);
         if(!Vector.isPointInBounds(P1, bounds)) return false;
@@ -380,7 +388,7 @@ export class CompositeCollider extends Constraint{
             closest_edge,
             closest_edge_index, 
             contact_point 
-        } = this._isPointInPolygon(vertices, P1, P2);
+        } = PolygonCollider.isPointInPolygon(vertices, P1, P2);
 
         if(!closest_edge) return false;
 
@@ -413,26 +421,26 @@ export class CompositeCollider extends Constraint{
         /*-----------Resolve------------*/ 
 
         V1_point.applyCollision(
-            this, 
+            constraint, 
             new_V1, 
             normal.invert(),
-            this._friction_constant,
+            constraint._friction_constant,
         )
         V2_point.applyCollision(
-            this, 
+            constraint, 
             new_V2, 
             normal.invert(),
-            this._friction_constant,
+            constraint._friction_constant,
         )
         point.applyCollision(
-            this,
+            constraint,
             new_P1,
             normal,
-            this._friction_constant,
+            constraint._friction_constant,
         )
     }
 
-    _isPointInPolygon(vertices, P1, P2){
+    static isPointInPolygon(vertices, P1, P2){
         let intersection_count = 0;
         let closest_distance = Infinity;
         let closest_edge = null;
@@ -440,7 +448,7 @@ export class CompositeCollider extends Constraint{
         let contact_point = null;
 
         Vector.edgeIterator(vertices, (V1, V2, i1, i2)=>{
-            if(this._isSegmentIntersect(P1, P2, V1, V2)){
+            if(PolygonCollider.isSegmentIntersect(P1, P2, V1, V2)){
                 intersection_count ++;
             }
 
@@ -469,7 +477,7 @@ export class CompositeCollider extends Constraint{
         };
     }
 
-    _isSegmentIntersect(P1, P2, V1, V2) {
+    static isSegmentIntersect(P1, P2, V1, V2) {
         // const intersection = Vector.getLineIntersection(
         //     P1, P2, V1, V2
         // );
