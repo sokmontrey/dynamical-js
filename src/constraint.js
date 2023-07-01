@@ -368,7 +368,9 @@ export class CompositeCollider extends Constraint{
     }
 
     check(point){
-        if(!this._composite.isCircle()){
+        if(this._composite.isCircle()){
+            CircleCollider.check(point, this);
+        }else{
             PolygonCollider.check(point, this);
         }
     }
@@ -496,5 +498,54 @@ class PolygonCollider {
 
         // return Vector.isPointOnSegment(P1, P2, intersection) 
         //     && Vector.isPointOnSegment(V1, V2, intersection);
+    }
+}
+
+class CircleCollider{
+    static check(point, constraint){
+        const P1 = point.position;
+        const center_point = constraint._composite.getPoint('center');
+        const P2 = center_point.position;
+        const radius = constraint._composite.getRadius();
+
+        const d = Vector.distance(P1, P2);
+
+        if(d <= radius){
+            const [new_p1, new_p2] = CircleCollider.findCorrection(
+                P1, P2,
+                point.mass, center_point.mass,
+                point.isStatic(), center_point.isStatic(),
+                radius-d
+            );
+
+            point.applyDistanceConstraint(new_p1);
+            center_point.applyDistanceConstraint(new_p2);
+        }
+    }
+
+    static findCorrection(
+        p1, p2,
+        m1, m2,
+        is_point1_static, is_point2_static,
+        difference_in_length,
+    ){
+        const error = Vector.normalize(
+            p1.subtract(p2)
+        ).multiply( 
+            difference_in_length 
+        );
+
+        const sum_m = m1 + m2;
+
+        const new_p1 = p1.add(
+            is_point2_static ? error
+                : error.multiply(m2 / sum_m)
+        );
+
+        const new_p2 = p2.subtract(
+            is_point1_static ? error
+                : error.multiply(m1 / sum_m)
+        );
+        return [new_p1, new_p2];
     }
 }

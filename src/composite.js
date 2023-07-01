@@ -312,6 +312,9 @@ export default class Composite extends Abstract{
     getPointNames(){
         return Object.keys(this._points);
     }
+    getPoint(point_name){
+        return this._points[point_name];
+    }
 }
 
 export class CircleComposite extends Composite {
@@ -320,6 +323,7 @@ export class CircleComposite extends Composite {
 
         this._initial_offset    = new Vector(250,250);
         this._radius            = 50;
+        this._is_circle_composite = true;
 
         this._points            = {
             'center': new PointMass()
@@ -358,6 +362,10 @@ export class CircleComposite extends Composite {
         }
 
         return this;
+    }
+
+    getRadius(){
+        return this._radius;
     }
 }
 

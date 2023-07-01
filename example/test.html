@@ -54,7 +54,7 @@
 
         const circle1 = Composite.create('circle', {
             radius: 50,
-            position: new Vector(150, 150)
+            position: new Vector(250, 100)
         });
         circle1.graphic.is_wireframe = true;
         circle1.graphic.wireframe_thickness = 3;
@@ -92,6 +92,8 @@
         .setComposite(cube1);
         const collider2 = new CompositeCollider()
         .setComposite(cube2);
+        const collider3 = new CompositeCollider()
+        .setComposite(circle1);
 
         renderer.update((delta_time)=>{
             renderer.clear();
@@ -113,11 +115,12 @@
                 cube1.applyConnections();
                 cube2.applyConnections();
 
-                collider1.check(point)
-                collider2.check(point)
+                // collider1.check(point)
+                // collider2.check(point)
 
                 cube1.applyConstraint(collider2);
                 cube2.applyConstraint(collider1);
+                cube2.applyConstraint(collider3);
 
                 cube1.applyConstraint(c);
                 cube2.applyConstraint(c);
