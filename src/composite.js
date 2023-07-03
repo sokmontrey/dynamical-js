@@ -248,12 +248,6 @@ export default class Composite extends Abstract{
         return this;
     }
 
-    applyCollision(other){
-        this.checkConstraint(other.getCollider());
-
-        return this;
-    }
-
     applyConstraint(constraint){
         for(let point_name in this._points){
             constraint.check(this._points[point_name]);
@@ -326,8 +320,7 @@ export class CircleComposite extends Composite {
         this._is_circle_composite = true;
 
         this._points            = {
-            'center': new PointMass()
-            .setPosition(this._initial_offset)
+            'center': new PointMass().setPosition(this._initial_offset),
         }
     }
 

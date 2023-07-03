@@ -18,7 +18,7 @@
         import { Vector } from '../src/util/dynamical_vector.js';
         import PointMass from '../src/point_mass.js';
         import Renderer from '../src/renderer.js';
-        import Constraint, { Container, CompositeCollider } from '../src/constraint.js';
+        import Constraint, { Container } from '../src/constraint.js';
         import Composite from '../src/composite.js';
 
         const canvas = document.getElementById('canvas');
@@ -88,13 +88,6 @@
             }
         });
 
-        const collider1 = new CompositeCollider()
-        .setComposite(cube1);
-        const collider2 = new CompositeCollider()
-        .setComposite(cube2);
-        const collider3 = new CompositeCollider()
-        .setComposite(circle1);
-
         renderer.update((delta_time)=>{
             renderer.clear();
 
@@ -104,10 +97,6 @@
                 point.setPosition(mouse_pos);
                 point.setOldPosition(mouse_pos);
 
-                // point.applyGravity();
-                // point.updatePosition(delta_time);
-                // c.check(point);
-
                 cube1.applyGravity();
                 cube2.applyGravity();
                 circle1.applyGravity();
@@ -115,15 +104,9 @@
                 cube1.applyConnections();
                 cube2.applyConnections();
 
-                // collider1.check(point)
-                // collider2.check(point)
-
-                cube1.applyConstraint(collider2);
-                cube2.applyConstraint(collider1);
-                cube2.applyConstraint(collider3);
-
                 cube1.applyConstraint(c);
                 cube2.applyConstraint(c);
+                circle1.applyConstraint(c);
 
                 cube1.updatePosition(delta_time);
                 cube2.updatePosition(delta_time);
