@@ -248,14 +248,6 @@ export default class Composite extends Abstract{
         return this;
     }
 
-    applyConstraint(constraint){
-        for(let point_name in this._points){
-            constraint.check(this._points[point_name]);
-        }
-
-        return this;
-    }
-
     draw(renderer=this.graphic.renderer){
         const vertices = [];
         if(this.graphic.is_fill){

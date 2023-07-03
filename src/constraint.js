@@ -1,5 +1,7 @@
 import Abstract from './abstract.js';
+import PointMass from './point_mass.js';
 import { Vector} from './util/dynamical_vector.js';
+import Composite, { CircleComposite } from './composite.js';
 /*
 point: point mass
 p: positionition of point mass
@@ -260,13 +262,25 @@ export class Container extends Constraint{
         return polygon;
     }
 
-    check(point){
+    check(param){
+        if(param instanceof PointMass){
+            this._checkPoint(param);
+        }else if(param instanceof CircleComposite){
+            this._checkCircle(param);
+        }else if(param instanceof Composite){
+            const points = param.getPointsArray();
+            for(let i=0; i<points.length; i++){
+                this._checkPoint(points[i]);
+            }
+        }
+    }
+    _checkPoint(point){
         const P1 = point.position;
         const P2 = point.old_position;
 
         for(let i=0; i<4; i++){
-            const axis = (i % 2 == 0) ? P1.y : P1.x;
-            const condition = (i == 0 || i == 3) 
+            const axis = (i % 2 === 0) ? P1.y : P1.x;
+            const condition = (i === 0 || i === 3) 
             ? (axis < this._bounds[i])
             : (axis > this._bounds[i]);
 
@@ -280,6 +294,43 @@ export class Container extends Constraint{
                 point.applyCollision(
                     this,
                     contact_point,
+                    normal,
+                    this._friction_constant,
+                );
+            }
+        }
+    }
+    _checkCircle(circle){
+        const point = circle.getPoint('center');
+        const P1 = point.position;
+        const P2 = point.old_position;
+        const radius = circle.getRadius();
+
+        const circle_vertices = [
+            P1.add(new Vector(0, -radius)),
+            P1.add(new Vector(radius,  0)),
+            P1.add(new Vector(0,  radius)),
+            P1.add(new Vector(-radius,  0)),
+        ];
+
+        for(let i=0; i<4; i++){
+            const V1 = circle_vertices[i];
+            const axis = (i % 2 === 0) ? V1.y : V1.x;
+            const condition = (i === 0 || i === 3) 
+            ? (axis < this._bounds[i])
+            : (axis > this._bounds[i]);
+
+            if(condition){
+                const V2 = P2.subtract(P1).add(V1);
+                const contact_point = Vector.getLineIntersection(
+                    V1, V2,
+                    this._vertices[i],
+                    this._vertices[i > 2 ? 0 : i+1]
+                );
+                const normal = this._normals[i];
+                point.applyCollision(
+                    this,
+                    contact_point.subtract(V1).add(P1),
                     normal,
                     this._friction_constant,
                 );
@@ -328,7 +379,7 @@ export class CircleContainer extends Container{
 
         return circle;
     }
-    check(point){
+    _checkPoint(point){
         const P = point.position;
 
         const to_point = P.subtract(this._center);
@@ -344,6 +395,12 @@ export class CircleContainer extends Container{
                 this._friction_constant,
             );
         }
+    }
+    _checkCircle(circle){
+        const point = circle.getPoint('center');
+        const P = point.position;
+        const point_radius = circle.getRadius();
+        //TODO
     }
     _findCorrection(to_point){
         const to_point_normal = to_point.normalize();
