@@ -1,6 +1,6 @@
 import Abstract from "./abstract.js";
 
-export class Collider extends Abstract{
+export default class Collider extends Abstract{
     constructor(){
         super();
 
@@ -16,9 +16,6 @@ export class Collider extends Abstract{
     setComposite(composite){
         this._composite = composite;
 
-        if(this._composite.isCircle()) 
-            this._is_circle_collider = true;
-
         return this;
     }
 
@@ -33,7 +30,7 @@ export class Collider extends Abstract{
     }
 }
 
-class PolygonCollider extends Collider{
+export class PolygonCollider extends Collider{
     constructor(){
         super();
     }
@@ -162,7 +159,11 @@ class PolygonCollider extends Collider{
     }
 }
 
-class CircleCollider extends Collider{
+export class CircleCollider extends Collider{
+    constructor(){
+        super();
+    }
+
     check(point, constraint){
         const P1 = point.position;
         const center_point = constraint._composite.getPoint('center');

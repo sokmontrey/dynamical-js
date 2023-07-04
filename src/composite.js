@@ -2,6 +2,7 @@ import Abstract from './abstract.js';
 import { DistanceConstraint } from './constraint.js';
 import PointMass from './point_mass.js';
 import { Vector } from './util/dynamical_vector.js';
+import { PolygonCollider, CircleCollider } from './collider.js';
 
 export default class Composite extends Abstract{
     constructor(){
@@ -11,6 +12,7 @@ export default class Composite extends Abstract{
         this._points            = {};
         this._offsets           = {};
         this._connections       = [];
+        this._collider          = null;
 
         this._is_gravity        = true;
         this._gravity           = new Vector(0, 9.8);
@@ -85,6 +87,8 @@ export default class Composite extends Abstract{
                 .connect(0, 2)
             ;
 
+            composite.createCollider()
+
             return composite;
         }else if( type === 'square' || type === 'cube'){
             const offset = params.position || new Vector(250,250); 
@@ -98,7 +102,8 @@ export default class Composite extends Abstract{
                 width: w,
                 height: h,
                 angle: angle,
-            });
+            })
+            .createCollider();
 
             return composite;
         }else if( type === 'circle'){
@@ -108,6 +113,7 @@ export default class Composite extends Abstract{
             const composite = new CircleComposite()
                 .setOffset(offset)
                 .setRadius(radius)
+                .createCollider()
             ;
 
             return composite;
@@ -116,6 +122,13 @@ export default class Composite extends Abstract{
 
     setOffset(offset){
         this._initial_offset = offset;
+
+        return this;
+    }
+
+    createCollider(){
+        this._collider = new PolygonCollider()
+        .setComposite(this);
 
         return this;
     }
@@ -318,6 +331,13 @@ export class CircleComposite extends Composite {
 
     setRadius(radius){
         this._radius = radius;
+
+        return this;
+    }
+
+    createCollider(){
+        this._collider = new CircleCollider()
+        .setComposite(this);
 
         return this;
     }
