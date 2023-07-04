@@ -18,7 +18,7 @@
         import { Vector } from '../src/util/dynamical_vector.js';
         import PointMass from '../src/point_mass.js';
         import Renderer from '../src/renderer.js';
-        import Constraint, { Container } from '../src/constraint.js';
+        import Constraint, { Container, CircleContainer } from '../src/constraint.js';
         import Composite from '../src/composite.js';
 
         const canvas = document.getElementById('canvas');
@@ -26,7 +26,7 @@
 
         renderer.setBackground('#252422');
 
-        const c = new Container();
+        const c = new CircleContainer();
 
         const cube1 = Composite.create('cube', {
             side: 50, 
@@ -54,7 +54,7 @@
 
         const circle1 = Composite.create('circle', {
             radius: 50,
-            position: new Vector(250, 100)
+            position: new Vector(400, 100)
         });
         circle1.graphic.is_wireframe = true;
         circle1.graphic.wireframe_thickness = 3;

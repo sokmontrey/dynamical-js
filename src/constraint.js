@@ -400,7 +400,19 @@ export class CircleContainer extends Container{
         const point = circle.getPoint('center');
         const P = point.position;
         const point_radius = circle.getRadius();
-        //TODO
+
+        const to_point = P.subtract(this._center);
+        const d_to_point = to_point.magnitude();
+
+        if(point_radius + d_to_point >= this._radius){
+            const [contact_point, normal] = this._findCorrection(to_point);
+            point.applyCollision(
+                this,
+                contact_point.add(normal.multiply(point_radius)), 
+                normal,
+                this._friction_constant,
+            );
+        }
     }
     _findCorrection(to_point){
         const to_point_normal = to_point.normalize();
