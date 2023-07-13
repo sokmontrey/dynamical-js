@@ -7,26 +7,34 @@ export default class Collider extends Abstract{
             //circle circle
         }else if(composite1.isCircle()){
             //circle polygon
+            PolygonCircleCollider.check(composite2, composite1);
         }else if(composite2.isCircle()){
             //polygon circle
+            PolygonCircleCollider.check(composite1, composite2);
         }else{
             //polygon polygon
             const points1 = composite1.getPointsArray();
             for(let i=0; i<points1.length; i++){
-                PolygonCollider.check(points1[i], composite2);
+                PolygonPolygonCollider.check(points1[i], composite2);
             }
             const points2 = composite2.getPointsArray();
             for(let i=0; i<points2.length; i++){
-                PolygonCollider.check(points2[i], composite1);
+                PolygonPolygonCollider.check(points2[i], composite1);
             }
         }
     }
 }
 
-export class PolygonCollider{
-    static check(point, composite){
+export class PolygonCircleCollider{
+    static check(polygon, circle){
+
+    }
+}
+
+export class PolygonPolygonCollider{
+    static check(point, polygon){
         const P1 = point.position;
-        const point_vertices = composite.getPointsArray();
+        const point_vertices = polygon.getPointsArray();
         const vertices = point_vertices.map((point)=> point.position);
         const bounds = Vector.getBounds(vertices);
         if(!Vector.isPointInBounds(P1, bounds)) return false;
@@ -37,7 +45,7 @@ export class PolygonCollider{
             closest_edge,
             closest_edge_index, 
             contact_point 
-        } = PolygonCollider.isPointInPolygon(vertices, P1, P2);
+        } = PolygonPolygonCollider.isPointInPolygon(vertices, P1, P2);
 
         if(!closest_edge) return false;
 
@@ -70,22 +78,22 @@ export class PolygonCollider{
         /*-----------Resolve------------*/ 
 
         V1_point.applyCollision(
-            composite, 
+            polygon, 
             new_V1, 
             normal.invert(),
-            composite.friction_constant,
+            polygon.friction_constant,
         )
         V2_point.applyCollision(
-            composite, 
+            polygon, 
             new_V2, 
             normal.invert(),
-            composite.friction_constant,
+            polygon.friction_constant,
         )
         point.applyCollision(
-            composite,
+            polygon,
             new_P1,
             normal,
-            composite.friction_constant,
+            polygon.friction_constant,
         )
     }
 
@@ -97,7 +105,7 @@ export class PolygonCollider{
         let contact_point = null;
 
         Vector.edgeIterator(vertices, (V1, V2, i1, i2)=>{
-            if(PolygonCollider.isSegmentIntersect(P1, P2, V1, V2)){
+            if(PolygonPolygonCollider.isSegmentIntersect(P1, P2, V1, V2)){
                 intersection_count ++;
             }
 

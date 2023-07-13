@@ -2,7 +2,6 @@ import Abstract from './abstract.js';
 import { DistanceConstraint } from './constraint.js';
 import PointMass from './point_mass.js';
 import { Vector } from './util/dynamical_vector.js';
-import { PolygonCollider, CircleCollider } from './collider.js';
 
 export default class Composite extends Abstract{
     constructor(){
