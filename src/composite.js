@@ -19,6 +19,7 @@ export default class Composite extends Abstract{
 
         this._is_static         = false;
         this._is_circle_composite = false;
+        this._friction_constant = 0.01;
 
         this.graphic = {
             ...this.graphic,
@@ -35,6 +36,7 @@ export default class Composite extends Abstract{
             vertex_size: 3,
         };
     }
+
     isCircle(){
         return this._is_circle_composite;
     }
@@ -87,8 +89,6 @@ export default class Composite extends Abstract{
                 .connect(0, 2)
             ;
 
-            composite.createCollider()
-
             return composite;
         }else if( type === 'square' || type === 'cube'){
             const offset = params.position || new Vector(250,250); 
@@ -103,7 +103,6 @@ export default class Composite extends Abstract{
                 height: h,
                 angle: angle,
             })
-            .createCollider();
 
             return composite;
         }else if( type === 'circle'){
@@ -113,7 +112,6 @@ export default class Composite extends Abstract{
             const composite = new CircleComposite()
                 .setOffset(offset)
                 .setRadius(radius)
-                .createCollider()
             ;
 
             return composite;
@@ -122,13 +120,6 @@ export default class Composite extends Abstract{
 
     setOffset(offset){
         this._initial_offset = offset;
-
-        return this;
-    }
-
-    createCollider(){
-        this._collider = new PolygonCollider()
-        .setComposite(this);
 
         return this;
     }
@@ -313,6 +304,9 @@ export default class Composite extends Abstract{
     }
     getPoint(point_name){
         return this._points[point_name];
+    }
+    get friction_constant(){ 
+        return this._friction_constant;
     }
 }
 

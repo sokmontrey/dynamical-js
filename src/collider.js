@@ -1,43 +1,32 @@
 import Abstract from "./abstract.js";
+import {Vector} from './util/dynamical_vector.js';
 
 export default class Collider extends Abstract{
-    constructor(){
-        super();
-
-        this._composite         = null;
-        this._friction_constant = 0.05;
-        this._is_circle_collider = false;
-    }
-
-    isCircle(){
-        return this._is_circle_collider;
-    }
-
-    setComposite(composite){
-        this._composite = composite;
-
-        return this;
-    }
-
-    check(collider1, collider2){
-        if(collider1.isCircle() && collider2.isCircle()){
-            //. Circle & Circle
-        } else if(!collider1.isCircle() && !collider2.isCircle()){
-            //. Polygon & Polygon
-        } else {
-            //. Polygon & Circle
+    static check(composite1, composite2){
+        if(composite1.isCircle() && composite2.isCircle()){
+            //circle circle
+        }else if(composite1.isCircle()){
+            //circle polygon
+        }else if(composite2.isCircle()){
+            //polygon circle
+        }else{
+            //polygon polygon
+            const points1 = composite1.getPointsArray();
+            for(let i=0; i<points1.length; i++){
+                PolygonCollider.check(points1[i], composite2);
+            }
+            const points2 = composite2.getPointsArray();
+            for(let i=0; i<points2.length; i++){
+                PolygonCollider.check(points2[i], composite1);
+            }
         }
     }
 }
 
-export class PolygonCollider extends Collider{
-    constructor(){
-        super();
-    }
-
-    check(point, constraint){
+export class PolygonCollider{
+    static check(point, composite){
         const P1 = point.position;
-        const point_vertices = constraint._composite.getPointsArray();
+        const point_vertices = composite.getPointsArray();
         const vertices = point_vertices.map((point)=> point.position);
         const bounds = Vector.getBounds(vertices);
         if(!Vector.isPointInBounds(P1, bounds)) return false;
@@ -81,26 +70,26 @@ export class PolygonCollider extends Collider{
         /*-----------Resolve------------*/ 
 
         V1_point.applyCollision(
-            constraint, 
+            composite, 
             new_V1, 
             normal.invert(),
-            constraint._friction_constant,
+            composite.friction_constant,
         )
         V2_point.applyCollision(
-            constraint, 
+            composite, 
             new_V2, 
             normal.invert(),
-            constraint._friction_constant,
+            composite.friction_constant,
         )
         point.applyCollision(
-            constraint,
+            composite,
             new_P1,
             normal,
-            constraint._friction_constant,
+            composite.friction_constant,
         )
     }
 
-    _isPointInPolygon(vertices, P1, P2){
+    static isPointInPolygon(vertices, P1, P2){
         let intersection_count = 0;
         let closest_distance = Infinity;
         let closest_edge = null;
@@ -137,7 +126,7 @@ export class PolygonCollider extends Collider{
         };
     }
 
-    _isSegmentIntersect(P1, P2, V1, V2) {
+    static isSegmentIntersect(P1, P2, V1, V2) {
         // const intersection = Vector.getLineIntersection(
         //     P1, P2, V1, V2
         // );
