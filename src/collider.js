@@ -2,7 +2,7 @@ import Abstract from "./abstract.js";
 import {Vector} from './util/dynamical_vector.js';
 
 export default class Collider extends Abstract{
-    static check(composite1, composite2){
+    static check(composite1, composite2, renderer){
         if(composite1.isCircle() && composite2.isCircle()){
             //circle circle
         }else if(composite1.isCircle()){
@@ -10,7 +10,7 @@ export default class Collider extends Abstract{
             PolygonCircleCollider.check(composite2, composite1);
         }else if(composite2.isCircle()){
             //polygon circle
-            PolygonCircleCollider.check(composite1, composite2);
+            PolygonCircleCollider.check(composite1, composite2, renderer);
         }else{
             //polygon polygon
             const points1 = composite1.getPointsArray();
@@ -26,8 +26,116 @@ export default class Collider extends Abstract{
 }
 
 export class PolygonCircleCollider{
-    static check(polygon, circle){
+    static check(polygon, circle, renderer){
+        const point_vertices = polygon.getPointsArray();
+        const vertices = point_vertices.map((point)=> point.position);
+        const point = circle.getPoints()['center'];
+        const P1 = point.position;
+        const radius = circle.getRadius();
 
+        const { 
+            closest_edge,
+            closest_edge_index, 
+            contact_point 
+        } = PolygonCircleCollider.isCircleIntersect(vertices, P1, radius);
+
+        if(!closest_edge) return false;
+
+        //TODO: find the contact vertex on the circle
+
+        const V1 = closest_edge.V1;
+        const V2 = closest_edge.V2;
+        const V1_point = point_vertices[closest_edge_index.i1];
+        const V2_point = point_vertices[closest_edge_index.i2];
+
+        // Follow constract _checkCircle
+        // the correction circle is not from the center but the vertex to contact point
+        const correction_vector = contact_point.subtract(P1);
+        const m1 = point.mass;
+        const m2 = V1_point.mass + V2_point.mass;
+
+        const sum_m = m1 + m2;
+        const correction_P1 = correction_vector.multiply(m2 / sum_m);
+        const correction_V = correction_vector.invert().multiply(m1 / sum_m);
+        const new_P1 = P1.add(correction_P1);
+
+        const V1_d = Vector.distance(
+            new_P1, V1
+        );
+        const V2_d = Vector.distance(
+            new_P1, V2
+        );
+        const V_d_sum = V1_d + V2_d;
+
+        const new_V1 = V1.add(correction_V.multiply(V2_d/V_d_sum));
+        const new_V2 = V2.add(correction_V.multiply(V1_d/V_d_sum));
+        const normal = correction_vector.normalize();
+
+        /*-----------Resolve------------*/ 
+
+        V1_point.applyCollision(
+            polygon, 
+            new_V1, 
+            normal.invert(),
+            polygon.friction_constant,
+        )
+        V2_point.applyCollision(
+            polygon, 
+            new_V2, 
+            normal.invert(),
+            polygon.friction_constant,
+        )
+        point.applyCollision(
+            polygon,
+            new_P1,
+            normal,
+            polygon.friction_constant,
+        )
+    }
+
+    static isCircleIntersect(vertices, P1, radius){
+        let closest_distance = Infinity;
+        let closest_edge = null;
+        let closest_edge_index = null;
+        let contact_point = null;
+
+        let is_intersect = false;
+
+        Vector.edgeIterator(vertices, (V1, V2, i1, i2)=>{
+            // vector 1 (first vertex to circle center)
+            const v1 = P1.subtract(V1); 
+            // vector 2 (vertex 1 to vertex 2)
+            const v2 = V2.subtract(V1); 
+            const mag = v2.magnitude();
+            var scalar_proj_ratio = v1.dot(v2) / (mag * mag); //0 -> 1
+
+            if(scalar_proj_ratio < 0){
+                scalar_proj_ratio = 0;
+            }else if(scalar_proj_ratio > 1){
+                scalar_proj_ratio = 1;
+            }
+
+            // vector to point projected 
+            const v_to_p = v2.multiply(scalar_proj_ratio).add(V1);
+
+            const d = Vector.distance(v_to_p, P1)
+            if(d <= radius){
+                if(d < closest_distance){
+                    is_intersect = true;
+                    closest_edge = {V1, V2};
+                    closest_edge_index = {i1, i2};
+                    contact_point = v_to_p;
+                }
+            }
+        });
+
+        if(!is_intersect) return false;
+
+        return {
+            closest_edge,
+            closest_edge_index,
+            contact_point
+        }
     }
 }
 
@@ -36,6 +144,7 @@ export class PolygonPolygonCollider{
         const P1 = point.position;
         const point_vertices = polygon.getPointsArray();
         const vertices = point_vertices.map((point)=> point.position);
+        //TODO: check bound before here
         const bounds = Vector.getBounds(vertices);
         if(!Vector.isPointInBounds(P1, bounds)) return false;
 
