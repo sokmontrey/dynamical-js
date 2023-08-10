@@ -328,13 +328,6 @@ export class CircleComposite extends Composite {
         return this;
     }
 
-    createCollider(){
-        this._collider = new CircleCollider()
-        .setComposite(this);
-
-        return this;
-    }
-
     setOffset(offset){
         this._initial_offset = offset;
         this.setPosition(offset);
@@ -364,6 +357,9 @@ export class CircleComposite extends Composite {
 
     getRadius(){
         return this._radius;
+    }
+    getPosition(){
+        return this._points['center'].position;
     }
 }
 
