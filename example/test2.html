@@ -41,9 +41,9 @@
         cube1.graphic.renderer = renderer;
 
         const cube2 = Composite.create('rectangle', {
-            width: 100,
-            height:100,
-            position: new Vector(250, 400),
+            width: 10,
+            height:10,
+            position: new Vector(250, 100),
             angle: Math.PI/5
         });
 
@@ -54,8 +54,8 @@
         cube2.graphic.renderer = renderer;
 
         const circle1 = Composite.create('circle', {
-            radius: 50,
-            position: new Vector(400, 100)
+            radius: 10,
+            position: new Vector(100, 100)
         });
         circle1.graphic.is_wireframe = true;
         circle1.graphic.wireframe_thickness = 3;
@@ -116,7 +116,8 @@
                 c.check(circle1);
 
                 Collider.check(cube1, cube2);
-                Collider.check(cube2, circle1, renderer);
+                Collider.check(cube2, circle1);
+                Collider.check(circle1, cube1);
 
                 cube1.updatePosition(delta_time);
                 cube2.updatePosition(delta_time);

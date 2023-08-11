@@ -26,7 +26,7 @@ export default class Collider extends Abstract{
 }
 
 export class PolygonCircleCollider{
-    static check(polygon, circle, renderer){
+    static check(polygon, circle){
         const point_vertices = polygon.getPointsArray();
         const vertices = point_vertices.map((point)=> point.position);
         const point = circle.getPoints()['center'];
@@ -48,9 +48,9 @@ export class PolygonCircleCollider{
         const V1_point = point_vertices[closest_edge_index.i1];
         const V2_point = point_vertices[closest_edge_index.i2];
 
-        // Follow constract _checkCircle
-        // the correction circle is not from the center but the vertex to contact point
-        const correction_vector = contact_point.subtract(P1);
+        const circle_vertex = contact_point.subtract(P1).normalize().multiply(radius).add(P1)
+
+        const correction_vector = contact_point.subtract(circle_vertex);
         const m1 = point.mass;
         const m2 = V1_point.mass + V2_point.mass;
 

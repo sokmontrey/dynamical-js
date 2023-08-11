@@ -331,7 +331,7 @@ export class Container extends Constraint{
                 point.applyCollision(
                     this,
                     contact_point.subtract(V1).add(P1),
-                    normal,
+                    normal.multiply(0.9),
                     this._friction_constant,
                 );
             }
