@@ -2,15 +2,16 @@ import Abstract from "./abstract.js";
 import {Vector} from './util/dynamical_vector.js';
 
 export default class Collider extends Abstract{
-    static check(composite1, composite2, renderer){
+    static check(composite1, composite2){
         if(composite1.isCircle() && composite2.isCircle()){
             //circle circle
+            CircleCircleCollider.check(composite1, composite2);
         }else if(composite1.isCircle()){
             //circle polygon
             PolygonCircleCollider.check(composite2, composite1);
         }else if(composite2.isCircle()){
             //polygon circle
-            PolygonCircleCollider.check(composite1, composite2, renderer);
+            PolygonCircleCollider.check(composite1, composite2);
         }else{
             //polygon polygon
             const points1 = composite1.getPointsArray();
@@ -22,6 +23,47 @@ export default class Collider extends Abstract{
                 PolygonPolygonCollider.check(points2[i], composite1);
             }
         }
+    }
+}
+
+export class CircleCircleCollider{
+    static check(circle1, circle2){
+        const point1 = circle1.getPoints()['center'];
+        const point2 = circle2.getPoints()['center'];
+
+        const P1 = point1.position;
+        const P2 = point2.position;
+
+        const radius1 = circle1.getRadius();
+        const radius2 = circle2.getRadius();
+
+        const d = Vector.distance(P1, P2);
+        //difference
+        const diff = d - (radius1 + radius2);
+
+        if(diff > 0) return false;
+
+        const normal = P1.subtract(P2).normalize();
+        const correction_vector = normal.multiply(diff); 
+        const m1 = point1.mass;
+        const m2 = point2.mass;
+
+        const sum_m = m1+m2;
+        const correction_P1 = correction_vector.invert().multiply(m2/sum_m);
+        const correction_P2 = correction_vector.multiply(m1/sum_m);
+
+        point1.applyCollision(
+            point2,
+            correction_P1.add(P1),
+            normal,
+            0
+        )
+        point2.applyCollision(
+            point1,
+            correction_P2.add(P2),
+            normal.invert(),
+            0
+        )
     }
 }
 
