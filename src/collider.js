@@ -77,19 +77,19 @@ export class PolygonCircleCollider{
             polygon, 
             new_V1, 
             normal.invert(),
-            polygon.friction_constant,
+            0.0
         )
         V2_point.applyCollision(
             polygon, 
             new_V2, 
             normal.invert(),
-            polygon.friction_constant,
+            0.0
         )
         point.applyCollision(
             polygon,
             new_P1,
             normal,
-            polygon.friction_constant,
+            0.0,
         )
     }
 

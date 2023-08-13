@@ -30,7 +30,7 @@
         const c = new CircleContainer();
 
         const cube1 = Composite.create('cube', {
-            side: 50, 
+            side: 100, 
             angle: Math.PI/3
         });
 
@@ -41,8 +41,8 @@
         cube1.graphic.renderer = renderer;
 
         const cube2 = Composite.create('rectangle', {
-            width: 10,
-            height:10,
+            width: 100,
+            height:80,
             position: new Vector(250, 100),
             angle: Math.PI/5
         });
@@ -54,8 +54,8 @@
         cube2.graphic.renderer = renderer;
 
         const circle1 = Composite.create('circle', {
-            radius: 10,
-            position: new Vector(100, 100)
+            radius: 50,
+            position: new Vector(480, 250)
         });
         circle1.graphic.is_wireframe = true;
         circle1.graphic.wireframe_thickness = 3;

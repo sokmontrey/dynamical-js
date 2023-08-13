@@ -331,8 +331,8 @@ export class Container extends Constraint{
                 point.applyCollision(
                     this,
                     contact_point.subtract(V1).add(P1),
-                    normal.multiply(0.9),
-                    this._friction_constant,
+                    normal,
+                    0.0
                 );
             }
         }
@@ -410,7 +410,8 @@ export class CircleContainer extends Container{
                 this,
                 contact_point.add(normal.multiply(point_radius)), 
                 normal,
-                this._friction_constant,
+                0.0,
+                // this._friction_constant,
             );
         }
     }
