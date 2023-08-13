@@ -351,7 +351,7 @@ renderer.update((delta_time)=>{
         /* make sure that the object holding itself */
         square.applyConnections();
         /* make sure that the object doesn't fall out of the container */
-        square.applyConstraint(container);
+        container.check(square);
         /* update all the point_mass position */
         square.updatePosition(delta_time);
     }
