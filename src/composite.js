@@ -142,15 +142,9 @@ export default class Composite extends Abstract{
 
     setPosition(position){
         for(let point_name in this._points){
-            this._points[point_name].setPosition(position);
-        }
-
-        return this;
-    }
-
-    setOldPosition(old_position){
-        for(let point_name in this._points){
-            this._points[point_name].setOldPosition(old_position);
+            const v = this._points[point_name].position.subtract(this._initial_offset);
+            this._points[point_name].setPosition(position.add(v));
+            this._points[point_name].setOldPosition(position.add(v));
         }
 
         return this;
