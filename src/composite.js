@@ -7,9 +7,8 @@ export default class Composite extends Abstract{
     constructor(){
         super();
 
-        this._initial_offset    = new Vector(0,0);
         this._points            = {};
-        this._offsets           = {};
+        this._points_offset     = {};
         this._connections       = [];
         this._collider          = null;
 
@@ -51,7 +50,6 @@ export default class Composite extends Abstract{
             const h = params.height || 70;
 
             const composite = new Composite()
-            .setOffset(offset)
 
             composite
                 .createVertex(new Vector(
@@ -77,6 +75,7 @@ export default class Composite extends Abstract{
                     (-w/2) * sin + 
                     ( h/2) * cos
                 ))
+                .setPosition(offset) 
             ;
 
             composite
@@ -109,18 +108,12 @@ export default class Composite extends Abstract{
             const radius = params.radius || 50;
 
             const composite = new CircleComposite()
-                .setOffset(offset)
                 .setRadius(radius)
+                .setPosition(offset)
             ;
 
             return composite;
         }
-    }
-
-    setOffset(offset){
-        this._initial_offset = offset;
-
-        return this;
     }
 
     static(){
@@ -142,11 +135,11 @@ export default class Composite extends Abstract{
 
     setPosition(position){
         for(let point_name in this._points){
-            const v = this._points[point_name].position.subtract(this._initial_offset);
-            this._points[point_name].setPosition(position.add(v));
-            this._points[point_name].setOldPosition(position.add(v));
+            const offset = this._points_offset[point_name];
+            const new_position = position.add(offset);
+            this._points[point_name].setPosition(new_position);
+            this._points[point_name].setOldPosition(new_position);
         }
-
         return this;
     }
 
@@ -182,10 +175,8 @@ export default class Composite extends Abstract{
     createVertex(vertex, name){
         name = name || Object.keys(this._points).length;
 
-        const position = vertex.add(this._initial_offset);
-
-        this._points[name] = PointMass.create(position);
-        this._offsets[name] = position;
+        this._points[name] = PointMass.create(vertex);
+        this._points_offset[name] = vertex;
 
         return this;
     }
@@ -307,25 +298,22 @@ export class CircleComposite extends Composite {
     constructor(){
         super();
 
-        this._initial_offset    = new Vector(250,250);
         this._radius            = 50;
         this._is_circle_composite = true;
 
         this._points            = {
-            'center': new PointMass().setPosition(this._initial_offset),
-        }
+            'center': new PointMass()
+            .setPosition(new Vector(250, 250))
+            .setOldPosition(new Vector(250, 250))
+        };
+
+        this._points_offset     = {
+            'center': new Vector(0,0)
+        };
     }
 
     setRadius(radius){
         this._radius = radius;
-
-        return this;
-    }
-
-    setOffset(offset){
-        this._initial_offset = offset;
-        this.setPosition(offset);
-        this.setOldPosition(offset);
 
         return this;
     }
