@@ -20,6 +20,7 @@
         import Renderer from '../src/renderer.js';
         import Constraint, { Container, CircleContainer } from '../src/constraint.js';
         import Composite from '../src/composite.js';
+        import Collider from '../src/collider.js';
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
@@ -30,8 +31,13 @@
 
         const cube1 = Composite.create('cube', {
             size: 10,
-            position: new Vector(250,250)
+            position: new Vector(300,250)
         });
+
+        const circle = Composite.create('circle', {
+            radius: 20,
+            position: new Vector(100, 100)
+        })
 
         renderer.update((delta_time)=>{
             renderer.clear();
@@ -46,14 +52,21 @@
             delta_time /= 10;
             for(let i=0; i<10; i++){
                 cube1.applyGravity();
+                circle.applyGravity();
 
                 cube1.applyConnections();
+
                 c.check(cube1);
+                c.check(circle);
+
+                Collider.check(circle, cube1);
 
                 cube1.updatePosition(delta_time);
+                circle.updatePosition(delta_time);
             }
 
             cube1.draw(renderer);
+            circle.draw(renderer);
         });
     </script>
 </body>
