@@ -52,7 +52,8 @@ export default class Composite extends Abstract{
             return new Rectangle(
                 params.position.x,
                 params.position.y,
-                params.side,
+                params.side || 50,
+                params.side || 50,
                 params.angle,
             );
         }else if( type === 'circle'){
