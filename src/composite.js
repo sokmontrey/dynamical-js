@@ -41,78 +41,26 @@ export default class Composite extends Abstract{
 
     static create(type, params={}){
         if(type === "rectangle"){
-            const offset = params.position || new Vector(250,250); 
-            const angle = params.angle || 0;
-            const sin = Math.sin(angle);
-            const cos = Math.cos(angle);
-
-            const w = params.width || 90;
-            const h = params.height || 70;
-
-            const composite = new Composite()
-
-            composite
-                .createVertex(new Vector(
-                    (-w/2) * cos - (-h/2) * sin,
-                    (-w/2) * sin + 
-                    (-h/2) * cos
-                ))
-                .createVertex(new Vector(
-                    ( w/2) * cos - 
-                    (-h/2) * sin,
-                    ( w/2) * sin + 
-                    (-h/2) * cos
-                ))
-                .createVertex(new Vector(
-                    ( w/2) * cos - 
-                    ( h/2) * sin,
-                    ( w/2) * sin + 
-                    ( h/2) * cos
-                ))
-                .createVertex(new Vector(
-                    (-w/2) * cos - 
-                    ( h/2) * sin,
-                    (-w/2) * sin + 
-                    ( h/2) * cos
-                ))
-                .setPosition(offset) 
-            ;
-
-            composite
-                .connect(0, 1)
-                .connect(1, 2)
-                .connect(2, 3)
-                .connect(3, 0)
-                .connect(1, 3)
-                .connect(0, 2)
-            ;
-
-            return composite;
+            return new Rectangle(
+                params.position.x,
+                params.position.y,
+                params.width,
+                params.height,
+                params.angle,
+            );
         }else if( type === 'square' || type === 'cube'){
-            const offset = params.position || new Vector(250,250); 
-            const angle = params.angle || 0;
-
-            const w = params.side || 50;
-            const h = w;
-
-            const composite = Composite.create('rectangle', {
-                position: offset,
-                width: w,
-                height: h,
-                angle: angle,
-            })
-
-            return composite;
+            return new Rectangle(
+                params.position.x,
+                params.position.y,
+                params.side,
+                params.angle,
+            );
         }else if( type === 'circle'){
-            const offset = params.position || new Vector(250,250);
-            const radius = params.radius || 50;
-
-            const composite = new CircleComposite()
-                .setRadius(radius)
-                .setPosition(offset)
-            ;
-
-            return composite;
+            return new Circle(
+                params.position.x,
+                params.position.y,
+                params.radius,
+            );
         }
     }
 
@@ -294,17 +242,73 @@ export default class Composite extends Abstract{
     }
 }
 
-export class CircleComposite extends Composite {
-    constructor(){
+export class Rectangle extends Composite{
+    constructor(
+        x = 250,
+        y = 250,
+        width = 90,
+        height = 70,
+        angle = 0,
+    ){
+        super();
+        const offset = new Vector(x, y);
+        const sin = Math.sin(angle);
+        const cos = Math.cos(angle);
+
+        const w = width;
+        const h = height;
+
+        this.createVertex(new Vector(
+                (-w/2) * cos - (-h/2) * sin,
+                (-w/2) * sin + 
+                (-h/2) * cos
+            ))
+            .createVertex(new Vector(
+                ( w/2) * cos - 
+                (-h/2) * sin,
+                ( w/2) * sin + 
+                (-h/2) * cos
+            ))
+            .createVertex(new Vector(
+                ( w/2) * cos - 
+                ( h/2) * sin,
+                ( w/2) * sin + 
+                ( h/2) * cos
+            ))
+            .createVertex(new Vector(
+                (-w/2) * cos - 
+                ( h/2) * sin,
+                (-w/2) * sin + 
+                ( h/2) * cos
+            ))
+            .setPosition(offset) 
+        ;
+
+        this.connect(0, 1)
+            .connect(1, 2)
+            .connect(2, 3)
+            .connect(3, 0)
+            .connect(1, 3)
+            .connect(0, 2)
+        ;
+    }
+}
+
+export class Circle extends Composite {
+    constructor(
+        x = 250,
+        y = 250,
+        radius = 50,
+    ){
         super();
 
-        this._radius            = 50;
+        this._radius            = radius;
         this._is_circle_composite = true;
 
         this._points            = {
             'center': new PointMass()
-            .setPosition(new Vector(250, 250))
-            .setOldPosition(new Vector(250, 250))
+            .setPosition(new Vector(x, y))
+            .setOldPosition(new Vector(x, y))
         };
 
         this._points_offset     = {

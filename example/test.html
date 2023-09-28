@@ -19,7 +19,7 @@
         import PointMass from '../src/point_mass.js';
         import Renderer from '../src/renderer.js';
         import Constraint, { Container, CircleContainer } from '../src/constraint.js';
-        import Composite from '../src/composite.js';
+        import Composite, {Rectangle} from '../src/composite.js';
         import Collider from '../src/collider.js';
 
         const canvas = document.getElementById('canvas');
@@ -39,6 +39,8 @@
             position: new Vector(100, 100)
         })
 
+        const rect = new Rectangle(250, 10, 10, 20);
+
         renderer.update((delta_time)=>{
             renderer.clear();
 
@@ -53,20 +55,27 @@
             for(let i=0; i<10; i++){
                 cube1.applyGravity();
                 circle.applyGravity();
+                rect.applyGravity();
 
                 cube1.applyConnections();
+                rect.applyConnections();
 
                 c.check(cube1);
                 c.check(circle);
+                c.check(rect);
 
                 Collider.check(circle, cube1);
+                Collider.check(circle, rect);
+                Collider.check(rect, cube1);
 
                 cube1.updatePosition(delta_time);
                 circle.updatePosition(delta_time);
+                rect.updatePosition(delta_time);
             }
 
             cube1.draw(renderer);
             circle.draw(renderer);
+            rect.draw(renderer);
         });
     </script>
 </body>

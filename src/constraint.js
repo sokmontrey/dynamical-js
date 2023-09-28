@@ -1,7 +1,7 @@
 import Abstract from './abstract.js';
 import PointMass from './point_mass.js';
 import { Vector} from './util/dynamical_vector.js';
-import Composite, { CircleComposite } from './composite.js';
+import Composite, { Circle } from './composite.js';
 /*
 point: point mass
 p: positionition of point mass
@@ -57,16 +57,16 @@ export default class Constraint extends Abstract{
 * Each batch is the actual information indicating which points connecting together
 * */
 export class DistanceConstraint extends Constraint{
-    constructor(){
+    constructor(point1=null, point2=null, distance=1, spring_constant=1, is_broken=false){
         super();
 
-        this._point1            =   null;
-        this._point2            =   null;
-        this._distance          =   1;
+        this._point1            =   point1;
+        this._point2            =   point2;
+        this._distance          =   distance;
         this._stress            =   0;
 
-        this._spring_constant   =   1;
-        this._is_broken = false;
+        this._spring_constant   =   spring_constant;
+        this._is_broken         =   is_broken;
     }
 
     break(){
@@ -170,13 +170,20 @@ export class DistanceConstraint extends Constraint{
 }
 
 export class Container extends Constraint{
-    constructor(){
+    constructor(
+        x = 0,
+        y = 0,
+        width=500, 
+        height=500, 
+        friction_constant=0.05
+    ){
+
         super();
 
-        this._width                 =   500;
-        this._height                =   500;
-        this._offset                =   new Vector(0,0);
-        this._friction_constant     =   0.05;
+        this._width                 =   width;
+        this._height                =   height;
+        this._offset                =   new Vector(x, y, 0);
+        this._friction_constant     =   friction_constant;
 
         this._vertices              =   [
             new Vector(0,0),
@@ -265,7 +272,7 @@ export class Container extends Constraint{
     check(param){
         if(param instanceof PointMass){
             this._checkPoint(param);
-        }else if(param instanceof CircleComposite){
+        }else if(param instanceof Circle){
             this._checkCircle(param);
         }else if(param instanceof Composite){
             const points = param.getPointsArray();
@@ -340,11 +347,15 @@ export class Container extends Constraint{
 }
 
 export class CircleContainer extends Container{
-    constructor(){
+    constructor(
+        x = 0,
+        y = 0,
+        radius = 250,
+    ){
         super();
 
-        this._radius    =   250;
-        this._offset    =   new Vector(0,0,0);
+        this._radius    =   radius;
+        this._offset    =   new Vector(x, y, 0);
         this._center    =   new Vector(0,0,0);
 
         this._calculateCenter();
