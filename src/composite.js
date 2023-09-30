@@ -19,7 +19,7 @@ export default class Composite extends PhysicObject{
         this._is_circle_composite = false;
         this._friction_constant = 0.01;
 
-        this._graphic.fill();
+        this.graphic.fill();
     }
 
     isCircle(){

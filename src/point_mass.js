@@ -18,8 +18,8 @@ export default class PointMass extends PhysicObject{
         this._is_static     =  is_static;
         this._onCollision   =  ()=>{};
 
-        this._graphic.radius = 4;
-        this._graphic.fill('white');
+        this.graphic.radius = 4;
+        this.graphic.fill('white');
     }
 
     static create(x=0, y=0){
