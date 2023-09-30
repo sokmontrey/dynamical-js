@@ -128,10 +128,10 @@
     </div>
 
     <script type="module">
-        import  { Vector} from './src/util/dynamical_vector.js';
-        import Renderer from '../src/renderer.js';
-        import PointMass from '../src/point_mass.js';
-        import Constraint from '../src/constraint.js';
+        import  { Vector } from './src/util/dynamical_vector.js';
+        import Renderer from './src/renderer.js';
+        import PointMass from './src/point_mass.js';
+        import Constraint, {DistanceConstraint} from './src/constraint.js';
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
@@ -156,9 +156,11 @@
         ];
 
         const connections = [
-            Constraint.create('rigid').setPointMass(points[0], points[1]),
-            Constraint.create('rigid').setPointMass(points[1], points[2]),
-        ]
+            new DistanceConstraint(points[0], points[1]),
+            new DistanceConstraint(points[1], points[2])
+        ];
+
+        connections[1]._graphic.stroke_width = 3;
 
         const container = Constraint.create('circle_container')
             .setRadius(200)
@@ -168,10 +170,7 @@
         renderer.update((delta_time)=>{
             renderer.clear();
 
-            renderer.circle({
-                position: container._center,
-                radius: container._radius
-            }).setFillStyle(g).fill();
+            renderer.circle(container._center,container._radius).setFillStyle(g).fill();
 
             for(let each of points){
                 each.applyGravity(new Vector(0, 9.8));
@@ -188,21 +187,9 @@
                 container.check(points[1]);
             }
 
-            renderer.line({
-                start: points[1].position, 
-                end: points[2].position, 
-                line_width: 2, 
-            }).setStrokeStyle('gray').stroke();
-
-            renderer.circle({
-                position: points[1].position, 
-                radius: 5
-            }).setFillStyle('gray').fill();
-
-            renderer.circle({
-                position: points[2].position, 
-                radius: 5
-            }).fill();
+            renderer.draw(connections[1])
+            renderer.circle(points[1].position, 5).setFillStyle('gray').fill();
+            renderer.circle(points[2].position, 5).fill();
 
             renderer.setFillStyle('white');
             const angle = Math.atan2(points[1].position.y - points[0].position.y, points[1].position.x - points[0].position.x);
