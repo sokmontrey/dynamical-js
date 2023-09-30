@@ -37,10 +37,10 @@ export default class Renderer {
 		this._context.fillRect(0,0, this._width, this._height);
 	}
 
-	circle({ 
+	circle(
         position=new Vector(0,0),
         radius=3,
-    }){
+    ){
         const x = position.x,
             y = position.y;
 
@@ -51,11 +51,10 @@ export default class Renderer {
         return this;
 	}
 
-	line({
-        start=new Vector(0,0),
+	line(start=new Vector(0,0),
         end=new Vector(50,50),
         line_width=3,
-    }){
+    ){
         const 
             x1 = start.x,
             y1 = start.y,
@@ -72,9 +71,7 @@ export default class Renderer {
         return this;
 	}
 
-	polygon({
-        vertices=[],
-    }){
+	polygon(vertices=[]){
 		this._context.beginPath();
 		this._context.moveTo(vertices[0].x, vertices[0].y);
 		for(let i=1; i<vertices.length; i++){
@@ -84,6 +81,10 @@ export default class Renderer {
 		this._context.closePath();
 
         return this;
+	}
+
+	draw(physic_object){
+		const graphic = physic_object.getGraphic();
 	}
 
     fill(){
