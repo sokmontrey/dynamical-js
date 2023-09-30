@@ -77,6 +77,9 @@ export class DistanceConstraint extends Constraint{
 
         return this;
     }
+    isBroken(){
+        return this._is_broken;
+    }
 
     setSpringConstant(spring_constant){
         this._spring_constant = spring_constant;

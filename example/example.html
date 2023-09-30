@@ -214,10 +214,13 @@ function getMousePos(canvas, evt) {
 renderer.update((delta_time)=>{
     renderer.clear();
 
+  	/*
     if(is_follow){
         points['29-19'].setPosition(m_pos);
         points['29-19'].setOldPosition(m_pos);
     }
+    */
+  
 
     for(let i=0; i<10; i++){
         cloth.applyGravity();
@@ -226,7 +229,19 @@ renderer.update((delta_time)=>{
     }
 
     const connections = cloth._connections;
+  
+    if(is_follow){
+        for(let i=0; i<connections.length; i++){
+        	const p = connections[i]._point1;
+          	const d = Vector.distance(p.position, m_pos);
+          	if(d < 10){
+            	connections[i].break();
+            }
+        }
+    }
+  
     for(let i=0; i<connections.length; i++){
+      	if(connections[i].isBroken()) continue;
         const points = connections[i].getPoints();
         const r = i/connections.length;
         renderer.line(
