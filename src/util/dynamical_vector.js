@@ -88,7 +88,7 @@ export class Vector{
                     v, 
                     Vector.dot(a, v)
                 ),
-                1.7
+                1.8
             )
         );
     }
