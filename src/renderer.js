@@ -83,9 +83,57 @@ export default class Renderer {
         return this;
 	}
 
+    //NOTE: this method sometime directly access member of an object without using the object getter
+    //      This is to reduce call time
+    //      A premature opt, I know
 	draw(physic_object){
 		const graphic = physic_object.getGraphic();
-	}
+
+        const type = physic_object.constructor.name;
+        if(type === "PointMass"){
+            var position = physic_object._position;
+            this.circle(position, graphic.radius)
+                .setFillStyle(graphic.fill_color)
+                .fill();
+        }else if (type === "Composite" || type === "Rectangle"){
+            const vertices = physic_object.getPointsArray()
+                .map((point_mass)=> point_mass._position);
+            const rendering = this.polygon(vertices);
+            if(graphic.is_fill)
+                rendering.setFillStyle(graphic.fill_color).fill();
+            if(graphic.is_stroke)
+                rendering.setStrokeStyle(graphic.stroke_color).stroke();
+            if(graphic.is_wireframe)
+                physic_object.getConnections()
+                .forEach((distance_constraint)=>{
+                    this.line(
+                        distance_constraint._point1._position,
+                        distance_constraint._point2._position,
+                        graphic.wireframe_width,
+                    ).setStrokeStyle(graphic.wireframe_color).stroke();
+                });
+        }else if(type === "Circle"){
+            const position = physic_object.getPosition();
+            const rendering = this.circle(position, physic_object.getRadius());
+            if(graphic.is_fill)
+                rendering.setFillStyle(graphic.fill_color).fill();
+            if(graphic.is_stroke)
+                rendering.setStrokeStyle(graphic.stroke_color).stroke();
+            if(graphic.is_wireframe){
+                rendering.setStrokeStyle(graphic.wireframe_color).stroke();
+                this.circle(position, graphic.wireframe_width)
+                    .setFillStyle(graphic.wireframe_color)
+                    .fill();
+            }
+        }else if(type === "DistanceConstraint"){
+            this.line(
+                    physic_object._point1._position, 
+                    physic_object._point2._position
+                ).setLineWidth(graphic.stroke_width)
+                .setStrokeStyle(graphic.stroke_color)
+                .stroke();
+        }
+    }
 
     fill(){
         this._context.fill();
