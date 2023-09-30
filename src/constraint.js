@@ -61,9 +61,10 @@ export class DistanceConstraint extends Constraint{
 
         this._point1            =   point1;
         this._point2            =   point2;
-        this._distance          =   distance || Vector.distance(
-            point1.position, point2.position
-        );
+        this._distance          =   distance 
+        if(point1 && point2){
+            this._distance = Vector.distance( point1.position, point2.position);
+        }
 
         this._stress            =   0;
 
@@ -191,6 +192,10 @@ export class Container extends Constraint{
 
         this._calculateVertices();
         this._calculateBounds();
+
+        this.graphic.noFill();
+        this.graphic.stroke('gray');
+        this.graphic.stroke_width = 3;
     }
 
     _calculateVertices(){

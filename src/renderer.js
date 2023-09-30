@@ -91,14 +91,19 @@ export default class Renderer {
 
         const type = physic_object.constructor.name;
         if(type === "PointMass"){
+
             var position = physic_object._position;
             this.circle(position, graphic.radius)
                 .setFillStyle(graphic.fill_color)
                 .fill();
+
         }else if (type === "Composite" || type === "Rectangle"){
+
             const vertices = physic_object.getPointsArray()
                 .map((point_mass)=> point_mass._position);
+
             const rendering = this.polygon(vertices);
+
             if(graphic.is_fill)
                 rendering.setFillStyle(graphic.fill_color).fill();
             if(graphic.is_stroke)
@@ -112,7 +117,9 @@ export default class Renderer {
                         graphic.wireframe_width,
                     ).setStrokeStyle(graphic.wireframe_color).stroke();
                 });
+
         }else if(type === "Circle"){
+
             const position = physic_object.getPosition();
             const rendering = this.circle(position, physic_object.getRadius());
             if(graphic.is_fill)
@@ -125,13 +132,26 @@ export default class Renderer {
                     .setFillStyle(graphic.wireframe_color)
                     .fill();
             }
+
         }else if(type === "DistanceConstraint"){
-            this.line(
-                    physic_object._point1._position, 
-                    physic_object._point2._position
-                ).setLineWidth(graphic.stroke_width)
+
+            this.line( physic_object._point1._position, 
+                    physic_object._point2._position)
+                .setLineWidth(graphic.stroke_width)
                 .setStrokeStyle(graphic.stroke_color)
                 .stroke();
+
+        }else if(type === "Container"){
+
+            Vector.edgeIterator(physic_object._vertices,(V1, V2)=>{
+                this.line(V1, V2, graphic.stroke_width)
+                .setStrokeStyle(graphic.stroke_color).stroke();
+            });
+
+        }else if(type === "CircleContainer"){
+
+            this.circle(physic_object._center, physic_object._radius).setStrokeStyle(graphic.stroke_color).stroke();
+
         }
     }
 

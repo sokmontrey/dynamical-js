@@ -298,19 +298,16 @@ renderer.update((delta_time)=>{
         const points = each_connection.getPoints();
         for(let j=1; j<points.length; j++){
             const stress = each_connection.getStress(j-1);
-            renderer.line({
-                start: points[j].position,
-                end: points[j-1].position,
-                line_width: 5
-            }).setStrokeStyle(\`rgb(\${stress * 500}, 63, 63)\`).stroke();
+            renderer.line(
+                points[j].position,
+                points[j-1].position,
+                5
+            ).setStrokeStyle(\`rgb(\${stress * 500}, 63, 63)\`).stroke();
         }
     }
 
     for(let i in points){
-        renderer.circle({
-            position: points[i].position,
-            radius: 8
-        }).setFillStyle('#188edc').fill();
+        renderer.circle(points[i].position, 8).setFillStyle('#188edc').fill();
     }
 });
 `,
@@ -357,10 +354,10 @@ renderer.update((delta_time)=>{
     }
 
     /* visualize the PhysicObject */
-    square.draw(renderer);
+    renderer.draw(square);
 
     /* Visualize the container */
-    container.draw(renderer);
+    renderer.draw(container);
 });
 
 `,
@@ -406,10 +403,10 @@ renderer.update((delta_time)=>{
     	draw a circle at the position of the point_mass 
     	radius = 5
     */
-    point_mass.draw(5, renderer);
+    renderer.draw(point_mass);
 
     /* Visualize the container */
-    container.draw(renderer);
+    renderer.draw(container);
 });
 `
 ,
