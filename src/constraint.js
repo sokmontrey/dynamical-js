@@ -10,7 +10,6 @@ p: positionition of point mass
 //TODO: test spring constraint
 
 export default class Constraint extends PhysicObject{
-
     constructor(){
         super();
     }
@@ -101,18 +100,6 @@ export class DistanceConstraint extends Constraint{
     getPoints(){ return [this._point1, this._point2]; }
     getStress(){ return this._stress; }
 
-    draw(line_width=2, renderer=this.graphic.renderer){
-        line_width = line_width || this.graphic.line_width;
-
-        const line = renderer.line({
-            start: this._point1.position,
-            end: this._point2.position,
-            line_width: line_width
-        }).setStrokeStyle(this.graphic.stroke_style).stroke();
-
-        return line;
-    }
-
     check(){
         if(this._is_broken) return;
 
@@ -199,9 +186,6 @@ export class Container extends Constraint{
             new Vector( 1,  0),
         ];
 
-        this.graphic.is_fill = false;
-        this.graphic.is_stroke = true;
-
         this._calculateVertices();
         this._calculateBounds();
     }
@@ -257,16 +241,6 @@ export class Container extends Constraint{
         this._friction_constant = friction_constant;
 
         return this;
-    }
-
-    draw(renderer=this.graphic.renderer){
-        const polygon = renderer.polygon({
-            vertices: this._vertices
-        });
-
-        this.graphic.applyStyle(polygon);
-
-        return polygon;
     }
 
     check(param){
@@ -379,16 +353,6 @@ export class CircleContainer extends Container{
     _calculateCenter(){
         this._center = this._offset.add(this._radius);
         this._center.z = 0;
-    }
-    draw(renderer=this.graphic.renderer){
-        const circle = renderer.circle({
-            position: this._center,
-            radius: this._radius,
-        });
-
-        this.graphic.applyStyle(circle);
-
-        return circle;
     }
     _checkPoint(point){
         const P = point.position;

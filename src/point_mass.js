@@ -1,5 +1,5 @@
 import PhysicObject from './physic_object.js';
-import { Vector} from './util/dynamical_vector.js';
+import { Vector } from './util/dynamical_vector.js';
 
 export default class PointMass extends PhysicObject{
     constructor(
@@ -145,17 +145,6 @@ export default class PointMass extends PhysicObject{
 
         this._acceleration.x = 0;
         this._acceleration.y = 0;
-    }
-
-    draw(radius=5, renderer=this.graphic.renderer){
-        const circle = renderer.circle({
-            position: this._position,
-            radius: radius,
-        });
-
-        this.graphic.applyStyle(circle);
-
-        return circle;
     }
 
     get position(){ return this._position.clone(); }

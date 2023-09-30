@@ -18,21 +18,6 @@ export default class Composite extends PhysicObject{
         this._is_static         = false;
         this._is_circle_composite = false;
         this._friction_constant = 0.01;
-
-        this.graphic = {
-            ...this.graphic,
-            
-            is_fill: true,
-            is_wireframe: false,
-            is_vertex: false,
-
-            fill_color: 'white',
-            wireframe_color: 'gray',
-            vertex_color: '#aa3333',
-
-            wireframe_thickness: 1,
-            vertex_size: 3,
-        };
     }
 
     isCircle(){
@@ -185,47 +170,6 @@ export default class Composite extends PhysicObject{
         return this;
     }
 
-    draw(renderer=this.graphic.renderer){
-        const vertices = [];
-        if(this.graphic.is_fill){
-            for(let point_name in this._points){
-                vertices.push(this._points[point_name].position);
-            }
-
-            renderer.polygon({
-                vertices: vertices,
-            }).setFillStyle(this.graphic.fill_color).fill();
-        }
-
-        if(this.graphic.is_wireframe){
-            for(let i=0; i<this._connections.length; i++){
-                const [point1, point2] = this._connections[i].getPoints();
-                renderer.line({
-                    start: point1.position,
-                    end: point2.position,
-                    line_width: this.graphic.wireframe_thickness,
-                }).setStrokeStyle(this.graphic.wireframe_color).stroke();
-            }
-        }
-
-        if(this.graphic.is_vertex){
-            if(!vertices.length){
-                for(let point_name in this._points){
-                    vertices.push(this._points[point_name].position);
-                }
-            }
-
-            for(let i=0; i<vertices.length; i++){
-                renderer.circle({
-                    position: vertices[i],
-                    radius: this.graphic.vertex_size,
-                }).setFillStyle(this.graphic.vertex_color).fill();
-            }
-        }
-
-        return this;
-    }
-
     getPoints(){
         return this._points;
     }
@@ -319,25 +263,6 @@ export class Circle extends Composite {
 
     setRadius(radius){
         this._radius = radius;
-
-        return this;
-    }
-
-    draw(renderer=this.graphic.renderer){
-
-        //TODO: wireframe
-        const circle = renderer.circle({
-            position: this._points['center'].position,
-            radius: this._radius,
-        });
-
-        if(this.graphic.is_fill){
-            circle.setFillStyle(this.graphic.fill_color).fill();
-        }
-
-        if(this.graphic.is_wireframe){
-            circle.setStrokeStyle(this.graphic.wireframe_color).stroke();
-        }
 
         return this;
     }
