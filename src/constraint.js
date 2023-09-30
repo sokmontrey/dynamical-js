@@ -56,12 +56,15 @@ export default class Constraint extends PhysicObject{
 * Each batch is the actual information indicating which points connecting together
 * */
 export class DistanceConstraint extends Constraint{
-    constructor(point1=null, point2=null, distance=1, spring_constant=1, is_broken=false){
+    constructor(point1=null, point2=null, spring_constant=1, distance=null, is_broken=false){
         super();
 
         this._point1            =   point1;
         this._point2            =   point2;
-        this._distance          =   distance;
+        this._distance          =   distance || Vector.distance(
+            point1.position, point2.position
+        );
+
         this._stress            =   0;
 
         this._spring_constant   =   spring_constant;
