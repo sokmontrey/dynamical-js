@@ -1,7 +1,7 @@
-import Abstract from "./abstract.js";
+import Object from "./Object.js";
 import {Vector} from './util/dynamical_vector.js';
 
-export default class Collider extends Abstract{
+export default class Collider extends Object{
     static check(composite1, composite2){
         if(composite1.isCircle() && composite2.isCircle()){
             //circle circle

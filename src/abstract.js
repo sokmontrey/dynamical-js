@@ -1,5 +1,5 @@
 import { Graphic } from './renderer.js';
-export default class Abstract{
+export default class Object{
     constructor(){
         this.name       = null;
 

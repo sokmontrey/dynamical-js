@@ -1,4 +1,4 @@
-import Abstract from './abstract.js';
+import Object from './Object.js';
 import PointMass from './point_mass.js';
 import { Vector} from './util/dynamical_vector.js';
 import Composite, { Circle } from './composite.js';
@@ -9,7 +9,7 @@ p: positionition of point mass
 
 //TODO: test spring constraint
 
-export default class Constraint extends Abstract{
+export default class Constraint extends Object{
 
     constructor(){
         super();

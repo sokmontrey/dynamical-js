@@ -1,9 +1,9 @@
-import Abstract from './abstract.js';
+import Object from './Object.js';
 import { DistanceConstraint } from './constraint.js';
 import PointMass from './point_mass.js';
 import { Vector } from './util/dynamical_vector.js';
 
-export default class Composite extends Abstract{
+export default class Composite extends Object{
     constructor(){
         super();
 

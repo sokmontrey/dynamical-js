@@ -1,7 +1,7 @@
-import Abstract from './abstract.js';
+import Object from './Object.js';
 import { Vector} from './util/dynamical_vector.js';
 
-export default class PointMass extends Abstract{
+export default class PointMass extends Object{
     constructor(
         x = 250, 
         y = 250, 
