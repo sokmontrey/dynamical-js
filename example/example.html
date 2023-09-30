@@ -229,11 +229,11 @@ renderer.update((delta_time)=>{
     for(let i=0; i<connections.length; i++){
         const points = connections[i].getPoints();
         const r = i/connections.length;
-        renderer.line({
-            start: points[0].position,
-            end: points[1].position,
-            line_width: 0.9
-        }).setStrokeStyle(\`rgb(
+        renderer.line(
+            points[0].position,
+            points[1].position,
+            0.9
+        ).setStrokeStyle(\`rgb(
             \${r * 255}, 
             \${150}, 
             \${129})\`).stroke();
