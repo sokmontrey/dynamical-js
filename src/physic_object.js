@@ -1,5 +1,5 @@
 import { Graphic } from './renderer.js';
-export default class Object{
+export default class PhysicObject{
     constructor(){
         this.name       = null;
 

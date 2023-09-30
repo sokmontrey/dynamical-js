@@ -1,9 +1,9 @@
-import Object from './Object.js';
+import PhysicObject from './physic_object.js';
 import { DistanceConstraint } from './constraint.js';
 import PointMass from './point_mass.js';
 import { Vector } from './util/dynamical_vector.js';
 
-export default class Composite extends Object{
+export default class Composite extends PhysicObject{
     constructor(){
         super();
 
@@ -107,7 +107,7 @@ export default class Composite extends Object{
     }
 
     addPointMass(point){
-        const name = point.name || Object.keys(this._points).length();
+        const name = point.name || PhysicObject.keys(this._points).length();
         this._points[name] = point;
 
         return this;

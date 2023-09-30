@@ -324,7 +324,7 @@ import Constraint from '../src/constraint.js';
 /* Get canvas element */
 const canvas = document.getElementById('canvas');
 
-/* create a new renderer object */
+/* create a new renderer PhysicObject */
 /* 500 x 500 by default */
 const renderer = new Renderer(canvas);
 /* set canvas background */
@@ -348,15 +348,15 @@ renderer.update((delta_time)=>{
     delta_time /= 10;
     for(let i=0; i<10; i++){
         square.applyGravity();
-        /* make sure that the object holding itself */
+        /* make sure that the PhysicObject holding itself */
         square.applyConnections();
-        /* make sure that the object doesn't fall out of the container */
+        /* make sure that the PhysicObject doesn't fall out of the container */
         container.check(square);
         /* update all the point_mass position */
         square.updatePosition(delta_time);
     }
 
-    /* visualize the object */
+    /* visualize the PhysicObject */
     square.draw(renderer);
 
     /* Visualize the container */
@@ -373,7 +373,7 @@ import Constraint from '../src/constraint.js';
 /* Get canvas element */
 const canvas = document.getElementById('canvas');
 
-/* create a new renderer object */
+/* create a new renderer PhysicObject */
 /* 500 x 500 by default */
 const renderer = new Renderer(canvas);
 /* set canvas background */

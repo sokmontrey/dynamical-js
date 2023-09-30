@@ -1,4 +1,4 @@
-import Object from './Object.js';
+import PhysicObject from './physic_object.js';
 import PointMass from './point_mass.js';
 import { Vector} from './util/dynamical_vector.js';
 import Composite, { Circle } from './composite.js';
@@ -9,7 +9,7 @@ p: positionition of point mass
 
 //TODO: test spring constraint
 
-export default class Constraint extends Object{
+export default class Constraint extends PhysicObject{
 
     constructor(){
         super();

@@ -6,11 +6,11 @@ NOTE! :
 
 # How does this work?
 
-This is a point-mass aggregated based 2D physic engine. Any objects can be made up of points connected together with "Distance" constraints.
+This is a point-mass aggregated based 2D physic engine. Any PhysicObjects can be made up of points connected together with "Distance" constraints.
 
 ## PointMass
 
-A point mass is an object that contain many physical properties such as position, velocity, acceleration, mass, etc. Each frame of the simulation, the position of the point-mass will be updated using a certain numerical integration method to get a behaviour like how a ball would move in real life. Dynamical JS use Verlet's integration to update the position of all of its point mass. This integration method is unique as it calculate the velocity of the point using its previous and current position. This is great when it come to collision resolution and dynamic. Verlet's integration will take care of all the dynamic automatically as long as the point's previous and current position is manipulated in a conservative way. 
+A point mass is an PhysicObject that contain many physical properties such as position, velocity, acceleration, mass, etc. Each frame of the simulation, the position of the point-mass will be updated using a certain numerical integration method to get a behaviour like how a ball would move in real life. Dynamical JS use Verlet's integration to update the position of all of its point mass. This integration method is unique as it calculate the velocity of the point using its previous and current position. This is great when it come to collision resolution and dynamic. Verlet's integration will take care of all the dynamic automatically as long as the point's previous and current position is manipulated in a conservative way. 
 
 ## Constraint
 Constraints are mathematical equations that limit the movement of points. There are a few important type of constraint in Dynamical JS.
@@ -25,7 +25,7 @@ This Constraint limit the movement of two point-masses. It makes sure that the t
 ```
 
 ## Composite
-A composite is a object consisted of vertices connected together using distance constraint. 
+A composite is a PhysicObject consisted of vertices connected together using distance constraint. 
 
 ## Control Flow
 There are specific order for which physic operations (check constraint, update position, etc) should be perform. By not following this control flow, the simulation could break down very easily.

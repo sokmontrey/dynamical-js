@@ -1,7 +1,7 @@
-import Object from "./Object.js";
+import PhysicObject from "./physic_object.js";
 import {Vector} from './util/dynamical_vector.js';
 
-export default class Collider extends Object{
+export default class Collider extends PhysicObject{
     static check(composite1, composite2){
         if(composite1.isCircle() && composite2.isCircle()){
             //circle circle

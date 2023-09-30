@@ -1,7 +1,7 @@
-import Object from './Object.js';
+import PhysicObject from './physic_object.js';
 import { Vector} from './util/dynamical_vector.js';
 
-export default class PointMass extends Object{
+export default class PointMass extends PhysicObject{
     constructor(
         x = 250, 
         y = 250, 
