@@ -18,6 +18,8 @@ export default class Composite extends PhysicObject{
         this._is_static         = false;
         this._is_circle_composite = false;
         this._friction_constant = 0.01;
+
+        this._graphic.fill();
     }
 
     isCircle(){
@@ -117,7 +119,7 @@ export default class Composite extends PhysicObject{
 
     connect(point1_name, point2_name, spring_constant=1){
         this._connections.push(
-            new DistanceConstraint().setPointMass(
+            new DistanceConstraint(
                 this._points[point1_name],
                 this._points[point2_name]
             ).setSpringConstant(spring_constant)
@@ -185,6 +187,9 @@ export default class Composite extends PhysicObject{
     get friction_constant(){ 
         return this._friction_constant;
     }
+    getConnections(){
+        return this._connections;
+    }
 }
 
 export class Rectangle extends Composite{
@@ -251,9 +256,7 @@ export class Circle extends Composite {
         this._is_circle_composite = true;
 
         this._points            = {
-            'center': new PointMass()
-            .setPosition(new Vector(x, y))
-            .setOldPosition(new Vector(x, y))
+            'center': new PointMass(x, y)
         };
 
         this._points_offset     = {
