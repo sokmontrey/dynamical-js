@@ -27,12 +27,12 @@
 
         renderer.setBackground('#252422');
 
-        const c = new CircleContainer();
+        const c = new CircleContainer().setName("ground");
 
         const cube1 = Composite.create('square', {
             position: new Vector(250, 100),
             angle: Math.PI/5,
-        });
+        }).setName("cube1");
 
         const circle = Composite.create('circle', {
             radius: 20,
