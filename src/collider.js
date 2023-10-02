@@ -1,27 +1,39 @@
 import PhysicObject from "./physic_object.js";
 import {Vector} from './util/dynamical_vector.js';
 
+//TODO: point-Poly/Cir collision
+
 export default class Collider extends PhysicObject{
     static check(composite1, composite2){
+        let is_collide = false;
+
         if(composite1.isCircle() && composite2.isCircle()){
             //circle circle
-            CircleCircleCollider.check(composite1, composite2);
+            is_collide = CircleCircleCollider.check(composite1, composite2);
         }else if(composite1.isCircle()){
             //circle polygon
-            PolygonCircleCollider.check(composite2, composite1);
+            is_collide = PolygonCircleCollider.check(composite2, composite1);
         }else if(composite2.isCircle()){
             //polygon circle
-            PolygonCircleCollider.check(composite1, composite2);
+            is_collide = PolygonCircleCollider.check(composite1, composite2);
         }else{
             //polygon polygon
             const points1 = composite1.getPointsArray();
             for(let i=0; i<points1.length; i++){
-                PolygonPolygonCollider.check(points1[i], composite2);
+                is_collide = PolygonPolygonCollider.check(points1[i], composite2) || is_collide;
             }
             const points2 = composite2.getPointsArray();
             for(let i=0; i<points2.length; i++){
-                PolygonPolygonCollider.check(points2[i], composite1);
+                is_collide = PolygonPolygonCollider.check(points2[i], composite1) || is_collide;
             }
+        }
+
+        if(is_collide){
+            composite1.onCollision(composite1, composite2);
+            composite2.onCollision(composite2, composite1);
+        }else{
+            composite1.onNoCollision(composite1, composite2);
+            composite2.onNoCollision(composite2, composite1);
         }
     }
 }
@@ -57,13 +69,15 @@ export class CircleCircleCollider{
             correction_P1.add(P1),
             normal,
             0
-        )
+        );
         point2.applyCollision(
             point1,
             correction_P2.add(P2),
             normal.invert(),
             0
-        )
+        );
+
+        return true;
     }
 }
 
@@ -120,19 +134,21 @@ export class PolygonCircleCollider{
             new_V1, 
             normal.invert(),
             0
-        )
+        );
         V2_point.applyCollision(
             polygon, 
             new_V2, 
             normal.invert(),
             0
-        )
+        );
         point.applyCollision(
             polygon,
             new_P1,
             normal,
             0
-        )
+        );
+
+        return true;
     }
 
     static isCircleIntersect(vertices, P1, radius){
@@ -233,19 +249,21 @@ export class PolygonPolygonCollider{
             new_V1, 
             normal.invert(),
             polygon.friction_constant,
-        )
+        );
         V2_point.applyCollision(
             polygon, 
             new_V2, 
             normal.invert(),
             polygon.friction_constant,
-        )
+        );
         point.applyCollision(
             polygon,
             new_P1,
             normal,
             polygon.friction_constant,
-        )
+        );
+
+        return true;
     }
 
     static isPointInPolygon(vertices, P1, P2){
@@ -320,17 +338,19 @@ export class CircleCollider extends Collider{
 
         const d = Vector.distance(P1, P2);
 
-        if(d <= radius){
-            const [new_p1, new_p2] = CircleCollider.findCorrection(
-                P1, P2,
-                point.mass, center_point.mass,
-                point.isStatic(), center_point.isStatic(),
-                radius-d
-            );
+        if(d > radius) return false;
 
-            point.applyDistanceConstraint(new_p1);
-            center_point.applyDistanceConstraint(new_p2);
-        }
+        const [new_p1, new_p2] = CircleCollider.findCorrection(
+            P1, P2,
+            point.mass, center_point.mass,
+            point.isStatic(), center_point.isStatic(),
+            radius-d
+        );
+
+        point.applyDistanceConstraint(new_p1);
+        center_point.applyDistanceConstraint(new_p2);
+
+        return true;
     }
 
     _findCorrection(
