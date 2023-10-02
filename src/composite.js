@@ -26,6 +26,14 @@ export default class Composite extends PhysicObject{
         return this._is_circle_composite;
     }
 
+    onCollision(this_composite, other_composite){
+        return;
+    }
+
+    onNoCollision(this_composite, other_composite){
+        return;
+    }
+
     static create(type, params={}){
         if(type === "rectangle"){
             return new Rectangle(
