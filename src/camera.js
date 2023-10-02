@@ -27,8 +27,16 @@ export default class Camera{
 
         return this;
     }
-    changeFOV(x, y=x){
-        this._renderer.context.scale(x, y);
-        this.FOV = this.FOV.divide(new Vector(x, y));
+    changeFOVTo(x, y=x){
+        const old_x = this.FOV.x;
+        const old_y = this.FOV.y;
+
+        this.scaleFOVBy(x/old_x, y/old_y);
+
+        return this;
+    }
+    scaleFOVBy(x, y=x){
+        this._renderer.context.scale(1/x, 1/y);
+        this.FOV = this.FOV.multiply(new Vector(x, y));
     }
 }
