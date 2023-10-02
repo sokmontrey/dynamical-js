@@ -16,7 +16,6 @@ export default class PointMass extends PhysicObject{
         this._mass          =  mass;
 
         this._is_static     =  is_static;
-        this._onCollision   =  ()=>{};
 
         this.graphic.radius = 4;
         this.graphic.fill('white');
@@ -27,6 +26,14 @@ export default class PointMass extends PhysicObject{
         return new PointMass()
             .setPosition(position)
             .setOldPosition(position);
+    }
+
+    onCollision(this_composite, other_composite){
+        return;
+    }
+
+    onNoCollision(this_composite, other_composite){
+        return;
     }
 
     setMass(mass){
@@ -53,10 +60,6 @@ export default class PointMass extends PhysicObject{
 
         this._old_position.assign(this._position.subtract(velocity));
 
-        return this;
-    }
-    setOnCollision(onCollision_callback){
-        this._onCollision = onCollision_callback;
         return this;
     }
     addVelocity(velocity){
@@ -94,8 +97,6 @@ export default class PointMass extends PhysicObject{
         normal, 
         friction_constant
     ){
-        this._onCollision(other);
-
         if(this._is_static) return this;
 
         this._resolveCollision(contact_point, normal);
