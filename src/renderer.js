@@ -1,4 +1,5 @@
 import { Vector } from "./util/dynamical_vector.js";
+import Camera from "./camera.js";
 
 export default class Renderer {
 	constructor(canvas, width=500, height=500){
@@ -9,16 +10,17 @@ export default class Renderer {
 
 		/* color */
 		this._background_color = 'white';
-
-		this.resize(width, height);
-		this.clear();
+        this.camera = new Camera(this);
 
 		this._update_function;
 		this._last_time = 0;
 		this._animate = this._animate.bind(this);
+
+		this._resize(width, height);
+		this.clear();
 	}
 
-	resize(width, height){
+	_resize(width, height){
 		this._width = width;
 		this._height = height;
 		this._context.canvas.width = width;
@@ -34,7 +36,12 @@ export default class Renderer {
 	clear(){
 		this._context.beginPath();
 		this._context.fillStyle = this._background_color;
-		this._context.fillRect(0,0, this._width, this._height);
+		this._context.fillRect(
+            this.camera.position.x,
+            this.camera.position.y,
+            this._width * this.camera.FOV.x,
+            this._height* this.camera.FOV.y,
+        );
 	}
 
 	circle(
@@ -194,20 +201,21 @@ export default class Renderer {
 	}
 
 	get context(){ return this._context; }
+    getContext(){ return this._context; }
 
-	get CENTER(){
+	getCenter(){
 		return new Vector(this._width/2.0, this._height/2.0);
 	}
-	get RANDOM(){
+	getRandom(){
 		return new Vector(
 			Math.random() * this._width, 
 			Math.random() * this._height 
 		);
 	}
-	get HEIGHT(){
+	getHeight(){
 		return this._height;
 	}
-	get WIDTH(){
+	getWidth(){
 		return this._width;
 	}
 }
