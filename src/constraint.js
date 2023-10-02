@@ -255,20 +255,29 @@ export class Container extends Constraint{
     }
 
     check(param){
+        let is_collide = false;
+
         if(param instanceof PointMass){
-            this._checkPoint(param);
+            is_collide = this._checkPoint(param);
         }else if(param instanceof Circle){
-            this._checkCircle(param);
+            is_collide = this._checkCircle(param);
         }else if(param instanceof Composite){
             const points = param.getPointsArray();
             for(let i=0; i<points.length; i++){
-                this._checkPoint(points[i]);
+                is_collide = this._checkPoint(points[i]) || is_collide;
             }
+        }
+
+        if(is_collide){
+            param.onCollision(param, this);
+        }else{
+            param.onNoCollision(param, this);
         }
     }
     _checkPoint(point){
         const P1 = point.position;
         const P2 = point.old_position;
+        var is_collide = false;
 
         for(let i=0; i<4; i++){
             const axis = (i % 2 === 0) ? P1.y : P1.x;
@@ -289,14 +298,19 @@ export class Container extends Constraint{
                     normal,
                     this._friction_constant,
                 );
+
+                is_collide = true;
             }
         }
+
+        return is_collide;
     }
     _checkCircle(circle){
         const point = circle.getPoint('center');
         const P1 = point.position;
         const P2 = point.old_position;
         const radius = circle.getRadius();
+        let is_collide = false;
 
         const circle_vertices = [
             P1.add(new Vector(0, -radius)),
@@ -326,8 +340,11 @@ export class Container extends Constraint{
                     normal,
                     0.0
                 );
+
+                is_collide = true;
             }
         }
+        return is_collide;
     }
 }
 
@@ -367,9 +384,9 @@ export class CircleContainer extends Container{
     }
     _checkPoint(point){
         const P = point.position;
-
         const to_point = P.subtract(this._center);
         const distance = to_point.magnitude();
+        let is_collide = false
 
         if(distance >= this._radius){
             const [contact_point, normal] = this._findCorrection(to_point);
@@ -380,7 +397,11 @@ export class CircleContainer extends Container{
                 normal,
                 this._friction_constant,
             );
+
+            is_collide = true;
         }
+
+        return is_collide;
     }
     _checkCircle(circle){
         const point = circle.getPoint('center');
@@ -389,6 +410,7 @@ export class CircleContainer extends Container{
 
         const to_point = P.subtract(this._center);
         const d_to_point = to_point.magnitude();
+        let is_collide = false;
 
         if(point_radius + d_to_point >= this._radius){
             const [contact_point, normal] = this._findCorrection(to_point);
@@ -399,7 +421,11 @@ export class CircleContainer extends Container{
                 0.0,
                 // this._friction_constant,
             );
+
+            is_collide = true;
         }
+
+        return is_collide;
     }
     _findCorrection(to_point){
         const to_point_normal = to_point.normalize();
