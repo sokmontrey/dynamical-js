@@ -136,6 +136,18 @@ export default class Composite extends PhysicObject{
         return this;
     }
 
+    getPosition(){
+        let avg = new Vector(0,0);
+        const points = this.getPointsArray();
+        for(let i=0; i<points.length; i++){
+            avg.x += points[i].position.x;
+            avg.y += points[i].position.y;
+        }
+        avg.x /= points.length;
+        avg.y /= points.length;
+
+        return avg;
+    }
     getConnection(index){
         return this._connections[index];
     }
@@ -270,6 +282,9 @@ export class Circle extends Composite {
         this._points_offset     = {
             'center': new Vector(0,0)
         };
+    }
+    getPosition(){
+        return this._points['center'].position;
     }
 
     setRadius(radius){

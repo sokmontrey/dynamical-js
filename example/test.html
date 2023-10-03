@@ -27,6 +27,8 @@
         const renderer = new Renderer(canvas);
 
         renderer.setBackground('#252422');
+        renderer.camera.changeFOVTo(0.7);
+        // renderer.camera.moveTo(new Vector(250, 250));
 
         const c = new CircleContainer().setName("ground");
 
@@ -79,7 +81,7 @@
                 point.updatePosition(delta_time);
             }
 
-            // renderer.camera.moveTo(point.getPosition());
+            renderer.camera.moveTo(circle.getPosition());
 
             renderer.draw(cube1);
             renderer.draw(circle);
