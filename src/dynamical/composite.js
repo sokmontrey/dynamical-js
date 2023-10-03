@@ -1,7 +1,7 @@
 import PhysicObject from './physic_object.js';
 import { DistanceConstraint } from './constraint.js';
 import PointMass from './point_mass.js';
-import { Vector } from './util/dynamical_vector.js';
+import { Vector } from '../util/dynamical_vector.js';
 
 export default class Composite extends PhysicObject{
     constructor(){

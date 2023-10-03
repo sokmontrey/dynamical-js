@@ -1,4 +1,4 @@
-import { Graphic } from './graphic.js';
+import { Graphic } from '../util/graphic.js'
 
 export default class PhysicObject{
     constructor(){

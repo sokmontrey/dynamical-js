@@ -1,5 +1,5 @@
-import PhysicObject from "./physic_object.js";
-import {Vector} from './util/dynamical_vector.js';
+import PhysicObject from "../dynamical/physic_object.js";
+import { Vector } from "../util/dynamical_vector.js";
 
 //TODO: point-Poly/Cir collision
 

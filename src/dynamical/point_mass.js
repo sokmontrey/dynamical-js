@@ -1,5 +1,5 @@
 import PhysicObject from './physic_object.js';
-import { Vector } from './util/dynamical_vector.js';
+import { Vector } from '../util/dynamical_vector.js';
 
 export default class PointMass extends PhysicObject{
     constructor(

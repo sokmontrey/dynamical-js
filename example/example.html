@@ -155,10 +155,10 @@
                 'cloth (experiment)':
 `//NOTE: This is just an experimentation with the library
 import { Vector } from '../src/util/dynamical_vector.js';
-import PointMass from '../src/point_mass.js';
-import Renderer from '../src/renderer.js';
-import Constraint from '../src/constraint.js';
-import Composite from '../src/composite.js';
+import PointMass from '../src/dynamical/point_mass.js';
+import Renderer from '../src/util/renderer.js';
+import Constraint from '../src/dynamical/constraint.js';
+import Composite from '../src/dynamical/composite.js';
 
 const canvas = document.getElementById('canvas');
 
@@ -259,9 +259,9 @@ renderer.update((delta_time)=>{
 `
 //TODO: Explainations
 import { Vector } from '../src/util/dynamical_vector.js';
-import PointMass from '../src/point_mass.js';
-import Renderer from '../src/renderer.js';
-import Constraint from '../src/constraint.js';
+import PointMass from '../src/dynamical/point_mass.js';
+import Renderer from '../src/util/renderer.js';
+import Constraint from '../src/dynamical/constraint.js';
 
 const canvas = document.getElementById('canvas');
 
@@ -328,10 +328,10 @@ renderer.update((delta_time)=>{
 `,
                 'square':
 `import { Vector } from '../src/util/dynamical_vector.js';
-import PointMass from '../src/point_mass.js';
-import Renderer from '../src/renderer.js';
-import Composite from '../src/composite.js';
-import Constraint from '../src/constraint.js';
+import PointMass from '../src/dynamical/point_mass.js';
+import Renderer from '../src/util/renderer.js';
+import Composite from '../src/dynamical/composite.js';
+import Constraint from '../src/dynamical/constraint.js';
 
 /* Get canvas element */
 const canvas = document.getElementById('canvas');
@@ -378,9 +378,9 @@ renderer.update((delta_time)=>{
 `,
                 'point-mass': 
 `import { Vector } from '../src/util/dynamical_vector.js';
-import PointMass from '../src/point_mass.js';
-import Renderer from '../src/renderer.js';
-import Constraint from '../src/constraint.js';
+import PointMass from '../src/dynamical/point_mass.js';
+import Renderer from '../src/util/renderer.js';
+import Constraint from '../src/dynamical/constraint.js';
 
 /* Get canvas element */
 const canvas = document.getElementById('canvas');

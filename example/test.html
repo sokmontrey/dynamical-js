@@ -16,12 +16,11 @@
     <canvas id="canvas"></canvas>
     <script type="module">
         import { Vector } from '../src/util/dynamical_vector.js';
-        import PointMass from '../src/point_mass.js';
-        import Renderer from '../src/renderer.js';
-        import Constraint, { Container, CircleContainer } from '../src/constraint.js';
-        import Composite, {Rectangle} from '../src/composite.js';
-        import Collider from '../src/collider.js';
-        import Camera from '../src/camera.js';
+        import PointMass from '../src/dynamical/point_mass.js';
+        import Renderer from '../src/util/renderer.js';
+        import Constraint, { Container, CircleContainer } from '../src/dynamical/constraint.js';
+        import Composite, {Rectangle} from '../src/dynamical/composite.js';
+        import Collider from '../src/collision/collider.js';
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);

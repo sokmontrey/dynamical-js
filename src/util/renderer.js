@@ -1,4 +1,4 @@
-import { Vector } from "./util/dynamical_vector.js";
+import { Vector } from "./dynamical_vector.js";
 import Camera from "./camera.js";
 
 export default class Renderer {

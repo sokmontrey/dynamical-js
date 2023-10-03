@@ -1,4 +1,4 @@
-import { Vector } from './util/dynamical_vector.js';
+import { Vector } from './dynamical_vector.js';
 
 //TODO: There are a lot of unsolve bug
 export default class Camera{

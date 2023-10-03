@@ -129,9 +129,9 @@
 
     <script type="module">
         import  { Vector } from './src/util/dynamical_vector.js';
-        import Renderer from './src/renderer.js';
-        import PointMass from './src/point_mass.js';
-        import Constraint, {DistanceConstraint} from './src/constraint.js';
+        import Renderer from './src/util/renderer.js';
+        import PointMass from './src/dynamical/point_mass.js';
+        import Constraint, {DistanceConstraint} from './src/dynamical/constraint.js';
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
