@@ -44,9 +44,7 @@
 
         const point = new PointMass(250, 250);
 
-        let t = 1;
         renderer.update((delta_time)=>{
-            t ++;
             renderer.clear();
 
             //apply force
@@ -81,7 +79,7 @@
                 point.updatePosition(delta_time);
             }
 
-            renderer.camera.moveTo(point.getPosition());
+            // renderer.camera.moveTo(point.getPosition());
 
             renderer.draw(cube1);
             renderer.draw(circle);

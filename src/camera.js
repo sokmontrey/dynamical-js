@@ -1,5 +1,6 @@
 import { Vector } from './util/dynamical_vector.js';
 
+//TODO: There are a lot of unsolve bug
 export default class Camera{
     constructor(renderer){
         this._renderer = renderer;
@@ -38,5 +39,7 @@ export default class Camera{
     scaleFOVBy(x, y=x){
         this._renderer.context.scale(1/x, 1/y);
         this.FOV = this.FOV.multiply(new Vector(x, y));
+
+        return this;
     }
 }
