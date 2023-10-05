@@ -10,10 +10,18 @@
         body{
             background-color: #191c22;
         }
+        h2{
+            color:white;
+        }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
+
+    <h2 id="a1">X</h2>
+    <h2 id="a2">Y</h2>
+    <h2 id="a3">Z</h2>
+
     <script type="module">
         import { Vector } from '../src/util/dynamical_vector.js';
         import PointMass from '../src/dynamical/point_mass.js';
@@ -21,6 +29,15 @@
         import Constraint, { Container, CircleContainer } from '../src/dynamical/constraint.js';
         import Composite, {Rectangle} from '../src/dynamical/composite.js';
         import Collider from '../src/collision/collider.js';
+
+        const acl = new Accelerometer({ frequency: 60 });
+        acl.addEventListener("reading", () => {
+            document.getElementById("a1").innerHTML = acl.x;
+            document.getElementById("a2").innerHTML = acl.y;
+            document.getElementById("a3").innerHTML = acl.z;
+        });
+
+        acl.start();
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
