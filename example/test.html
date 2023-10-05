@@ -33,8 +33,8 @@
         const g = new Vector(0,0);
         const acl = new Accelerometer({ frequency: 60 });
         acl.addEventListener("reading", () => {
-            g.x = -acl.x;
-            g.y = acl.y;
+            g.x = -acl.x * 2;
+            g.y = acl.y * 2;
         });
 
         acl.start();
