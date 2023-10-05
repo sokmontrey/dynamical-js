@@ -30,11 +30,11 @@
         import Composite, {Rectangle} from '../src/dynamical/composite.js';
         import Collider from '../src/collision/collider.js';
 
+        const g = new Vector(0,0);
         const acl = new Accelerometer({ frequency: 60 });
         acl.addEventListener("reading", () => {
-            document.getElementById("a1").innerHTML = acl.x;
-            document.getElementById("a2").innerHTML = acl.y;
-            document.getElementById("a3").innerHTML = acl.z;
+            g.x = acl.x;
+            g.y = acl.y;
         });
 
         acl.start();
@@ -73,11 +73,14 @@
             //draw
 
             delta_time /= 10;
+            cube1.setGravity(g);
+            circle.setGravity(g);
+            rect.setGravity(g);
             for(let i=0; i<10; i++){
                 cube1.applyGravity();
                 circle.applyGravity();
                 rect.applyGravity();
-                point.applyGravity();
+                point.applyGravity(g);
 
                 cube1.applyConnections();
                 rect.applyConnections();
