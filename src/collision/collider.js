@@ -123,8 +123,8 @@ export class PolygonCircleCollider{
         );
         const V_d_sum = V1_d + V2_d;
 
-        const new_V1 = V1.add(correction_V.multiply(V2_d/V_d_sum));
-        const new_V2 = V2.add(correction_V.multiply(V1_d/V_d_sum));
+        const new_V1 = V1.add(correction_V.multiply(V2_d/V_d_sum)).multiply(2);
+        const new_V2 = V2.add(correction_V.multiply(V1_d/V_d_sum)).multiply(2);
         const normal = correction_vector.normalize();
 
         /*-----------Resolve------------*/ 
