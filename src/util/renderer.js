@@ -202,6 +202,7 @@ export default class Renderer {
 
 	get context(){ return this._context; }
     getContext(){ return this._context; }
+    get canvas(){ return this._canvas; }
 
 	getCenter(){
 		return new Vector(this._width/2.0, this._height/2.0);

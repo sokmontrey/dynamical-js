@@ -29,6 +29,7 @@
         import Constraint, { Container, CircleContainer } from '../src/dynamical/constraint.js';
         import Composite, {Rectangle} from '../src/dynamical/composite.js';
         import Collider from '../src/collision/collider.js';
+        import Input from '../src/util/input.js';
 
         const g = new Vector(0,0);
         const acl = new Accelerometer({ frequency: 60 });
@@ -41,6 +42,8 @@
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
+        const input = new Input(renderer);
+        input.listenMousePosition();
 
         renderer.setBackground('#252422');
         renderer.camera.changeFOVTo(1.5);
