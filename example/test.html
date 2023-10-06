@@ -104,8 +104,12 @@
                 Collider.check(circle, rect);
                 Collider.check(rect, cube1);
 
-                if(input.is_mousedown){
+                if(input.is_mousedown && circle.isInBound(input.mouse_position)){
                     circle.setPosition(input.mouse_position)
+                }
+
+                if(input.is_mousedown && cube1.isInBound(input.mouse_position)){
+                    cube1.setPosition(input.mouse_position)
                 }
 
                 cube1.updatePosition(delta_time);

@@ -40,6 +40,24 @@ export default class Composite extends PhysicObject{
     onNoCollision(){
         return;
     }
+    isInBound(point_tobe_check){
+        let ux = -Infinity;
+        let uy = -Infinity;
+        let lx =  Infinity;
+        let ly =  Infinity;
+
+        for(let point_name in this._points){
+            const vertex = this._points[point_name].position;
+            ux = Math.max(ux, vertex.x);
+            uy = Math.max(uy, vertex.y);
+            lx = Math.min(lx, vertex.x);
+            ly = Math.min(ly, vertex.y);
+        }
+        return point_tobe_check.x <= ux &&
+            point_tobe_check.x >= lx &&
+            point_tobe_check.y <= uy &&
+            point_tobe_check.y >= ly;
+    }
 
     static create(type, params={}){
         if(type === "rectangle"){
@@ -310,6 +328,10 @@ export class Circle extends Composite {
         const point = this._points['center'];
         point.setVelocity(point.getVelocity().multiply(this._bouncing_factor));
         this.onCollision(this_composite, other_composite);
+    }
+    isInBound(point_tobe_check){
+        const center = this._points['center'].position;
+        return point_tobe_check.distance(center) <= this._radius;
     }
     getPosition(){
         return this._points['center'].position;
