@@ -26,14 +26,6 @@ export default class Composite extends PhysicObject{
         return this._is_circle_composite;
     }
 
-    _onCollision(this_composite, other_composite){
-        this.onCollision(this_composite, other_composite);
-        return;
-    }
-    _onNoCollision(this_composite, other_composite){
-        this.onNoCollision(this_composite, other_composite);
-        return;
-    }
     onCollision(){
         return;
     }
@@ -314,7 +306,6 @@ export class Circle extends Composite {
 
         this._radius            = radius;
         this._is_circle_composite = true;
-        this._bouncing_factor = 0.4;
 
         this._points            = {
             'center': new PointMass(x, y).setMass(1)
@@ -323,11 +314,6 @@ export class Circle extends Composite {
         this._points_offset     = {
             'center': new Vector(0,0)
         };
-    }
-    _onCollision(this_composite, other_composite){
-        const point = this._points['center'];
-        point.setVelocity(point.getVelocity().multiply(this._bouncing_factor));
-        this.onCollision(this_composite, other_composite);
     }
     isInBound(point_tobe_check){
         const center = this._points['center'].position;

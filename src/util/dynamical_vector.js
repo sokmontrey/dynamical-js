@@ -85,7 +85,7 @@ export class Vector{
         return Vector.subtract(a,
             Vector.multiply( 
                 v, 
-                Vector.dot(a, v) * 2
+                Vector.dot(a, v) * 1.8
             ),
         );
     }

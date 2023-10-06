@@ -29,15 +29,15 @@ export default class Collider extends PhysicObject{
         }
 
         if(is_collide){
-            composite1._onCollision(composite1, composite2);
-            composite2._onCollision(composite2, composite1);
+            composite1.onCollision(composite1, composite2);
+            composite2.onCollision(composite2, composite1);
 
             // const temp_v = composite1.getVelocity();
             // composite1.setVelocity(composite2.getVelocity());
             // composite2.setVelocity(temp_v);
         }else{
-            composite1._onNoCollision(composite1, composite2);
-            composite2._onNoCollision(composite2, composite1);
+            composite1.onNoCollision(composite1, composite2);
+            composite2.onNoCollision(composite2, composite1);
         }
     }
 }
