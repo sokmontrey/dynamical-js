@@ -31,19 +31,20 @@
         import Collider from '../src/collision/collider.js';
         import Input from '../src/util/input.js';
 
-        const g = new Vector(0,0);
-        const acl = new Accelerometer({ frequency: 60 });
-        acl.addEventListener("reading", () => {
-            g.x = -acl.x * 2;
-            g.y = acl.y * 2;
-        });
-
-        acl.start();
+        const g = new Vector(0,9.8);
+        // const acl = new Accelerometer({ frequency: 60 });
+        // acl.addEventListener("reading", () => {
+        //     g.x = -acl.x * 2;
+        //     g.y = acl.y * 2;
+        // });
+        //
+        // acl.start();
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
         const input = new Input(renderer);
         input.listenMousePosition();
+        input.listenMouseButton();
 
         renderer.setBackground('#252422');
         renderer.camera.changeFOVTo(1.5);
@@ -102,6 +103,10 @@
                 Collider.check(circle, cube1);
                 Collider.check(circle, rect);
                 Collider.check(rect, cube1);
+
+                if(input.is_mousedown){
+                    circle.setPosition(input.mouse_position)
+                }
 
                 cube1.updatePosition(delta_time);
                 circle.updatePosition(delta_time);
