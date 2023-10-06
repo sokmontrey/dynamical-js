@@ -32,13 +32,13 @@
         import Input from '../src/util/input.js';
 
         const g = new Vector(0,9.8);
-        // const acl = new Accelerometer({ frequency: 60 });
-        // acl.addEventListener("reading", () => {
-        //     g.x = -acl.x * 2;
-        //     g.y = acl.y * 2;
-        // });
-        //
-        // acl.start();
+        const acl = new Accelerometer({ frequency: 60 });
+        acl.addEventListener("reading", () => {
+            g.x = -acl.x * 2;
+            g.y = acl.y * 2;
+        });
+
+        acl.start();
 
         const canvas = document.getElementById('canvas');
         const renderer = new Renderer(canvas);
