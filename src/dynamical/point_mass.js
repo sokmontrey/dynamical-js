@@ -101,6 +101,7 @@ export default class PointMass extends PhysicObject{
 
         this._resolveCollision(contact_point, normal);
         this._resolveFriction(normal, friction_constant);
+        this.onCollision(this, other);
 
         return this;
     }
@@ -149,6 +150,9 @@ export default class PointMass extends PhysicObject{
 
         this._acceleration.x = 0;
         this._acceleration.y = 0;
+    }
+    getVelocity(){
+        return this._position.subtract(this._old_position);
     }
 
     get position(){ return this._position.clone(); }

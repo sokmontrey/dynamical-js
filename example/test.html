@@ -57,13 +57,18 @@
         const circle = Composite.create('circle', {
             radius: 20,
             position: new Vector(100, 100)
-        })
+        });
 
-        const rect = new Rectangle(250, 10, 10, 20);
+        circle.setVelocity(new Vector(1, 0))
+
+        const rect = new Rectangle(250, 250, 10, 20);
+        rect.setVelocity(new Vector(0, -1));
 
         const point = new PointMass(250, 250);
 
-        renderer.update((delta_time)=>{
+        renderer.update(run);
+
+        function run(delta_time){
             renderer.clear();
 
             //apply force
@@ -108,7 +113,7 @@
             renderer.draw(rect);
             renderer.draw(point);
             renderer.draw(c);
-        });
+        }
     </script>
 </body>
 </html>

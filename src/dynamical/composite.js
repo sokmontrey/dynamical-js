@@ -26,11 +26,18 @@ export default class Composite extends PhysicObject{
         return this._is_circle_composite;
     }
 
-    onCollision(this_composite, other_composite){
+    _onCollision(this_composite, other_composite){
+        this.onCollision(this_composite, other_composite);
         return;
     }
-
-    onNoCollision(this_composite, other_composite){
+    _onNoCollision(this_composite, other_composite){
+        this.onNoCollision(this_composite, other_composite);
+        return;
+    }
+    onCollision(){
+        return;
+    }
+    onNoCollision(){
         return;
     }
 
@@ -70,6 +77,14 @@ export default class Composite extends PhysicObject{
         return this;
     }
 
+    setMass(mass){
+        for(let point_name in this._points){
+            this._points[point_name].setMass(mass);
+        }
+
+        return this;
+    }
+
     setGravity(gravity=new Vector(0, 9.8)){
         this._is_gravity = true;
         this._gravity = gravity;
@@ -93,6 +108,13 @@ export default class Composite extends PhysicObject{
         }
 
         return this;
+    }
+    getVelocity(){
+        let net_v = new Vector(0,0);
+        for(let point_name in this._points){
+            net_v = net_v.add(this._points[point_name].getVelocity());
+        }
+        return net_v;
     }
 
     disableGravity(){
@@ -274,14 +296,20 @@ export class Circle extends Composite {
 
         this._radius            = radius;
         this._is_circle_composite = true;
+        this._bouncing_factor = 0.4;
 
         this._points            = {
-            'center': new PointMass(x, y)
+            'center': new PointMass(x, y).setMass(1)
         };
 
         this._points_offset     = {
             'center': new Vector(0,0)
         };
+    }
+    _onCollision(this_composite, other_composite){
+        const point = this._points['center'];
+        point.setVelocity(point.getVelocity().multiply(this._bouncing_factor));
+        this.onCollision(this_composite, other_composite);
     }
     getPosition(){
         return this._points['center'].position;

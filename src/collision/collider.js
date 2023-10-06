@@ -4,7 +4,7 @@ import { Vector } from "../util/dynamical_vector.js";
 //TODO: point-Poly/Cir collision
 
 export default class Collider extends PhysicObject{
-    static check(composite1, composite2){
+    static check(composite1, composite2, renderer){
         let is_collide = false;
 
         if(composite1.isCircle() && composite2.isCircle()){
@@ -15,7 +15,7 @@ export default class Collider extends PhysicObject{
             is_collide = PolygonCircleCollider.check(composite2, composite1);
         }else if(composite2.isCircle()){
             //polygon circle
-            is_collide = PolygonCircleCollider.check(composite1, composite2);
+            is_collide = PolygonCircleCollider.check(composite1, composite2, renderer);
         }else{
             //polygon polygon
             const points1 = composite1.getPointsArray();
@@ -29,11 +29,15 @@ export default class Collider extends PhysicObject{
         }
 
         if(is_collide){
-            composite1.onCollision(composite1, composite2);
-            composite2.onCollision(composite2, composite1);
+            composite1._onCollision(composite1, composite2);
+            composite2._onCollision(composite2, composite1);
+
+            // const temp_v = composite1.getVelocity();
+            // composite1.setVelocity(composite2.getVelocity());
+            // composite2.setVelocity(temp_v);
         }else{
-            composite1.onNoCollision(composite1, composite2);
-            composite2.onNoCollision(composite2, composite1);
+            composite1._onNoCollision(composite1, composite2);
+            composite2._onNoCollision(composite2, composite1);
         }
     }
 }
@@ -97,22 +101,31 @@ export class PolygonCircleCollider{
 
         if(!closest_edge) return false;
 
-        //TODO: find the contact vertex on the circle
-
         const V1 = closest_edge.V1;
         const V2 = closest_edge.V2;
         const V1_point = point_vertices[closest_edge_index.i1];
         const V2_point = point_vertices[closest_edge_index.i2];
 
-        const circle_vertex = contact_point.subtract(P1).normalize().multiply(radius).add(P1)
+        let circle_vertex;
+        if(V2.subtract(V1)
+            .perpendicular()
+            .dot(P1.subtract(V1)) >= 0)
+        {
+            circle_vertex = contact_point.subtract(P1);
+        }else{
+            circle_vertex = P1.subtract(contact_point);
+        }
+        circle_vertex = circle_vertex.normalize().multiply(radius).add(P1);
 
         const correction_vector = contact_point.subtract(circle_vertex);
+
         const m1 = point.mass;
         const m2 = V1_point.mass + V2_point.mass;
-
         const sum_m = m1 + m2;
+
         const correction_P1 = correction_vector.multiply(m2 / sum_m);
         const correction_V = correction_vector.invert().multiply(m1 / sum_m);
+
         const new_P1 = P1.add(correction_P1);
 
         const V1_d = Vector.distance(
@@ -123,21 +136,21 @@ export class PolygonCircleCollider{
         );
         const V_d_sum = V1_d + V2_d;
 
-        const new_V1 = V1.add(correction_V.multiply(V2_d/V_d_sum)).multiply(2);
-        const new_V2 = V2.add(correction_V.multiply(V1_d/V_d_sum)).multiply(2);
+        const new_V1 = V1.add(correction_V.multiply(V2_d/V_d_sum));
+        const new_V2 = V2.add(correction_V.multiply(V1_d/V_d_sum));
         const normal = correction_vector.normalize();
 
         /*-----------Resolve------------*/ 
 
         V1_point.applyCollision(
             polygon, 
-            new_V1, 
+            new_V1,
             normal.invert(),
             0
         );
         V2_point.applyCollision(
             polygon, 
-            new_V2, 
+            new_V2,
             normal.invert(),
             0
         );
@@ -164,14 +177,11 @@ export class PolygonCircleCollider{
             const v1 = P1.subtract(V1); 
             // vector 2 (vertex 1 to vertex 2)
             const v2 = V2.subtract(V1); 
-            const mag = v2.magnitude();
-            var scalar_proj_ratio = v1.dot(v2) / (mag * mag); //0 -> 1
 
-            if(scalar_proj_ratio < 0){
-                scalar_proj_ratio = 0;
-            }else if(scalar_proj_ratio > 1){
-                scalar_proj_ratio = 1;
-            }
+            const mag = v2.magnitude();
+            var scalar_proj_ratio = Math.max(
+                Math.min(v1.dot(v2) / (mag * mag), 1), 0
+            );//0 -> 1
 
             // vector to point projected 
             const v_to_p = v2.multiply(scalar_proj_ratio).add(V1);
@@ -179,6 +189,7 @@ export class PolygonCircleCollider{
             const d = Vector.distance(v_to_p, P1)
             if(d <= radius){
                 if(d < closest_distance){
+                    closest_distance = d;
                     is_intersect = true;
                     closest_edge = {V1, V2};
                     closest_edge_index = {i1, i2};

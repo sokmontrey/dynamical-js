@@ -83,13 +83,10 @@ export class Vector{
     */
     static reflect (a, v){
         return Vector.subtract(a,
-            Vector.multiply(
-                Vector.multiply( 
-                    v, 
-                    Vector.dot(a, v)
-                ),
-                2
-            )
+            Vector.multiply( 
+                v, 
+                Vector.dot(a, v) * 2
+            ),
         );
     }
     static cut (a, scalar){
@@ -218,6 +215,9 @@ export class Vector{
     }
     normalize (){
         return Vector.normalize(this);
+    }
+    perpendicular (){
+        return Vector.perpendicular(this);
     }
     min (){
         return Vector.min(this);
