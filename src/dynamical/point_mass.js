@@ -21,6 +21,13 @@ export default class PointMass extends PhysicObject{
         this.graphic.fill('white');
     }
 
+    isPointMass(){
+        return true;
+    }
+    isCircle(){
+        return false;
+    }
+
     static create(x=0, y=0){
         const position = (x instanceof Vector) ? x : new Vector(x, y) 
         return new PointMass()

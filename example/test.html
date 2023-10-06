@@ -103,6 +103,8 @@
                 Collider.check(circle, cube1);
                 Collider.check(circle, rect);
                 Collider.check(rect, cube1);
+                Collider.check(cube1, point);
+                Collider.check(circle, point);
 
                 if(input.is_mousedown && circle.isInBound(input.mouse_position)){
                     circle.setPosition(input.mouse_position)

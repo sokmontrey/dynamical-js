@@ -25,6 +25,9 @@ export default class Composite extends PhysicObject{
     isCircle(){
         return this._is_circle_composite;
     }
+    isPointMass(){ 
+        return false; 
+    }
 
     onCollision(){
         return;
@@ -327,6 +330,9 @@ export class Circle extends Composite {
         this._radius = radius;
 
         return this;
+    }
+    getCenterPoint(){
+        return this._points['center'];
     }
 
     getRadius(){

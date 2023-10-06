@@ -4,37 +4,45 @@ import { Vector } from "../util/dynamical_vector.js";
 //TODO: point-Poly/Cir collision
 
 export default class Collider extends PhysicObject{
-    static check(composite1, composite2, renderer){
+    static check(composite1, composite2){
         let is_collide = false;
 
-        if(composite1.isCircle() && composite2.isCircle()){
+        if(composite1.isPointMass() || composite2.isPointMass()){
+            //one of this is a point 
+            if(composite1.isCircle() || composite2.isCircle()){
+                // point circle or circle point
+                is_collide = composite1.isPointMass()
+                ? PointCircleCollider.check(composite1, composite2)
+                : PointCircleCollider.check(composite2, composite1);
+            }else if(!composite1.isCircle() || !composite2.isCircle()){
+                // point polygon or polygon point
+                is_collide = composite1.isPointMass()
+                ? PointPolygonCollider.check(composite1, composite2)
+                : PointPolygonCollider.check(composite2, composite1);
+            }
+        }else if(composite1.isCircle() && composite2.isCircle()){
             //circle circle
             is_collide = CircleCircleCollider.check(composite1, composite2);
-        }else if(composite1.isCircle()){
-            //circle polygon
-            is_collide = PolygonCircleCollider.check(composite2, composite1);
-        }else if(composite2.isCircle()){
-            //polygon circle
-            is_collide = PolygonCircleCollider.check(composite1, composite2, renderer);
+        }else if(composite1.isCircle() || composite2.isCircle()){
+            //circle polygon or polygon circle
+            is_collide = composite1.isCircle() 
+            ? PolygonCircleCollider.check(composite2, composite1)
+            : PolygonCircleCollider.check(composite1, composite2);
         }else{
             //polygon polygon
             const points1 = composite1.getPointsArray();
             for(let i=0; i<points1.length; i++){
-                is_collide = PolygonPolygonCollider.check(points1[i], composite2) || is_collide;
+                is_collide = PointPolygonCollider.check(points1[i], composite2) || is_collide;
             }
             const points2 = composite2.getPointsArray();
             for(let i=0; i<points2.length; i++){
-                is_collide = PolygonPolygonCollider.check(points2[i], composite1) || is_collide;
+                is_collide = PointPolygonCollider.check(points2[i], composite1) || is_collide;
             }
         }
 
         if(is_collide){
             composite1.onCollision(composite1, composite2);
             composite2.onCollision(composite2, composite1);
-
-            // const temp_v = composite1.getVelocity();
-            // composite1.setVelocity(composite2.getVelocity());
-            // composite2.setVelocity(temp_v);
         }else{
             composite1.onNoCollision(composite1, composite2);
             composite2.onNoCollision(composite2, composite1);
@@ -44,8 +52,8 @@ export default class Collider extends PhysicObject{
 
 export class CircleCircleCollider{
     static check(circle1, circle2){
-        const point1 = circle1.getPoints()['center'];
-        const point2 = circle2.getPoints()['center'];
+        const point1 = circle1.getCenterPoint();
+        const point2 = circle2.getCenterPoint();
 
         const P1 = point1.position;
         const P2 = point2.position;
@@ -89,7 +97,7 @@ export class PolygonCircleCollider{
     static check(polygon, circle){
         const point_vertices = polygon.getPointsArray();
         const vertices = point_vertices.map((point)=> point.position);
-        const point = circle.getPoints()['center'];
+        const point = circle.getCenterPoint();
         const P1 = point.position;
         const radius = circle.getRadius();
 
@@ -208,7 +216,7 @@ export class PolygonCircleCollider{
     }
 }
 
-export class PolygonPolygonCollider{
+export class PointPolygonCollider{
     static check(point, polygon){
         const P1 = point.position;
         const point_vertices = polygon.getPointsArray();
@@ -223,7 +231,7 @@ export class PolygonPolygonCollider{
             closest_edge,
             closest_edge_index, 
             contact_point 
-        } = PolygonPolygonCollider.isPointInPolygon(vertices, P1, P2);
+        } = PointPolygonCollider.isPointInPolygon(vertices, P1, P2);
 
         if(!closest_edge) return false;
 
@@ -285,7 +293,7 @@ export class PolygonPolygonCollider{
         let contact_point = null;
 
         Vector.edgeIterator(vertices, (V1, V2, i1, i2)=>{
-            if(PolygonPolygonCollider.isSegmentIntersect(P1, P2, V1, V2)){
+            if(PointPolygonCollider.isSegmentIntersect(P1, P2, V1, V2)){
                 intersection_count ++;
             }
 
@@ -336,57 +344,42 @@ export class PolygonPolygonCollider{
     }
 }
 
-export class CircleCollider extends Collider{
-    constructor(){
-        super();
-    }
-
-    check(point, constraint){
+export class PointCircleCollider{
+    static check(point, circle){
         const P1 = point.position;
-        const center_point = constraint._composite.getPoint('center');
-        const P2 = center_point.position;
-        const radius = constraint._composite.getRadius();
+        const circle_point = circle.getCenterPoint();
+        const P2 = circle_point.position;
+        const radius = circle.getRadius();
 
-        const d = Vector.distance(P1, P2);
+        //center of the circle to the point
+        const P21 = P1.subtract(P2);
+        const d = P21.magnitude();
 
         if(d > radius) return false;
 
-        const [new_p1, new_p2] = CircleCollider.findCorrection(
-            P1, P2,
-            point.mass, center_point.mass,
-            point.isStatic(), center_point.isStatic(),
-            radius-d
-        );
+        const normal = P21.normalize();
+        const correction_vector = normal.multiply(radius-d); 
 
-        point.applyDistanceConstraint(new_p1);
-        center_point.applyDistanceConstraint(new_p2);
+        const m1 = point.mass;
+        const m2 = circle_point.mass;
+        const sum_m = m1+m2;
+
+        const correction_P1 = correction_vector.multiply(m2/sum_m);
+        const correction_P2 = correction_vector.invert().multiply(m1/sum_m);
+
+        point.applyCollision(
+            circle,
+            correction_P1.add(P1),
+            normal,
+            0
+        );
+        circle.getCenterPoint().applyCollision(
+            point,
+            correction_P2.add(P2),
+            normal.invert(),
+            0
+        );
 
         return true;
-    }
-
-    _findCorrection(
-        p1, p2,
-        m1, m2,
-        is_point1_static, is_point2_static,
-        difference_in_length,
-    ){
-        const error = Vector.normalize(
-            p1.subtract(p2)
-        ).multiply( 
-            difference_in_length 
-        );
-
-        const sum_m = m1 + m2;
-
-        const new_p1 = p1.add(
-            is_point2_static ? error
-                : error.multiply(m2 / sum_m)
-        );
-
-        const new_p2 = p2.subtract(
-            is_point1_static ? error
-                : error.multiply(m1 / sum_m)
-        );
-        return [new_p1, new_p2];
-    }
+}
 }
