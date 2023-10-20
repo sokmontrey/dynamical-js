@@ -1,5 +1,4 @@
 import { Vector } from "./dynamical_vector.js";
-import Camera from "./camera.js";
 
 export default class Renderer {
 	constructor(canvas, width=500, height=500){
@@ -8,9 +7,10 @@ export default class Renderer {
 		this._width = width;
 		this._height = height;
 
+        this._camera = null
+
 		/* color */
 		this._background_color = 'white';
-        this.camera = new Camera(this);
 
 		this._update_function;
 		this._last_time = 0;
@@ -37,10 +37,10 @@ export default class Renderer {
 		this._context.beginPath();
 		this._context.fillStyle = this._background_color;
 		this._context.fillRect(
-            this.camera.position.x,
-            this.camera.position.y,
-            this._width * this.camera.FOV.x,
-            this._height* this.camera.FOV.y,
+            this._camera.position.x,
+            this._camera.position.y,
+            this._width * this._camera.FOV.x,
+            this._height* this._camera.FOV.y,
         );
 	}
 

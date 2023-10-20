@@ -7,6 +7,8 @@ export default class Camera{
 
         this.position = new Vector(0,0);
         this.FOV = new Vector(1,1);
+
+        this._renderer.camera = this;
     }
     moveTo(position=new Vector(0,0)){
         this.moveBy(
