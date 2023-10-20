@@ -1,4 +1,4 @@
-A 2D JavaScript physic engine
+A 2D JavaScript physic ~~engine~~ library
 
 NOTE! : 
 - This is not an official Documentation. 
