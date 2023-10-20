@@ -77,6 +77,9 @@ export class Vector{
     static perpendicular(a){
         return new Vector(a.y, -a.x);
     }
+    static center(a, b){
+        return Vector((a.x + b.x)/2, (a.y + b.y)/2);
+    }
     /*
     Find a reflection vector A with V as the mirror
         (imagine -A bound of surface of V)
@@ -239,6 +242,9 @@ export class Vector{
     }
     cut (scalar){
         return Vector.cut(this, scalar);
+    }
+    center (other){
+        return Vector.center(this, other);
     }
     expand (scalar){
         return Vector.expand(this, scalar);

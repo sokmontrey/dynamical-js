@@ -56,19 +56,24 @@ export default class Constraint extends PhysicObject{
 * Each batch is the actual information indicating which points connecting together
 * */
 export class DistanceConstraint extends Constraint{
-    constructor(point1=null, point2=null, spring_constant=1, distance=null, is_broken=false){
+    constructor(point1=null, point2=null, spring_constant=1, distance=null, angle_vector=null, angle_spring_constant=0, is_broken=false){
         super();
 
         this._point1            =   point1;
         this._point2            =   point2;
         this._distance          =   distance 
+        this._angle_vector      =   angle_vector;
         if(point1 && point2){
             this._distance = Vector.distance( point1.position, point2.position);
+            if(angle_spring_constant){
+                this._angle_vector = point2.position.subtract(point1.position);
+            }
         }
 
         this._stress            =   0;
 
         this._spring_constant   =   spring_constant;
+        this._angle_spring_constant = angle_spring_constant;
         this._is_broken         =   is_broken;
     }
 
@@ -83,6 +88,16 @@ export class DistanceConstraint extends Constraint{
 
     setSpringConstant(spring_constant){
         this._spring_constant = spring_constant;
+
+        return this;
+    }
+    setAngleSpringConstant(angle_spring_constant){
+        this._angle_spring_constant = angle_spring_constant;
+        if(!this._angle_vector){
+            this._angle_vector = this._point2.position.subtract(
+                this._point1.position
+            );
+        }
 
         return this;
     }
@@ -110,6 +125,52 @@ export class DistanceConstraint extends Constraint{
     check(){
         if(this._is_broken) return;
 
+        this._checkDistance();
+        if(this._angle_spring_constant){
+            this._checkAngle();
+        }
+    }
+    _checkAngle(){
+        const point1 = this._point1;
+        const point2 = this._point2;
+
+        const p1 = point1.position;
+        const p2 = point2.position;
+        const angle_v = this._angle_vector;
+
+        const norm_dot_prod = p2.subtract(p1)
+        .normalize()
+        .dot(angle_v.normalize());
+        
+        if(norm_dot_prod != 1){
+            this._stress = Math.abs(Vector.distance(p1, p2));
+
+            let center;
+            const half_angle_v = angle_v.divide(2);
+
+            if(point1.isStatic()){
+                center = p1.add(half_angle_v);
+            }else if(point2.isStatic()){
+                center = p2.subtract(half_angle_v);
+            }else{
+                center = Vector.center(p1, p2);
+            }
+
+            const correct_p1 = center.subtract(half_angle_v);
+            const correct_p2 = center.add(half_angle_v);
+
+            const new_p1 = correct_p1.subtract(p1)
+                .multiply(this._angle_spring_constant)
+                .add(p1);
+            const new_p2 = correct_p2.subtract(p2)
+                .multiply(this._angle_spring_constant)
+                .add(p2);
+
+            point1.applyDistanceConstraint(new_p1);
+            point2.applyDistanceConstraint(new_p2);
+        }
+    }
+    _checkDistance(){
         const point1 = this._point1;
         const point2 = this._point2;
 
@@ -120,9 +181,9 @@ export class DistanceConstraint extends Constraint{
         const l2 = Vector.distance(p1, p2);
         const dl = l1-l2;
 
-        this._stress = Math.abs(dl);
-
         if(dl != 0){
+            this._stress = Math.abs(dl);
+
             const [new_p1, new_p2] = this._findCorrection(
                 p1, p2, 
                 point1.mass, point2.mass,
