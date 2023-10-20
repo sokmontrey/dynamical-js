@@ -7,8 +7,6 @@ export default class Camera{
 
         this.position = new Vector(0,0);
         this.FOV = new Vector(1,1);
-
-        this._renderer.camera = this;
     }
     moveTo(position=new Vector(0,0)){
         this.moveBy(
@@ -27,6 +25,7 @@ export default class Camera{
         );
 
         this.position = this.position.add(change_in_position);
+        this._renderer.setCameraPosition(this.position);
 
         return this;
     }
@@ -40,7 +39,9 @@ export default class Camera{
     }
     scaleFOVBy(x, y=x){
         this._renderer.context.scale(1/x, 1/y);
+
         this.FOV = this.FOV.multiply(new Vector(x, y));
+        this._renderer.setCameraFOV(this.FOV);
 
         return this;
     }

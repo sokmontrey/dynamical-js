@@ -7,7 +7,8 @@ export default class Renderer {
 		this._width = width;
 		this._height = height;
 
-        this._camera = null
+        this._camera_position = new Vector(0,0);
+        this._camera_fov = new Vector(1,1);
 
 		/* color */
 		this._background_color = 'white';
@@ -33,14 +34,24 @@ export default class Renderer {
 		this.clear();
 	}
 
+    setCameraPosition(position){
+        this._camera_position = position;
+        return this;
+    }
+    setCameraFOV(FOV){
+        this._camera_fov = FOV;
+        return this;
+    }
+
 	clear(){
 		this._context.beginPath();
 		this._context.fillStyle = this._background_color;
+
 		this._context.fillRect(
-            this._camera.position.x,
-            this._camera.position.y,
-            this._width * this._camera.FOV.x,
-            this._height* this._camera.FOV.y,
+            this._camera_position.x,
+            this._camera_position.y,
+            this._width * this._camera_fov.x,
+            this._height* this._camera_fov.y
         );
 	}
 

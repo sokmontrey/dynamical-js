@@ -30,6 +30,7 @@
         import Composite, {Rectangle} from '../src/dynamical/composite.js';
         import Collider from '../src/collision/collider.js';
         import Input from '../src/util/input.js';
+        import Camera from '../src/util/camera.js';
 
         const g = new Vector(0,9.8);
         const acl = new Accelerometer({ frequency: 60 });
@@ -47,8 +48,10 @@
         input.listenMouseButton();
 
         renderer.setBackground('#252422');
-        renderer.camera.changeFOVTo(1.5);
-        renderer.camera.moveTo(new Vector(250,250));
+
+        const camera = new Camera(renderer);
+        camera.changeFOVTo(1.5);
+        camera.moveTo(new Vector(250,250));
         // renderer.camera.moveTo(new Vector(250, 250));
 
         const c = new CircleContainer().setName("ground");
