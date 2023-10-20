@@ -2,7 +2,7 @@
 
 export { default as Renderer } from './src/util/renderer.js';
 export { default as Camera } from './src/util/camera.js';
-export { default as Input } from './src/util/index.js';
+export { default as Input } from './src/util/input.js';
 
 export { Vector } from './src/util/dynamical_vector.js';
 export { Graphic } from './src/util/graphic.js';
