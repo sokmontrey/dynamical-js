@@ -1,0 +1,32 @@
+{
+  "name": "dynamicaljs",
+  "version": "1.0.0",
+  "description": "A 2D JavaScript physic library",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sokmontrey/dynamical-js.git"
+  },
+  "keywords": [
+    "physic",
+    "engine",
+    "2d",
+    "canvas",
+    "rigidbody",
+    "point",
+    "mass"
+  ],
+  "author": "Sokmontrey Sythat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sokmontrey/dynamical-js/issues"
+  },
+  "homepage": "https://github.com/sokmontrey/dynamical-js#readme"
+}
