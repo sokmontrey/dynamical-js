@@ -78,7 +78,7 @@ export class Vector{
         return new Vector(a.y, -a.x);
     }
     static center(a, b){
-        return Vector((a.x + b.x)/2, (a.y + b.y)/2);
+        return new Vector((a.x + b.x)/2, (a.y + b.y)/2);
     }
     /*
     Find a reflection vector A with V as the mirror
