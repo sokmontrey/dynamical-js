@@ -13,11 +13,12 @@ export default class Input{
         const renderer = this._renderer;
         const canvas = renderer.canvas;
         canvas.addEventListener('mousemove', (e)=>{
-            this._mouse_position.x = (e.x-canvas.offsetLeft) 
+            const rect = canvas.getBoundingClientRect();
+            this._mouse_position.x = (e.clientX-rect.left) 
                 * renderer._camera_fov.x 
                 + renderer._camera_position.x; 
 
-            this._mouse_position.y = (e.y-canvas.offsetTop) 
+            this._mouse_position.y = (e.clientY-rect.top) 
                 * renderer._camera_fov.y 
                 + renderer._camera_position.y; 
         });
