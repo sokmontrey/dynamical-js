@@ -47,7 +47,7 @@ const renderer = new Renderer(canvas);
 renderer.setBackground('#202020');
 ```
 
-#### Draw a circle
+#### Drawing a circle
 
 ```js
 //Give it a position (in Vector) and a radius
@@ -64,14 +64,56 @@ renderer.circle(new Vector(100,100), 50)
     .stroke();
 ```
 
-#### `renderer.draw()`
+Some other methods:
+```js
+//draw a circle at position (Vector) 
+renderer.circle(position, radius); 
+//draw a line from start to end (both are Vector)
+renderer.line(start, end, line_width); 
+//draw a closed shape by looping through a list of Vector (vertices) and draw lines through all of them. 
+renderer.polygon(vertices); 
+//clear anything on the canvas but keep the background color.
+renderer.clear(); 
+```
 
-Renderer.draw can be used to draw a `PointMass`, any `Constraint`, and any `Composite` by just passing the object as an argument. Drawing styles (size, color, border, etc) are based on the object's `Graphic` variable (check `util/graphic.js`).
+#### `renderer.draw`
+
+`renderer.draw` can be used to draw a `PointMass`, any `Constraint`, and any `Composite` by just passing the object as an argument. Drawing styles (size, color, border, etc) are based on the object's `Graphic` variable (check `util/graphic.js`).
 
 ```js
 const point = new PointMass(250,250);
 point.graphic.fill('yellow');
+point.graphic.stroke('white');
+point.graphic.stroke_width = 5;
 
 renderer.draw(point);
 ```
 
+#### `renderer.update()`: loop
+`renderer.update` invoke the callback function passed in every frame and provide it with the change in time between frame
+
+```js
+renderer.update((dt)=>{
+    renderer.clear();
+
+    point.applyGravity();
+    point.updatePosition(dt);
+
+    container.check(point);
+
+    renderer.draw(point);
+});
+```
+
+Just in case if the code doesn't explain itself well: 
+- Each loop we clear the screen.
+- Perform all the nessecary physic operations.
+- Then render the object.
+
+### PointMass
+You have already seen abit about `PointMass`. But now let's dive deeper.
+
+A point mass contain important information about a single point that act like a ball. It has position that can be updated using the `.updatePosition(changeInTime)` method. This method use **Verlet's integration** to calculate the next position of the point based on its accelaration and its previous position.
+
+#### Initialization
+There are many ways to create a point_mass
