@@ -13,17 +13,17 @@ Then include any required module from three main dir described under [Getting St
 ## Getting Start
 This library provide both low and high level control over the simulation.
 
-1. `util/`
-a. `renderer.js`: `Renderer`: draw shapes on HTML canvas, and rendering loop
-b. `camera.js`: `Camera`: control field of view, and camera position
-c. `input.js`: `Input`: get mouse input and position
-d. `dynamical_vector.js`: `Vector`: provide mathematical operators on vector `{x: int, y: int, z: int}` (most method only work with x and y)
-2. `dynamical/`
-a. `point_mass.js`: `PointMass`: handle updating its position based on accelaration using Verlet's Integration. 
-b. `constraint.js`: `DistanceConstraint`: connect 2 points together like a piece of rod, `Container`: contain point_masses in a box. `CircleContainer`
-c. `composite.js`: `Composite`: An abstraction for creating physical object. Based on `PointMass` & `DistanceConstraint`. `Composite` is also essential for detect/response to collision between object using `Collider`. For an easier experience, `composite.js` also contain `Rectangle` and `Circle` derived from `Composite`. The `Circle` is a special case of `Composite`.
-3. `collider/`
-a. `collider.js`: `Collider`: provide a context (from stratergy pattern) for automatically checking/responding to the collision between all type of Composite and including `PointMass`. Please note that collider cannot check for collision between a `PointMass` and another `PointMass`.
+- `util/`
+    - `renderer.js`: `Renderer`: draw shapes on HTML canvas, and rendering loop
+    - `camera.js`: `Camera`: control field of view, and camera position
+    - `input.js`: `Input`: get mouse input and position
+    - `dynamical_vector.js`: `Vector`: provide mathematical operators on vector `{x: int, y: int, z: int}` (most method only work with x and y)
+- `dynamical/`
+    - `point_mass.js`: `PointMass`: handle updating its position based on accelaration using Verlet's Integration. 
+    - `constraint.js`: `DistanceConstraint`: connect 2 points together like a piece of rod, `Container`: contain point_masses in a box. `CircleContainer`
+    - `composite.js`: `Composite`: An abstraction for creating physical object. Based on `PointMass` & `DistanceConstraint`. `Composite` is also essential for detect/response to collision between object using `Collider`. For an easier experience, `composite.js` also contain `Rectangle` and `Circle` derived from `Composite`. The `Circle` is a special case of `Composite`.
+- `collider/`
+    - `collider.js`: `Collider`: provide a context (from stratergy pattern) for automatically checking/responding to the collision between all type of Composite and including `PointMass`. Please note that collider cannot check for collision between a `PointMass` and another `PointMass`.
 
 ### Renderer
 Renderer consisted of method for rendering simple shapes (Circle, Line, and Polygon). It also contains a method for creating a rendering loop.
