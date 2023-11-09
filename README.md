@@ -119,7 +119,7 @@ renderer.update((dt)=>{
 });
 ```
 
-![](./example/pointmass.mp4)
+![PointMass](./example/pointmass.gif)
 
 Just in case if the code doesn't explain itself well: 
 - Each loop we clear the screen.
@@ -234,7 +234,7 @@ renderer.update((delta_time)=>{
 });
 ```
 
-![](./example/pendulum.mp4)
+![Pendulum](./example/pendulum.gif)
 
 > [!Note]
 > The system does not converse energy (energy lost overtime). So I decided to make loose even faster to get a more realistic result.
