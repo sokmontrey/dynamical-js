@@ -1,11 +1,11 @@
 # Dynamical JS Doc
 ---
-- [Instruction](#what-is-this?)
+- [Introduction](#what-is-this)
 - [Installation](#installation)
 - [Getting Start](#getting-start)
-	- [Renderer](##renderer)
-	- [PointMass](##pointmass)
-	- [Distance Constraint](##distance-constraint)
+	- [Renderer](#renderer)
+	- [PointMass](#pointmass)
+	- [Distance Constraint](#distance-constraint)
 ---
 # What is this?
 Dynamical JS is a 2D JavaScript physic ~~engine~~ library. Please note that this is not a production-ready library. You can roughly simulate physical behaviours on HTML `<canvas>`. I created this for educational purpose only. The codebase is a bit messy, to say the least. On top of that, a simulated system would not conserve energy in an expected manner.
@@ -44,7 +44,7 @@ Renderer consisted of method for rendering simple shapes (Circle, Line, and Poly
 ```
 
 ```js
-import Renderer from 'dynamicaljs/util/renderer.js';
+import { Renderer } from 'dynamicaljs';
 
 const canvas = document.getElementById('canvas');
 //renderer will set the canvas width and height to 500 by default
@@ -79,9 +79,9 @@ Some other methods:
 ```js
 //draw a circle at position (Vector) 
 renderer.circle(position, radius); 
-//draw a line from start to end (both are Vector)
+//draw a line from start to end (both are Vectors)
 renderer.line(start, end, line_width); 
-//draw a closed shape by looping through a list of Vector (vertices) and draw lines through all of them. 
+//draw a closed shape by looping through a list of Vectors (vertices) and draw lines through all of them. 
 renderer.polygon(vertices); 
 //clear anything on the canvas but keep the background color.
 renderer.clear(); 
@@ -92,11 +92,14 @@ renderer.clear();
 `renderer.draw` can be used to draw a `PointMass`, any `Constraint`, and any `Composite` by just passing the object as an argument. Drawing styles (size, color, border, etc) are based on the object's `Graphic` variable (check `util/graphic.js`).
 
 ```js
+// import { PointMass, Renderer } from 'dynamicaljs';
+
 const point = new PointMass(250,250);
 point.graphic.fill('yellow');
 point.graphic.stroke('white');
 point.graphic.stroke_width = 5;
 
+//parameters: physic_object (PointMass, Constraint, Composite)
 renderer.draw(point);
 ```
 
@@ -116,6 +119,8 @@ renderer.update((dt)=>{
 });
 ```
 
+![](./example/pointmass.mp4)
+
 Just in case if the code doesn't explain itself well: 
 - Each loop we clear the screen.
 - Perform all the necessary physic operations.
@@ -132,22 +137,25 @@ There are two ways to create a PointMass.
 
 #### Constructors
 ```js
-const point = new PointMass(x=250, y=250, mass=1, is_static=false)
+import { PointMass } from 'dynamicaljs';
+
+//parameters: x=250, y=250, mass=1, is_static=false
+const point = new PointMass(250,250);
 ```
 
 #### The `create` Method 
 ```js
-const point = PointMass.create(x=0, y=0);
+const point = PointMass.create(250, 250);
 ```
 
-#### Chaining method
+#### Chaining methods
 ```js
 point.setMass(1) // update point's mass
 	.static() // turn point into a static point
 	.setVelocity(new Vector(10, 0)) // override its current velocity with the new one
 	.addVelocity(new Vector(0, 10)) // add new velocity to its current velocity
 	.applyForce(new Vector(10, 1)) // add force / mass to its accelaration
-	.applyGravity() // new Vector(0, 9.8) by default
+	.applyGravity(new Vector(0, -9.8)) // Vector(0, 9.8) by default
 	.setPosition(new Vector(0,0)) // set CURRENT position
 	.setOldPosition(new Vector(0,0)) // set OLD position
 ```
@@ -160,9 +168,76 @@ point.setMass(1) // update point's mass
 Based on the change in time and current state of the point (current position, old position, acceleration, mass, etc), this will calculate the new "current position". This is based on the Verlet's integration method. 
 
 ```js
+//parameters: delta_time=0.25
 point.updatePosition(0.25);
 ```
 
 
 ---
 ## Distance Constraint
+PointMass alone is nothing special. This is when constraint comes in. Distance constraint, as the name suggested, restrict the **distance** between **two PointMasses**. 
+
+```js
+import { PointMass, DistanceConstraint } from 'dynamicaljs';
+
+const p1 = new PointMass(200, 250);
+const p2 = new PointMass(300, 250);
+
+const rod = new DistanceConstraint(p1, p2);
+```
+### The `spring_constant` variable
+`spring_constant` tell how springy the constraint is. `1` for a rigid spring (not springy at all). The smaller it is, the springier it gets.
+
+```js
+//spring_constant can be set by passing the third argument to the constructor
+const rod = new DistanceConstraint(point1, point2, spring_constant=1);
+//or using the setSpringConstant method
+rod.setSpringConstant(0.5);
+```
+
+### The `check` Method
+```js
+rod.check();
+```
+
+This will check if the distance between `p1` and `p2` is further or closer than their initial distance apart. After that, the `DistanceConstraint` will **automatically** resolve both `p1` and `p2` by updating their position and velocity accordingly.
+
+`DistanceConstraint` presents endless possibilities for simulating simple physic behaviour. 
+
+### A pendulum example
+
+```js
+//import { PointMass, DistanceConstraint, Renderer } from 'dynamicaljs';
+
+const canvas = document.getElementById('canvas');
+
+const renderer = new Renderer(canvas);
+renderer.setBackground('#202020');
+
+const p1 = new PointMass(250, 200).static(); //fixed this point in place 
+const p2 = new PointMass(350, 200);
+
+const rod = new DistanceConstraint(p1, p2);
+
+renderer.update((delta_time)=>{
+	p2.applyGravity();
+
+	//check the constraint
+	rod.check();
+
+	p2.updatePosition(delta_time);
+
+	renderer.clear();
+	renderer.draw(p1);
+	renderer.draw(p2);
+	renderer.draw(rod);
+});
+```
+
+![](./example/pendulum.mp4)
+
+> [!Note]
+> The system does not converse energy (energy lost overtime). So I decided to make loose even faster to get a more realistic result.
+
+---
+
