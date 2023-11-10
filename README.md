@@ -1,5 +1,8 @@
 # Dynamical JS Doc
+[Interactive landing page of Dynamical JS](https://dynamical.netlify.app/)
+
 ---
+# Table of Contents
 - [Introduction](#what-is-this)
 - [Installation](#installation)
 - [Getting Start](#getting-start)
