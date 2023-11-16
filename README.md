@@ -7,7 +7,7 @@
 - [Installation](#installation)
 - [Getting Start](#getting-start)
 	- [Renderer](#renderer)
-	- [PointMass](#pointmass)
+	- [Point Mass](#point-mass)
 	- [Distance Constraint](#distance-constraint)
 ---
 # What is this?
@@ -130,7 +130,7 @@ Just in case if the code doesn't explain itself well:
 - Then render the object.
 
 ---
-## PointMass
+## Point Mass
 You have already seen a bit about `PointMass`. But now let's dive deeper.
 
 A point mass contain important information about a single point that act like a ball. It has position that can be updated using the `.updatePosition(changeInTime)` method. This method use **Verlet's integration** to calculate the next position of the point based on its acceleration and its previous position.
@@ -240,7 +240,7 @@ renderer.update((delta_time)=>{
 ![Pendulum](./example/pendulum.gif)
 
 > [!Note]
-> The system does not converse energy (energy lost overtime). So I decided to make loose even faster to get a more realistic result.
+> The system does not conserve energy (energy lost overtime). So I decided to make loose even faster to get a more realistic result.
 
 ---
 
