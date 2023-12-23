@@ -1,0 +1,60 @@
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <script type="module">
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      // Pendulum properties
+      const pivot = { x: canvas.width / 2, y: 50 };
+      const armLength = 150;
+      let bob = { x: pivot.x + armLength, y: pivot.y + armLength, lastX: pivot.x + armLength, lastY: pivot.y + armLength };
+      const gravity = 0.4; // Acceleration due to gravity
+      const dampingFactor = 0.995; // Damping factor to simulate air resistance
+
+      function drawPendulum() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Update bob position using Verlet integration
+        const tempX = bob.x;
+        const tempY = bob.y;
+
+        bob.x += (bob.x - bob.lastX) * dampingFactor;
+        bob.y += (bob.y - bob.lastY) * dampingFactor + gravity;
+
+        bob.lastX = tempX;
+        bob.lastY = tempY;
+
+        // Enforce distance constraint
+        const distance = Math.sqrt((bob.x - pivot.x) ** 2 + (bob.y - pivot.y) ** 2);
+        const correctionFactor = (armLength - distance) / distance;
+
+        bob.x += (bob.x - pivot.x) * correctionFactor;
+        bob.y += (bob.y - pivot.y) * correctionFactor;
+
+        // Draw pendulum arm
+        ctx.beginPath();
+        ctx.moveTo(pivot.x, pivot.y);
+        ctx.lineTo(bob.x, bob.y);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw pendulum bob
+        ctx.beginPath();
+        ctx.arc(bob.x, bob.y, 20, 0, 2 * Math.PI);
+        ctx.fillStyle = '#3498db';
+        ctx.fill();
+
+        // Request the next frame
+        requestAnimationFrame(drawPendulum);
+      }
+
+      // Start the simulation
+      drawPendulum();
+    </script>
+  </body>
+</html>

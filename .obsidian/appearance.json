@@ -1,3 +1,7 @@
 {
-  "accentColor": ""
+  "accentColor": "",
+  "cssTheme": "Things",
+  "textFontFamily": "Cambria",
+  "monospaceFontFamily": "JetBrains Mono",
+  "baseFontSize": 18
 }
