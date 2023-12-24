@@ -19,7 +19,7 @@ export default class Container {
     return this;
   }
 
-  check() {
+  update() {
     this.points.filter((point) => {
       return point.position.x < this.offset.x ||
         point.position.x > this.offset.x + this.corner.x ||
