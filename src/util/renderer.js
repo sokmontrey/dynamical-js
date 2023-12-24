@@ -79,7 +79,7 @@ export default class Renderer {
 
   draw(thing, options = {}) {
     if (thing instanceof Vector) {
-      this.drawVector(thing, options);
+      this.drawVector(thing, ...Object.values(options));
     } else if (thing instanceof Line) {
       this.drawLine(thing.pointWithX(0), thing.pointWithX(this.w));
     } else if (thing instanceof PointMass) {
@@ -108,13 +108,21 @@ export default class Renderer {
     }
   }
 
-  drawVector(vector, { origin = new Vector(0, 0) }) {
-    this.drawLine(origin, origin.add(vector));
-    let tip = vector.norm().mul(-10).add(vector);
-    let left = tip.rot(135).mul(0.5);
-    let right = tip.rot(-135).mul(0.5);
-    this.drawLine(tip, tip.add(left));
-    this.drawLine(tip, tip.add(right));
+  drawVector(
+    vector,
+    origin = new Vector(0, 0),
+    color = "#ff5555",
+    tip_size = 10,
+  ) {
+    this.setStrokeColor(color);
+    this.drawLine(origin, origin.add(vector)).stroke();
+    const tip = origin.add(vector);
+    const angle = vector.angle();
+    const left = new Vector(0, tip_size).rot(angle + 60);
+    const right = new Vector(0, tip_size).rot(angle-240);
+    this.drawLine(tip, tip.add(left)).stroke();
+    this.drawLine(tip, tip.add(right)).stroke();
+    return this;
   }
 
   moveCameraBy(vector) {

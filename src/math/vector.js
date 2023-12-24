@@ -36,6 +36,25 @@ export default class Vector {
     return Vector.neg(this);
   }
 
+  static rot(vec, deg) {
+    Vector.checkNan(vec, "rot");
+    const rad = deg * Math.PI / 180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+    return new Vector(vec.x * cos - vec.y * sin, vec.x * sin + vec.y * cos);
+  }
+  rot(deg) {
+    return Vector.rot(this, deg);
+  }
+
+  static angle(vec) {
+    Vector.checkNan(vec, "angle");
+    return Math.atan2(vec.y, vec.x) * 180 / Math.PI;
+  }
+  angle() {
+    return Vector.angle(this);
+  }
+
   static mul(a, b) {
     if (typeof b === "number") b = Vector.numToVec(b);
     Vector.checkNan(a, "mul a");
