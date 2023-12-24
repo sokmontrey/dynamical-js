@@ -76,11 +76,6 @@ export default class Renderer {
     return this;
   }
 
-  clear() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    return this;
-  }
-
   draw(thing, options = {}) {
     if (thing instanceof Vector) {
       this.drawVector(thing, options);
@@ -96,11 +91,11 @@ export default class Renderer {
     return this;
   }
 
-  renderGraphic(graphic){
+  renderGraphic(graphic) {
     if (graphic.is_fill) {
       this.ctx.fillStyle = graphic.fill_color;
       this.fill();
-    } 
+    }
 
     if (graphic.is_stroke) {
       this.ctx.strokeStyle = graphic.stroke_color;
@@ -116,6 +111,28 @@ export default class Renderer {
     let right = tip.rot(-135).mul(0.5);
     this.drawLine(tip, tip.add(left));
     this.drawLine(tip, tip.add(right));
+  }
+
+  moveCameraBy(vector) {
+    this.ctx.translate(-vector.x, -vector.y);
+    this.offset = this.offset.offset(vector);
+    return this;
+  }
+
+  moveCameraTo(vector) {
+    this.ctx.translate(-vector.x + this.offset.x, -vector.y + this.offset.y);
+    this.offset = vector;
+    return this;
+  }
+
+  moveCameraCenterTo(vector) {
+    this.moveCameraTo(vector.sub(new Vector(this.w / 2, this.h / 2)));
+    return this;
+  }
+
+  clear() {
+    this.ctx.clearRect(this.offset.x, this.offset.y, this.w, this.h);
+    return this;
   }
 
   loop(callback) {
