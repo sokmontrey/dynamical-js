@@ -2,6 +2,7 @@ import Vector from "../math/vector.js";
 import Line from "../math/line.js";
 import PointMass from "../dynamic/pointmass.js";
 import Graphic from "../util/graphic.js";
+import Container from "../dynamic/container.js";
 
 export default class Renderer {
   constructor(canvas) {
@@ -10,6 +11,7 @@ export default class Renderer {
 
     this.ctx.imageSmoothingEnabled = true;
 
+    this.offset = new Vector(0, 0);
     this.w = canvas.width;
     this.h = canvas.height;
     canvas.addEventListener("resize", () => {
@@ -47,7 +49,7 @@ export default class Renderer {
   }
 
   drawRect({ x, y }, w = 100, h = 100) {
-    this.ctx.fillRect(x, y, w, h);
+    this.ctx.rect(x, y, w, h);
     return this;
   }
 
@@ -87,6 +89,9 @@ export default class Renderer {
     } else if (thing instanceof PointMass) {
       this.drawCircle(thing.position, 5);
       this.renderGraphic(thing.graphic);
+    } else if (thing instanceof Container) {
+      this.drawRect(thing.offset, thing.corner.x, thing.corner.y);
+      this.renderGraphic(thing.graphic);
     }
     return this;
   }
@@ -95,7 +100,9 @@ export default class Renderer {
     if (graphic.is_fill) {
       this.ctx.fillStyle = graphic.fill_color;
       this.fill();
-    } else if (graphic.is_stroke) {
+    } 
+
+    if (graphic.is_stroke) {
       this.ctx.strokeStyle = graphic.stroke_color;
       this.ctx.lineWidth = graphic.stroke_width;
       this.stroke();
