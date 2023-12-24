@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Distance Constraint</title>
+  </head>
+  <body>
+    <canvas width="500" height="500" id="canvas"></canvas>
+    <script type="module">
+      import {
+        DistanceConstraint,
+        Container,
+        PointMass,
+        Renderer,
+        Vector,
+      } from "../index.js";
+
+      const canvas = document.getElementById("canvas");
+      const renderer = new Renderer(canvas);
+      renderer.setBackgroundColor("black");
+
+      /*TODO:
+      - rigid distance Constraint
+      - soft distance Constraint
+      - handle massless points
+
+      TEST CASES:
+      - [x] dynamic
+      - [x] different stiffnesses
+      - [x] different masses
+      - [x] locked points
+      - [x] 2 points
+      - [x] 3 points
+      */
+
+      const point1 = new PointMass(250, 250);
+      const point2 = new PointMass(350, 230);
+      const point3 = new PointMass(350, 150);
+      // point1.lock();
+      // point2.setMass(10);
+      const stick = new DistanceConstraint(point1, point2);
+      const stick2 = new DistanceConstraint(point2, point3);
+      const container = new Container([point1, point2, point3]);
+
+      renderer.loop((dt) => {
+        renderer.clear();
+
+        point1.applyForce(new Vector(0, 9));
+        point2.applyForce(new Vector(0, 9));
+        point3.applyForce(new Vector(0, 9));
+
+        for (let i = 0; i < 10; i++) {
+          container.update();
+          stick.update(10);
+          stick2.update(10);
+
+          point1.updatePosition(0.025 / 10);
+          point2.updatePosition(0.025 / 10);
+          point3.updatePosition(0.025 / 10);
+        }
+
+        renderer.draw(point1);
+        renderer.draw(point2);
+        renderer.draw(point3);
+        renderer.draw(container);
+      });
+    </script>
+  </body>
+</html>
