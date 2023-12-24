@@ -76,6 +76,51 @@ export default class Vector {
     return Vector.mag(this);
   }
 
+  static min(a, b) {
+    Vector.checkNan(a, "min a");
+    Vector.checkNan(b, "min b");
+    return new Vector(Math.min(a.x, b.x), Math.min(a.y, b.y));
+  }
+  min(b) {
+    return Vector.min(this, b);
+  }
+
+  static max(a, b) {
+    Vector.checkNan(a, "max a");
+    Vector.checkNan(b, "max b");
+    return new Vector(Math.max(a.x, b.x), Math.max(a.y, b.y));
+  }
+  max(b) {
+    return Vector.max(this, b);
+  }
+
+  static lt(a, b) {
+    Vector.checkNan(a, "lessThan a");
+    Vector.checkNan(b, "lessThan b");
+    return a.x < b.x && a.y < b.y;
+  }
+  lt(b) {
+    return Vector.lessThan(this, b);
+  }
+
+  static gt(a, b) {
+    Vector.checkNan(a, "greaterThan a");
+    Vector.checkNan(b, "greaterThan b");
+    return a.x > b.x && a.y > b.y;
+  }
+  gt(b) {
+    return Vector.greaterThan(this, b);
+  }
+
+  static lte(a, b) {
+    Vector.checkNan(a, "lessThanEqualTo a");
+    Vector.checkNan(b, "lessThanEqualTo b");
+    return a.x <= b.x && a.y <= b.y;
+  }
+  lte(b) {
+    return Vector.lessThanEqualTo(this, b);
+  }
+
   static scale(vec, mag) {
     Vector.checkNan(vec, "scale");
     return vec.norm().mul(mag);
