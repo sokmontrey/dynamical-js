@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Canvas</title>
+  </head>
+  <body>
+    <canvas width="500" height="500" id="canvas"></canvas>
+    <script type="module">
+      import { Container, PointMass, Renderer, Vector } from "../index.js";
+
+      const canvas = document.getElementById("canvas");
+      const renderer = new Renderer(canvas);
+      renderer.setBackgroundColor("black");
+
+      const point = new PointMass(250,250);
+      const container = new Container([point]);
+
+      renderer.loop((dt) => {
+        renderer.clear();
+
+        point.applyForce(new Vector(0, 9));
+        container.check();
+        point.updatePosition();
+
+        renderer.draw(point);
+      });
+    </script>
+  </body>
+</html>
