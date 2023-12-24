@@ -2,6 +2,7 @@ import Vector from "../math/vector.js";
 import Line from "../math/line.js";
 import PointMass from "../dynamic/pointmass.js";
 import Graphic from "../util/graphic.js";
+import DistanceConstraint from "../dynamic/distance_constraint.js";
 import Container from "../dynamic/container.js";
 
 export default class Renderer {
@@ -86,6 +87,9 @@ export default class Renderer {
       this.renderGraphic(thing.graphic);
     } else if (thing instanceof Container) {
       this.drawRect(thing.offset, thing.corner.x, thing.corner.y);
+      this.renderGraphic(thing.graphic);
+    } else if (thing instanceof DistanceConstraint) {
+      this.drawLine(thing.pointmass1.position, thing.pointmass2.position);
       this.renderGraphic(thing.graphic);
     }
     return this;

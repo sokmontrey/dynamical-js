@@ -21,7 +21,8 @@
       /*TODO:
       - rigid distance Constraint
       - soft distance Constraint
-      - handle massless points
+      - handle locked points
+      - draw distance constraint
 
       TEST CASES:
       - [x] dynamic
@@ -61,6 +62,8 @@
         renderer.draw(point1);
         renderer.draw(point2);
         renderer.draw(point3);
+        renderer.draw(stick);
+        renderer.draw(stick2);
         renderer.draw(container);
       });
     </script>
