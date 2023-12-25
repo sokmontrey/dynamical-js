@@ -1,5 +1,6 @@
 import Vector from "../math/vector.js";
 import Constraint from "./constraint.js";
+import Graphic from "../util/graphic.js";
 
 export default class AngleConstraint extends Constraint{
   constructor(dist_const1, dist_const2, stiffness = 1) {
@@ -17,6 +18,11 @@ export default class AngleConstraint extends Constraint{
 
     this.angle = 0;
     this._calculateConstraintValue();
+
+    this.graphic = new Graphic("#ff5555", "gray")
+      .fill()
+      .setSize(15)
+      .noStroke()
   }
 
   _organizePointmasses(dist_const1, dist_const2) {

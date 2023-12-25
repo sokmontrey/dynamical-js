@@ -1,9 +1,10 @@
 import Vector from "../math/vector.js";
 import Line from "../math/line.js";
 import PointMass from "../dynamic/pointmass.js";
-import Graphic from "../util/graphic.js";
+// import Graphic from "../util/graphic.js";
 import DistanceConstraint from "../dynamic/distance_constraint.js";
 import Container from "../dynamic/container.js";
+import AngleConstraint from "../dynamic/angle_constraint.js";
 
 export default class Renderer {
   constructor(canvas) {
@@ -46,6 +47,14 @@ export default class Renderer {
   drawCircle({ x = 250, y = 250 }, r = 100) {
     this.ctx.beginPath();
     this.ctx.arc(x, y, r, 0, 2 * Math.PI);
+    return this;
+  }
+
+  drawPie({ x = 250, y = 250 }, r = 100, start = 0, end = 2 * Math.PI) {
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, r, start, end);
+    this.ctx.lineTo(x, y);
+    this.ctx.closePath();
     return this;
   }
 
@@ -93,6 +102,18 @@ export default class Renderer {
     } else if (thing instanceof DistanceConstraint) {
       this.drawLine(thing.pointmass1.position, thing.pointmass2.position);
       this.renderGraphic(thing.graphic);
+    } else if (thing instanceof AngleConstraint) {
+      const start = thing.pointmass1.position.sub(thing.pointmass2.position)
+        .angle();
+      const end = thing.pointmass3.position.sub(thing.pointmass2.position)
+        .angle();
+      this.drawPie(
+        thing.pointmass2.position,
+        thing.graphic.size,
+        end * Math.PI / 180,
+        start * Math.PI / 180,
+      );
+      this.renderGraphic(thing.graphic);
     }
 
     return this;
@@ -122,7 +143,7 @@ export default class Renderer {
     const tip = origin.add(vector);
     const angle = vector.angle();
     const left = new Vector(0, tip_size).rot(angle + 60);
-    const right = new Vector(0, tip_size).rot(angle-240);
+    const right = new Vector(0, tip_size).rot(angle - 240);
     this.drawLine(tip, tip.add(left)).stroke();
     this.drawLine(tip, tip.add(right)).stroke();
     return this;

@@ -1,11 +1,20 @@
 export default class Graphic {
   constructor(fill_color, stroke_color){
+    this.size = 5;
     this.fill_color = fill_color;
     this.stroke_color = stroke_color;
     this.stroke_width = 1;
     this.is_fill = true;
     this.is_stroke = false;
     this.is_visible = true;
+  }
+
+  setSize(size) {
+    this.size = size;
+    return this;
+  }
+  getSize() {
+    return this.size;
   }
 
   isVisible() {
