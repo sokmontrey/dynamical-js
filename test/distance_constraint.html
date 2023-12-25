@@ -19,10 +19,11 @@
       renderer.setBackgroundColor("black");
 
       /*TODO:
-      - rigid distance Constraint
-      - soft distance Constraint
-      - handle locked points
-      - draw distance constraint
+      - [x] rigid distance Constraint
+      - [x] soft distance Constraint
+      - [x] handle locked points
+      - [x] draw distance constraint
+      - [x] break distance constraint
 
       TEST CASES:
       - [x] dynamic
@@ -31,39 +32,39 @@
       - [x] locked points
       - [x] 2 points
       - [x] 3 points
+      - [x] break and reconnect
       */
 
-      const point1 = new PointMass(250, 250);
-      const point2 = new PointMass(350, 230);
-      const point3 = new PointMass(350, 150);
-      // point1.lock();
-      // point2.setMass(10);
-      const stick = new DistanceConstraint(point1, point2);
-      const stick2 = new DistanceConstraint(point2, point3);
-      const container = new Container([point1, point2, point3]);
+      const anchor = new PointMass(250, 100).lock();
+      const points = [];
+      const sticks = [];
+
+      window.addEventListener("click", (e) => {
+        const point = new PointMass(
+          e.clientX - canvas.offsetLeft,
+          e.clientY - canvas.offsetTop,
+        );
+        points.push(point);
+        sticks.push(
+          new DistanceConstraint(
+            points.length === 1 ? anchor : points[points.length - 2],
+            point,
+          ),
+        );
+      });
 
       renderer.loop((dt) => {
         renderer.clear();
 
-        point1.applyForce(new Vector(0, 9));
-        point2.applyForce(new Vector(0, 9));
-        point3.applyForce(new Vector(0, 9));
-
         for (let i = 0; i < 10; i++) {
-          container.update();
-          stick.update(10);
-          stick2.update(10);
-
-          point1.updatePosition(0.025 / 10);
-          point2.updatePosition(0.025 / 10);
-          point3.updatePosition(0.025 / 10);
+          points.forEach((point) => point.applyForce(new Vector(0, 9)));
+          sticks.forEach((stick) => stick.update(10));
+          points.forEach((point) => point.updatePosition(0.25, 10));
         }
-        renderer.draw(point1);
-        renderer.draw(point2);
-        renderer.draw(point3);
-        renderer.draw(stick);
-        renderer.draw(stick2);
-        renderer.draw(container);
+
+        renderer.draw(anchor);
+        points.forEach((point) => renderer.draw(point));
+        sticks.forEach((stick) => renderer.draw(stick));
       });
     </script>
   </body>

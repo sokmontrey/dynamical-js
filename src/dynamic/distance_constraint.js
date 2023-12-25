@@ -8,6 +8,9 @@ export default class DistanceConstraint {
     this.stiffness = stiffness;
     this.distance = Vector.dist(pointmass1.position, pointmass2.position);
 
+    this.is_broken = false;
+    this.breaking_threshold = 0;
+
     this.graphic = new Graphic("black", "gray")
       .setStrokeWidth(2)
       .setStrokeColor("gray")
@@ -15,7 +18,43 @@ export default class DistanceConstraint {
       .stroke();
   }
 
+  break() {
+    this.is_broken = true;
+    this.graphic.noStroke();
+    return this;
+  }
+
+  setBreakingThreshold(threshold) {
+    if (threshold < 0) {
+      console.error("DistanceConstraint.setBreakingThreshold: threshold < 0");
+      return;
+    }
+    this.breaking_threshold = threshold;
+    return this;
+  }
+  noBreaking() {
+    this.breaking_threshold = 0;
+    return this;
+  }
+
+  getDistance() {
+    return this.distance;
+  }
+
+  connect(is_cal_new_dist = true) {
+    this.is_broken = false;
+    this.graphic.stroke();
+    if (is_cal_new_dist) {
+      this.distance = Vector.dist(
+        this.pointmass1.position,
+        this.pointmass2.position,
+      );
+    }
+    return this;
+  }
+
   update(step = 1) {
+    if (this.is_broken) return;
     if (this.pointmass1.isLocked() && this.pointmass2.isLocked()) {
       return;
     }
@@ -29,9 +68,14 @@ export default class DistanceConstraint {
 
     if (diff === 0) return;
 
+    if (this.breaking_threshold > 0 && dist > this.breaking_threshold) {
+      this.break();
+      return;
+    }
+
     const correction = Vector.mul(
       diff_v,
-      this.stiffness * diff / dist,
+      diff / dist,
     );
 
     const sum_mass = pm1.mass + pm2.mass;
