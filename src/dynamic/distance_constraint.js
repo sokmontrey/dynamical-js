@@ -3,12 +3,13 @@ import Graphic from "../util/graphic.js";
 
 export default class DistanceConstraint {
   constructor(pointmass1, pointmass2, stiffness = 1) {
+    //TODO: check if pointmass1 and pointmass2 are valid PointMass
     this.pointmass1 = pointmass1;
     this.pointmass2 = pointmass2;
     this.stiffness = stiffness;
     this.distance = 0;
 
-    this.is_broken = false;
+    this.is_disabled = false;
     this.breaking_threshold = 0;
 
     this._calculateDistance();
@@ -20,8 +21,8 @@ export default class DistanceConstraint {
       .stroke();
   }
 
-  break() {
-    this.is_broken = true;
+  disable() {
+    this.is_disabled = true;
     this.graphic.noStroke();
     return this;
   }
@@ -29,7 +30,6 @@ export default class DistanceConstraint {
   setBreakingThreshold(threshold) {
     if (threshold < 0) {
       throw new Error("DistanceConstraint.setBreakingThreshold: threshold < 0");
-      return;
     }
     this.breaking_threshold = threshold;
     return this;
@@ -43,11 +43,11 @@ export default class DistanceConstraint {
     return this.distance;
   }
 
-  connect(is_cal_new_dist = true) {
-    this.is_broken = false;
+  enable(is_cal_new_dist = false) {
+    this.is_disabled = false;
     this.graphic.stroke();
     if (is_cal_new_dist) {
-      this.calculateDistance();
+      this._calculateDistance();
     }
     return this;
   }
@@ -61,7 +61,7 @@ export default class DistanceConstraint {
   }
 
   update(step = 1) {
-    if (this.is_broken) return;
+    if (this.is_disabled) return;
     if (this.pointmass1.isLocked() && this.pointmass2.isLocked()) {
       return;
     }
@@ -76,7 +76,7 @@ export default class DistanceConstraint {
     if (diff === 0) return;
 
     if (this.breaking_threshold > 0 && dist > this.breaking_threshold) {
-      this.break();
+      this.disable();
       return;
     }
 
