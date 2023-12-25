@@ -34,3 +34,22 @@ export default class Container {
     });
   }
 }
+
+export class CircleContainer extends Container {
+  constructor(points = [], radius = 250, center = new Vector(250, 250)) {
+    super(points);
+    this.radius = radius;
+    this.center = center;
+  }
+
+  update() {
+    this.points.filter((point) => {
+      return Vector.dist(point.position, this.center) > this.radius;
+    }).forEach((point) => {
+      point.position = point.position.sub(this.center)
+        .scale(this.radius)
+        .add(this.center);
+      point.velocity = new Vector(0, 0);
+    });
+  }
+}

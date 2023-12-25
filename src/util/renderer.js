@@ -3,7 +3,7 @@ import Line from "../math/line.js";
 import PointMass from "../dynamic/pointmass.js";
 // import Graphic from "../util/graphic.js";
 import DistanceConstraint from "../dynamic/distance_constraint.js";
-import Container from "../dynamic/container.js";
+import Container, {CircleContainer} from "../dynamic/container.js";
 import AngleConstraint from "../dynamic/angle_constraint.js";
 
 export default class Renderer {
@@ -86,6 +86,24 @@ export default class Renderer {
     return this;
   }
 
+  drawVector(
+    vector,
+    origin = new Vector(0, 0),
+    color = "#ff5555",
+    tip_size = 10,
+  ) {
+    this.setStrokeColor(color);
+    this.drawLine(origin, origin.add(vector)).stroke();
+    const tip = origin.add(vector);
+    const angle = vector.angle();
+    const left = new Vector(0, tip_size).rot(angle + 60);
+    const right = new Vector(0, tip_size).rot(angle - 240);
+    this.drawLine(tip, tip.add(left)).stroke();
+    this.drawLine(tip, tip.add(right)).stroke();
+    return this;
+  }
+
+
   draw(thing, options = {}) {
     if (thing.graphic && !thing.graphic.isVisible()) return this;
 
@@ -95,6 +113,9 @@ export default class Renderer {
       this.drawLine(thing.pointWithX(0), thing.pointWithX(this.w));
     } else if (thing instanceof PointMass) {
       this.drawCircle(thing.position, 5);
+      this.renderGraphic(thing.graphic);
+    } else if (thing instanceof CircleContainer ) {
+      this.drawCircle(thing.center, thing.radius);
       this.renderGraphic(thing.graphic);
     } else if (thing instanceof Container) {
       this.drawRect(thing.offset, thing.corner.x, thing.corner.y);
@@ -130,23 +151,6 @@ export default class Renderer {
       this.ctx.lineWidth = graphic.stroke_width;
       this.stroke();
     }
-  }
-
-  drawVector(
-    vector,
-    origin = new Vector(0, 0),
-    color = "#ff5555",
-    tip_size = 10,
-  ) {
-    this.setStrokeColor(color);
-    this.drawLine(origin, origin.add(vector)).stroke();
-    const tip = origin.add(vector);
-    const angle = vector.angle();
-    const left = new Vector(0, tip_size).rot(angle + 60);
-    const right = new Vector(0, tip_size).rot(angle - 240);
-    this.drawLine(tip, tip.add(left)).stroke();
-    this.drawLine(tip, tip.add(right)).stroke();
-    return this;
   }
 
   moveCameraBy(vector) {
