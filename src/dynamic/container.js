@@ -1,8 +1,23 @@
+import {
+  throwIfEmpty,
+  throwIfNotType,
+  throwIfUndefined,
+} from "../util/error.js";
 import Vector from "../math/vector.js";
 import Graphic from "../util/graphic.js";
+import Pointmass from "./pointmass.js";
 
 export default class Container {
   constructor(points = [], x = 0, y = 0, w = 500, h = 500) {
+    points.every((point) => {
+      throwIfNotType(point, Pointmass, "Container: points");
+    });
+    throwIfEmpty(points, "Container: points");
+    throwIfNotNumber(x, "Container: x");
+    throwIfNotNumber(y, "Container: y");
+    throwIfNotNumber(w, "Container: w");
+    throwIfNotNumber(h, "Container: h");
+
     this.offset = new Vector(x, y);
     this.corner = new Vector(x + w, y + h);
 
@@ -15,6 +30,7 @@ export default class Container {
   }
 
   addPoint(point) {
+    throwIfNotType(point, Pointmass, "Container: addPoint: point");
     this.points.push(point);
     return this;
   }
@@ -37,6 +53,13 @@ export default class Container {
 
 export class CircleContainer extends Container {
   constructor(points = [], radius = 250, center = new Vector(250, 250)) {
+    points.every((point) => {
+      throwIfNotType(point, Pointmass, "CircleContainer: points");
+    });
+    throwIfEmpty(points, "CircleContainer: points");
+    throwIfNotNumber(radius, "CircleContainer: radius");
+    throwIfNotType(center, Vector, "CircleContainer: center");
+
     super(points);
     this.radius = radius;
     this.center = center;

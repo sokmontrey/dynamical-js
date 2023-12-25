@@ -1,7 +1,19 @@
 import Graphic from "../util/graphic.js";
+import {
+  throwIfNegative,
+  throwIfNotNumber,
+  throwIfUndefined,
+} from "../util/error.js";
 
 export default class Constraint {
-  constructor (stiffness=1, breaking_threshold=0, is_disabled=false) {
+  constructor(stiffness = 1, breaking_threshold = 0, is_disabled = false) {
+    throwIfNegative(stiffness, "Constraint: stiffness");
+    throwIfNegative(
+      breaking_threshold,
+      "Constraint: breaking_threshold",
+    );
+    throwIfUndefined(is_disabled, "Constraint: is_disabled");
+
     this.stiffness = stiffness;
     this.breaking_threshold = breaking_threshold;
     this.is_disabled = is_disabled;
@@ -9,7 +21,7 @@ export default class Constraint {
   }
 
   _checkBreakingThreshold(value) {
-    if (this.breaking_threshold > 0 && value> this.breaking_threshold) {
+    if (this.breaking_threshold > 0 && value > this.breaking_threshold) {
       this.disable();
       return true;
     }
@@ -32,9 +44,7 @@ export default class Constraint {
   }
 
   setBreakingThreshold(threshold) {
-    if (threshold < 0) {
-      throw new Error("DistanceConstraint.setBreakingThreshold: threshold < 0");
-    }
+    throwIfNegative(threshold, "Constraint: setBreakingThreshold");
     this.breaking_threshold = threshold;
     return this;
   }

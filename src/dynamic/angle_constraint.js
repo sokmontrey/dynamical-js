@@ -1,9 +1,14 @@
 import Vector from "../math/vector.js";
 import Constraint from "./constraint.js";
 import Graphic from "../util/graphic.js";
+import { throwIfNotNumber, throwIfUndefined } from "../util/error.js";
 
-export default class AngleConstraint extends Constraint{
+export default class AngleConstraint extends Constraint {
   constructor(dist_const1, dist_const2, stiffness = 1) {
+    throwIfUndefined(dist_const1, "AngleConstraint: dist_const1");
+    throwIfUndefined(dist_const2, "AngleConstraint: dist_const2");
+    throwIfNotNumber(stiffness, "AngleConstraint: stiffness");
+
     super(stiffness);
     this.pointmass1 = undefined;
     this.pointmass2 = undefined;
@@ -22,7 +27,7 @@ export default class AngleConstraint extends Constraint{
     this.graphic = new Graphic("#ff5555", "gray")
       .fill()
       .setSize(15)
-      .noStroke()
+      .noStroke();
   }
 
   _organizePointmasses(dist_const1, dist_const2) {
@@ -54,6 +59,7 @@ export default class AngleConstraint extends Constraint{
   }
 
   update(step = 1) {
+    throwIfNotNumber(step, "AngleConstraint: update: step");
     if (this.is_disabled) return;
     if (
       this.pointmass1.isLocked() && this.pointmass2.isLocked() &&

@@ -1,5 +1,10 @@
+import { throwIfNotNumber, throwIfNotType } from "../util/error.js";
+
 export default class Vector {
   constructor(x, y) {
+    throwIfNotNumber(x, "Vector: x");
+    throwIfNotNumber(y, "Vector: y");
+
     this.x = x;
     this.y = y;
   }
@@ -243,7 +248,7 @@ export default class Vector {
   }
 
   static checkNan(vec, op_name) {
-    if (!vec) throw new Error(`${op_name}: vector is undefined!`);
+    throwIfNotType(vec, Vector, `Vector.${op_name}`);
     if (Vector.isNaN(vec)) {
       throw new Error(`Vector.${op_name}: called with NaN vector!`);
     }

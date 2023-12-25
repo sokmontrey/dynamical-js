@@ -1,11 +1,16 @@
+import { throwIfNotNumber, throwIfNotType } from "../util/error.js";
 import Vector from "../math/vector.js";
 import Graphic from "../util/graphic.js";
 import Constraint from "./constraint.js";
+import Pointmass from "./pointmass.js";
 
 export default class DistanceConstraint extends Constraint {
   constructor(pointmass1, pointmass2, stiffness = 1) {
+    throwIfNotType(pointmass1, Pointmass, "DistanceConstraint: pointmass1");
+    throwIfNotType(pointmass2, Pointmass, "DistanceConstraint: pointmass2");
+    throwIfNotNumber(stiffness, "DistanceConstraint: stiffness");
+
     super(stiffness);
-    //TODO: check if pointmass1 and pointmass2 are valid PointMass
     this.pointmass1 = pointmass1;
     this.pointmass2 = pointmass2;
 
@@ -32,6 +37,8 @@ export default class DistanceConstraint extends Constraint {
   }
 
   update(step = 1) {
+    throwIfNotNumber(step, "DistanceConstraint: update: step");
+
     if (this.is_disabled) return;
     if (this.pointmass1.isLocked() && this.pointmass2.isLocked()) {
       return;

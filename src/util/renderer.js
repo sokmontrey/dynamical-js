@@ -3,11 +3,14 @@ import Line from "../math/line.js";
 import PointMass from "../dynamic/pointmass.js";
 // import Graphic from "../util/graphic.js";
 import DistanceConstraint from "../dynamic/distance_constraint.js";
-import Container, {CircleContainer} from "../dynamic/container.js";
+import Container, { CircleContainer } from "../dynamic/container.js";
 import AngleConstraint from "../dynamic/angle_constraint.js";
+import { throwIfNotType } from "../util/error.js";
 
 export default class Renderer {
   constructor(canvas) {
+    throwIfNotType(canvas, HTMLCanvasElement, "Renderer: canvas");
+
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
 
@@ -44,22 +47,22 @@ export default class Renderer {
     return this;
   }
 
-  drawCircle({ x = 250, y = 250 }, r = 100) {
+  drawCircle(pos = new Vector(250, 250), r = 100) {
     this.ctx.beginPath();
-    this.ctx.arc(x, y, r, 0, 2 * Math.PI);
+    this.ctx.arc(pos.x, pos.y, r, 0, 2 * Math.PI);
     return this;
   }
 
-  drawPie({ x = 250, y = 250 }, r = 100, start = 0, end = 2 * Math.PI) {
+  drawPie(pos = new Vector(250, 250), r = 100, start = 0, end = 2 * Math.PI) {
     this.ctx.beginPath();
-    this.ctx.arc(x, y, r, start, end);
-    this.ctx.lineTo(x, y);
+    this.ctx.arc(pos.x, pos.y, r, start, end);
+    this.ctx.lineTo(pos.x, pos.y);
     this.ctx.closePath();
     return this;
   }
 
-  drawRect({ x, y }, w = 100, h = 100) {
-    this.ctx.rect(x, y, w, h);
+  drawRect(pos = new Vector(250, 250), w = 100, h = 100) {
+    this.ctx.rect(pos.x, pos.y, w, h);
     return this;
   }
 
@@ -73,16 +76,16 @@ export default class Renderer {
     return this;
   }
 
-  drawLine({ x: x1 = 100, y: y1 = 100 }, { x: x2 = 200, y: y2 = 200 }) {
+  drawLine(start = new Vector(100, 100), end = new Vector(200, 200)) {
     this.ctx.beginPath();
-    this.ctx.moveTo(x1, y1);
-    this.ctx.lineTo(x2, y2);
+    this.ctx.moveTo(start.x, start.y);
+    this.ctx.lineTo(end.x, end.y);
     return this;
   }
 
-  drawText(text, { x = 0, y = 0 }, font = "16px sans-serif") {
+  drawText(text, pos = new Vector(250, 250), font = "16px sans-serif") {
     this.ctx.font = font;
-    this.ctx.fillText(text, x, y);
+    this.ctx.fillText(text, pos.x, pos.y);
     return this;
   }
 
@@ -103,7 +106,6 @@ export default class Renderer {
     return this;
   }
 
-
   draw(thing, options = {}) {
     if (thing.graphic && !thing.graphic.isVisible()) return this;
 
@@ -114,7 +116,7 @@ export default class Renderer {
     } else if (thing instanceof PointMass) {
       this.drawCircle(thing.position, 5);
       this.renderGraphic(thing.graphic);
-    } else if (thing instanceof CircleContainer ) {
+    } else if (thing instanceof CircleContainer) {
       this.drawCircle(thing.center, thing.radius);
       this.renderGraphic(thing.graphic);
     } else if (thing instanceof Container) {

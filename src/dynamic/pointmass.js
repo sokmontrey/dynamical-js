@@ -1,8 +1,13 @@
 import Vector from "../math/vector.js";
 import Graphic from "../util/graphic.js";
+import { throwIfNotNumber, throwIfNotType } from "../util/error.js";
 
 export default class PointMass {
   constructor(x = 250, y = 250, mass = 1) {
+    throwIfNotNumber(x, "PointMass: x");
+    throwIfNotNumber(y, "PointMass: y");
+    throwIfNotNumber(mass, "PointMass: mass");
+
     this.old_pos = new Vector(x, y);
     this.now_pos = new Vector(x, y);
     this.pos_correction = new Vector(0, 0);
@@ -22,11 +27,14 @@ export default class PointMass {
   }
 
   applyForce(force) {
+    throwIfNotType(force, Vector, "PointMass: applyForce: force");
     Vector.checkNan(force, "PointMass.applyForce");
     this.acc = this.acc.add(force.div(this.mass));
   }
 
   updatePosition(dt = 0.25, step = 1) {
+    throwIfNotNumber(dt, "PointMass: updatePosition: dt");
+    throwIfNotNumber(step, "PointMass: updatePosition: step");
     if (this.is_locked) {
       // throw new Error("PointMass: calling updatePosition on static pointmass");
       return;
@@ -50,16 +58,24 @@ export default class PointMass {
     return this.now_pos;
   }
   set position(pos) {
+    throwIfNotType(pos, Vector, "PointMass: set position: pos");
     Vector.checkNan(pos, "PointMass.set position");
     this.now_pos = pos;
   }
 
   addPosCorrection(correction, step = 1) {
+    throwIfNotType(
+      correction,
+      Vector,
+      "PointMass: addPosCorrection: correction",
+    );
+    throwIfNotNumber(step, "PointMass: addPosCorrection: step");
     Vector.checkNan(correction, "PointMass.addPositionCorrection");
     this.pos_correction = this.pos_correction.add(correction.div(step));
   }
 
   setPosition(position) {
+    throwIfNotType(position, Vector, "PointMass: setPosition: position");
     Vector.checkNan(position, "PointMass.setPosition");
     this.position = position;
     this.old_position = position;
@@ -70,6 +86,7 @@ export default class PointMass {
     return this.old_pos;
   }
   set old_position(pos) {
+    throwIfNotType(pos, Vector, "PointMass: set old_position: pos");
     Vector.checkNan(pos, "PointMass.set old_position");
     this.old_pos = pos;
   }
@@ -78,6 +95,7 @@ export default class PointMass {
     return this.now_pos.sub(this.old_pos);
   }
   set velocity(vel) {
+    throwIfNotType(vel, Vector, "PointMass: set velocity: vel");
     Vector.checkNan(vel, "PointMass.set velocity");
     this.old_pos = this.now_pos.sub(vel);
   }
@@ -86,6 +104,7 @@ export default class PointMass {
     return this.mass;
   }
   setMass(mass) {
+    throwIfNotNumber(mass, "PointMass: setMass: mass");
     this.mass = mass;
     return this;
   }
