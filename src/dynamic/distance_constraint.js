@@ -1,18 +1,16 @@
 import Vector from "../math/vector.js";
 import Graphic from "../util/graphic.js";
+import Constraint from "./constraint.js";
 
-export default class DistanceConstraint {
+export default class DistanceConstraint extends Constraint {
   constructor(pointmass1, pointmass2, stiffness = 1) {
+    super(stiffness);
     //TODO: check if pointmass1 and pointmass2 are valid PointMass
     this.pointmass1 = pointmass1;
     this.pointmass2 = pointmass2;
-    this.stiffness = stiffness;
+
     this.distance = 0;
-
-    this.is_disabled = false;
-    this.breaking_threshold = 0;
-
-    this._calculateDistance();
+    this._calculateConstraintValue();
 
     this.graphic = new Graphic("black", "gray")
       .setStrokeWidth(2)
@@ -21,38 +19,11 @@ export default class DistanceConstraint {
       .stroke();
   }
 
-  disable() {
-    this.is_disabled = true;
-    this.graphic.noStroke();
-    return this;
-  }
-
-  setBreakingThreshold(threshold) {
-    if (threshold < 0) {
-      throw new Error("DistanceConstraint.setBreakingThreshold: threshold < 0");
-    }
-    this.breaking_threshold = threshold;
-    return this;
-  }
-  noBreaking() {
-    this.breaking_threshold = 0;
-    return this;
-  }
-
   getDistance() {
     return this.distance;
   }
 
-  enable(is_cal_new_dist = false) {
-    this.is_disabled = false;
-    this.graphic.stroke();
-    if (is_cal_new_dist) {
-      this._calculateDistance();
-    }
-    return this;
-  }
-
-  _calculateDistance() {
+  _calculateConstraintValue() {
     this.distance = Vector.dist(
       this.pointmass1.position,
       this.pointmass2.position,
@@ -74,11 +45,7 @@ export default class DistanceConstraint {
     const diff = dist - this.distance;
 
     if (diff === 0) return;
-
-    if (this.breaking_threshold > 0 && dist > this.breaking_threshold) {
-      this.disable();
-      return;
-    }
+    if (this._checkBreakingThreshold(dist)) return;
 
     const correction = Vector.mul(
       diff_v,
