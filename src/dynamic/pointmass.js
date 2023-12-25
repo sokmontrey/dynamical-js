@@ -26,9 +26,9 @@ export default class PointMass {
     this.acc = this.acc.add(force.div(this.mass));
   }
 
-  updatePosition(dt = 0.025) {
+  updatePosition(dt = 0.25, step = 1) {
     if (this.is_locked) {
-      console.error("PointMass: calling updatePosition on static pointmass");
+      // console.error("PointMass: calling updatePosition on static pointmass");
       return;
     }
     if (!dt) {
@@ -36,6 +36,7 @@ export default class PointMass {
       return;
     }
 
+    dt /= step;
     const temp = this.now_pos.add(this.pos_correction);
     this.now_pos = temp
       .add(temp.sub(this.old_pos))
@@ -43,6 +44,7 @@ export default class PointMass {
 
     this.old_pos = temp;
     this.pos_correction = new Vector(0, 0);
+    this.acc = new Vector(0, 0);
   }
 
   get position() {
@@ -56,6 +58,13 @@ export default class PointMass {
   addPosCorrection(correction, step=1) {
     Vector.checkNan(correction, "PointMass.addPositionCorrection");
     this.pos_correction = this.pos_correction.add(correction.div(step));
+  }
+
+  setPosition(position){
+    Vector.checkNan(position, "PointMass.setPosition");
+    this.position = position;
+    this.old_position = position;
+    return this;
   }
 
   get old_position() {
