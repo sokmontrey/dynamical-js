@@ -22,14 +22,15 @@ export default class Container {
   update() {
     this.points.filter((point) => {
       return point.position.x < this.offset.x ||
-        point.position.x > this.offset.x + this.corner.x ||
+        point.position.x > -this.offset.x + this.corner.x ||
         point.position.y < this.offset.y ||
-        point.position.y > this.offset.y + this.corner.y;
+        point.position.y > -this.offset.y + this.corner.y;
     }).forEach((point) => {
       point.position = Vector.min(
         Vector.max(point.position, this.offset),
-        this.corner,
+        this.corner.sub(this.offset),
       );
+      point.velocity = new Vector(0, 0);
     });
   }
 }
