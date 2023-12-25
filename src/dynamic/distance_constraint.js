@@ -6,10 +6,12 @@ export default class DistanceConstraint {
     this.pointmass1 = pointmass1;
     this.pointmass2 = pointmass2;
     this.stiffness = stiffness;
-    this.distance = Vector.dist(pointmass1.position, pointmass2.position);
+    this.distance = 0;
 
     this.is_broken = false;
     this.breaking_threshold = 0;
+
+    this._calculateDistance();
 
     this.graphic = new Graphic("black", "gray")
       .setStrokeWidth(2)
@@ -26,7 +28,7 @@ export default class DistanceConstraint {
 
   setBreakingThreshold(threshold) {
     if (threshold < 0) {
-      console.error("DistanceConstraint.setBreakingThreshold: threshold < 0");
+      throw new Error("DistanceConstraint.setBreakingThreshold: threshold < 0");
       return;
     }
     this.breaking_threshold = threshold;
@@ -45,11 +47,16 @@ export default class DistanceConstraint {
     this.is_broken = false;
     this.graphic.stroke();
     if (is_cal_new_dist) {
-      this.distance = Vector.dist(
-        this.pointmass1.position,
-        this.pointmass2.position,
-      );
+      this.calculateDistance();
     }
+    return this;
+  }
+
+  _calculateDistance() {
+    this.distance = Vector.dist(
+      this.pointmass1.position,
+      this.pointmass2.position,
+    );
     return this;
   }
 
