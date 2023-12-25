@@ -7,3 +7,4 @@ export { default as Graphic } from './src/util/graphic.js';
 export { default as PointMass } from './src/dynamic/pointmass.js';
 export { default as Container } from './src/dynamic/container.js';
 export { default as DistanceConstraint } from './src/dynamic/distance_constraint.js';
+export { default as AngleConstraint } from './src/dynamic/angle_constraint.js';

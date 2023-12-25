@@ -28,12 +28,11 @@ export default class PointMass {
 
   updatePosition(dt = 0.25, step = 1) {
     if (this.is_locked) {
-      // console.error("PointMass: calling updatePosition on static pointmass");
+      // throw new Error("PointMass: calling updatePosition on static pointmass");
       return;
     }
     if (!dt) {
-      console.error("PointMass: updatePosition: dt is undefined or zero");
-      return;
+      throw new Error("PointMass: updatePosition: dt is undefined or zero");
     }
 
     dt /= step;
@@ -55,12 +54,12 @@ export default class PointMass {
     this.now_pos = pos;
   }
 
-  addPosCorrection(correction, step=1) {
+  addPosCorrection(correction, step = 1) {
     Vector.checkNan(correction, "PointMass.addPositionCorrection");
     this.pos_correction = this.pos_correction.add(correction.div(step));
   }
 
-  setPosition(position){
+  setPosition(position) {
     Vector.checkNan(position, "PointMass.setPosition");
     this.position = position;
     this.old_position = position;
@@ -86,7 +85,7 @@ export default class PointMass {
   getMass() {
     return this.mass;
   }
-  setMass(mass){
+  setMass(mass) {
     this.mass = mass;
     return this;
   }

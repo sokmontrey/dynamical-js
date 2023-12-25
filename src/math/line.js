@@ -1,7 +1,7 @@
-import Vector from './vector.js';
+import Vector from "./vector.js";
 
 export default class Line {
-  constructor (p1, p2, is_unit=true) {
+  constructor(p1, p2, is_unit = true) {
     this.p1 = p1;
     this.p2 = p2;
     this.origin = p1;
@@ -37,7 +37,7 @@ export default class Line {
 
   static pointWithX(line, x) {
     if (line.dir.x === 0) {
-      console.error('Cannot find point with x on vertical line!');
+      throw new Error("Cannot find point with x on vertical line!");
     }
     return line.pointOnLine((x - line.p1.x) / line.dir.x);
   }
@@ -48,9 +48,11 @@ export default class Line {
   static intersect(line1, line2) {
     const denom = line1.dir.x * line2.dir.y - line1.dir.y * line2.dir.x;
     if (denom === 0) {
-      console.error('Lines are parallel!');
+      throw new Error("Lines are parallel!");
     }
-    const t = (line2.dir.x * (line1.p1.y - line2.p1.y) - line2.dir.y * (line1.p1.x - line2.p1.x)) / denom;
+    const t =
+      (line2.dir.x * (line1.p1.y - line2.p1.y) -
+        line2.dir.y * (line1.p1.x - line2.p1.x)) / denom;
     return line1.pointOnLine(t);
   }
 

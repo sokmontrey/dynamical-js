@@ -1,12 +1,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Distance Constraint</title>
+    <title>Angle Constraint</title>
   </head>
   <body>
     <canvas width="500" height="500" id="canvas"></canvas>
     <script type="module">
       import {
+        AngleConstraint,
         DistanceConstraint,
         Container,
         PointMass,
@@ -19,29 +20,31 @@
       renderer.setBackgroundColor("black");
 
       /*TODO:
-      - [x] breaking threshold
+      - [] angle constraint
 
       TEST CASES:
+      - [] three points
       */
 
-      const p1 = new PointMass(250, 250).lock();
-      const p2 = new PointMass(300, 250);
-      const stick = new DistanceConstraint(p1, p2, 0.1);
+      const p1 = new PointMass(100, 150);
+      const p2 = new PointMass(200, 100);
+      const p3 = new PointMass(230, 200);
+
+      const s1 = new DistanceConstraint(p1, p2);
+      const s2 = new DistanceConstraint(p2, p3);
+
+      const c1 = new AngleConstraint(s1, s2);
 
       renderer.loop((dt) => {
         renderer.clear();
 
-        for (let i = 0; i < 10; i++) {
-          p1.applyForce(new Vector(0, 9));
-          p2.applyForce(new Vector(0, 9));
+        for (let i = 0; i < 10; i++) {}
 
-          stick.update(10);
-          p2.updatePosition(0.25, 10);
-        }
-
-        renderer.draw(stick);
+        renderer.draw(s1);
+        renderer.draw(s2);
         renderer.draw(p1);
         renderer.draw(p2);
+        renderer.draw(p3);
       });
     </script>
   </body>

@@ -55,6 +55,15 @@ export default class Vector {
     return Vector.angle(this);
   }
 
+  static angleBetween(a, b) {
+    Vector.checkNan(a, "angleBetween a");
+    Vector.checkNan(b, "angleBetween b");
+    return Math.acos(Vector.dot(a, b) / (a.mag() * b.mag())) * 180 / Math.PI;
+  }
+  angleBetween(b) {
+    return Vector.angleBetween(this, b);
+  }
+
   static mul(a, b) {
     if (typeof b === "number") b = Vector.numToVec(b);
     Vector.checkNan(a, "mul a");
@@ -70,7 +79,7 @@ export default class Vector {
     Vector.checkNan(a, "div a");
     Vector.checkNan(new_b, "div b");
     if (new_b.x === 0 || new_b.y === 0) {
-      console.error("Cannot divide by zero!");
+      throw new Error("Cannot divide by zero!");
     }
     return new Vector(a.x / new_b.x, a.y / new_b.y);
   }
@@ -201,7 +210,7 @@ export default class Vector {
 
   static numToVec(num) {
     if (isNaN(num)) {
-      console.error("Vector.numToVec called with NaN!");
+      throw new Error("Vector.numToVec called with NaN!");
     }
     return new Vector(num, num);
   }
@@ -233,9 +242,9 @@ export default class Vector {
   }
 
   static checkNan(vec, op_name) {
-    if (!vec) console.error(`${op_name}: vector is undefined!`);
+    if (!vec) throw new Error(`${op_name}: vector is undefined!`);
     if (Vector.isNaN(vec)) {
-      console.error(`Vector.${op_name}: called with NaN vector!`);
+      throw new Error(`Vector.${op_name}: called with NaN vector!`);
     }
   }
 }
