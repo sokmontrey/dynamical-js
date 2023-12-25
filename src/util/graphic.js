@@ -5,6 +5,19 @@ export default class Graphic {
     this.stroke_width = 1;
     this.is_fill = true;
     this.is_stroke = false;
+    this.is_visible = true;
+  }
+
+  isVisible() {
+    return this.is_visible;
+  }
+  show() {
+    this.is_visible = true;
+    return this;
+  }
+  hide() {
+    this.is_visible = false;
+    return this;
   }
 
   noFill() {

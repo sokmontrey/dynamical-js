@@ -78,6 +78,8 @@ export default class Renderer {
   }
 
   draw(thing, options = {}) {
+    if (thing.graphic && !thing.graphic.isVisible()) return this;
+
     if (thing instanceof Vector) {
       this.drawVector(thing, ...Object.values(options));
     } else if (thing instanceof Line) {
@@ -92,6 +94,7 @@ export default class Renderer {
       this.drawLine(thing.pointmass1.position, thing.pointmass2.position);
       this.renderGraphic(thing.graphic);
     }
+
     return this;
   }
 
