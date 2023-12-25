@@ -82,7 +82,7 @@ export default class DistanceConstraint {
 
     const correction = Vector.mul(
       diff_v,
-      diff / dist,
+      this.stiffness * diff / dist,
     );
 
     const sum_mass = pm1.mass + pm2.mass;
