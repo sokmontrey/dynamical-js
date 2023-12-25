@@ -58,7 +58,8 @@ export default class Vector {
   static angleBetween(a, b) {
     Vector.checkNan(a, "angleBetween a");
     Vector.checkNan(b, "angleBetween b");
-    return Math.acos(Vector.dot(a, b) / (a.mag() * b.mag())) * 180 / Math.PI;
+    // angle start from a to b, 0 - 360
+    return (360 + Vector.angle(b) - Vector.angle(a)) % 360;
   }
   angleBetween(b) {
     return Vector.angleBetween(this, b);

@@ -19,6 +19,28 @@ export default class AngleConstraint {
     this._calculateAngle();
   }
 
+  update(step = 1) {
+    if (
+      this.pointmass1.isLocked() && this.pointmass2.isLocked() &&
+      this.pointmass3.isLocked()
+    ) return;
+
+    const pm1 = this.pointmass1;
+    const pm2 = this.pointmass2;
+    const pm3 = this.pointmass3;
+
+    const p21 = pm1.position.sub(pm2.position);
+    const p23 = pm3.position.sub(pm2.position);
+
+    const angle = Vector.angleBetween(p21, p23);
+    const diff = angle - this.angle;
+
+    if (diff === 0) return;
+
+    pm3.addPosCorrection(p23.rot(-diff/2).sub(p23), step);
+    pm1.addPosCorrection(p21.rot(diff/2).sub(p21), step);
+  }
+
   _calculateAngle() {
     this.angle = Vector.angleBetween(
       this.pointmass1.position.sub(this.pointmass2.position),

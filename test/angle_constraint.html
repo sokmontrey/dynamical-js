@@ -20,7 +20,12 @@
       renderer.setBackgroundColor("black");
 
       /*TODO:
-      - [] angle constraint
+      - [x] organized pointmasses
+      - [x] calculate angle
+      - [x] angle constraint
+      - [] stiffness
+      - [] propotional to mass
+      - [] propotional to distance (maybe)
 
       TEST CASES:
       - [] three points
@@ -34,11 +39,25 @@
       const s2 = new DistanceConstraint(p2, p3);
 
       const c1 = new AngleConstraint(s1, s2);
+      const container = new Container([p1, p2, p3]);
 
       renderer.loop((dt) => {
         renderer.clear();
 
-        for (let i = 0; i < 10; i++) {}
+        p1.applyForce(new Vector(0, 9));
+        p2.applyForce(new Vector(0, 9));
+        p3.applyForce(new Vector(0, 9));
+
+        for (let i = 0; i < 10; i++) {
+          s1.update(10);
+          s2.update(10);
+          container.update(10);
+          c1.update(10);
+
+          p1.updatePosition(0.25, 10);
+          p2.updatePosition(0.25, 10);
+          p3.updatePosition(0.25, 10);
+        }
 
         renderer.draw(s1);
         renderer.draw(s2);
