@@ -29,14 +29,30 @@
       - [x] create shape from number of sides
       - [x] get center of mass position
       - [x] draw center of mass
-      - [] add to container
-      - [] set position
-      - [] set velocity
-      - [] apply force
+      - [x] add to container
+      - [x] set position
+      - [x] rotate by
+      - [x] set velocity
+      - [x] apply force
+      - [] bounding box
+      - [] draw bounding box
       - [] Sub shapes
       - [] rotation
       TESTS:
       */
+
+      const mouse = new Vector(0, 0);
+      let mouseDown = false;
+      window.addEventListener("mousemove", (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+      window.addEventListener("mousedown", (e) => {
+        mouseDown = true;
+      });
+      window.addEventListener("mouseup", (e) => {
+        mouseDown = false;
+      });
 
       const cube = Shape.fromVertices(
         [
@@ -48,7 +64,6 @@
         new Vector(100, 100),
       );
       const cube2 = Shape.fromSides(5, 30, new Vector(250, 250));
-
       const container = new CircleContainer();
 
       container.addShape(cube);
@@ -67,18 +82,9 @@
           container.update(10);
         }
 
-        // cube.getPointMasses().forEach((pm) => pm.position.graphic.draw(renderer));
         container.graphic.draw(renderer);
         cube.graphic.draw(renderer);
         cube2.graphic.draw(renderer);
-        renderer
-          .drawCircle(cube2.getCenterOfMass(), 5)
-          .setFillColor("red")
-          .fill();
-        // cube
-        //   .getDistanceConstraints()
-        //   .forEach((dc) => dc.graphic.draw(renderer));
-        // cube.getAngleConstraints().forEach((ac) => ac.graphic.draw(renderer));
       });
     </script>
   </body>

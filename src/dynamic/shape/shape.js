@@ -66,7 +66,7 @@ export default class Shape {
     return new Shape(
       relative_vertices.map((vertex) => new PointMass(vertex)),
       ...Object.values(options),
-    ).moveBy(offset);
+    ).setPosition(offset);
   }
 
   static fromSides(
@@ -87,9 +87,38 @@ export default class Shape {
       options,
     );
   }
-  moveBy(offset) {
-    DynError.throwIfNotType(offset, Vector, "Shape: offset");
-    this.pointmasses.forEach((pm) => pm.setPosition(pm.position.add(offset)));
+
+  // doesn't reserve velocity
+  setPosition(position) {
+    const center = this.getCenterOfMass();
+    this.pointmasses.forEach((pm) => {
+      pm.setPosition(position.add(pm.position.sub(center)));
+    });
+    return this;
+  }
+
+  getPosition() {
+    return this.getCenterOfMass();
+  }
+
+  setVelocity(velocity) {
+    this.pointmasses.forEach((pm) => pm.setVelocity(velocity));
+    return this;
+  }
+
+  applyForce(force) {
+    this.pointmasses.forEach((pm) => pm.applyForce(force));
+    return this;
+  }
+
+  // reserve velocity
+  rotateBy(angle, center = this.getCenterOfMass()) {
+    this.pointmasses.forEach((pm) => {
+      const center_to_pm = pm.position.sub(center);
+      pm.addPosCorrection(
+        center_to_pm.rot(angle).sub(center_to_pm),
+      );
+    });
     return this;
   }
 
@@ -118,7 +147,6 @@ export default class Shape {
   }
 
   applyForce(force) {
-    DynError.throwIfNotType(force, Vector, "Shape: force");
     this.pointmasses.forEach((pointmass) => pointmass.applyForce(force));
   }
 
@@ -149,7 +177,6 @@ export default class Shape {
   getAngleConstraints() {
     return this.angle_constraints;
   }
-
   // assume that all pointmasses have the same mass
   getCenterOfMass() {
     return this.pointmasses.reduce(

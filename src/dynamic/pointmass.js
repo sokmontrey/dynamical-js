@@ -97,10 +97,10 @@ export default class PointMass {
     this.old_pos = pos;
   }
 
-  get velocity() {
+  getVelocity() {
     return this.now_pos.sub(this.old_pos);
   }
-  set velocity(vel) {
+  setVelocity(vel) {
     DynError.throwIfNotType(vel, Vector, "PointMass: set velocity: vel");
     Vector.checkNan(vel, "PointMass.set velocity");
     this.old_pos = this.now_pos.sub(vel);

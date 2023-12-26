@@ -23,17 +23,17 @@ export default class RectContainer extends Container {
   }
 
   update() {
-    this.pointmasses.filter((point) => {
-      return point.position.x < this.offset.x ||
-        point.position.x > -this.offset.x + this.corner.x ||
-        point.position.y < this.offset.y ||
-        point.position.y > -this.offset.y + this.corner.y;
-    }).forEach((point) => {
-      point.position = Vector.min(
-        Vector.max(point.position, this.offset),
+    this.pointmasses.filter((pm) => {
+      return pm.position.x < this.offset.x ||
+        pm.position.x > -this.offset.x + this.corner.x ||
+        pm.position.y < this.offset.y ||
+        pm.position.y > -this.offset.y + this.corner.y;
+    }).forEach((pm) => {
+      pm.position = Vector.min(
+        Vector.max(pm.position, this.offset),
         this.corner.sub(this.offset),
       );
-      point.velocity = new Vector(0, 0);
+      pm.setVelocity(pm.getVelocity().mul(0.1));
     });
   }
 }
