@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Shape</title>
+  </head>
+  <body>
+    <canvas width="500" height="500" id="canvas"></canvas>
+    <script type="module">
+      import {
+        Shape,
+        Container,
+        PointMass,
+        Renderer,
+        Vector,
+      } from "../index.js";
+
+      const canvas = document.getElementById("canvas");
+      const renderer = new Renderer(canvas);
+      renderer.setBackgroundColor("black");
+
+      /* 
+      TODO:
+      - [] create shape from pointmasses
+      - [] create shape from vertices
+      TESTS:
+      */
+
+      const cube = new Shape([
+        new PointMass(new Vector(0, 0), 1),
+        new PointMass(new Vector(0, 1), 1),
+        new PointMass(new Vector(1, 1), 1),
+        new PointMass(new Vector(1, 0), 1),
+      ]);
+
+      renderer.loop((dt) => {
+        renderer.clear();
+      });
+    </script>
+  </body>
+</html>

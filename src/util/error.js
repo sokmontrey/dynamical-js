@@ -4,7 +4,15 @@ export function throwIfUndefined(variable, name) {
   }
 }
 
+export function throwIfNotArray(variable, name) {
+  throwIfUndefined(variable, name);
+  if (!Array.isArray(variable)) {
+    throw new Error(`${name} is not an array`);
+  }
+}
+
 export function throwIfEmpty(arr, name) {
+  throwIfNotArray(arr, name);
   if (arr.length === 0) {
     throw new Error(`${name} is empty`);
   }

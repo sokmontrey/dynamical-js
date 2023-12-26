@@ -3,13 +3,13 @@ import Graphic from "../util/graphic.js";
 import { throwIfNotNumber, throwIfNotType } from "../util/error.js";
 
 export default class PointMass {
-  constructor(x = 250, y = 250, mass = 1) {
-    throwIfNotNumber(x, "PointMass: x");
-    throwIfNotNumber(y, "PointMass: y");
+  constructor(pos = new Vector(250, 250), mass = 1) {
+    throwIfNotType(pos, Vector, "PointMass: pos");
+    Vector.checkNan(pos, "PointMass.constructor");
     throwIfNotNumber(mass, "PointMass: mass");
 
-    this.old_pos = new Vector(x, y);
-    this.now_pos = new Vector(x, y);
+    this.old_pos = pos.copy();
+    this.now_pos = pos.copy();
     this.pos_correction = new Vector(0, 0);
     this.acc = new Vector(0, 0);
     this.mass = mass;
