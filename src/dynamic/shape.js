@@ -59,6 +59,24 @@ export default class Shape {
     ).moveBy(offset);
   }
 
+  static fromSides(
+    sides = 3,
+    radius = 40,
+    offset = new Vector(250, 250),
+    options = {},
+  ) {
+    return Shape.fromVertices(
+      [...Array(sides).keys()]
+        .map((i) =>
+          new Vector(
+            radius * Math.cos(i * 2 * Math.PI / sides),
+            radius * Math.sin(i * 2 * Math.PI / sides),
+          )
+        ),
+      offset,
+      options,
+    );
+  }
   moveBy(offset) {
     throwIfNotType(offset, Vector, "Shape: offset");
     this.pointmasses.forEach((pm) => pm.setPosition(pm.position.add(offset)));
