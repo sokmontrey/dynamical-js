@@ -33,6 +33,7 @@ export default class Shape {
       .noDistanceConstraints()
       .noVertices()
       .noJoints()
+      .noBoundingBox()
       .noCenterOfMass("#ff5555");
     this.graphic.draw = (renderer) => {
       renderer.drawPolygon(this.pointmasses.map((pm) => pm.position));
@@ -48,8 +49,14 @@ export default class Shape {
       }
       if (this.graphic.is_center_of_mass) {
         renderer.drawCircle(this.getCenterOfMass(), 5)
-          .setFillColor(this.graphic.cener_of_mass_color)
+          .setFillColor(this.graphic.center_of_mass_color)
           .fill();
+      }
+      if (this.graphic.is_bounding_box) {
+        const [l, u] = this.getBoundingBox();
+        renderer.drawPolygon([l, new Vector(l.x, u.y), u, new Vector(u.x, l.y)])
+          .setStrokeColor(this.graphic.bounding_box_color)
+          .stroke();
       }
     };
   }
@@ -177,11 +184,23 @@ export default class Shape {
   getAngleConstraints() {
     return this.angle_constraints;
   }
+
   // assume that all pointmasses have the same mass
   getCenterOfMass() {
     return this.pointmasses.reduce(
       (acc, pm) => acc.add(pm.position),
       new Vector(0, 0),
     ).div(this.pointmasses.length);
+  }
+
+  getBoundingBox() {
+    return this.pointmasses.reduce(
+      (acc, pm) => {
+        acc[0] = acc[0].min(pm.position);
+        acc[1] = acc[1].max(pm.position);
+        return acc;
+      },
+      [new Vector(Infinity, Infinity), new Vector(-Infinity, -Infinity)],
+    );
   }
 }

@@ -74,6 +74,18 @@ export class ShapeGraphic extends Graphic {
     this.is_distance_constraints = false;
     this.is_center_of_mass = false;
     this.center_of_mass_color = "#ff0000";
+    this.is_bounding_box = false;
+    this.bounding_box_color = "#00ff00";
+  }
+
+  boundingBox(color = this.bounding_box_color) {
+    this.bounding_box_color = color;
+    this.is_bounding_box = true;
+    return this;
+  }
+  noBoundingBox() {
+    this.is_bounding_box = false;
+    return this;
   }
 
   distanceConstraints() {
@@ -85,7 +97,7 @@ export class ShapeGraphic extends Graphic {
     return this;
   }
 
-  centerOfMass(color) {
+  centerOfMass(color = this.center_of_mass_color) {
     this.center_of_mass_color = color;
     this.is_center_of_mass = true;
     return this;
