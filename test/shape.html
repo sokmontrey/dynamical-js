@@ -49,10 +49,11 @@
 
         // cube.getPointMasses().forEach((pm) => pm.position.graphic.draw(renderer));
         container.graphic.draw(renderer);
-        cube
-          .getDistanceConstraints()
-          .forEach((dc) => dc.graphic.draw(renderer));
-        cube.getAngleConstraints().forEach((ac) => ac.graphic.draw(renderer));
+        cube.graphic.draw(renderer);
+        // cube
+        //   .getDistanceConstraints()
+        //   .forEach((dc) => dc.graphic.draw(renderer));
+        // cube.getAngleConstraints().forEach((ac) => ac.graphic.draw(renderer));
       });
     </script>
   </body>

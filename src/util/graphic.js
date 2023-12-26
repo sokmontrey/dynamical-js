@@ -69,17 +69,28 @@ export class ShapeGraphic extends Graphic {
   constructor(fill_color, stroke_color) {
     super(fill_color, stroke_color);
 
-    this.is_wireframe = false;
     this.is_vertices = false;
     this.is_joints = false;
+    this.is_distance_constraints = false;
   }
 
-  writeframe() {
-    this.is_wireframe = true;
+  distanceConstraints() {
+    this.is_distance_constraints = true;
+    return this;
+  }
+  noDistanceConstraints() {
+    this.is_distance_constraints = false;
+    return this;
+  }
+
+  wireframe() {
+    this.noFill();
+    this.stroke();
     return this;
   }
   noWireframe() {
-    this.is_wireframe = false;
+    this.fill();
+    this.noStroke();
     return this;
   }
 

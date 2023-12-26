@@ -3,6 +3,7 @@ import Vector from "../math/vector.js";
 import DistanceConstraint from "./distance_constraint.js";
 import AngleConstraint from "./angle_constraint.js";
 import PointMass from "./pointmass.js";
+import { ShapeGraphic } from "../util/graphic.js";
 import { throwIfNotType, throwIfUndefined } from "../util/error.js";
 import { pairReduce } from "../util/array.js";
 
@@ -22,6 +23,25 @@ export default class Shape {
 
     this._createEdges();
     this._createJoints();
+
+    this.graphic = new ShapeGraphic("#faf887", "#a0f080")
+      .noWireframe()
+      .noDistanceConstraints()
+      .noVertices()
+      .noJoints();
+    this.graphic.draw = (renderer) => {
+      renderer.drawPolygon(this.pointmasses.map((pm) => pm.position));
+      renderer.renderGraphic(this.graphic);
+      if (this.graphic.is_distance_constraints) {
+        this.distance_constraints.forEach((dc) => dc.graphic.draw(renderer));
+      }
+      if (this.graphic.is_vertices) {
+        this.pointmasses.forEach((pm) => pm.graphic.draw(renderer));
+      }
+      if (this.graphic.is_joints) {
+        this.angle_constraints.forEach((ac) => ac.graphic.draw(renderer));
+      }
+    };
   }
 
   fromVertices(vertices = [], options = {}) {
