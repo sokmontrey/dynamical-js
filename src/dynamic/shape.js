@@ -56,6 +56,10 @@ export default class Shape {
     );
   }
 
+  update(dt = 0.25, step = 1){
+
+  }
+
   // centerOfMass() {
   //   this.vertices.reduce(
   //     (center, vertex) => center.add(vertex),

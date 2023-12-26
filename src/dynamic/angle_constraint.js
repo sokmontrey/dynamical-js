@@ -59,7 +59,6 @@ export default class AngleConstraint extends Constraint {
   }
 
   update(step = 1) {
-    throwIfNotNumber(step, "AngleConstraint: update: step");
     if (this.is_disabled) return;
     if (
       this.pointmass1.isLocked() && this.pointmass2.isLocked() &&

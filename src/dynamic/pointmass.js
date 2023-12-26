@@ -33,12 +33,7 @@ export default class PointMass {
   }
 
   updatePosition(dt = 0.25, step = 1) {
-    throwIfNotNumber(dt, "PointMass: updatePosition: dt");
-    throwIfNotNumber(step, "PointMass: updatePosition: step");
-    if (this.is_locked) {
-      // throw new Error("PointMass: calling updatePosition on static pointmass");
-      return;
-    }
+    if (this.is_locked) return;
     if (!dt) {
       throw new Error("PointMass: updatePosition: dt is undefined or zero");
     }

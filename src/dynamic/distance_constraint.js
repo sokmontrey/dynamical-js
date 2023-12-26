@@ -37,8 +37,6 @@ export default class DistanceConstraint extends Constraint {
   }
 
   update(step = 1) {
-    throwIfNotNumber(step, "DistanceConstraint: update: step");
-
     if (this.is_disabled) return;
     if (this.pointmass1.isLocked() && this.pointmass2.isLocked()) {
       return;
