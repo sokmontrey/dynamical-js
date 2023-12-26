@@ -1,5 +1,5 @@
 export default class Graphic {
-  constructor(fill_color, stroke_color){
+  constructor(fill_color, stroke_color) {
     this.size = 5;
     this.fill_color = fill_color;
     this.stroke_color = stroke_color;
@@ -7,6 +7,7 @@ export default class Graphic {
     this.is_fill = true;
     this.is_stroke = false;
     this.is_visible = true;
+    this.draw = () => {};
   }
 
   setSize(size) {
@@ -33,16 +34,16 @@ export default class Graphic {
     this.is_fill = false;
     return this;
   }
-  noStroke(){
+  noStroke() {
     this.is_stroke = false;
     return this;
   }
 
-  fill(){
+  fill() {
     this.is_fill = true;
     return this;
   }
-  stroke(){
+  stroke() {
     this.is_stroke = true;
     return this;
   }
@@ -60,6 +61,43 @@ export default class Graphic {
   setStrokeWidth(width) {
     this.is_stroke = true;
     this.stroke_width = width;
+    return this;
+  }
+}
+
+export class ShapeGraphic extends Graphic {
+  constructor(fill_color, stroke_color) {
+    super(fill_color, stroke_color);
+
+    this.is_wireframe = false;
+    this.is_vertices = false;
+    this.is_joints = false;
+  }
+
+  writeframe() {
+    this.is_wireframe = true;
+    return this;
+  }
+  noWireframe() {
+    this.is_wireframe = false;
+    return this;
+  }
+
+  vertices() {
+    this.is_vertices = true;
+    return this;
+  }
+  noVertices() {
+    this.is_vertices = false;
+    return this;
+  }
+
+  joints() {
+    this.is_joints = true;
+    return this;
+  }
+  noJoints() {
+    this.is_joints = false;
     return this;
   }
 }

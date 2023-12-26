@@ -28,6 +28,19 @@ export default class AngleConstraint extends Constraint {
       .fill()
       .setSize(15)
       .noStroke();
+    this.graphic.draw = (renderer) => {
+      const start = this.pointmass3.position.sub(this.pointmass2.position)
+        .angle();
+      const end = this.pointmass1.position.sub(this.pointmass2.position)
+        .angle();
+      renderer.drawPie(
+        this.pointmass2.position,
+        this.graphic.size,
+        end * Math.PI / 180,
+        start * Math.PI / 180,
+      );
+      renderer.renderGraphic(this.graphic);
+    };
   }
 
   _organizePointmasses(dist_const1, dist_const2) {

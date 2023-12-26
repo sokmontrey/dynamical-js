@@ -1,4 +1,5 @@
 import { throwIfNotNumber, throwIfNotType } from "../util/error.js";
+import Graphic from "../util/graphic.js";
 
 export default class Vector {
   constructor(x, y) {
@@ -7,6 +8,16 @@ export default class Vector {
 
     this.x = x;
     this.y = y;
+
+    this.graphic = new Graphic("white", "#dddd55")
+      .noFill()
+      .stroke()
+      .setStrokeWidth(2);
+    this.graphic.draw = (renderer, options = {}) => {
+      if (!this.graphic.isVisible()) return;
+      renderer.drawVector(this, ...Object.values(options));
+      renderer.renderGraphic(this.graphic);
+    };
   }
 
   static add(a, b) {

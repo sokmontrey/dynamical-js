@@ -9,31 +9,50 @@
       import {
         Shape,
         Container,
+        CircleContainer,
         PointMass,
         Renderer,
         Vector,
+        Line,
       } from "../index.js";
 
       const canvas = document.getElementById("canvas");
       const renderer = new Renderer(canvas);
       renderer.setBackgroundColor("black");
 
-      /* 
+      /*
       TODO:
-      - [] create shape from pointmasses
-      - [] create shape from vertices
+      - [x] create shape from pointmasses
+      - [x] create shape from vertices
+      - [] create shape from relative (localized) vertices
+      - [] draw shape
       TESTS:
       */
 
       const cube = new Shape([
-        new PointMass(new Vector(0, 0), 1),
-        new PointMass(new Vector(0, 1), 1),
-        new PointMass(new Vector(1, 1), 1),
-        new PointMass(new Vector(1, 0), 1),
+        new PointMass(new Vector(10, 20), 1),
+        new PointMass(new Vector(5, 100), 1),
+        new PointMass(new Vector(100, 100), 1),
+        new PointMass(new Vector(100, 10), 1),
       ]);
+
+      const container = new CircleContainer(cube.getPointMasses());
 
       renderer.loop((dt) => {
         renderer.clear();
+
+        for (let i = 0; i < 10; i++) {
+          cube.applyForce(new Vector(0, 9));
+          cube.update(0.25, 10);
+          container.update(10);
+        }
+
+        // cube.getPointMasses().forEach((pm) => pm.position.graphic.draw(renderer));
+        container.graphic.draw(renderer);
+        cube
+          .getDistanceConstraints()
+          .forEach((dc) => dc.graphic.draw(renderer));
+        cube.getAngleConstraints().forEach((ac) => ac.graphic.draw(renderer));
       });
     </script>
   </body>

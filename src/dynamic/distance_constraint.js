@@ -22,6 +22,10 @@ export default class DistanceConstraint extends Constraint {
       .setStrokeColor("gray")
       .noFill()
       .stroke();
+    this.graphic.draw = (renderer) => {
+      renderer.drawLine(this.pointmass1.position, this.pointmass2.position);
+      renderer.renderGraphic(this.graphic);
+    };
   }
 
   getDistance() {

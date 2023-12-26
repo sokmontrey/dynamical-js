@@ -1,10 +1,4 @@
 import Vector from "../math/vector.js";
-import Line from "../math/line.js";
-import PointMass from "../dynamic/pointmass.js";
-// import Graphic from "../util/graphic.js";
-import DistanceConstraint from "../dynamic/distance_constraint.js";
-import Container, { CircleContainer } from "../dynamic/container.js";
-import AngleConstraint from "../dynamic/angle_constraint.js";
 import { throwIfNotType } from "../util/error.js";
 
 export default class Renderer {
@@ -92,10 +86,8 @@ export default class Renderer {
   drawVector(
     vector,
     origin = new Vector(0, 0),
-    color = "#ff5555",
     tip_size = 10,
   ) {
-    this.setStrokeColor(color);
     this.drawLine(origin, origin.add(vector)).stroke();
     const tip = origin.add(vector);
     const angle = vector.angle();
@@ -103,42 +95,6 @@ export default class Renderer {
     const right = new Vector(0, tip_size).rot(angle - 240);
     this.drawLine(tip, tip.add(left)).stroke();
     this.drawLine(tip, tip.add(right)).stroke();
-    return this;
-  }
-
-  draw(thing, options = {}) {
-    if (thing.graphic && !thing.graphic.isVisible()) return this;
-
-    if (thing instanceof Vector) {
-      this.drawVector(thing, ...Object.values(options));
-    } else if (thing instanceof Line) {
-      this.drawLine(thing.pointWithX(0), thing.pointWithX(this.w));
-    } else if (thing instanceof PointMass) {
-      this.drawCircle(thing.position, 5);
-      this.renderGraphic(thing.graphic);
-    } else if (thing instanceof CircleContainer) {
-      this.drawCircle(thing.center, thing.radius);
-      this.renderGraphic(thing.graphic);
-    } else if (thing instanceof Container) {
-      this.drawRect(thing.offset, thing.corner.x, thing.corner.y);
-      this.renderGraphic(thing.graphic);
-    } else if (thing instanceof DistanceConstraint) {
-      this.drawLine(thing.pointmass1.position, thing.pointmass2.position);
-      this.renderGraphic(thing.graphic);
-    } else if (thing instanceof AngleConstraint) {
-      const start = thing.pointmass1.position.sub(thing.pointmass2.position)
-        .angle();
-      const end = thing.pointmass3.position.sub(thing.pointmass2.position)
-        .angle();
-      this.drawPie(
-        thing.pointmass2.position,
-        thing.graphic.size,
-        end * Math.PI / 180,
-        start * Math.PI / 180,
-      );
-      this.renderGraphic(thing.graphic);
-    }
-
     return this;
   }
 
@@ -175,6 +131,13 @@ export default class Renderer {
   clear() {
     this.ctx.clearRect(this.offset.x, this.offset.y, this.w, this.h);
     return this;
+  }
+
+  get width() {
+    return this.w;
+  }
+  get height() {
+    return this.h;
   }
 
   loop(callback) {

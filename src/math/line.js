@@ -1,5 +1,11 @@
 import Vector from "./vector.js";
-import { throwIfNotNumber, throwIfNotType } from "../util/error.js";
+import {
+  throwIfNotNumber,
+  throwIfNotType,
+  throwIfUndefined,
+} from "../util/error.js";
+import Graphic from "../util/graphic.js";
+import Renderer from "../util/renderer.js";
 
 export default class Line {
   constructor(p1, p2, is_unit = true) {
@@ -16,6 +22,23 @@ export default class Line {
     } else {
       this.dir = p2.sub(p1);
     }
+
+    this.graphic = new Graphic("gray", "#11aaff")
+      .setStrokeWidth(2)
+      .noFill()
+      .stroke();
+    this.graphic.draw = (renderer) => {
+      if (!this.graphic.isVisible()) return;
+      try {
+        renderer.drawLine(this.pointWithX(0), this.pointWithX(renderer.width));
+      } catch (e) {
+        renderer.drawLine(
+          new Vector(this.p1.x, 0),
+          new Vector(this.p1.x, renderer.height),
+        );
+      }
+      renderer.renderGraphic(this.graphic);
+    };
   }
 
   static norm(line) {

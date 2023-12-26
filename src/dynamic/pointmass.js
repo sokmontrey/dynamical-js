@@ -1,5 +1,6 @@
 import Vector from "../math/vector.js";
 import Graphic from "../util/graphic.js";
+import Renderer from "../util/renderer.js";
 import { throwIfNotNumber, throwIfNotType } from "../util/error.js";
 
 export default class PointMass {
@@ -16,6 +17,11 @@ export default class PointMass {
     this.is_locked = false;
 
     this.graphic = new Graphic("gray", "black");
+    this.graphic.draw = (renderer) => {
+      if (!this.graphic.isVisible()) return;
+      renderer.drawCircle(this.now_pos, 4);
+      renderer.renderGraphic(this.graphic);
+    };
   }
 
   lock() {
@@ -30,6 +36,10 @@ export default class PointMass {
     throwIfNotType(force, Vector, "PointMass: applyForce: force");
     Vector.checkNan(force, "PointMass.applyForce");
     this.acc = this.acc.add(force.div(this.mass));
+  }
+
+  update(dt = 0.25, step = 1) {
+    this.updatePosition(dt, step);
   }
 
   updatePosition(dt = 0.25, step = 1) {

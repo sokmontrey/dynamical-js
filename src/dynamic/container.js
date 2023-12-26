@@ -1,7 +1,7 @@
 import {
   throwIfEmpty,
+  throwIfNotNumber,
   throwIfNotType,
-  throwIfUndefined,
 } from "../util/error.js";
 import Vector from "../math/vector.js";
 import Graphic from "../util/graphic.js";
@@ -9,24 +9,27 @@ import Pointmass from "./pointmass.js";
 
 export default class Container {
   constructor(points = [], x = 0, y = 0, w = 500, h = 500) {
+    throwIfEmpty(points, "Container: points");
     points.every((point) => {
       throwIfNotType(point, Pointmass, "Container: points");
     });
-    throwIfEmpty(points, "Container: points");
     throwIfNotNumber(x, "Container: x");
     throwIfNotNumber(y, "Container: y");
     throwIfNotNumber(w, "Container: w");
     throwIfNotNumber(h, "Container: h");
 
+    this.points = points;
     this.offset = new Vector(x, y);
     this.corner = new Vector(x + w, y + h);
 
-    this.points = points;
     this.graphic = new Graphic("white", "gray")
       .setStrokeWidth(2)
-      .setStrokeColor("gray")
       .noFill()
       .stroke();
+    this.graphic.draw = (renderer) => {
+      renderer.drawRect(this.offset, w, h);
+      renderer.renderGraphic(this.graphic);
+    };
   }
 
   addPoint(point) {
@@ -51,18 +54,33 @@ export default class Container {
   }
 }
 
-export class CircleContainer extends Container {
+export class CircleContainer {
   constructor(points = [], radius = 250, center = new Vector(250, 250)) {
+    throwIfEmpty(points, "CircleContainer: points");
     points.every((point) => {
       throwIfNotType(point, Pointmass, "CircleContainer: points");
     });
-    throwIfEmpty(points, "CircleContainer: points");
     throwIfNotNumber(radius, "CircleContainer: radius");
     throwIfNotType(center, Vector, "CircleContainer: center");
 
-    super(points);
+    this.points = points;
     this.radius = radius;
     this.center = center;
+
+    this.graphic = new Graphic("white", "gray")
+      .setStrokeWidth(2)
+      .noFill()
+      .stroke();
+    this.graphic.draw = (renderer) => {
+      renderer.drawCircle(this.offset, this.radius);
+      renderer.renderGraphic(this.graphic);
+    };
+  }
+
+  addPoint(point) {
+    throwIfNotType(point, Pointmass, "CircleContainer: addPoint: point");
+    this.points.push(point);
+    return this;
   }
 
   update() {

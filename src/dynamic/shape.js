@@ -56,8 +56,37 @@ export default class Shape {
     );
   }
 
-  update(dt = 0.25, step = 1){
+  applyForce(force) {
+    throwIfNotType(force, Vector, "Shape: force");
+    this.pointmasses.forEach((pointmass) => pointmass.applyForce(force));
+  }
 
+  updatePointMasses(dt = 0.25, step = 1) {
+    this.pointmasses.forEach((pointmass) => pointmass.update(dt, step));
+  }
+
+  updateDistanceConstraints(step = 1) {
+    this.distance_constraints.forEach((dc) => dc.update(step));
+  }
+
+  updateAngleConstraints(step = 1) {
+    this.angle_constraints.forEach((ac) => ac.update(step));
+  }
+
+  update(dt = 0.25, step = 1) {
+    this.updateDistanceConstraints(step);
+    this.updateAngleConstraints(step);
+    this.updatePointMasses(dt, step);
+  }
+
+  getPointMasses() {
+    return this.pointmasses;
+  }
+  getDistanceConstraints() {
+    return this.distance_constraints;
+  }
+  getAngleConstraints() {
+    return this.angle_constraints;
   }
 
   // centerOfMass() {
