@@ -1,19 +1,23 @@
-import { throwIfEmpty } from "../util/error.js";
-import Vector from "../math/vector.js";
-import DistanceConstraint from "./distance_constraint.js";
-import AngleConstraint from "./angle_constraint.js";
-import PointMass from "./pointmass.js";
-import { ShapeGraphic } from "../util/graphic.js";
-import { throwIfNotType, throwIfUndefined } from "../util/error.js";
-import { pairReduce } from "../util/array.js";
+import {
+  AngleConstraint,
+  DistanceConstraint,
+  DynArray,
+  DynError,
+  PointMass,
+  ShapeGraphic,
+  Vector,
+} from "../../../index.js";
 
 export default class Shape {
   constructor(pointmasses = [], is_optimized_joints = false) {
     pointmasses.every((pointmass) => {
-      throwIfNotType(pointmass, PointMass, "Shape: pointmasses");
+      DynError.throwIfNotType(pointmass, PointMass, "Shape: pointmasses");
     });
-    throwIfEmpty(pointmasses, "Shape: vertices");
-    throwIfUndefined(is_optimized_joints, "Shape: is_optimized_joints");
+    DynError.throwIfEmpty(pointmasses, "Shape: vertices");
+    DynError.throwIfUndefined(
+      is_optimized_joints,
+      "Shape: is_optimized_joints",
+    );
 
     this.pointmasses = pointmasses;
     this.distance_constraint = [];
@@ -55,9 +59,9 @@ export default class Shape {
     offset = new Vector(250, 250),
     options = {},
   ) {
-    throwIfEmpty(relative_vertices, "Shape: vectors");
+    DynError.throwIfEmpty(relative_vertices, "Shape: vectors");
     relative_vertices.every((vertex) => {
-      throwIfNotType(vertex, Vector, "Shape: vertices");
+      DynError.throwIfNotType(vertex, Vector, "Shape: vertices");
     });
     return new Shape(
       relative_vertices.map((vertex) => new PointMass(vertex)),
@@ -84,13 +88,13 @@ export default class Shape {
     );
   }
   moveBy(offset) {
-    throwIfNotType(offset, Vector, "Shape: offset");
+    DynError.throwIfNotType(offset, Vector, "Shape: offset");
     this.pointmasses.forEach((pm) => pm.setPosition(pm.position.add(offset)));
     return this;
   }
 
   _createEdges() {
-    this.distance_constraints = pairReduce(
+    this.distance_constraints = DynArray.pairReduce(
       this.pointmasses,
       (acc, pm1, pm2) => {
         acc.push(new DistanceConstraint(pm1, pm2));
@@ -101,7 +105,7 @@ export default class Shape {
   }
 
   _createJoints() {
-    this.angle_constraints = pairReduce(
+    this.angle_constraints = DynArray.pairReduce(
       this.distance_constraints,
       (acc, dc1, dc2, i) => {
         if (!this.is_optimized_joints || i % 2 === 0) {
@@ -114,7 +118,7 @@ export default class Shape {
   }
 
   applyForce(force) {
-    throwIfNotType(force, Vector, "Shape: force");
+    DynError.throwIfNotType(force, Vector, "Shape: force");
     this.pointmasses.forEach((pointmass) => pointmass.applyForce(force));
   }
 

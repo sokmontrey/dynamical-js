@@ -1,17 +1,10 @@
-import Vector from "./vector.js";
-import {
-  throwIfNotNumber,
-  throwIfNotType,
-  throwIfUndefined,
-} from "../util/error.js";
-import Graphic from "../util/graphic.js";
-import Renderer from "../util/renderer.js";
+import { DynError, Graphic, Vector } from "../../index.js";
 
 export default class Line {
   constructor(p1, p2, is_unit = true) {
-    throwIfNotType(p1, Vector, "Line: p1");
-    throwIfNotType(p2, Vector, "Line: p2");
-    throwIfUndefined(is_unit, "Line: is_unit");
+    DynError.throwIfNotType(p1, Vector, "Line: p1");
+    DynError.throwIfNotType(p2, Vector, "Line: p2");
+    DynError.throwIfUndefined(is_unit, "Line: is_unit");
 
     this.p1 = p1;
     this.p2 = p2;
@@ -42,7 +35,7 @@ export default class Line {
   }
 
   static norm(line) {
-    throwIfNotType(line, Line, "Line: norm: line");
+    DynError.throwIfNotType(line, Line, "Line: norm: line");
     return new Vector(-line.dir.y, line.dir.x);
   }
   norm() {
@@ -50,22 +43,22 @@ export default class Line {
   }
 
   static fromDir(origin, dir) {
-    throwIfNotType(origin, Vector, "Line: fromDir: origin");
-    throwIfNotType(dir, Vector, "Line: fromDir: dir");
+    DynError.throwIfNotType(origin, Vector, "Line: fromDir: origin");
+    DynError.throwIfNotType(dir, Vector, "Line: fromDir: dir");
 
     return new Line(origin, origin.add(dir), false);
   }
 
   static fromPoints(p1, p2) {
-    throwIfNotType(p1, Vector, "Line: fromPoints: p1");
-    throwIfNotType(p2, Vector, "Line: fromPoints: p2");
+    DynError.throwIfNotType(p1, Vector, "Line: fromPoints: p1");
+    DynError.throwIfNotType(p2, Vector, "Line: fromPoints: p2");
 
     return new Line(p1, p2);
   }
 
   static pointOnLine(line, t) {
-    throwIfNotType(line, Line, "Line: pointOnLine: line");
-    throwIfNotNumber(t, "Line: pointOnLine: t");
+    DynError.throwIfNotType(line, Line, "Line: pointOnLine: line");
+    DynError.throwIfNotNumber(t, "Line: pointOnLine: t");
 
     return line.p1.add(line.dir.mul(t));
   }
@@ -74,21 +67,21 @@ export default class Line {
   }
 
   static pointWithX(line, x) {
-    throwIfNotType(line, Line, "Line: pointWithX: line");
-    throwIfNotNumber(x, "Line: pointWithX: x");
+    DynError.throwIfNotType(line, Line, "Line: pointWithX: line");
+    DynError.throwIfNotNumber(x, "Line: pointWithX: x");
     if (line.dir.x === 0) {
       throw new Error("Cannot find point with x on vertical line!");
     }
     return line.pointOnLine((x - line.p1.x) / line.dir.x);
   }
   pointWithX(x) {
-    throwIfNotNumber(x, "Line: pointWithX: x");
+    DynError.throwIfNotNumber(x, "Line: pointWithX: x");
     return Line.pointWithX(this, x);
   }
 
   static intersect(line1, line2) {
-    throwIfNotType(line1, Line, "Line: intersect: line1");
-    throwIfNotType(line2, Line, "Line: intersect: line2");
+    DynError.throwIfNotType(line1, Line, "Line: intersect: line1");
+    DynError.throwIfNotType(line2, Line, "Line: intersect: line2");
 
     const denom = line1.dir.x * line2.dir.y - line1.dir.y * line2.dir.x;
     if (denom === 0) {
@@ -100,8 +93,8 @@ export default class Line {
   }
 
   static closestToPoint(line, point) {
-    throwIfNotType(point, Vector, "Line: closestToPoint: point");
-    throwIfNotType(line, Line, "Line: closestToPoint: line");
+    DynError.throwIfNotType(point, Vector, "Line: closestToPoint: point");
+    DynError.throwIfNotType(line, Line, "Line: closestToPoint: line");
 
     const line2 = Line.fromDir(point, line.dir.perp());
     return Line.intersect(line, line2);

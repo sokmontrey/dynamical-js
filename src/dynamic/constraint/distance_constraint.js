@@ -1,14 +1,24 @@
-import { throwIfNotNumber, throwIfNotType } from "../util/error.js";
-import Vector from "../math/vector.js";
-import Graphic from "../util/graphic.js";
-import Constraint from "./constraint.js";
-import Pointmass from "./pointmass.js";
+import {
+  Constraint,
+  DynError,
+  Graphic,
+  PointMass,
+  Vector,
+} from "../../../index.js";
 
 export default class DistanceConstraint extends Constraint {
   constructor(pointmass1, pointmass2, stiffness = 1) {
-    throwIfNotType(pointmass1, Pointmass, "DistanceConstraint: pointmass1");
-    throwIfNotType(pointmass2, Pointmass, "DistanceConstraint: pointmass2");
-    throwIfNotNumber(stiffness, "DistanceConstraint: stiffness");
+    DynError.throwIfNotType(
+      pointmass1,
+      PointMass,
+      "DistanceConstraint: pointmass1",
+    );
+    DynError.throwIfNotType(
+      pointmass2,
+      PointMass,
+      "DistanceConstraint: pointmass2",
+    );
+    DynError.throwIfNotNumber(stiffness, "DistanceConstraint: stiffness");
 
     super(stiffness);
     this.pointmass1 = pointmass1;

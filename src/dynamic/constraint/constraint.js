@@ -1,18 +1,13 @@
-import Graphic from "../util/graphic.js";
-import {
-  throwIfNegative,
-  throwIfNotNumber,
-  throwIfUndefined,
-} from "../util/error.js";
+import { DynError, Graphic } from "../../../index.js";
 
 export default class Constraint {
   constructor(stiffness = 1, breaking_threshold = 0, is_disabled = false) {
-    throwIfNegative(stiffness, "Constraint: stiffness");
-    throwIfNegative(
+    DynError.throwIfNegative(stiffness, "Constraint: stiffness");
+    DynError.throwIfNegative(
       breaking_threshold,
       "Constraint: breaking_threshold",
     );
-    throwIfUndefined(is_disabled, "Constraint: is_disabled");
+    DynError.throwIfUndefined(is_disabled, "Constraint: is_disabled");
 
     this.stiffness = stiffness;
     this.breaking_threshold = breaking_threshold;
@@ -44,7 +39,7 @@ export default class Constraint {
   }
 
   setBreakingThreshold(threshold) {
-    throwIfNegative(threshold, "Constraint: setBreakingThreshold");
+    DynError.throwIfNegative(threshold, "Constraint: setBreakingThreshold");
     this.breaking_threshold = threshold;
     return this;
   }

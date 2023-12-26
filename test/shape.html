@@ -29,6 +29,7 @@
       - [x] create shape from number of sides
       - [x] get center of mass position
       - [x] draw center of mass
+      - [] add to container
       - [] set position
       - [] set velocity
       - [] apply force
@@ -48,9 +49,10 @@
       );
       const cube2 = Shape.fromSides(5, 30, new Vector(250, 250));
 
-      const container = new CircleContainer(
-        cube.getPointMasses().concat(cube2.getPointMasses()),
-      );
+      const container = new CircleContainer();
+
+      container.addShape(cube);
+      container.addShape(cube2);
 
       renderer.loop((dt) => {
         renderer.clear();

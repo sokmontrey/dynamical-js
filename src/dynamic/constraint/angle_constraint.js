@@ -1,13 +1,10 @@
-import Vector from "../math/vector.js";
-import Constraint from "./constraint.js";
-import Graphic from "../util/graphic.js";
-import { throwIfNotNumber, throwIfUndefined } from "../util/error.js";
+import { Constraint, DynError, Graphic, Vector } from "../../../index.js";
 
 export default class AngleConstraint extends Constraint {
   constructor(dist_const1, dist_const2, stiffness = 1) {
-    throwIfUndefined(dist_const1, "AngleConstraint: dist_const1");
-    throwIfUndefined(dist_const2, "AngleConstraint: dist_const2");
-    throwIfNotNumber(stiffness, "AngleConstraint: stiffness");
+    DynError.throwIfUndefined(dist_const1, "AngleConstraint: dist_const1");
+    DynError.throwIfUndefined(dist_const2, "AngleConstraint: dist_const2");
+    DynError.throwIfNotNumber(stiffness, "AngleConstraint: stiffness");
 
     super(stiffness);
     this.pointmass1 = undefined;

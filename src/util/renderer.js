@@ -1,9 +1,8 @@
-import Vector from "../math/vector.js";
-import { throwIfNotType } from "../util/error.js";
+import { DynError, Vector } from "../../index.js";
 
 export default class Renderer {
   constructor(canvas) {
-    throwIfNotType(canvas, HTMLCanvasElement, "Renderer: canvas");
+    DynError.throwIfNotType(canvas, HTMLCanvasElement, "Renderer: canvas");
 
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");

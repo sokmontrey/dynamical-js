@@ -1,10 +1,9 @@
-import { throwIfNotNumber, throwIfNotType } from "../util/error.js";
-import Graphic from "../util/graphic.js";
+import { DynError, Graphic } from "../../index.js";
 
 export default class Vector {
   constructor(x, y) {
-    throwIfNotNumber(x, "Vector: x");
-    throwIfNotNumber(y, "Vector: y");
+    DynError.throwIfNotNumber(x, "Vector: x");
+    DynError.throwIfNotNumber(y, "Vector: y");
 
     this.x = x;
     this.y = y;
@@ -259,7 +258,7 @@ export default class Vector {
   }
 
   static checkNan(vec, op_name) {
-    throwIfNotType(vec, Vector, `Vector.${op_name}`);
+    DynError.throwIfNotType(vec, Vector, `Vector.${op_name}`);
     if (Vector.isNaN(vec)) {
       throw new Error(`Vector.${op_name}: called with NaN vector!`);
     }
