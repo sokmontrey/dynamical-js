@@ -72,6 +72,8 @@ export class ShapeGraphic extends Graphic {
     this.is_vertices = false;
     this.is_joints = false;
     this.is_distance_constraints = false;
+    this.is_center_of_mass = false;
+    this.center_of_mass_color = "#ff0000";
   }
 
   distanceConstraints() {
@@ -80,6 +82,16 @@ export class ShapeGraphic extends Graphic {
   }
   noDistanceConstraints() {
     this.is_distance_constraints = false;
+    return this;
+  }
+
+  centerOfMass(color) {
+    this.center_of_mass_color = color;
+    this.is_center_of_mass = true;
+    return this;
+  }
+  noCenterOfMass() {
+    this.is_center_of_mass = false;
     return this;
   }
 

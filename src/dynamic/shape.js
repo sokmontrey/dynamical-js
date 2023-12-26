@@ -28,7 +28,8 @@ export default class Shape {
       .noWireframe()
       .noDistanceConstraints()
       .noVertices()
-      .noJoints();
+      .noJoints()
+      .noCenterOfMass("#ff5555");
     this.graphic.draw = (renderer) => {
       renderer.drawPolygon(this.pointmasses.map((pm) => pm.position));
       renderer.renderGraphic(this.graphic);
@@ -40,6 +41,11 @@ export default class Shape {
       }
       if (this.graphic.is_joints) {
         this.angle_constraints.forEach((ac) => ac.graphic.draw(renderer));
+      }
+      if (this.graphic.is_center_of_mass) {
+        renderer.drawCircle(this.getCenterOfMass(), 5)
+          .setFillColor(this.graphic.cener_of_mass_color)
+          .fill();
       }
     };
   }
@@ -140,10 +146,11 @@ export default class Shape {
     return this.angle_constraints;
   }
 
-  // centerOfMass() {
-  //   this.vertices.reduce(
-  //     (center, vertex) => center.add(vertex),
-  //     new Vector(0, 0),
-  //   );
-  // }
+  // assume that all pointmasses have the same mass
+  getCenterOfMass() {
+    return this.pointmasses.reduce(
+      (acc, pm) => acc.add(pm.position),
+      new Vector(0, 0),
+    ).div(this.pointmasses.length);
+  }
 }
