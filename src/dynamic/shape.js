@@ -44,12 +44,25 @@ export default class Shape {
     };
   }
 
-  fromVertices(vertices = [], options = {}) {
-    throwIfEmpty(vertices, "Shape: vectors");
+  static fromVertices(
+    relative_vertices = [],
+    offset = new Vector(250, 250),
+    options = {},
+  ) {
+    throwIfEmpty(relative_vertices, "Shape: vectors");
+    relative_vertices.every((vertex) => {
+      throwIfNotType(vertex, Vector, "Shape: vertices");
+    });
     return new Shape(
-      vertices.map((vertex) => new PointMass(vertex)),
-      ...options,
-    );
+      relative_vertices.map((vertex) => new PointMass(vertex)),
+      ...Object.values(options),
+    ).moveBy(offset);
+  }
+
+  moveBy(offset) {
+    throwIfNotType(offset, Vector, "Shape: offset");
+    this.pointmasses.forEach((pm) => pm.setPosition(pm.position.add(offset)));
+    return this;
   }
 
   _createEdges() {
