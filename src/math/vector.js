@@ -1,4 +1,4 @@
-import { DynError, Graphic } from "../../index.js";
+import { DynError, Graphic } from "../index.js";
 
 export default class Vector {
   constructor(x, y) {

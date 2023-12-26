@@ -1,4 +1,4 @@
-import { Constraint, DynError, Graphic, Vector } from "../../../index.js";
+import { Constraint, DynError, Graphic, Vector } from "../../index.js";
 
 export default class AngleConstraint extends Constraint {
   constructor(dist_const1, dist_const2, stiffness = 1) {

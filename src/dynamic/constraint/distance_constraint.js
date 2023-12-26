@@ -4,7 +4,7 @@ import {
   Graphic,
   PointMass,
   Vector,
-} from "../../../index.js";
+} from "../../index.js";
 
 export default class DistanceConstraint extends Constraint {
   constructor(pointmass1, pointmass2, stiffness = 1) {

@@ -1,4 +1,4 @@
-import { DynError, PointMass, Shape } from "../../../index.js";
+import { DynError, PointMass, Shape } from "../../index.js";
 
 export default class Container {
   constructor(pointmasses = []) {

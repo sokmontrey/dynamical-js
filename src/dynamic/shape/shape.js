@@ -6,7 +6,7 @@ import {
   PointMass,
   ShapeGraphic,
   Vector,
-} from "../../../index.js";
+} from "../../index.js";
 
 export default class Shape {
   constructor(pointmasses = [], is_optimized_joints = false) {
@@ -49,7 +49,7 @@ export default class Shape {
       }
       if (this.graphic.is_center_of_mass) {
         renderer.drawCircle(this.getCenterOfMass(), 5)
-          .setFillColor(this.graphic.center_of_mass_color)
+          .setFillColor(this.graphic.cener_of_mass_color)
           .fill();
       }
       if (this.graphic.is_bounding_box) {

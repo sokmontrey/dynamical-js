@@ -1,4 +1,4 @@
-import { DynError, Graphic } from "../../../index.js";
+import { DynError, Graphic } from "../../index.js";
 
 export default class Constraint {
   constructor(stiffness = 1, breaking_threshold = 0, is_disabled = false) {

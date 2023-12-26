@@ -1,4 +1,4 @@
-import { Container, DynError, Graphic, Vector } from "../../../index.js";
+import { Container, DynError, Graphic, Vector } from "../../index.js";
 
 export default class RectContainer extends Container {
   constructor(points = [], x = 0, y = 0, w = 500, h = 500) {

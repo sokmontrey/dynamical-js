@@ -1,4 +1,4 @@
-import { DynError, Vector } from "../../index.js";
+import { DynError, Vector } from "../index.js";
 
 export default class Renderer {
   constructor(canvas) {

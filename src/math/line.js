@@ -1,4 +1,4 @@
-import { DynError, Graphic, Vector } from "../../index.js";
+import { DynError, Graphic, Vector } from "../index.js";
 
 export default class Line {
   constructor(p1, p2, is_unit = true) {

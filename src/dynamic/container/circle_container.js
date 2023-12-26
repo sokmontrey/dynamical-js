@@ -1,4 +1,4 @@
-import { Container, DynError, Graphic, Vector } from "../../../index.js";
+import { Container, DynError, Graphic, Vector } from "../../index.js";
 
 export default class CircleContainer extends Container {
   constructor(points = [], radius = 250, center = new Vector(250, 250)) {

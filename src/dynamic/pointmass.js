@@ -1,4 +1,4 @@
-import { DynError, Graphic, Vector } from "../../index.js";
+import { DynError, Graphic, Vector } from "../index.js";
 
 export default class PointMass {
   constructor(pos = new Vector(250, 250), mass = 1) {
