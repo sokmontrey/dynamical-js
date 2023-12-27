@@ -9,24 +9,25 @@ import {
 } from "../../index.js";
 
 export default class Shape {
-  constructor(pointmasses = [], is_optimized_joints = false) {
+  constructor(
+    pointmasses = [],
+    is_create_edges = true,
+    is_create_supports = true,
+    is_create_joints = is_create_edges,
+  ) {
     pointmasses.every((pointmass) => {
       DynError.throwIfNotType(pointmass, PointMass, "Shape: pointmasses");
     });
     DynError.throwIfEmpty(pointmasses, "Shape: vertices");
-    DynError.throwIfUndefined(
-      is_optimized_joints,
-      "Shape: is_optimized_joints",
-    );
 
     this.pointmasses = pointmasses;
-    this.distance_constraint = [];
-    this.angle_constraints = [];
+    this.edges = [];
+    this.supports = [];
+    this.joints = [];
 
-    this.is_optimized_joints = is_optimized_joints;
-
-    this._createEdges();
-    this._createJoints();
+    if (is_create_edges) this._createEdges();
+    if (is_create_supports) this._createSupports();
+    if (is_create_joints && is_create_edges) this._createJoints();
 
     this.graphic = new ShapeGraphic("#faf887", "#a0f080")
       .noWireframe()
@@ -35,12 +36,16 @@ export default class Shape {
       .noJoints()
       .noBoundingBox()
       .noCenterOfMass("#ff5555");
+
     this.graphic.draw = (renderer) => {
       renderer.drawPolygon(this.pointmasses.map((pm) => pm.position));
       renderer.renderGraphic(this.graphic);
       if (this.graphic.is_distance_constraints) {
-        for (let i = 0; i < this.distance_constraints.length; i++) {
-          this.distance_constraints[i].graphic.draw(renderer);
+        for (let i = 0; i < this.edges.length; i++) {
+          this.edges[i].graphic.draw(renderer);
+        }
+        for (let i = 0; i < this.supports.length; i++) {
+          this.supports[i].graphic.draw(renderer);
         }
       }
       if (this.graphic.is_vertices) {
@@ -49,8 +54,8 @@ export default class Shape {
         }
       }
       if (this.graphic.is_joints) {
-        for (let i = 0; i < this.angle_constraints.length; i++) {
-          this.angle_constraints[i].graphic.draw(renderer);
+        for (let i = 0; i < this.joints.length; i++) {
+          this.joints[i].graphic.draw(renderer);
         }
       }
       if (this.graphic.is_center_of_mass) {
@@ -101,6 +106,25 @@ export default class Shape {
     );
   }
 
+  connect(pointmass_index1, pointmass_index2) {
+    if (pointmass_index1 === pointmass_index2) {
+      throw new Error("Shape: cannot connect pointmass to itself");
+    }
+    if (pointmass_index1 < 0 || pointmass_index1 >= this.pointmasses.length) {
+      throw new Error("Shape: pointmass_index1 out of range");
+    }
+    if (pointmass_index2 < 0 || pointmass_index2 >= this.pointmasses.length) {
+      throw new Error("Shape: pointmass_index2 out of range");
+    }
+    this.supports.push(
+      new DistanceConstraint(
+        this.pointmasses[pointmass_index1],
+        this.pointmasses[pointmass_index2],
+      ),
+    );
+    return this;
+  }
+
   // doesn't reserve velocity
   setPosition(position) {
     const center = this.getCenterOfMass();
@@ -143,7 +167,7 @@ export default class Shape {
   }
 
   _createEdges() {
-    this.distance_constraints = DynArray.pairReduce(
+    this.edges = DynArray.pairReduce(
       this.pointmasses,
       (acc, pm1, pm2) => {
         acc.push(new DistanceConstraint(pm1, pm2));
@@ -153,13 +177,33 @@ export default class Shape {
     );
   }
 
+  _createSupports() {
+    const num_vertices = this.pointmasses.length;
+    let SUPPORT_LAYER = 0;
+    if (num_vertices < 5) {
+      SUPPORT_LAYER = 0;
+    } else if (num_vertices >= 5 && num_vertices <= 7) {
+      SUPPORT_LAYER = 1;
+    } else {
+      SUPPORT_LAYER = Math.floor(this.pointmasses.length / 3);
+    }
+
+    for (let SKIP = 1; SKIP <= SUPPORT_LAYER; SKIP++) {
+      DynArray.pairIter(
+        this.pointmasses,
+        (pm1, pm2) => {
+          this.supports.push(new DistanceConstraint(pm1, pm2));
+        },
+        SKIP,
+      );
+    }
+  }
+
   _createJoints() {
-    this.angle_constraints = DynArray.pairReduce(
-      this.distance_constraints,
+    this.joints = DynArray.pairReduce(
+      this.edges,
       (acc, dc1, dc2, i) => {
-        if (!this.is_optimized_joints || i % 2 === 0) {
-          acc.push(new AngleConstraint(dc1, dc2));
-        }
+        acc.push(new AngleConstraint(dc1, dc2));
         return acc;
       },
       [],
@@ -180,22 +224,30 @@ export default class Shape {
     return this;
   }
 
-  updateDistanceConstraints(step = 1) {
-    for (let i = 0; i < this.distance_constraints.length; i++) {
-      this.distance_constraints[i].update(step);
+  updateEdges(step = 1) {
+    for (let i = 0; i < this.edges.length; i++) {
+      this.edges[i].update(step);
+    }
+    return this;
+  }
+
+  updateSupports(step = 1) {
+    for (let i = 0; i < this.supports.length; i++) {
+      this.supports[i].update(step);
     }
     return this;
   }
 
   updateAngleConstraints(step = 1) {
-    for (let i = 0; i < this.angle_constraints.length; i++) {
-      this.angle_constraints[i].update(step);
+    for (let i = 0; i < this.joints.length; i++) {
+      this.joints[i].update(step);
     }
     return this;
   }
 
   update(dt = 0.25, step = 1) {
-    this.updateDistanceConstraints(step);
+    this.updateEdges(step);
+    this.updateSupports(step);
     this.updateAngleConstraints(step);
     this.updatePointMasses(dt, step);
     return this;
@@ -204,11 +256,14 @@ export default class Shape {
   getPointMasses() {
     return this.pointmasses;
   }
-  getDistanceConstraints() {
-    return this.distance_constraints;
+  getEdges() {
+    return this.edges;
   }
-  getAngleConstraints() {
-    return this.angle_constraints;
+  getSupports() {
+    return this.supports;
+  }
+  getJoints() {
+    return this.joints;
   }
 
   // assume that all pointmasses have the same mass

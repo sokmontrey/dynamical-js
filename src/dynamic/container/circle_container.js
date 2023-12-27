@@ -29,7 +29,7 @@ export default class CircleContainer extends Container {
       pm.position = pm.position.sub(this.center)
         .scale(this.radius)
         .add(this.center);
-      pm.setVelocity(pm.getVelocity().mul(0.1));
+      pm.setVelocity(pm.getVelocity().mul(0.0));
     }
   }
 }
