@@ -21,13 +21,15 @@ export default class CircleContainer extends Container {
   }
 
   update() {
-    this.pointmasses.filter((pm) => {
+    const collided = this.pointmasses.filter((pm) => {
       return Vector.dist(pm.position, this.center) > this.radius;
-    }).forEach((pm) => {
+    });
+    for (let i = 0; i < collided.length; i++) {
+      const pm = collided[i];
       pm.position = pm.position.sub(this.center)
         .scale(this.radius)
         .add(this.center);
       pm.setVelocity(pm.getVelocity().mul(0.1));
-    });
+    }
   }
 }

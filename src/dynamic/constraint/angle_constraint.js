@@ -50,15 +50,15 @@ export default class AngleConstraint extends Constraint {
       return acc.set(pm, acc.has(pm) ? 2 : 1);
     }, new Map());
 
-    [...pointmass_map.entries()].forEach(([pm, count]) => {
+    for (const [pm, count] of [...pointmass_map.entries()]){
       if (count === 2) {
         this.pointmass2 = pm;
-        return;
+        continue;
       }
 
       if (this.pointmass1 === undefined) this.pointmass1 = pm;
       else this.pointmass3 = pm;
-    });
+    }
   }
 
   _calculateConstraintValue() {

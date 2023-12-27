@@ -39,13 +39,19 @@ export default class Shape {
       renderer.drawPolygon(this.pointmasses.map((pm) => pm.position));
       renderer.renderGraphic(this.graphic);
       if (this.graphic.is_distance_constraints) {
-        this.distance_constraints.forEach((dc) => dc.graphic.draw(renderer));
+        for (let i = 0; i < this.distance_constraints.length; i++) {
+          this.distance_constraints[i].graphic.draw(renderer);
+        }
       }
       if (this.graphic.is_vertices) {
-        this.pointmasses.forEach((pm) => pm.graphic.draw(renderer));
+        for (let i = 0; i < this.pointmasses.length; i++) {
+          this.pointmasses[i].graphic.draw(renderer);
+        }
       }
       if (this.graphic.is_joints) {
-        this.angle_constraints.forEach((ac) => ac.graphic.draw(renderer));
+        for (let i = 0; i < this.angle_constraints.length; i++) {
+          this.angle_constraints[i].graphic.draw(renderer);
+        }
       }
       if (this.graphic.is_center_of_mass) {
         renderer.drawCircle(this.getCenterOfMass(), 5)
@@ -98,9 +104,11 @@ export default class Shape {
   // doesn't reserve velocity
   setPosition(position) {
     const center = this.getCenterOfMass();
-    this.pointmasses.forEach((pm) => {
-      pm.setPosition(position.add(pm.position.sub(center)));
-    });
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      this.pointmasses[i].setPosition(
+        position.add(this.pointmasses[i].position.sub(center)),
+      );
+    }
     return this;
   }
 
@@ -109,23 +117,28 @@ export default class Shape {
   }
 
   setVelocity(velocity) {
-    this.pointmasses.forEach((pm) => pm.setVelocity(velocity));
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      this.pointmasses[i].setVelocity(velocity);
+    }
     return this;
   }
 
   applyForce(force) {
-    this.pointmasses.forEach((pm) => pm.applyForce(force));
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      this.pointmasses[i].applyForce(force);
+    }
     return this;
   }
 
   // reserve velocity
   rotateBy(angle, center = this.getCenterOfMass()) {
-    this.pointmasses.forEach((pm) => {
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      const pm = this.pointmasses[i];
       const center_to_pm = pm.position.sub(center);
       pm.addPosCorrection(
         center_to_pm.rot(angle).sub(center_to_pm),
       );
-    });
+    }
     return this;
   }
 
@@ -154,25 +167,38 @@ export default class Shape {
   }
 
   applyForce(force) {
-    this.pointmasses.forEach((pointmass) => pointmass.applyForce(force));
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      this.pointmasses[i].applyForce(force);
+    }
+    return this;
   }
 
   updatePointMasses(dt = 0.25, step = 1) {
-    this.pointmasses.forEach((pointmass) => pointmass.update(dt, step));
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      this.pointmasses[i].update(dt, step);
+    }
+    return this;
   }
 
   updateDistanceConstraints(step = 1) {
-    this.distance_constraints.forEach((dc) => dc.update(step));
+    for (let i = 0; i < this.distance_constraints.length; i++) {
+      this.distance_constraints[i].update(step);
+    }
+    return this;
   }
 
   updateAngleConstraints(step = 1) {
-    this.angle_constraints.forEach((ac) => ac.update(step));
+    for (let i = 0; i < this.angle_constraints.length; i++) {
+      this.angle_constraints[i].update(step);
+    }
+    return this;
   }
 
   update(dt = 0.25, step = 1) {
     this.updateDistanceConstraints(step);
     this.updateAngleConstraints(step);
     this.updatePointMasses(dt, step);
+    return this;
   }
 
   getPointMasses() {
