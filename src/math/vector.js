@@ -113,6 +113,15 @@ export default class Vector {
     return Vector.dot(this, b);
   }
 
+  static reflect(vec, normal) {
+    Vector.checkNan(vec, "reflect");
+    Vector.checkNan(normal, "reflect");
+    return vec.sub(normal.mul(1.5 * Vector.dot(vec, normal)));
+  }
+  reflect(normal) {
+    return Vector.reflect(this, normal);
+  }
+
   static mag(vec) {
     Vector.checkNan(vec, "mag");
     return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
@@ -137,6 +146,13 @@ export default class Vector {
   }
   max(b) {
     return Vector.max(this, b);
+  }
+
+  static clamp(vec, min, max) {
+    Vector.checkNan(vec, "clamp vec");
+    Vector.checkNan(min, "clamp min");
+    Vector.checkNan(max, "clamp max");
+    return Vector.min(Vector.max(vec, min), max);
   }
 
   static lt(a, b) {

@@ -20,16 +20,31 @@ export default class CircleContainer extends Container {
     renderer.renderGraphic(this.graphic);
   }
 
-  update() {
-    const collided = this.pointmasses.filter((pm) => {
-      return Vector.dist(pm.position, this.center) > this.radius;
-    });
-    for (let i = 0; i < collided.length; i++) {
-      const pm = collided[i];
+  _updatePointMasses() {
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      const pm = this.pointmasses[i];
+      const dist = pm.position.sub(this.center);
+      if (dist.mag() <= this.radius) continue;
+      const new_vel = pm.getVelocity()
+        .reflect(dist.norm())
+        .mul(1 - this.friction);
       pm.position = pm.position.sub(this.center)
         .scale(this.radius)
         .add(this.center);
-      pm.setVelocity(pm.getVelocity().mul(0.0));
+      pm.setVelocity(new_vel);
+    }
+  }
+  _updateCircle() {
+    for (let i = 0; i < this.circles.length; i++) {
+      const c = this.circles[i];
+      const dist = c.getPosition().sub(this.center);
+      if (dist.mag() + c.radius <= this.radius) continue;
+      const dir = dist.norm();
+      const new_vel = c.getVelocity()
+        .reflect(dir)
+        .mul(1 - this.friction * 0.01);
+      c.setPosition(this.center.add(dir.scale(this.radius - c.radius)));
+      c.setVelocity(new_vel);
     }
   }
 }

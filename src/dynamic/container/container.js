@@ -1,4 +1,4 @@
-import { DynError, PointMass, Shape } from "../../index.js";
+import { DynError, PointMass, Shape, Circle } from "../../index.js";
 
 export default class Container {
   constructor(pointmasses = []) {
@@ -7,6 +7,13 @@ export default class Container {
     });
 
     this.pointmasses = pointmasses;
+    this.circles = [];
+    this.friction = 0.08;
+  }
+
+  update(){
+    this._updatePointMasses();
+    this._updateCircle();
   }
 
   addPointMass(pointmass) {
@@ -27,6 +34,12 @@ export default class Container {
   addShape(shape) {
     DynError.throwIfNotType(shape, Shape, "Container: addShape: shape");
     this.pointmasses = this.pointmasses.concat(shape.getPointMasses());
+    return this;
+  }
+
+  addCircle(circle) {
+    DynError.throwIfNotType(circle, Circle, "Container: addCircle: circle");
+    this.circles.push(circle);
     return this;
   }
 }

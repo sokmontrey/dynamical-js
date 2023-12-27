@@ -135,4 +135,36 @@ export class ShapeGraphic extends Graphic {
     this.is_joints = false;
     return this;
   }
+
+  renderShape(renderer, shape) {
+    if (this.is_distance_constraints) {
+      for (let i = 0; i < shape.edges.length; i++) {
+        shape.edges[i].graphic.draw(renderer);
+      }
+      for (let i = 0; i < shape.supports.length; i++) {
+        shape.supports[i].graphic.draw(renderer);
+      }
+    }
+    if (this.is_vertices) {
+      for (let i = 0; i < shape.pointmasses.length; i++) {
+        shape.pointmasses[i].graphic.draw(renderer);
+      }
+    }
+    if (this.is_joints) {
+      for (let i = 0; i < shape.joints.length; i++) {
+        shape.joints[i].graphic.draw(renderer);
+      }
+    }
+    if (this.is_center_of_mass) {
+      renderer.drawCircle(shape.getCenterOfMass(), 5)
+        .setFillColor(shape.cener_of_mass_color)
+        .fill();
+    }
+    if (this.is_bounding_box) {
+      const [l, u] = shape.getBoundingBox();
+      renderer.drawPolygon([l, new Vector(l.x, u.y), u, new Vector(u.x, l.y)])
+        .setStrokeColor(shape.bounding_box_color)
+        .stroke();
+    }
+  }
 }

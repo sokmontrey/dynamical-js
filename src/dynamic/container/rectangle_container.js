@@ -22,20 +22,47 @@ export default class RectContainer extends Container {
     renderer.renderGraphic(this.graphic);
   }
 
-  update() {
-    const collided = this.pointmasses.filter((pm) => {
-      return pm.position.x < this.offset.x ||
-        pm.position.x > -this.offset.x + this.corner.x ||
-        pm.position.y < this.offset.y ||
-        pm.position.y > -this.offset.y + this.corner.y;
-    });
-    for (let i = 0; i < collided.length; i++) {
-      const pm = collided[i];
-      pm.position = Vector.min(
-        Vector.max(pm.position, this.offset),
-        this.corner.sub(this.offset),
+  _updatePointMasses() {
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      const pm = this.pointmasses[i];
+      const offset_pm = pm.position.sub(this.offset);
+
+      const norm = new Vector(0, 0);
+      if (offset_pm.x <= 0) norm.x = 1;
+      else if (offset_pm.x >= this.corner.x) norm.x = -1;
+      else if (offset_pm.y <= 0) norm.y = 1;
+      else if (offset_pm.y >= this.corner.y) norm.y = -1;
+      else continue;
+
+      const new_vel = pm.getVelocity().reflect(norm).mul(1 - this.friction);
+      pm.setPosition(Vector.clamp(pm.position, this.offset, this.corner));
+      pm.setVelocity(new_vel);
+    }
+  }
+
+  _updateCircle() {
+    for (let i = 0; i < this.circles.length; i++) {
+      const c = this.circles[i];
+      const offset_c = c.getPosition().sub(this.offset);
+
+      const norm = new Vector(0, 0);
+      if (offset_c.x - c.radius <= 0) norm.x = 1;
+      else if (offset_c.x + c.radius >= this.corner.x) norm.x = -1;
+      else if (offset_c.y - c.radius <= 0) norm.y = 1;
+      else if (offset_c.y + c.radius >= this.corner.y) norm.y = -1;
+      else continue;
+
+      const new_vel = c.getVelocity().reflect(norm).mul(
+        1 - this.friction * 0.01,
       );
-      pm.setVelocity(pm.getVelocity().mul(0.1));
+      c.setPosition(
+        Vector.clamp(
+          c.getPosition(),
+          this.offset.add(Vector.numToVec(c.radius)),
+          this.corner.sub(Vector.numToVec(c.radius)),
+        ),
+      );
+      c.setVelocity(new_vel);
     }
   }
 }
