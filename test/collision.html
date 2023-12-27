@@ -50,11 +50,6 @@
         new Vector(100, 100),
       );
       const cube2 = Shape.fromSides(8, 50, new Vector(180, 250));
-      // const c_test = new DistanceConstraint(cube2.getPointMasses()[2], cube2.getPointMasses()[6]);
-
-      cube2.graphic.wireframe();
-      cube2.graphic.distanceConstraints();
-      // cube2.graphic.joints();
 
       const container = new CircleContainer();
       container.addShape(cube);
@@ -72,14 +67,12 @@
           cube.update(0.25, STEP);
           cube2.update(0.25, STEP);
 
-          // c_test.update(STEP);
           container.update(STEP);
         }
 
-        container.graphic.draw(renderer);
-        cube.graphic.draw(renderer);
-        cube2.graphic.draw(renderer);
-        // c_test.graphic.draw(renderer);
+        container.draw(renderer);
+        cube.draw(renderer);
+        cube2.draw(renderer);
       });
     </script>
   </body>

@@ -12,11 +12,12 @@ export default class Vector {
       .noFill()
       .stroke()
       .setStrokeWidth(2);
-    this.graphic.draw = (renderer, options = {}) => {
-      if (!this.graphic.isVisible()) return;
-      renderer.drawVector(this, ...Object.values(options));
-      renderer.renderGraphic(this.graphic);
-    };
+  }
+
+  draw(renderer) {
+    if (!this.graphic.isVisible()) return;
+    renderer.drawVector(this, ...Object.values(options));
+    renderer.renderGraphic(this.graphic);
   }
 
   static add(a, b) {

@@ -18,3 +18,4 @@ export { default as DistanceConstraint } from "./dynamic/constraint/distance_con
 export { default as AngleConstraint } from "./dynamic/constraint/angle_constraint.js";
 
 export { default as Shape } from "./dynamic/shape/shape.js";
+export { default as Circle } from "./dynamic/shape/circle.js";

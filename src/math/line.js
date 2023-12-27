@@ -20,18 +20,19 @@ export default class Line {
       .setStrokeWidth(2)
       .noFill()
       .stroke();
-    this.graphic.draw = (renderer) => {
-      if (!this.graphic.isVisible()) return;
-      try {
-        renderer.drawLine(this.pointWithX(0), this.pointWithX(renderer.width));
-      } catch (e) {
-        renderer.drawLine(
-          new Vector(this.p1.x, 0),
-          new Vector(this.p1.x, renderer.height),
-        );
-      }
-      renderer.renderGraphic(this.graphic);
-    };
+  }
+
+  draw(renderer) {
+    if (!this.graphic.isVisible()) return;
+    try {
+      renderer.drawLine(this.pointWithX(0), this.pointWithX(renderer.width));
+    } catch (e) {
+      renderer.drawLine(
+        new Vector(this.p1.x, 0),
+        new Vector(this.p1.x, renderer.height),
+      );
+    }
+    renderer.renderGraphic(this.graphic);
   }
 
   static norm(line) {

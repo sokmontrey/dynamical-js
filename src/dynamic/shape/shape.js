@@ -36,40 +36,40 @@ export default class Shape {
       .noJoints()
       .noBoundingBox()
       .noCenterOfMass("#ff5555");
+  }
 
-    this.graphic.draw = (renderer) => {
-      renderer.drawPolygon(this.pointmasses.map((pm) => pm.position));
-      renderer.renderGraphic(this.graphic);
-      if (this.graphic.is_distance_constraints) {
-        for (let i = 0; i < this.edges.length; i++) {
-          this.edges[i].graphic.draw(renderer);
-        }
-        for (let i = 0; i < this.supports.length; i++) {
-          this.supports[i].graphic.draw(renderer);
-        }
+  draw(renderer) {
+    renderer.drawPolygon(this.pointmasses.map((pm) => pm.position));
+    renderer.renderGraphic(this.graphic);
+    if (this.graphic.is_distance_constraints) {
+      for (let i = 0; i < this.edges.length; i++) {
+        this.edges[i].graphic.draw(renderer);
       }
-      if (this.graphic.is_vertices) {
-        for (let i = 0; i < this.pointmasses.length; i++) {
-          this.pointmasses[i].graphic.draw(renderer);
-        }
+      for (let i = 0; i < this.supports.length; i++) {
+        this.supports[i].graphic.draw(renderer);
       }
-      if (this.graphic.is_joints) {
-        for (let i = 0; i < this.joints.length; i++) {
-          this.joints[i].graphic.draw(renderer);
-        }
+    }
+    if (this.graphic.is_vertices) {
+      for (let i = 0; i < this.pointmasses.length; i++) {
+        this.pointmasses[i].graphic.draw(renderer);
       }
-      if (this.graphic.is_center_of_mass) {
-        renderer.drawCircle(this.getCenterOfMass(), 5)
-          .setFillColor(this.graphic.cener_of_mass_color)
-          .fill();
+    }
+    if (this.graphic.is_joints) {
+      for (let i = 0; i < this.joints.length; i++) {
+        this.joints[i].graphic.draw(renderer);
       }
-      if (this.graphic.is_bounding_box) {
-        const [l, u] = this.getBoundingBox();
-        renderer.drawPolygon([l, new Vector(l.x, u.y), u, new Vector(u.x, l.y)])
-          .setStrokeColor(this.graphic.bounding_box_color)
-          .stroke();
-      }
-    };
+    }
+    if (this.graphic.is_center_of_mass) {
+      renderer.drawCircle(this.getCenterOfMass(), 5)
+        .setFillColor(this.graphic.cener_of_mass_color)
+        .fill();
+    }
+    if (this.graphic.is_bounding_box) {
+      const [l, u] = this.getBoundingBox();
+      renderer.drawPolygon([l, new Vector(l.x, u.y), u, new Vector(u.x, l.y)])
+        .setStrokeColor(this.graphic.bounding_box_color)
+        .stroke();
+    }
   }
 
   static fromVertices(

@@ -14,11 +14,12 @@ export default class PointMass {
     this.is_locked = false;
 
     this.graphic = new Graphic("gray", "black");
-    this.graphic.draw = (renderer) => {
-      if (!this.graphic.isVisible()) return;
-      renderer.drawCircle(this.now_pos, 4);
-      renderer.renderGraphic(this.graphic);
-    };
+  }
+
+  draw(renderer) {
+    if (!this.graphic.isVisible()) return;
+    renderer.drawCircle(this.now_pos, 4);
+    renderer.renderGraphic(this.graphic);
   }
 
   lock() {

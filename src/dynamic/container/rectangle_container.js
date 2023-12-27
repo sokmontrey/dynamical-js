@@ -16,10 +16,10 @@ export default class RectContainer extends Container {
       .setStrokeWidth(2)
       .noFill()
       .stroke();
-    this.graphic.draw = (renderer) => {
-      renderer.drawRect(this.offset, w, h);
-      renderer.renderGraphic(this.graphic);
-    };
+  }
+  draw(renderer) {
+    renderer.drawRect(this.offset, this.corner.x, this.corner.y);
+    renderer.renderGraphic(this.graphic);
   }
 
   update() {

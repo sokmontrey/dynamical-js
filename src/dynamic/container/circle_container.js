@@ -14,10 +14,10 @@ export default class CircleContainer extends Container {
       .setStrokeWidth(2)
       .noFill()
       .stroke();
-    this.graphic.draw = (renderer) => {
-      renderer.drawCircle(this.offset, this.radius);
-      renderer.renderGraphic(this.graphic);
-    };
+  }
+  draw(renderer) {
+    renderer.drawCircle(this.offset, this.radius);
+    renderer.renderGraphic(this.graphic);
   }
 
   update() {
