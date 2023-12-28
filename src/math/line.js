@@ -80,6 +80,26 @@ export default class Line {
     return Line.pointWithX(this, x);
   }
 
+  static isParallel(line1, line2) {
+    DynError.throwIfNotType(line1, Line, "Line: isParallel: line1");
+    DynError.throwIfNotType(line2, Line, "Line: isParallel: line2");
+
+    return line1.dir.isParallel(line2.dir);
+  }
+  isParallel(line) {
+    return Line.isParallel(this, line);
+  }
+
+  static slope(line) {
+    DynError.throwIfNotType(line, Line, "Line: slope: line");
+    const slope = line.dir.y / line.dir.x;
+    if (slope === -Infinity) return Infinity;
+    return slope;
+  }
+  slope() {
+    return Line.slope(this);
+  }
+
   static intersect(line1, line2) {
     DynError.throwIfNotType(line1, Line, "Line: intersect: line1");
     DynError.throwIfNotType(line2, Line, "Line: intersect: line2");
