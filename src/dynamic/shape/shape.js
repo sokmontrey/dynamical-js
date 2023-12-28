@@ -6,6 +6,7 @@ import {
   PointMass,
   ShapeGraphic,
   Vector,
+  Axis,
 } from "../../index.js";
 
 export default class Shape {
@@ -254,6 +255,18 @@ export default class Shape {
         return acc;
       },
       [new Vector(Infinity, Infinity), new Vector(-Infinity, -Infinity)],
+    );
+  }
+
+  getAxes() {
+    return DynArray.pairReduce(
+      this.pointmasses,
+      (axes, pm1, pm2) => {
+        const axis = new Axis(pm1, pm2);
+        if (axes.some((a) => a.getSlope() === axis.getSlope())) return axes;
+        return axes.concat(axis);
+      },
+      [],
     );
   }
 }
