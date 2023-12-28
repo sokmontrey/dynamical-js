@@ -182,6 +182,15 @@ export default class Vector {
     return Vector.lessThanEqualTo(this, b);
   }
 
+  static isParallel(a, b) {
+    Vector.checkNan(a, "isParallel a");
+    Vector.checkNan(b, "isParallel b");
+    return a.x * b.y === a.y * b.x;
+  }
+  isParallel(b) {
+    return Vector.isParallel(this, b);
+  }
+
   static scale(vec, mag) {
     Vector.checkNan(vec, "scale");
     return vec.norm().mul(mag);
