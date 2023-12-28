@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Shape</title>
+    <title>Collider</title>
   </head>
   <body>
     <canvas width="500" height="500" id="canvas"></canvas>
@@ -9,12 +9,14 @@
       import {
         Shape,
         Container,
-        DistanceConstraint,
         CircleContainer,
+        RectContainer,
         PointMass,
         Renderer,
         Vector,
         Line,
+        Circle,
+        Collider,
       } from "../index.js";
 
       const canvas = document.getElementById("canvas");
@@ -23,7 +25,6 @@
 
       /*
       TODO:
-
       TESTS:
       */
 
@@ -42,37 +43,47 @@
 
       const cube = Shape.fromVertices(
         [
-          new Vector(-30, -30),
-          new Vector(30, -30),
-          new Vector(30, 30),
-          new Vector(-30, 30),
+          new Vector(-30, 0),
+          new Vector(0, -30),
+          new Vector(30, 0),
+          new Vector(0, 30),
         ],
         new Vector(100, 100),
       );
-      const cube2 = Shape.fromSides(8, 50, new Vector(180, 250));
-
+      const cube2 = Shape.fromSides(6, 30, new Vector(250, 250));
+      const circle = new Circle(new Vector(350, 250), 30);
       const container = new CircleContainer();
+
+      const collider1 = new Collider(cube, cube2);
+      const collider2 = new Collider(cube, circle);
+
       container.addShape(cube);
       container.addShape(cube2);
-
-      const STEP = 10;
+      container.addCircle(circle);
 
       renderer.loop((dt) => {
         renderer.clear();
 
-        for (let i = 0; i < STEP; i++) {
+        cube.setPosition(mouse);
+
+        collider1.check(renderer);
+
+        for (let i = 0; i < 10; i++) {
           cube.applyForce(new Vector(0, 9));
           cube2.applyForce(new Vector(0, 9));
+          circle.applyForce(new Vector(0, 9));
 
-          cube.update(0.25, STEP);
-          cube2.update(0.25, STEP);
+          cube.update(0.1, 10);
+          cube2.update(0.1, 10);
+          circle.update(0.1, 10);
 
-          container.update(STEP);
+          container.update(10);
         }
 
-        container.draw(renderer);
         cube.draw(renderer);
         cube2.draw(renderer);
+        // circle.draw(renderer);
+        container.draw(renderer);
       });
     </script>
   </body>

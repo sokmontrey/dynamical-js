@@ -84,7 +84,7 @@ export default class Line {
     DynError.throwIfNotType(line1, Line, "Line: isParallel: line1");
     DynError.throwIfNotType(line2, Line, "Line: isParallel: line2");
 
-    return line1.dir.isParallel(line2.dir);
+    return line1.dir.isColinear(line2.dir);
   }
   isParallel(line) {
     return Line.isParallel(this, line);
@@ -122,5 +122,16 @@ export default class Line {
   }
   closestToPoint(point) {
     return Line.closestToPoint(this, point);
+  }
+
+  static t(line, point) {
+    DynError.throwIfNotType(point, Vector, "Line: t: point");
+    DynError.throwIfNotType(line, Line, "Line: t: line");
+
+    const proj = Line.closestToPoint(line, point);
+    return proj.sub(line.origin).dot(line.dir) / line.dir.mag();
+  }
+  t(point) {
+    return Line.t(this, point);
   }
 }

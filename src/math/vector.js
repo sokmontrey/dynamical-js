@@ -14,7 +14,7 @@ export default class Vector {
       .setStrokeWidth(2);
   }
 
-  draw(renderer) {
+  draw(renderer, options = {}) {
     if (!this.graphic.isVisible()) return;
     renderer.drawVector(this, ...Object.values(options));
     renderer.renderGraphic(this.graphic);
@@ -182,13 +182,13 @@ export default class Vector {
     return Vector.lessThanEqualTo(this, b);
   }
 
-  static isParallel(a, b) {
-    Vector.checkNan(a, "isParallel a");
-    Vector.checkNan(b, "isParallel b");
+  static isColinear(a, b) {
+    Vector.checkNan(a, "isColinear a");
+    Vector.checkNan(b, "isColinear b");
     return a.x * b.y === a.y * b.x;
   }
-  isParallel(b) {
-    return Vector.isParallel(this, b);
+  isColinear(b) {
+    return Vector.isColinear(this, b);
   }
 
   static scale(vec, mag) {
