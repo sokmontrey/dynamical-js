@@ -95,4 +95,8 @@ export default class Circle extends Shape {
       ),
     ];
   }
+
+  getCenterPointMass() {
+    return this.pointmasses[0];
+  }
 }

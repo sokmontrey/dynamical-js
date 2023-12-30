@@ -9,30 +9,43 @@ import {
 
 export default class Collider {
   constructor(object1, object2, is_optimize_axes = true) {
+    this.object1 = object1;
+    this.object2 = object2;
+
     this.checker = null;
     this.is_optimize_axes = is_optimize_axes;
     this._makeChecker(object1, object2);
+
+    this.is_collided = false;
+    this.mtv1 = null;
+    this.mtv2 = null;
   }
 
-  check(renderer) {
-    const [is_collided, mtv, object1, object2] = this.checker.check();
-    if (is_collided) {
-      // renderer.drawPolygon(object2.getPointMasses().map((pm) => pm.position.add(mtv.div(2)))).setFillColor("red").fill();
-      // renderer.drawPolygon(object1.getPointMasses().map((pm) => pm.position.add(mtv.div(-2)))).setFillColor("blue").fill();
-      //project object2 pointmasses onto mtv.norm() and get smallest pointmass
-      const pm1 = object2.getPointMasses().reduce((min, pm) => {
-        const t = mtv.norm().dot(pm.position);
-        return t < min[0] ? [t, pm] : min;
-      }, [Infinity, null])[1];
+  check(is_resolve = true) {
+    [this.is_collided, this.mtv1, this.mtv2] = this.checker.check();
+    if (is_resolve) this.resolve();
+  }
 
-      const pm2 = object1.getPointMasses().reduce((min, pm) => {
-        const t = mtv.neg().norm().dot(pm.position);
-        return t < min[0] ? [t, pm] : min;
-      }, [Infinity, null])[1];
+  resolve() {
+    if (!this.is_collided) return;
 
-      pm1.position = pm1.position.add(mtv.mul(0.3));
-      pm2.position = pm2.position.sub(mtv.mul(0.3));
-    }
+    const dir1 = this.mtv1.norm();
+    const dir2 = this.mtv2.norm();
+    const new_mtv1 = this.mtv1.mul(0.3);
+    const new_mtv2 = this.mtv2.mul(0.3);
+
+    const pm1 = this.object2.getPointMasses().reduce((min, pm) => {
+      const t = dir1.dot(pm.position);
+      return t < min[0] ? [t, pm] : min;
+    }, [Infinity, null])[1];
+
+    const pm2 = this.object1.getPointMasses().reduce((min, pm) => {
+      const t = dir2.dot(pm.position);
+      return t < min[0] ? [t, pm] : min;
+    }, [Infinity, null])[1];
+
+    pm1.position = pm1.position.add(new_mtv1);
+    pm2.position = pm2.position.add(new_mtv2);
   }
 
   _makeChecker(object1, object2) {
@@ -42,7 +55,7 @@ export default class Collider {
       [Shape, Shape, PolygonPolygonChecker],
     ];
 
-    const [type1, type2, checker] = checker_map.find(([type1, type2]) =>
+    const [type1, _, checker] = checker_map.find(([type1, type2]) =>
       (object1 instanceof type1 && object2 instanceof type2) ||
       (object1 instanceof type2 && object2 instanceof type1)
     );
@@ -87,7 +100,7 @@ class Checker {
     this.axes = [];
   }
 
-  _makeAxes(polygon) {
+  _makePolygonAxes(polygon) {
     return DynArray.pairReduce(
       polygon.getPointMasses(),
       (acc, pm1, pm2) => {
@@ -104,6 +117,19 @@ class Checker {
     );
   }
 
+  _projectPointMasses(axis, pointmasses) {
+    return pointmasses
+      .reduce(([min, max], pm) => {
+        const t = axis.dir.dot(pm.position);
+        return [Math.min(min, t), Math.max(max, t)];
+      }, [Infinity, -Infinity]);
+  }
+
+  _projectCircle(axis, circle) {
+    const t = axis.dir.dot(circle.getPosition());
+    return [t - circle.radius, t + circle.radius];
+  }
+
   check() {
     return null;
   }
@@ -111,76 +137,112 @@ class Checker {
 class CircleCircleChecker extends Checker {
   constructor(circle1, circle2) {
     super(circle1, circle2);
+    this.axes = [
+      new Axis(circle1.getCenterPointMass(), circle2.getCenterPointMass()),
+    ];
+  }
+
+  check() {
+    let min_depth = Infinity;
+    let min_axis = null;
+    let direction = 1;
+    const is_gap = this.axes.some((axis) => {
+      axis.updateDir();
+
+      const [min1, max1] = this._projectCircle(axis, this.object1);
+      const [min2, max2] = this._projectCircle(axis, this.object2);
+
+      const depth = Math.min(max1 - min2, max2 - min1);
+      if (depth <= 0) return true;
+      if (depth < min_depth) {
+        min_depth = depth;
+        min_axis = axis;
+        direction = max1 < max2 ? 1 : -1;
+      }
+      return false;
+    });
+
+    if (is_gap) return [false, null, null, null];
+    const mtv = min_axis.dir.mul(min_depth * 0.5 * direction);
+    return [true, mtv, mtv.neg()];
   }
 }
 
 class CirclePolygonChecker extends Checker {
   constructor(circle, polygon) {
     super(circle, polygon);
-    this.axes = this._makeAxes(polygon);
+    this.axes = this._makePolygonAxes(polygon);
   }
 
   check() {
-    // for (let i = 0; i < this.axes.length; i++) {
-    //   this.axes[i].updateLine();
-    // }
-    // const is_gap = this.axes.some((axis) => {
-    //   const [min1, max1] = this.object2.getPointMasses().reduce(
-    //     ([min, max], pm) => {
-    //       const t = Line.t(axis.line, pm.position);
-    //       return [Math.min(min, t), Math.max(max, t)];
-    //     },
-    //     [Infinity, -Infinity],
-    //   );
-    //
-    //   const t = Line.t(axis.line, this.object1.getPosition());
-    //   const min2 = t - this.object1.radius;
-    //   const max2 = t + this.object1.radius;
-    //
-    //   return max1 < min2 || max2 < min1;
-    // });
-    // return is_gap;
+    let min_depth = Infinity;
+    let min_axis = null;
+    let direction = 1;
+    const is_gap = this.axes.some((axis) => {
+      axis.updateDir();
+
+      const [min1, max1] = this._projectCircle(axis, this.object1);
+      const [min2, max2] = this._projectPointMasses(
+        axis,
+        this.object2.getPointMasses(),
+      );
+
+      const depth = Math.min(max1 - min2, max2 - min1);
+      if (depth <= 0) return true;
+      if (depth < min_depth) {
+        min_depth = depth;
+        min_axis = axis;
+        if (max1 < max2) {
+          direction = 1;
+        } else {
+          direction = -1;
+        }
+      }
+      return false;
+    });
+
+    if (is_gap) return [false, null, null, null];
+    const mtv = min_axis.dir.mul(min_depth * direction);
+    return [true, mtv.neg().mul(0.4), mtv];
   }
 }
 
 class PolygonPolygonChecker extends Checker {
   constructor(polygon1, polygon2) {
     super(polygon1, polygon2);
-    this.axes = this._makeAxes(polygon1).concat(this._makeAxes(polygon2));
+    this.axes = this._makePolygonAxes(polygon1).concat(
+      this._makePolygonAxes(polygon2),
+    );
   }
 
   check() {
     let min_depth = Infinity;
-    let mtv = new Vector(0, 0);
+    let min_axis = null;
+    let direction = 1;
     const is_gap = this.axes.some((axis) => {
       axis.updateDir();
 
-      const [min1, max1] = this.object1.getPointMasses().reduce(
-        ([min, max], pm) => {
-          const t = axis.dir.dot(pm.position);
-          return [Math.min(min, t), Math.max(max, t)];
-        },
-        [Infinity, -Infinity],
+      const [min1, max1] = this._projectPointMasses(
+        axis,
+        this.object1.getPointMasses(),
       );
-      const [min2, max2] = this.object2.getPointMasses().reduce(
-        ([min, max], pm) => {
-          const t = axis.dir.dot(pm.position);
-          return [Math.min(min, t), Math.max(max, t)];
-        },
-        [Infinity, -Infinity],
+      const [min2, max2] = this._projectPointMasses(
+        axis,
+        this.object2.getPointMasses(),
       );
-
-      if (max1 < min2 || max2 < min1) {
-        return true;
-      }
 
       const depth = Math.min(max1 - min2, max2 - min1);
+      if (depth <= 0) return true;
       if (depth < min_depth) {
         min_depth = depth;
-        mtv = axis.dir.mul(depth * (max1 < max2 ? 1 : -1));
+        min_axis = axis;
+        direction = max1 < max2 ? 1 : -1;
       }
+      return false;
     });
 
-    return [!is_gap, mtv, this.object1, this.object2];
+    if (is_gap) return [false, null, null, null];
+    const mtv = min_axis.dir.mul(min_depth * direction);
+    return [true, mtv, mtv.neg()];
   }
 }

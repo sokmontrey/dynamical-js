@@ -50,40 +50,50 @@
         ],
         new Vector(100, 100),
       );
-      const cube2 = Shape.fromSides(5, 30, new Vector(255, 350));
+      const cube2 = Shape.fromSides(5, 50, new Vector(255, 350));
       // cube2.lock();
       const circle = new Circle(new Vector(350, 250), 30);
+      const circle2 = new Circle(new Vector(100, 250), 30);
       const container = new CircleContainer();
-
-      const collider1 = new Collider(cube, cube2);
-      const collider2 = new Collider(cube, circle);
 
       container.addShape(cube);
       container.addShape(cube2);
       container.addCircle(circle);
+      container.addCircle(circle2);
+
+      const collider1 = new Collider(cube, cube2);
+      const collider2 = new Collider(cube, circle);
+      const collider3 = new Collider(cube2, circle);
+      const collider4 = new Collider(circle2, circle);
 
       renderer.loop((dt) => {
         renderer.clear();
 
-        // cube.setPosition(mouse);
+        // circle.setPosition(mouse);
 
         collider1.check(renderer);
+        collider2.check(renderer);
+        collider3.check(renderer);
+        collider4.check(renderer);
 
         for (let i = 0; i < 10; i++) {
           cube.applyForce(new Vector(0, 9));
           cube2.applyForce(new Vector(0, 9));
           circle.applyForce(new Vector(0, 9));
+          circle2.applyForce(new Vector(0, 9));
 
           cube.update(0.25, 10);
           cube2.update(0.25, 10);
           circle.update(0.25, 10);
+          circle2.update(0.25, 10);
 
           container.update(10);
         }
 
         cube.draw(renderer);
         cube2.draw(renderer);
-        // circle.draw(renderer);
+        circle.draw(renderer);
+        circle2.draw(renderer);
         container.draw(renderer);
       });
     </script>

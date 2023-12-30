@@ -24,10 +24,12 @@ export default class Shape {
     this.edges = [];
     this.supports = [];
     this.joints = [];
+    this.mass = 0;
 
     if (is_create_edges) this._createEdges();
     if (is_create_supports) this._createSupports();
     if (is_create_joints && is_create_edges) this._createJoints();
+    this.updateMass();
 
     this.graphic = new ShapeGraphic("#faf887", "#a0f080")
       .noWireframe()
@@ -36,6 +38,15 @@ export default class Shape {
       .noJoints()
       .noBoundingBox()
       .noCenterOfMass();
+  }
+
+  updateMass() {
+    this.mass = this.pointmasses.reduce((acc, pm) => acc + pm.mass, 0);
+    return this;
+  }
+
+  getMass(){
+    return this.mass;
   }
 
   lock() {
