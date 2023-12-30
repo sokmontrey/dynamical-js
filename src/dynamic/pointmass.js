@@ -26,6 +26,10 @@ export default class PointMass {
     this.is_locked = true;
     return this;
   }
+  unlock() {
+    this.is_locked = false;
+    return this;
+  }
   isLocked() {
     return this.is_locked;
   }

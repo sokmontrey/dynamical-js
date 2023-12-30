@@ -38,6 +38,15 @@ export default class Shape {
       .noCenterOfMass();
   }
 
+  lock() {
+    this.pointmasses.forEach((pm) => pm.lock());
+    return this;
+  }
+  unlock() {
+    this.pointmasses.forEach((pm) => pm.unlock());
+    return this;
+  }
+
   draw(renderer) {
     renderer.drawPolygon(this.pointmasses.map((pm) => pm.position));
     renderer.renderGraphic(this.graphic);
