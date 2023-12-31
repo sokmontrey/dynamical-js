@@ -53,6 +53,7 @@
       //   // new Vector(100, 100),
       // );
       const cube = Shape.fromSides(4, 100, new Vector(250, 400));
+      cube.setMass(100);
       const cube2 = Shape.fromSides(4, 20, new Vector(255, 100));
       // cube2.lock();
       const circle = new Circle(new Vector(350, 250), 30);
@@ -72,10 +73,10 @@
         circle.setPosition(mouse);
 
         for (let i = 0; i < 10; i++) {
-          cube.applyForce(new Vector(0, 9));
-          cube2.applyForce(new Vector(0, 9));
-          circle.applyForce(new Vector(0, 9));
-          circle2.applyForce(new Vector(0, 9));
+          cube.applyAcceleration(new Vector(0, 9));
+          cube2.applyAcceleration(new Vector(0, 9));
+          circle.applyAcceleration(new Vector(0, 9));
+          circle2.applyAcceleration(new Vector(0, 9));
 
           collision.update(10);
 

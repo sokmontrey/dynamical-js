@@ -56,8 +56,18 @@ export default class Shape {
     return this;
   }
 
-  getMass(){
+  getMass() {
     return this.mass;
+  }
+
+  setMass(mass) {
+    DynError.throwIfNotNumber(mass, "Shape: mass");
+    const mass_portion = mass / this.pointmasses.length;
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      this.pointmasses[i].setMass(mass_portion);
+    }
+    this.mass = mass;
+    return this;
   }
 
   lock() {
@@ -154,6 +164,13 @@ export default class Shape {
   applyForce(force) {
     for (let i = 0; i < this.pointmasses.length; i++) {
       this.pointmasses[i].applyForce(force);
+    }
+    return this;
+  }
+
+  applyAcceleration(acceleration) {
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      this.pointmasses[i].applyAcceleration(acceleration);
     }
     return this;
   }

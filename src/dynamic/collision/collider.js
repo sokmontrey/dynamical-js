@@ -53,13 +53,13 @@ export default class Collider {
     if (!pm1.isLocked()) {
       const new_mtv1 = pm2.isLocked()
         ? this.mtv1
-        : Vector.mul(this.mtv1, 1.1 * pm2.mass / sum_mass);
+        : Vector.mul(this.mtv1, 1.3 * pm2.mass / sum_mass);
       pm1.addPosCorrection(new_mtv1, step);
     }
     if (!pm2.isLocked()) {
       const new_mtv2 = pm1.isLocked()
         ? this.mtv2
-        : Vector.mul(this.mtv2, 1.1 * pm1.mass / sum_mass);
+        : Vector.mul(this.mtv2, 1.3 * pm1.mass / sum_mass);
       pm2.addPosCorrection(new_mtv2, step);
     }
   }

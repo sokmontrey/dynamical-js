@@ -40,6 +40,16 @@ export default class PointMass {
     this.acc = this.acc.add(force.div(this.mass));
   }
 
+  applyAcceleration(acc) {
+    DynError.throwIfNotType(
+      acc,
+      Vector,
+      "PointMass: applyAcceleration: acc",
+    );
+    Vector.checkNan(acc, "PointMass.applyAcceleration");
+    this.acc = this.acc.add(acc);
+  }
+
   update(dt = 0.25, step = 1) {
     this.updatePosition(dt, step);
   }
