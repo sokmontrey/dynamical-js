@@ -1,11 +1,4 @@
-import {
-  Circle,
-  DynArray,
-  Line,
-  PointMass,
-  Shape,
-  Vector,
-} from "../../index.js";
+import { Circle, DynArray, Shape, Vector } from "../../index.js";
 
 export default class Collider {
   constructor(object1, object2, is_optimize_axes = true) {
@@ -21,12 +14,26 @@ export default class Collider {
     this.mtv2 = null;
   }
 
-  check(is_resolve = true) {
-    [this.is_collided, this.mtv1, this.mtv2] = this.checker.check();
-    if (is_resolve) this.resolve();
+  update(step = 1) {
+    this.check();
+    this.resolve(step);
   }
 
-  resolve() {
+  check() {
+    [this.is_collided, this.mtv1, this.mtv2] = this.checker.check();
+  }
+
+  isBoundCollided() {
+    const [l1, u1] = this.object1.getBoundingBox();
+    const [l2, u2] = this.object2.getBoundingBox();
+
+    return (
+      l1.x <= u2.x && l2.x <= u1.x && l1.y <= u2.y && l2.y <= u1.y
+    );
+  }
+
+  resolve(step = 1) {
+    if (step <= 0) throw new Error("Collider: step must be positive");
     if (!this.is_collided) return;
 
     const dir1 = this.mtv1.norm();
@@ -44,8 +51,20 @@ export default class Collider {
       return t < min[0] ? [t, pm] : min;
     }, [Infinity, null])[1];
 
-    pm1.position = pm1.position.add(new_mtv1);
-    pm2.position = pm2.position.add(new_mtv2);
+    pm1.position = pm1.position.add(new_mtv1.div(step));
+    pm2.position = pm2.position.add(new_mtv2.div(step));
+  }
+
+  isCollided() {
+    return this.is_collided;
+  }
+
+  getMTV1() {
+    return this.mtv1;
+  }
+
+  getMTV2() {
+    return this.mtv2;
   }
 
   _makeChecker(object1, object2) {
@@ -171,7 +190,11 @@ class CircleCircleChecker extends Checker {
 class CirclePolygonChecker extends Checker {
   constructor(circle, polygon) {
     super(circle, polygon);
-    this.axes = this._makePolygonAxes(polygon);
+    this.axes = this._makePolygonAxes(polygon).concat(
+      polygon.getPointMasses().map((pm) =>
+        new Axis(circle.getCenterPointMass(), pm)
+      ),
+    );
   }
 
   check() {
