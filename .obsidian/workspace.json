@@ -147,5 +147,10 @@
     }
   },
   "active": "cf0c187e0602f426",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "example/pendulum.gif",
+    "example/pointmass.gif",
+    "example/pointmass.mp4",
+    "example/pendulum.mp4"
+  ]
 }

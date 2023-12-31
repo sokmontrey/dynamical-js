@@ -1,233 +1,152 @@
-import { Vector } from "./dynamical_vector.js";
+import { DynError, Vector } from "../index.js";
 
 export default class Renderer {
-	constructor(canvas, width=500, height=500){
-		this._canvas = canvas;
-		this._context = canvas.getContext('2d');
-		this._width = width;
-		this._height = height;
+  constructor(canvas) {
+    DynError.throwIfNotType(canvas, HTMLCanvasElement, "Renderer: canvas");
 
-        this._camera_position = new Vector(0,0);
-        this._camera_fov = new Vector(1,1);
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
 
-		/* color */
-		this._background_color = 'white';
+    this.ctx.imageSmoothingEnabled = true;
 
-		this._update_function;
-		this._last_time = 0;
-		this._animate = this._animate.bind(this);
+    this.offset = new Vector(0, 0);
+    this.w = canvas.width;
+    this.h = canvas.height;
+    canvas.addEventListener("resize", () => {
+      this.w = canvas.width;
+      this.h = canvas.height;
+    });
+  }
 
-		this._resize(width, height);
-		this.clear();
-	}
+  setBackgroundColor(color) {
+    this.canvas.style.backgroundColor = color;
+  }
 
-	_resize(width, height){
-		this._width = width;
-		this._height = height;
-		this._context.canvas.width = width;
-		this._context.canvas.height = height;
-		this.clear();
-	}
+  setStrokeColor(color) {
+    this.ctx.strokeStyle = color;
+    return this;
+  }
+  setFillColor(color) {
+    this.ctx.fillStyle = color;
+    return this;
+  }
 
-	setBackground(background_color='white'){
-		this._background_color = background_color;
-		this.clear();
-	}
+  fill() {
+    this.ctx.fill();
+    return this;
+  }
+  stroke() {
+    this.ctx.stroke();
+    return this;
+  }
 
-    setCameraPosition(position){
-        this._camera_position = position;
-        return this;
+  drawCircle(pos = new Vector(250, 250), r = 100) {
+    this.ctx.beginPath();
+    this.ctx.arc(pos.x, pos.y, r, 0, 2 * Math.PI);
+    return this;
+  }
+
+  drawPie(pos = new Vector(250, 250), r = 100, start = 0, end = 2 * Math.PI) {
+    this.ctx.beginPath();
+    this.ctx.arc(pos.x, pos.y, r, start, end);
+    this.ctx.lineTo(pos.x, pos.y);
+    this.ctx.closePath();
+    return this;
+  }
+
+  drawRect(pos = new Vector(250, 250), w = 100, h = 100) {
+    this.ctx.rect(pos.x, pos.y, w, h);
+    return this;
+  }
+
+  drawPolygon(vertices) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(vertices[0].x, vertices[0].y);
+    for (let i = 1; i < vertices.length; i++) {
+      this.ctx.lineTo(vertices[i].x, vertices[i].y);
     }
-    setCameraFOV(FOV){
-        this._camera_fov = FOV;
-        return this;
-    }
+    this.ctx.closePath();
+    return this;
+  }
 
-	clear(){
-		this._context.beginPath();
-		this._context.fillStyle = this._background_color;
+  drawLine(start = new Vector(100, 100), end = new Vector(200, 200)) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(start.x, start.y);
+    this.ctx.lineTo(end.x, end.y);
+    return this;
+  }
 
-		this._context.fillRect(
-            this._camera_position.x,
-            this._camera_position.y,
-            this._width * this._camera_fov.x,
-            this._height* this._camera_fov.y
-        );
-	}
+  drawText(text, pos = new Vector(250, 250), font = "16px sans-serif") {
+    this.ctx.font = font;
+    this.ctx.fillText(text, pos.x, pos.y);
+    return this;
+  }
 
-	circle(
-        position=new Vector(0,0),
-        radius=3,
-    ){
-        const x = position.x,
-            y = position.y;
+  drawVector(
+    vector,
+    origin = new Vector(0, 0),
+    tip_size = 10,
+  ) {
+    this.drawLine(origin, origin.add(vector)).stroke();
+    const tip = origin.add(vector);
+    const angle = vector.angle();
+    const left = new Vector(0, tip_size).rot(angle + 60);
+    const right = new Vector(0, tip_size).rot(angle - 240);
+    this.drawLine(tip, tip.add(left)).stroke();
+    this.drawLine(tip, tip.add(right)).stroke();
+    return this;
+  }
 
-		this._context.beginPath();
-		this._context.arc(x, y, radius, 0, Math.PI * 2);
-		this._context.closePath();
-
-        return this;
-	}
-
-	line(start=new Vector(0,0),
-        end=new Vector(50,50),
-        line_width=3,
-    ){
-        const 
-            x1 = start.x,
-            y1 = start.y,
-            x2 = end.x,
-            y2 = end.y;
-
-		this._context.beginPath();
-		this._context.moveTo(x1, y1);
-		this._context.lineTo(x2, y2);
-		this._context.closePath();
-
-        this._context.lineWidth= line_width;
-
-        return this;
-	}
-
-	polygon(vertices=[]){
-		this._context.beginPath();
-		this._context.moveTo(vertices[0].x, vertices[0].y);
-		for(let i=1; i<vertices.length; i++){
-			this._context.lineTo(vertices[i].x, vertices[i].y);
-		}
-		this._context.lineTo(vertices[0].x, vertices[0].y);
-		this._context.closePath();
-
-        return this;
-	}
-
-    //NOTE: this method sometime directly access member of an object without using the object getter
-    //      This is to reduce call time
-    //      A premature opt, I know
-	draw(physic_object){
-		const graphic = physic_object.getGraphic();
-
-        const type = physic_object.constructor.name;
-        if(type === "PointMass"){
-
-            var position = physic_object._position;
-            this.circle(position, graphic.radius)
-                .setFillStyle(graphic.fill_color)
-                .fill();
-
-        }else if (type === "Composite" || type === "Rectangle"){
-
-            const vertices = physic_object.getPointsArray()
-                .map((point_mass)=> point_mass._position);
-
-            const rendering = this.polygon(vertices);
-
-            if(graphic.is_fill)
-                rendering.setFillStyle(graphic.fill_color).fill();
-            if(graphic.is_stroke)
-                rendering.setStrokeStyle(graphic.stroke_color).stroke();
-            if(graphic.is_wireframe)
-                physic_object.getConnections()
-                .forEach((distance_constraint)=>{
-                    this.line(
-                        distance_constraint._point1._position,
-                        distance_constraint._point2._position,
-                        graphic.wireframe_width,
-                    ).setStrokeStyle(graphic.wireframe_color).stroke();
-                });
-
-        }else if(type === "Circle"){
-
-            const position = physic_object.getPosition();
-            const rendering = this.circle(position, physic_object.getRadius());
-            if(graphic.is_fill)
-                rendering.setFillStyle(graphic.fill_color).fill();
-            if(graphic.is_stroke)
-                rendering.setStrokeStyle(graphic.stroke_color).stroke();
-            if(graphic.is_wireframe){
-                rendering.setStrokeStyle(graphic.wireframe_color).stroke();
-                this.circle(position, graphic.wireframe_width)
-                    .setFillStyle(graphic.wireframe_color)
-                    .fill();
-            }
-
-        }else if(type === "DistanceConstraint"){
-
-            this.line( physic_object._point1._position, 
-                    physic_object._point2._position)
-                .setLineWidth(graphic.stroke_width)
-                .setStrokeStyle(graphic.stroke_color)
-                .stroke();
-
-        }else if(type === "Container"){
-
-            Vector.edgeIterator(physic_object._vertices,(V1, V2)=>{
-                this.line(V1, V2, graphic.stroke_width)
-                .setStrokeStyle(graphic.stroke_color).stroke();
-            });
-
-        }else if(type === "CircleContainer"){
-
-            this.circle(physic_object._center, physic_object._radius).setStrokeStyle(graphic.stroke_color).stroke();
-
-        }
+  renderGraphic(graphic) {
+    if (graphic.is_fill) {
+      this.ctx.fillStyle = graphic.fill_color;
+      this.fill();
     }
 
-    fill(){
-        this._context.fill();
-        return this;
+    if (graphic.is_stroke) {
+      this.ctx.strokeStyle = graphic.stroke_color;
+      this.ctx.lineWidth = graphic.stroke_width;
+      this.stroke();
     }
-    stroke(){
-        this._context.stroke();
-        return this;
-    }
-    setLineWidth(line_width=3){
-        this._context.lineWidth = line_width;
-        return this;
-    }
-    setStrokeStyle(color='gray'){
-        this._context.strokeStyle = color;
-        return this;
-    }
-    setFillStyle(color='white'){
-        this._context.fillStyle = color;
-        return this;
-    }
+  }
 
-	update(func=null){
-		if(!this._update_function){
-			this._update_function = func;
-			requestAnimationFrame(this._animate);
-		}
-	}
+  moveCameraBy(vector) {
+    this.ctx.translate(-vector.x, -vector.y);
+    this.offset = this.offset.offset(vector);
+    return this;
+  }
 
-	_animate(current_time) {
-		const delta_time = Math.min(current_time - this._last_time, 1000/30.0) * 0.01;
-		this._last_time = current_time;
+  moveCameraTo(vector) {
+    this.ctx.translate(-vector.x + this.offset.x, -vector.y + this.offset.y);
+    this.offset = vector;
+    return this;
+  }
 
-		if(this._update_function) {
-			this._update_function(delta_time);
-		}
-		requestAnimationFrame(this._animate);
-	}
+  moveCameraCenterTo(vector) {
+    this.moveCameraTo(vector.sub(new Vector(this.w / 2, this.h / 2)));
+    return this;
+  }
 
-	get context(){ return this._context; }
-    getContext(){ return this._context; }
-    get canvas(){ return this._canvas; }
+  clear() {
+    this.ctx.clearRect(this.offset.x, this.offset.y, this.w, this.h);
+    return this;
+  }
 
-	getCenter(){
-		return new Vector(this._width/2.0, this._height/2.0);
-	}
-	getRandom(){
-		return new Vector(
-			Math.random() * this._width, 
-			Math.random() * this._height 
-		);
-	}
-	getHeight(){
-		return this._height;
-	}
-	getWidth(){
-		return this._width;
-	}
+  get width() {
+    return this.w;
+  }
+  get height() {
+    return this.h;
+  }
+
+  loop(callback) {
+    let last = 0;
+    let loop = (time) => {
+      let dt = time - last;
+      last = time;
+      callback(dt);
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
 }

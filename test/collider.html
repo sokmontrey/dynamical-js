@@ -1,0 +1,101 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Collider</title>
+  </head>
+  <body>
+    <canvas width="500" height="500" id="canvas"></canvas>
+    <script type="module">
+      import {
+        Shape,
+        Container,
+        CircleContainer,
+        RectContainer,
+        PointMass,
+        Renderer,
+        Vector,
+        Line,
+        Circle,
+        Collider,
+      } from "../index.js";
+
+      const canvas = document.getElementById("canvas");
+      const renderer = new Renderer(canvas);
+      renderer.setBackgroundColor("black");
+
+      /*
+      TODO:
+      TESTS:
+      */
+
+      const mouse = new Vector(0, 0);
+      let mouseDown = false;
+      window.addEventListener("mousemove", (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+      window.addEventListener("mousedown", (e) => {
+        mouseDown = true;
+      });
+      window.addEventListener("mouseup", (e) => {
+        mouseDown = false;
+      });
+
+      const cube = Shape.fromVertices(
+        [
+          new Vector(-30, 0),
+          new Vector(0, -30),
+          new Vector(30, 0),
+          new Vector(0, 30),
+        ],
+        new Vector(100, 100),
+      );
+      const cube2 = Shape.fromSides(5, 50, new Vector(255, 350));
+      // cube2.lock();
+      const circle = new Circle(new Vector(350, 250), 30);
+      const circle2 = new Circle(new Vector(100, 250), 30);
+      const container = new CircleContainer();
+
+      container.addShape(cube);
+      container.addShape(cube2);
+      container.addCircle(circle);
+      container.addCircle(circle2);
+
+      const collider1 = new Collider(cube, cube2);
+      const collider2 = new Collider(cube, circle);
+      const collider3 = new Collider(cube2, circle);
+      const collider4 = new Collider(circle2, circle);
+
+      renderer.loop((dt) => {
+        renderer.clear();
+
+        circle.setPosition(mouse);
+
+        for (let i = 0; i < 10; i++) {
+          cube.applyForce(new Vector(0, 9));
+          cube2.applyForce(new Vector(0, 9));
+          circle.applyForce(new Vector(0, 9));
+          circle2.applyForce(new Vector(0, 9));
+
+          collider1.update();
+          collider2.update();
+          collider3.update();
+          collider4.update();
+
+          cube.update(0.25, 10);
+          cube2.update(0.25, 10);
+          circle.update(0.25, 10);
+          circle2.update(0.25, 10);
+
+          container.update(10);
+        }
+
+        cube.draw(renderer);
+        cube2.draw(renderer);
+        circle.draw(renderer);
+        circle2.draw(renderer);
+        container.draw(renderer);
+      });
+    </script>
+  </body>
+</html>

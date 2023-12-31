@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Canvas</title>
+  </head>
+  <body>
+    <canvas width="500" height="500" id="canvas"></canvas>
+    <script type="module">
+      import { Container, PointMass, Renderer, Vector } from "../index.js";
+
+      const canvas = document.getElementById("canvas");
+      const renderer = new Renderer(canvas);
+      renderer.setBackgroundColor("black");
+
+      /*TODO
+      - [x] add a viewport to the Renderer
+      - [x] enable an interface to move the viewport around
+        - moveCameraBy
+        - moveCameraTo
+        - moveCameraCenterTo
+
+      TEST CASES:
+      - [x] moving left and right, up and down
+        - [x] translate the camera
+        - [x] absolute move
+          - [x] corner and center
+      - [x] any vector should stay on a local coordinate system
+      - [x] be able to clear the canvas with a background color
+      - [x] be able to draw a point mass
+      */
+
+      const point = new PointMass(250,250);
+      const container = new Container([point]);
+
+      renderer.loop((dt) => {
+        renderer.clear();
+
+        point.applyForce(new Vector(-9, -9));
+        container.update();
+        point.updatePosition();
+
+        renderer.draw(point);
+        renderer.draw(container);
+      });
+    </script>
+  </body>
+</html>
