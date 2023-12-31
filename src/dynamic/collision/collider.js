@@ -50,17 +50,21 @@ export default class Collider {
     }, [Infinity, null])[1];
 
     const sum_mass = pm1.mass + pm2.mass;
+    const new_vel1 = pm2.getVelocity().reflect(dir1);
+    const new_vel2 = pm1.getVelocity().reflect(dir2);
     if (!pm1.isLocked()) {
       const new_mtv1 = pm2.isLocked()
         ? this.mtv1
-        : Vector.mul(this.mtv1, 1.3 * pm2.mass / sum_mass);
+        : Vector.mul(this.mtv1, pm2.mass / sum_mass);
       pm1.addPosCorrection(new_mtv1, step);
+      pm1.setVelocity(new_vel1);
     }
     if (!pm2.isLocked()) {
       const new_mtv2 = pm1.isLocked()
         ? this.mtv2
-        : Vector.mul(this.mtv2, 1.3 * pm1.mass / sum_mass);
+        : Vector.mul(this.mtv2, pm1.mass / sum_mass);
       pm2.addPosCorrection(new_mtv2, step);
+      pm2.setVelocity(new_vel2);
     }
   }
 

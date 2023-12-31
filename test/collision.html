@@ -30,68 +30,39 @@
       - a bunch of circles
       */
 
-      const mouse = new Vector(0, 0);
-      let mouseDown = false;
-      window.addEventListener("mousemove", (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-      });
-      window.addEventListener("mousedown", (e) => {
-        mouseDown = true;
-      });
-      window.addEventListener("mouseup", (e) => {
-        mouseDown = false;
-      });
-
-      // const cube = Shape.fromVertices(
-      //   [
-      //     new Vector(-100, -10),
-      //     new Vector(100, -10),
-      //     new Vector(100, 10),
-      //     new Vector(-100, 10),
-      //   ],
-      //   // new Vector(100, 100),
-      // );
-      const cube = Shape.fromSides(4, 100, new Vector(250, 400));
-      cube.setMass(100);
-      const cube2 = Shape.fromSides(4, 20, new Vector(255, 100));
-      // cube2.lock();
-      const circle = new Circle(new Vector(350, 250), 30);
-      const circle2 = new Circle(new Vector(100, 250), 30);
       const container = new CircleContainer();
+      const collision = new Collision();
+      const shapes = [];
 
-      container.addShape(cube);
-      container.addShape(cube2);
-      container.addCircle(circle);
-      container.addCircle(circle2);
+      window.addEventListener("click", (e) => {
+        // const shape = new Circle(new Vector(e.clientX, e.clientY), 10);
+        const shape = Shape.fromSides(4, 20, new Vector(e.clientX, e.clientY));
 
-      const collision = new Collision([cube, cube2, circle, circle2]);
+        shapes.push(shape);
+        container.addShape(shape);
+        collision.add(shape);
+      });
 
       renderer.loop((dt) => {
         renderer.clear();
 
-        circle.setPosition(mouse);
-
         for (let i = 0; i < 10; i++) {
-          cube.applyAcceleration(new Vector(0, 9));
-          cube2.applyAcceleration(new Vector(0, 9));
-          circle.applyAcceleration(new Vector(0, 9));
-          circle2.applyAcceleration(new Vector(0, 9));
-
           collision.update(10);
 
-          cube.update(0.25, 10);
-          cube2.update(0.25, 10);
-          circle.update(0.25, 10);
-          circle2.update(0.25, 10);
+          for (let i = 0; i < shapes.length; i++) {
+            shapes[i].applyAcceleration(new Vector(0, 9));
+          }
+
+          for (let i = 0; i < shapes.length; i++) {
+            shapes[i].update(0.25, 10);
+          }
 
           container.update(10);
         }
 
-        cube.draw(renderer);
-        cube2.draw(renderer);
-        circle.draw(renderer);
-        circle2.draw(renderer);
+        for (let i = 0; i < shapes.length; i++) {
+          shapes[i].draw(renderer);
+        }
         container.draw(renderer);
       });
     </script>

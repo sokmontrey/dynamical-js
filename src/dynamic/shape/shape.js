@@ -154,6 +154,14 @@ export default class Shape {
     return this.getCenterOfMass();
   }
 
+  getVelocity() {
+    let velocity = new Vector(0, 0);
+    for (let i = 0; i < this.pointmasses.length; i++) {
+      velocity = velocity.add(this.pointmasses[i].getVelocity());
+    }
+    return velocity;
+  }
+
   setVelocity(velocity) {
     for (let i = 0; i < this.pointmasses.length; i++) {
       this.pointmasses[i].setVelocity(velocity);
