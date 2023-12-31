@@ -1,4 +1,4 @@
-import { PointMass, Shape, ShapeGraphic } from "../../index.js";
+import { PointMass, Shape, ShapeGraphic, Vector } from "../../index.js";
 
 export default class Circle extends Shape {
   constructor(pos, radius) {

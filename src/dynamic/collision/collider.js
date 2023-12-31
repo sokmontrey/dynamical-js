@@ -38,8 +38,6 @@ export default class Collider {
 
     const dir1 = this.mtv1.norm();
     const dir2 = this.mtv2.norm();
-    const new_mtv1 = this.mtv1.mul(0.3);
-    const new_mtv2 = this.mtv2.mul(0.3);
 
     const pm1 = this.object2.getPointMasses().reduce((min, pm) => {
       const t = dir1.dot(pm.position);
@@ -51,8 +49,19 @@ export default class Collider {
       return t < min[0] ? [t, pm] : min;
     }, [Infinity, null])[1];
 
-    pm1.position = pm1.position.add(new_mtv1.div(step));
-    pm2.position = pm2.position.add(new_mtv2.div(step));
+    const sum_mass = pm1.mass + pm2.mass;
+    if (!pm1.isLocked()) {
+      const new_mtv1 = pm2.isLocked()
+        ? this.mtv1
+        : Vector.mul(this.mtv1, 1.1 * pm2.mass / sum_mass);
+      pm1.addPosCorrection(new_mtv1, step);
+    }
+    if (!pm2.isLocked()) {
+      const new_mtv2 = pm1.isLocked()
+        ? this.mtv2
+        : Vector.mul(this.mtv2, 1.1 * pm1.mass / sum_mass);
+      pm2.addPosCorrection(new_mtv2, step);
+    }
   }
 
   isCollided() {

@@ -25,6 +25,7 @@ export default class Shape {
     this.supports = [];
     this.joints = [];
     this.mass = 0;
+    this.friction = 0.05;
 
     if (is_create_edges) this._createEdges();
     if (is_create_supports) this._createSupports();
@@ -40,6 +41,16 @@ export default class Shape {
       .noCenterOfMass();
   }
 
+  setFriction(friction) {
+    DynError.throwIfNotNumber(friction, "Shape: friction");
+    this.friction = friction;
+    return this;
+  }
+
+  getFriction() {
+    return this.friction;
+  }
+
   updateMass() {
     this.mass = this.pointmasses.reduce((acc, pm) => acc + pm.mass, 0);
     return this;
@@ -53,6 +64,7 @@ export default class Shape {
     this.pointmasses.forEach((pm) => pm.lock());
     return this;
   }
+
   unlock() {
     this.pointmasses.forEach((pm) => pm.unlock());
     return this;
