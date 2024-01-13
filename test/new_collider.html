@@ -16,6 +16,7 @@
         Vector,
         Line,
         Circle,
+        CollisionDetector,
       } from "../index.js";
 
       const canvas = document.getElementById("canvas");
@@ -60,8 +61,9 @@
       container.addCircle(circle);
       container.addCircle(circle2);
 
-      const cube_collider = cube.createCollider();
-      const cube2_collider = cube2.createCollider();
+      const detector = new CollisionDetector([
+        cube.createCollider(), cube2.createCollider(), circle.createCollider(), circle2.createCollider()
+      ]);
 
       renderer.loop((dt) => {
         renderer.clear();
@@ -74,7 +76,7 @@
           circle.applyForce(new Vector(0, 9));
           circle2.applyForce(new Vector(0, 9));
 
-          cube2_collider.check(cube_collider).resolve(10);
+          detector.update(10);
 
           cube.update(0.25, 10);
           cube2.update(0.25, 10);

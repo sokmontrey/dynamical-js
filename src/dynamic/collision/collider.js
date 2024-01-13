@@ -49,7 +49,7 @@ class Axis {
   }
 }
 
-class Collider {
+export default class Collider {
   constructor(object, is_optimize_axes = true) {
     this.object = object;
     this.axes = [];
@@ -88,6 +88,15 @@ class Collider {
     return new Collision(true, this.object, other_collider.object, mtv, mtv.neg());
   }
 
+  create(object){
+    if (object instanceof Circle) {
+      return new CircleCollider(object);
+    } else if (object instanceof Shape) {
+      return new PolygonCollider(object);
+    }
+    throw new Error("Collider: create: object must be a Circle or a Shape");
+  }
+
   isBoundingBoxCollide(other_collider) {
     const box1 = this.object.getBoundingBox();
     const box2 = other_collider.object.getBoundingBox();
@@ -95,6 +104,10 @@ class Collider {
     if (box1[1].x < box2[0].x || box1[0].x > box2[1].x) return false;
     if (box1[1].y < box2[0].y || box1[0].y > box2[1].y) return false;
     return true;
+  }
+
+  getBoundingBox() {
+    return this.object.getBoundingBox();
   }
 
   getAxes() {

@@ -31,10 +31,9 @@ export default class Collision {
     }, [Infinity, null])[1];
 
     const sum_mass = pm1.mass + pm2.mass;
-    const new_vel1 = pm2.getVelocity().reflect(dir1);
-    const new_vel2 = pm1.getVelocity().reflect(dir2);
 
     if (!pm1.isLocked()) {
+      const new_vel1 = pm1.getVelocity().reflect(dir2);
       const new_mtv1 = pm2.isLocked()
         ? this.mtv1
         : Vector.mul(this.mtv1, pm2.mass / sum_mass);
@@ -43,6 +42,7 @@ export default class Collision {
     }
 
     if (!pm2.isLocked()) {
+      const new_vel2 = pm2.getVelocity().reflect(dir1);
       const new_mtv2 = pm1.isLocked()
         ? this.mtv2
         : Vector.mul(this.mtv2, pm1.mass / sum_mass);
