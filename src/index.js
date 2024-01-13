@@ -20,5 +20,6 @@ export { default as AngleConstraint } from "./dynamic/constraint/angle_constrain
 export { default as Shape } from "./dynamic/shape/shape.js";
 export { default as Circle } from "./dynamic/shape/circle.js";
 
-export { default as Collider } from "./dynamic/collision/collider.js";
+// export { default as Collider } from "./dynamic/collision/collider.js";
 export { default as Collision } from "./dynamic/collision/collision.js";
+export { CircleCollider, PolygonCollider } from "./dynamic/collision/collider.js";

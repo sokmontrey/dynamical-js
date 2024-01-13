@@ -6,6 +6,7 @@ import {
   PointMass,
   ShapeGraphic,
   Vector,
+  PolygonCollider,
 } from "../../index.js";
 
 export default class Shape {
@@ -39,6 +40,10 @@ export default class Shape {
       .noJoints()
       .noBoundingBox()
       .noCenterOfMass();
+  }
+
+  createCollider() {
+    return new PolygonCollider(this);
   }
 
   setFriction(friction) {

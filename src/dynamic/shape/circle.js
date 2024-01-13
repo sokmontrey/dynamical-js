@@ -1,4 +1,4 @@
-import { PointMass, Shape, ShapeGraphic, Vector } from "../../index.js";
+import { PointMass, Shape, ShapeGraphic, Vector, CircleCollider } from "../../index.js";
 
 export default class Circle extends Shape {
   constructor(pos, radius) {
@@ -16,6 +16,10 @@ export default class Circle extends Shape {
       .noCenterOfMass("#ff5555");
   }
 
+  createCollider() {
+    return new CircleCollider(this);
+  }
+
   draw(renderer) {
     renderer.drawCircle(this.pointmasses[0].position, this.radius);
     renderer.renderGraphic(this.graphic);
@@ -24,6 +28,10 @@ export default class Circle extends Shape {
 
   static fromVector(pos, radius) {
     return new Circle(pos, radius);
+  }
+
+  getRadius() {
+    return this.radius;
   }
 
   getPosition() {
