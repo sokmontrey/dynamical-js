@@ -84,8 +84,17 @@ class Collider {
     });
 
     if (is_gap) return new Collision(false, null, null, null, null);
-    const mtv = min_axis.dir.mul(min_depth * direction * 0.5);
+    const mtv = min_axis.dir.mul(min_depth * direction);
     return new Collision(true, this.object, other_collider.object, mtv, mtv.neg());
+  }
+
+  isBoundingBoxCollide(other_collider) {
+    const box1 = this.object.getBoundingBox();
+    const box2 = other_collider.object.getBoundingBox();
+
+    if (box1[1].x < box2[0].x || box1[0].x > box2[1].x) return false;
+    if (box1[1].y < box2[0].y || box1[0].y > box2[1].y) return false;
+    return true;
   }
 
   getAxes() {

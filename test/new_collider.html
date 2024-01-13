@@ -60,7 +60,7 @@
       container.addCircle(circle);
       container.addCircle(circle2);
 
-      const cube_collider = circle.createCollider();
+      const cube_collider = cube.createCollider();
       const cube2_collider = cube2.createCollider();
 
       renderer.loop((dt) => {
@@ -74,7 +74,7 @@
           circle.applyForce(new Vector(0, 9));
           circle2.applyForce(new Vector(0, 9));
 
-          cube_collider.check(cube2_collider).resolve(10);
+          cube2_collider.check(cube_collider).resolve(10);
 
           cube.update(0.25, 10);
           cube2.update(0.25, 10);
