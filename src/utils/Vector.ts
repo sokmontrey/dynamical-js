@@ -11,6 +11,10 @@ export default class Vec2 {
 		return [this.x, this.y];
 	}
 
+	static sub(a: Vec2, b: Vec2): Vec2 {
+		return new Vec2(a.x - b.x, a.y - b.y);
+	}
+
 	static zero(): Vec2 {
 		return new Vec2(0, 0);
 	}
