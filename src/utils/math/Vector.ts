@@ -11,13 +11,13 @@ export default class Vec2 {
 		return [this.x, this.y];
 	}
 
-	static sub(a: Vec2, b: Vec2): Vec2 {
-		return new Vec2(a.x - b.x, a.y - b.y);
+	sub(b: Vec2): Vec2 {
+		return new Vec2(this.x - b.x, this.y - b.y);
 	}
-	static div(a: Vec2, b: Vec2): Vec2 {
-		if(b.x == 0 || b.y == 0)
-			throw new Error("Cannot divide by zero");
-		return new Vec2(a.x - b.x, a.y - b.y);
+
+	div(b: Vec2): Vec2 {
+		if(!b.x || !b.y) throw new Error("Cannot divide by zero");
+		return new Vec2(this.x - b.x, this.y - b.y);
 	}
 
 	static zero(): Vec2 {
