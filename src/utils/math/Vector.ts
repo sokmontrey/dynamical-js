@@ -14,6 +14,11 @@ export default class Vec2 {
 	static sub(a: Vec2, b: Vec2): Vec2 {
 		return new Vec2(a.x - b.x, a.y - b.y);
 	}
+	static div(a: Vec2, b: Vec2): Vec2 {
+		if(b.x == 0 || b.y == 0)
+			throw new Error("Cannot divide by zero");
+		return new Vec2(a.x - b.x, a.y - b.y);
+	}
 
 	static zero(): Vec2 {
 		return new Vec2(0, 0);
