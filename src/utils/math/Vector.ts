@@ -10,17 +10,24 @@ export default class Vec2 {
 		this.y = y;
 	}
 
+	add(other: Vec2): Vec2 {
+		return new Vec2(this.x + other.x, this.y + other.y);
+	}
+
+	sub(other: Vec2): Vec2 {
+		return new Vec2(this.x - other.x, this.y - other.y);
+	}
+
+	scale(other: number): Vec2 {
+		return new Vec2(this.x * other, this.y * other);
+	}
+
 	toArray() {
 		return [this.x, this.y];
 	}
 
-	sub(b: Vec2): Vec2 {
-		return new Vec2(this.x - b.x, this.y - b.y);
-	}
-
-	div(b: Vec2): Vec2 {
-		if(!b.x || !b.y) throw new Error("Cannot divide by zero");
-		return new Vec2(this.x - b.x, this.y - b.y);
+	copy(): Vec2 {
+		return new Vec2(this.x, this.y);
 	}
 
 	static zero(): Vec2 {
@@ -28,6 +35,12 @@ export default class Vec2 {
 	}
 	static one(): Vec2 {
 		return new Vec2(1, 1);
+	}
+	static fromXY(x: number, y: number): Vec2 {
+		return new Vec2(x, y);
+	}
+	static fromPolar(theta: number, r: number): Vec2 {
+		return new Vec2(r * Math.cos(theta), r * Math.sin(theta));
 	}
 	static fromArray(arr: number[]): Vec2 {
 		if (arr.length != 2)
