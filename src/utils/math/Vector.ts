@@ -1,4 +1,7 @@
 export default class Vec2 {
+    mag(): number {
+		return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
 	x: number = 0;
 	y: number = 0;
 
