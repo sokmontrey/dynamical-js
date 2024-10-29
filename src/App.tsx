@@ -1,6 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef} from "react";
 import Canvas from "./interfaces/Canvas";
-import PointMass from "./dynamics/PointMass";
 import Vec2 from "./utils/math/Vector";
 
 export default function App() {
@@ -14,8 +13,6 @@ export default function App() {
 		});
 
 		const update = (dt: number) => {
-			dt *= 10;
-			canvas.clear();
 		};
 
 		let animation_frame_id: number;
@@ -30,7 +27,7 @@ export default function App() {
 		return () => window.cancelAnimationFrame(animation_frame_id);
 	}, [canvas_ref]);
 
-	return (
+	return ( <>
 		<canvas ref={canvas_ref} ></canvas>
-	);
+	</>);
 }
