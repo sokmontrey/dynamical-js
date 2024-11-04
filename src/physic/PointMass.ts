@@ -1,3 +1,4 @@
+import { PointMassRenderer } from "../canvas/Renderer.ts";
 import Vec2 from "../utils/math/Vector.ts";
 
 export interface PointMassParams {
@@ -17,6 +18,8 @@ export default class PointMass {
 	private mass: number;
 	private is_static: boolean;
 
+	public renderer: PointMassRenderer;
+
 	constructor({
 		position = Vec2.zero(),
 		velocity = Vec2.zero(),
@@ -32,12 +35,18 @@ export default class PointMass {
 		this.is_static = is_static;
 		this.net_force = initial_force;
 		this.const_acc = constant_acceleration;
+
+		this.renderer = new PointMassRenderer(this);
 	}
 
 	getTotalAcceleration() {
 		return this.net_force
 			.div(this.mass)			//	 net force / mass
 			.add(this.const_acc);	// + constant acceleration
+	}
+
+	getPosition() {
+		return this.curr_pos;
 	}
 
 	enableStatic() { this.is_static = true; return this; }
