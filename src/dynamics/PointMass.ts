@@ -40,4 +40,7 @@ export default class PointMass {
 			.add(this.const_acc);	// + constant acceleration
 	}
 
+	enableStatic() { this.is_static = true; return this; }
+	disableStatic() { this.is_static = false; return this; }
+
 }
