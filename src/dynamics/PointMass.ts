@@ -69,4 +69,17 @@ export default class PointMass {
 		return this;
 	}
 
+	// Using verlet integration
+	//		for position-based integration
+	update(delta_time: number) {
+		if(this.is_static) return this;
+		const acc = this.getTotalAcceleration();
+		const vel = this.curr_pos
+			.sub(this.prev_pos)
+			.div(delta_time)
+			.add(acc.mul(delta_time));
+		this.prev_pos = this.curr_pos.copy();
+		this.curr_pos = this.curr_pos.add(vel.mul(delta_time));
+		return this;
+	}
 }
