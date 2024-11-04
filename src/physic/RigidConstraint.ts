@@ -47,7 +47,7 @@ export default class RigidConstraint {
 		const new_pos1 = pos1.sub(v.mul(this.corr * mass1 / total_mass));
 		const new_pos2 = pos2.add(v.mul(this.corr * mass2 / total_mass));
 
-		if(!this.pm1.isStatic()) this.pm1.setPosition(new_pos1);
-		if(!this.pm2.isStatic()) this.pm2.setPosition(new_pos2);
+		if (!this.pm1.isStatic()) this.pm1.setPosition(new_pos1);
+		if (!this.pm2.isStatic()) this.pm2.setPosition(new_pos2);
 	}
 }
