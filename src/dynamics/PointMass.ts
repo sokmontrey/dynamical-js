@@ -34,4 +34,10 @@ export default class PointMass {
 		this.const_acc = constant_acceleration;
 	}
 
+	getTotalAcceleration() {
+		return this.net_force
+			.div(this.mass)			//	 net force / mass
+			.add(this.const_acc);	// + constant acceleration
+	}
+
 }
