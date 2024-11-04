@@ -24,6 +24,8 @@ export default class RigidConstraint {
 		const pos1 = this.pm1.getPosition();
 		const pos2 = this.pm2.getPosition();
 		this.rest_distance = pos1.distance(pos2);
+		if (this.rest_distance === 0) 
+			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
 		return this;
 	}
 
