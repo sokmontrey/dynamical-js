@@ -48,4 +48,9 @@ export default class PointMass {
 		return this;
 	}
 
+	setConstantAcceleration(acc: Vec2) {
+		this.const_acc = acc;
+		return this;
+	}
+
 }
