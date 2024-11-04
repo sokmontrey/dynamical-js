@@ -4,10 +4,10 @@ export interface CanvasParams {
 }
 
 export default class Canvas {
-	canvas: HTMLCanvasElement;
-	ctx: CanvasRenderingContext2D | null;
-	width: number;
-	height: number;
+	private canvas: HTMLCanvasElement;
+	private ctx: CanvasRenderingContext2D | null;
+	private width: number;
+	private height: number;
 
 	constructor(
 		canvas: HTMLCanvasElement,
@@ -26,7 +26,7 @@ export default class Canvas {
 	}
 
 	clear() {
-		if (!this.ctx) return;
+		if (!this.ctx) return this;
 		this.ctx.clearRect(
 			-this.width / 2,
 			-this.height / 2,
@@ -34,7 +34,5 @@ export default class Canvas {
 			this.height);
 	}
 
-	getContext() {
-		return this.ctx;
-    }
+	getContext() { return this.ctx; }
 }
