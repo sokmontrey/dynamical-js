@@ -28,6 +28,18 @@ export default class Renderer {
 		this.line_width = line_width;
 	}
 
+	applyStyle(ctx: CanvasRenderingContext2D) {
+		if (this.is_fill) {
+			ctx.fillStyle = this.fill_color;
+			ctx.fill();
+		}
+		if (this.is_stroke) {
+			ctx.strokeStyle = this.stroke_color;
+			ctx.lineWidth = this.line_width;
+			ctx.stroke();
+		}
+		return this;
+	}
 
 	fill() { this.is_fill = true; return this; }
 	stroke() { this.is_stroke = true; return this; }
