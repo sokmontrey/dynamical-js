@@ -9,6 +9,10 @@ export interface SolidStyleParams extends LineStyleParams {
 	fill_color?: string;
 }
 
+export interface CircleStyleParams extends SolidStyleParams {
+	radius?: number;
+}
+
 export class Style {
 	protected is_enable = true;
 	enable() { this.is_enable = true; return this; }
@@ -72,4 +76,19 @@ export class SolidStyle extends LineStyle{
 		super.applyStyleToContext(ctx);
 		return this;
 	}
+}
+
+export class CircleStyle extends SolidStyle {
+	protected radius: number;
+
+	constructor({
+		radius = 5,
+		...rest_params
+	}: CircleStyleParams = {}) {
+		super(rest_params);
+		this.radius = radius;
+	}
+
+	setRadius(radius: number) { this.radius = radius; return this; }
+	getRadius() { return this.radius; }
 }
