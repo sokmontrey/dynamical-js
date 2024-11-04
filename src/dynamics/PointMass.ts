@@ -26,4 +26,12 @@ export default class PointMass {
 		initial_force = Vec2.zero(),
 	}: PointMassParams = {}) {
 
+		this.curr_pos = position;
+		this.prev_pos = position.sub(velocity);
+		this.mass = mass;
+		this.is_static = is_static;
+		this.net_force = initial_force;
+		this.const_acc = constant_acceleration;
+	}
+
 }
