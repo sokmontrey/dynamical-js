@@ -9,9 +9,8 @@ export default class RigidConstraint {
 	protected diff: number;
 	protected corr: number;
 
-	constructor(pointmass1: PointMass,
-		pointmass2: PointMass,
-		{ }: RigidConstraintParams = {}) {
+	constructor(pointmass1: PointMass, pointmass2: PointMass, {
+	}: RigidConstraintParams = {}) {
 
 		this.pm1 = pointmass1;
 		this.pm2 = pointmass2;
@@ -24,7 +23,7 @@ export default class RigidConstraint {
 		const pos1 = this.pm1.getPosition();
 		const pos2 = this.pm2.getPosition();
 		this.rest_distance = pos1.distance(pos2);
-		if (this.rest_distance === 0) 
+		if (this.rest_distance === 0)
 			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
 		return this;
 	}
@@ -44,7 +43,7 @@ export default class RigidConstraint {
 		this.diff = this.rest_distance - curr_distance;
 
 		if (Math.abs(this.diff) < 1e-9) return this;
-		if (this.rest_distance === 0) 
+		if (this.rest_distance === 0)
 			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
 
 		this.corr = this.diff / this.rest_distance; // TODO: make sure rest_distance is not zero
