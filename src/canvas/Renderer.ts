@@ -79,4 +79,12 @@ export class PointMassRenderer extends Renderer {
 		return this;
 	}
 
+	draw(ctx: CanvasRenderingContext2D) {
+		const pos = this.pointmass.getPosition();
+		ctx.beginPath();
+		ctx.arc(pos.x, pos.y, this.radius, 0, 2 * Math.PI);
+		this.applyStyle(ctx);
+		ctx.closePath();
+		return this;
+	}
 }
