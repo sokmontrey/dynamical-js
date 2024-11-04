@@ -28,7 +28,6 @@ export default class PointMass {
 		constant_acceleration = Vec2.zero(),
 		initial_force = Vec2.zero(),
 	}: PointMassParams = {}) {
-
 		this.curr_pos = position;
 		this.prev_pos = position.sub(velocity);
 		this.mass = mass;
@@ -84,13 +83,23 @@ export default class PointMass {
 	*	Update current position and keep its previous position
 	*	allowing the pointmass to response to the interaction (position-based dynamic)
 	**/
-	setPosition(position: Vec2) {
+	setCurrentPosition(position: Vec2) {
 		this.curr_pos = position;
 		return this;
 	}
 
 	setPreviousPosition(previous_position: Vec2) {
 		this.prev_pos = previous_position;
+		return this;
+	}
+ 
+	/**
+	*	Update both current and previous position.
+	*	The velocity become zero
+	**/
+	setPosition(position: Vec2) {
+		this.curr_pos = position;
+		this.prev_pos = position;
 		return this;
 	}
  
