@@ -11,6 +11,9 @@ export interface RendererParams {
 
 export interface PointMassRendererParams extends RendererParams {
 	radius?: number;
+	// TODO: is_show_prev_position?: boolean;
+}
+
 export interface RigidConstraintRendererParams extends RendererParams {
 	// visualize the difference value 
 	// between rest distance & current distance
@@ -68,8 +71,7 @@ export class PointMassRenderer extends Renderer {
 	protected pointmass: PointMass;
 	protected radius: number;
 
-	constructor(pointmass: PointMass, 
-	{
+	constructor(pointmass: PointMass, {
 		radius = 5,
 		...rendererParams
 	}: PointMassRendererParams = {}) {
