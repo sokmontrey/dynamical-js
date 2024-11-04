@@ -62,8 +62,10 @@ export default class PointMass {
 		return this;
 	}
 
-	// Move the pointmass to a specific coordinate 
-	//		while reserve its velocity
+	/**
+	*	Move the pointmass to a specific coordinate 
+	*	while reserving its velocity
+	**/
 	changePosition(position: Vec2) {
 		const vel = this.curr_pos.sub(this.prev_pos);
 		this.curr_pos = position;
@@ -71,15 +73,18 @@ export default class PointMass {
 		return this;
 	}
 
-	// Update current position and keep its previous position
-	//		allow the pointmass to response to this movement (position-based dynamic)
+	/**
+	*	Update current position and keep its previous position
+	*	allowing the pointmass to response to the interaction (position-based dynamic)
+	**/
 	setPosition(position: Vec2) {
 		this.curr_pos = position;
 		return this;
 	}
 
-	// Using verlet integration
-	//		for position-based integration
+	/**
+	*	Position-based dynamic (verlet integration)
+	**/
 	update(delta_time: number) {
 		if (this.is_static) return this;
 		const acc = this.getTotalAcceleration();
