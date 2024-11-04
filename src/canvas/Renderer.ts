@@ -63,4 +63,15 @@ export class PointMassRenderer extends Renderer {
 	protected pointmass: PointMass;
 	protected radius: number;
 
+	constructor(pointmass: PointMass, 
+	{
+		radius = 5,
+		...rendererParams
+	}: PointMassRendererParams = {}) {
+
+		super(rendererParams);
+		this.pointmass = pointmass;
+		this.radius = radius;
+	}
+
 }
