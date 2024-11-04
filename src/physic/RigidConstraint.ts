@@ -10,7 +10,7 @@ export default class RigidConstraint {
 	protected diff: number;
 	protected corr: number;
 
-	public renderer: RigidConstraintRenderer;
+	public readonly renderer: RigidConstraintRenderer;
 
 	constructor(pointmass1: PointMass, pointmass2: PointMass, {
 	}: RigidConstraintParams = {}) {
