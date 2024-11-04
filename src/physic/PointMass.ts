@@ -22,7 +22,7 @@ export default class PointMass {
 		velocity = Vec2.zero(),
 		mass = 1,
 		is_static = false,
-		constant_acceleration= Vec2.zero(),
+		constant_acceleration = Vec2.zero(),
 		initial_force = Vec2.zero(),
 	}: PointMassParams = {}) {
 
@@ -72,7 +72,7 @@ export default class PointMass {
 	// Using verlet integration
 	//		for position-based integration
 	update(delta_time: number) {
-		if(this.is_static) return this;
+		if (this.is_static) return this;
 		const acc = this.getTotalAcceleration();
 		const vel = this.curr_pos
 			.sub(this.prev_pos)
