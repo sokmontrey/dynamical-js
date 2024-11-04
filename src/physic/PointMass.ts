@@ -54,6 +54,7 @@ export default class PointMass {
 	getNetForce() { return this.net_force; }
 	getConstantAcceleration() { return this.const_acc; }
 
+	// ------------------------------ setters ------------------------------
 
 	enableStatic() { this.is_static = true; return this; }
 	disableStatic() { this.is_static = false; return this; }
@@ -85,6 +86,16 @@ export default class PointMass {
 	**/
 	setPosition(position: Vec2) {
 		this.curr_pos = position;
+		return this;
+	}
+
+	setPreviousPosition(previous_position: Vec2) {
+		this.prev_pos = previous_position;
+		return this;
+	}
+ 
+	setVelocity(velocity: Vec2) {
+		this.prev_pos = this.curr_pos.sub(velocity);
 		return this;
 	}
 
