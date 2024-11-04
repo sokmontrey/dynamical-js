@@ -17,4 +17,13 @@ export default class PointMass {
 	private mass: number;
 	private is_static: boolean;
 
+	constructor({
+		position = Vec2.zero(),
+		velocity = Vec2.zero(),
+		mass = 1,
+		is_static = false,
+		constant_acceleration= Vec2.zero(),
+		initial_force = Vec2.zero(),
+	}: PointMassParams = {}) {
+
 }
