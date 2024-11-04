@@ -59,4 +59,8 @@ export default class Renderer {
 	draw(_: CanvasRenderingContext2D) { return this; }
 }
 
+export class PointMassRenderer extends Renderer {
+	protected pointmass: PointMass;
+	protected radius: number;
+
 }
