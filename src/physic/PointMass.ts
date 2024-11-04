@@ -39,15 +39,21 @@ export default class PointMass {
 		this.renderer = new PointMassRenderer(this);
 	}
 
+	// ------------------------------ getters ------------------------------
+
 	getTotalAcceleration() {
 		return this.net_force
 			.div(this.mass)			//	 net force / mass
 			.add(this.const_acc);	// + constant acceleration
 	}
+	getPosition() { return this.curr_pos; }
+	getPreviousPosition() { return this.prev_pos; }
+	getVelocity() { return this.curr_pos.sub(this.prev_pos); }
+	getMass() { return this.mass; }
+	isStatic() { return this.is_static; }
+	getNetForce() { return this.net_force; }
+	getConstantAcceleration() { return this.const_acc; }
 
-	getPosition() {
-		return this.curr_pos;
-	}
 
 	enableStatic() { this.is_static = true; return this; }
 	disableStatic() { this.is_static = false; return this; }
