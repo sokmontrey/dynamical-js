@@ -1,3 +1,5 @@
+import PointMass from "../physic/PointMass";
+
 export interface RendererParams {
 	is_fill?: boolean;
 	is_stroke?: boolean;
@@ -5,6 +7,10 @@ export interface RendererParams {
 	stroke_color?: string;
 	line_width?: number;
 };
+
+export interface PointMassRendererParams extends RendererParams {
+	radius?: number;
+}
 
 export default class Renderer {
 	protected is_fill: boolean;
