@@ -28,6 +28,16 @@ export default class Renderer {
 		this.line_width = line_width;
 	}
 
+
+	fill() { this.is_fill = true; return this; }
+	stroke() { this.is_stroke = true; return this; }
+	noFill() { this.is_fill = false; return this; }
+	noStroke() { this.is_stroke = false; return this; }
+
+	setFillColor(color: string) { this.fill_color = color; return this; }
+	setStrokeColor(color: string) { this.stroke_color = color; return this; }
+	setLineWidth(line_width: number) { this.line_width = line_width; return this; }
+
 }
 
 }
