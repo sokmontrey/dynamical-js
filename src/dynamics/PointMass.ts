@@ -43,4 +43,9 @@ export default class PointMass {
 	enableStatic() { this.is_static = true; return this; }
 	disableStatic() { this.is_static = false; return this; }
 
+	applyForce(force: Vec2) {
+		this.net_force = this.net_force.add(force);
+		return this;
+	}
+
 }
