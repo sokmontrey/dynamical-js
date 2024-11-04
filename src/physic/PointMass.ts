@@ -18,7 +18,7 @@ export default class PointMass {
 	private mass: number;
 	private is_static: boolean;
 
-	public renderer: PointMassRenderer;
+	public readonly renderer: PointMassRenderer;
 
 	constructor({
 		position = Vec2.zero(),
