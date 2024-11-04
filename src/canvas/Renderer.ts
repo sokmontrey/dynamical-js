@@ -1,4 +1,5 @@
 import PointMass from "../physic/PointMass";
+import RigidConstraint from "../physic/RigidConstraint";
 
 export interface RendererParams {
 	is_fill?: boolean;
@@ -10,6 +11,10 @@ export interface RendererParams {
 
 export interface PointMassRendererParams extends RendererParams {
 	radius?: number;
+export interface RigidConstraintRendererParams extends RendererParams {
+	// visualize the difference value 
+	// between rest distance & current distance
+	// TODO: is_show_difference?: boolean; 
 }
 
 export default class Renderer {
@@ -83,6 +88,32 @@ export class PointMassRenderer extends Renderer {
 		const pos = this.pointmass.getPosition();
 		ctx.beginPath();
 		ctx.arc(pos.x, pos.y, this.radius, 0, 2 * Math.PI);
+		this.applyStyle(ctx);
+		ctx.closePath();
+		return this;
+	}
+}
+
+export class RigidConstraintRenderer extends Renderer {
+	protected rigid_constraint: RigidConstraint;
+
+	constructor(rigid_constraint: RigidConstraint, {
+		is_stroke = true,
+		line_width = 2,
+		...rendererParams
+	}: RigidConstraintRendererParams = {}) {
+
+		super(rendererParams);
+		this.rigid_constraint = rigid_constraint;
+	}
+
+	draw(ctx: CanvasRenderingContext2D) {
+		const pos1 = this.rigid_constraint.getPointMass(false).getPosition();
+		const pos2 = this.rigid_constraint.getPointMass(true).getPosition();
+
+		ctx.beginPath();
+		ctx.moveTo(pos1.x, pos1.y);
+		ctx.lineTo(pos2.x, pos2.y);
 		this.applyStyle(ctx);
 		ctx.closePath();
 		return this;
