@@ -36,6 +36,8 @@ export default class RigidConstraint {
 		this.diff = this.rest_distance - curr_distance;
 
 		if (Math.abs(this.diff) < 1e-9) return this;
+		if (this.rest_distance === 0) 
+			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
 
 		this.corr = this.diff / this.rest_distance; // TODO: make sure rest_distance is not zero
 		const v = pos2.sub(pos1);
