@@ -38,6 +38,7 @@ export default class Renderer {
 	setStrokeColor(color: string) { this.stroke_color = color; return this; }
 	setLineWidth(line_width: number) { this.line_width = line_width; return this; }
 
+	draw(_: CanvasRenderingContext2D) { return this; }
 }
 
 }
