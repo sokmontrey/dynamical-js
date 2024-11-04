@@ -1,3 +1,4 @@
+import { RigidConstraintRenderer } from "../canvas/Renderer";
 import PointMass from "./PointMass";
 
 export interface RigidConstraintParams { };
@@ -9,6 +10,8 @@ export default class RigidConstraint {
 	protected diff: number;
 	protected corr: number;
 
+	public renderer: RigidConstraintRenderer;
+
 	constructor(pointmass1: PointMass, pointmass2: PointMass, {
 	}: RigidConstraintParams = {}) {
 
@@ -17,6 +20,8 @@ export default class RigidConstraint {
 		this.calculateRestDistance();
 		this.diff = 0;
 		this.corr = 0;
+
+		this.renderer = new RigidConstraintRenderer(this);
 	}
 
 	calculateRestDistance() {
