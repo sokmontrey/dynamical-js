@@ -29,6 +29,14 @@ export default class RigidConstraint {
 		return this;
 	}
 
+	/**
+	*	return pointmass1 if is_second_pointmass = false
+	*		   pointmass2 otherwise
+	**/
+	getPointMass(is_second_pointmass: boolean = false) {
+		return is_second_pointmass ? this.pm2 : this.pm1;
+	}
+
 	update(_: number) {
 		const pos1 = this.pm1.getPosition();
 		const pos2 = this.pm2.getPosition();
