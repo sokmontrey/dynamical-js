@@ -74,4 +74,9 @@ export class PointMassRenderer extends Renderer {
 		this.radius = radius;
 	}
 
+	setRadius(radius: number) {
+		this.radius = radius;
+		return this;
+	}
+
 }
