@@ -53,4 +53,20 @@ export default class PointMass {
 		return this;
 	}
 
+	// Move the pointmass to a specific coordinate 
+	//		while reserve its velocity
+	changePosition(position: Vec2) {
+		const vel = this.curr_pos.sub(this.prev_pos);
+		this.curr_pos = position;
+		this.prev_pos = position.sub(vel);
+		return this;
+	}
+
+	// Update current position and keep its previous position
+	//		allow the pointmass to response to this movement (position-based dynamic)
+	setPosition(position: Vec2) {
+		this.curr_pos = position;
+		return this;
+	}
+
 }
