@@ -1,15 +1,6 @@
 import PointMass from "../physic/PointMass";
 import RigidConstraint from "../physic/RigidConstraint";
-import { LineStyle, SolidStyle } from "./Style";
-
-export interface PointMassRendererParams {
-	radius?: number;
-	// TODO: show prev position params...
-}
-
-export interface RigidConstraintRendererPrams {
-	// TODO: difference visualization...
-}
+import { CircleStyle, LineStyle, SolidStyle } from "./Style";
 
 export class Renderer {
 	draw(_: CanvasRenderingContext2D): Renderer { return this; }
@@ -17,29 +8,25 @@ export class Renderer {
 
 export class PointMassRenderer extends Renderer {
 	protected pointmass: PointMass;
-	protected radius: number;
 
-	public readonly current_position: SolidStyle;
+	public readonly position: CircleStyle;
 
-	constructor(pointmass: PointMass, {
-		radius = 5,
-	}: PointMassRendererParams = {}) {
+	constructor(pointmass: PointMass) {
 		super();
-		this.pointmass = pointmass; 
-		this.radius = radius;
-		this.current_position = new SolidStyle({ is_stroke: false });
+		this.pointmass = pointmass;
+		this.position = new CircleStyle({ is_stroke: false });
 	}
 
 	drawCurrentPosition(ctx: CanvasRenderingContext2D) {
 		const pos = this.pointmass.getPosition();
 		ctx.beginPath();
-		ctx.arc(pos.x, pos.y, this.radius, 0, 2 * Math.PI);
-		this.current_position.applyStyleToContext(ctx);
+		ctx.arc(pos.x, pos.y, this.position.getRadius(), 0, 2 * Math.PI);
+		this.position.applyStyleToContext(ctx);
 		ctx.closePath();
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		if(this.current_position.isEnable()) this.drawCurrentPosition(ctx);
+		if (this.position.isEnable()) this.drawCurrentPosition(ctx);
 		return this;
 	}
 }
@@ -49,9 +36,7 @@ export class RigidConstraintRenderer extends Renderer {
 
 	public readonly constraint_line: LineStyle;
 
-	constructor(rigid_constraint: RigidConstraint, {
-
-	}: RigidConstraintRendererPrams = {}) {
+	constructor(rigid_constraint: RigidConstraint) {
 		super();
 		this.rigid_constraint = rigid_constraint;
 		this.constraint_line = new LineStyle();
@@ -68,7 +53,7 @@ export class RigidConstraintRenderer extends Renderer {
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		if(this.constraint_line.isEnable()) this.drawConstraintLine(ctx);
+		if (this.constraint_line.isEnable()) this.drawConstraintLine(ctx);
 		return this;
 	}
 }
