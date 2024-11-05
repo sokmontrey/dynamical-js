@@ -1,27 +1,28 @@
-export interface LineStyleParams {
+import Vec2 from "../utils/math/Vector";
+
+export interface LineShapeParams {
 	is_stroke?: boolean;
 	stroke_color?: string;
 	line_width?: number;
 }
 
-export interface SolidStyleParams extends LineStyleParams {
+export interface SolidShapeParams extends LineShapeParams {
 	is_fill?: boolean;
 	fill_color?: string;
 }
 
-export interface CircleStyleParams extends SolidStyleParams {
+export interface CircleShapeParams extends SolidShapeParams {
 	radius?: number;
 }
 
-export class Style {
+export class Shape {
 	protected is_enable = true;
 	enable() { this.is_enable = true; return this; }
 	disable() { this.is_enable = false; return this; }
-	isEnable() { return this.is_enable; }
-	applyStyleToContext(_: CanvasRenderingContext2D): Style { return this; };
+	applyStyleToContext(_: CanvasRenderingContext2D): void { }
 };
 
-export class LineStyle extends Style {
+export class LineShape extends Shape {
 	protected is_stroke: boolean;
 	protected stroke_color: string;
 	protected line_width: number;
@@ -30,7 +31,7 @@ export class LineStyle extends Style {
 		is_stroke = true,
 		stroke_color = 'lightgray',
 		line_width = 3,
-	}: LineStyleParams = {}) {
+	}: LineShapeParams = {}) {
 		super();
 		this.is_stroke = is_stroke;
 		this.stroke_color = stroke_color;
@@ -47,11 +48,18 @@ export class LineStyle extends Style {
 			ctx.lineWidth = this.line_width;
 			ctx.stroke();
 		}
-		return this;
+	}
+	draw(ctx: CanvasRenderingContext2D, start: Vec2, end: Vec2) {
+		if (!this.is_enable) return;
+		ctx.beginPath();
+		ctx.moveTo(start.x, start.y);
+		ctx.lineTo(end.x, end.y);
+		ctx.closePath();
+		this.applyStyleToContext(ctx);
 	}
 }
 
-export class SolidStyle extends LineStyle{
+export class SolidShape extends LineShape {
 	protected is_fill: boolean;
 	protected fill_color: string;
 
@@ -59,7 +67,7 @@ export class SolidStyle extends LineStyle{
 		is_fill = true,
 		fill_color = 'teal',
 		...rest_params
-	}: SolidStyleParams = {}) {
+	}: SolidShapeParams = {}) {
 		super(rest_params);
 		this.is_fill = is_fill;
 		this.fill_color = fill_color;
@@ -78,17 +86,24 @@ export class SolidStyle extends LineStyle{
 	}
 }
 
-export class CircleStyle extends SolidStyle {
+export class CircleShape extends SolidShape {
 	protected radius: number;
 
 	constructor({
 		radius = 5,
 		...rest_params
-	}: CircleStyleParams = {}) {
+	}: CircleShapeParams = {}) {
 		super(rest_params);
 		this.radius = radius;
 	}
 
 	setRadius(radius: number) { this.radius = radius; return this; }
-	getRadius() { return this.radius; }
+	draw(ctx: CanvasRenderingContext2D, pos: Vec2) {
+		if (!this.is_enable) return;
+		ctx.beginPath();
+		ctx.arc(pos.x, pos.y, this.radius, 0, 2 * Math.PI);
+		ctx.closePath();
+		this.applyStyleToContext(ctx);
+	}
+}
 }
