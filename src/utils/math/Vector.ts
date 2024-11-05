@@ -21,6 +21,10 @@ export default class Vec2 {
 
 	distance(other: Vec2) { return this.sub(other).mag(); }
 	invert() { return vec2(-this.x, -this.y); }
+	/**
+	*	Get the clockwise perpendicular vector
+	**/
+	perp() { return vec2(this.y, -this.x); }
 	norm() { return this.div(this.mag()); }
 	toArray() { return [this.x, this.y]; }
 	copy() { return vec2(this.x, this.y); }
