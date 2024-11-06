@@ -13,7 +13,8 @@ export default function App() {
 			width: window.innerWidth,
 			height: window.innerHeight
 		});
-		const steps = 100.0;
+		// TODO: multiple time steps dealing with visualization
+		const steps = 10.0;
 		const gravity = vec2(0, 9.8);
 
 		const p1 = new PointMass().enableStatic();
@@ -29,6 +30,8 @@ export default function App() {
 		const d1 = new RigidConstraint(p1, p2);
 		const d2 = new RigidConstraint(p2, p3);
 		const d3 = new RigidConstraint(p3, p4);
+
+		d1.renderer.stress.enable();
 
 		const update = (dt: number) => {
 			const ctx = canvas.getContext();
@@ -47,6 +50,7 @@ export default function App() {
 			}
 
 			canvas.clear();
+			// TODO: pass in dt to make visualization consistant
 			d1.renderer.draw(ctx);
 			d2.renderer.draw(ctx);
 			d3.renderer.draw(ctx);
