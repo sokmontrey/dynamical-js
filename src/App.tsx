@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import Canvas from "./canvas/Canvas.ts";
 import Vec2, { vec2 } from "./utils/math/Vector.ts";
-import PointMass from "./physic/PointMass.ts";
-import RigidConstraint from "./physic/RigidConstraint.ts";
+import PointMass from "./core-physic/PointMass.ts";
+import RigidConstraint from "./core-physic/RigidConstraint.ts";
 
 export default function App() {
 	const canvas_ref = useRef(null);

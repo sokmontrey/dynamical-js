@@ -1,4 +1,4 @@
-import RigidConstraint from "../physic/RigidConstraint";
+import RigidConstraint from "../core-physic/RigidConstraint";
 import Renderer from "./Renderer";
 import LineShape from "../shape/LineShape";
 

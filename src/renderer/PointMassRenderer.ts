@@ -1,4 +1,4 @@
-import PointMass from "../physic/PointMass";
+import PointMass from "../core-physic/PointMass";
 import Renderer from "./Renderer";
 import ArrowShape from "../shape/ArrowShape";
 import CircleShape from "../shape/CircleShape";
