@@ -34,7 +34,7 @@ export default class LineShape extends Shape {
 			ctx.stroke();
 		}
 	}
-	draw(ctx: CanvasRenderingContext2D, start: Vec2, end: Vec2) {
+	draw(ctx: CanvasRenderingContext2D, start: Vec2, end: Vec2, _: number) {
 		if (!this.is_enable) return;
 		ctx.beginPath();
 		ctx.moveTo(start.x, start.y);

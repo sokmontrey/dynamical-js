@@ -18,7 +18,7 @@ export default class ArrowShape extends LineShape {
 		is_head = true,
 		head_color = 'black',
 		head_size = 10,
-		length_scale = 500,
+		length_scale = 1,
 		...rest_params
 	}: ArrowShapeParams = {}) {
 		super(rest_params);
@@ -34,7 +34,8 @@ export default class ArrowShape extends LineShape {
 	setLengthScale(scale: number) { this.length_scale = scale; return this; }
 	setHeadSize(head_size: number) { this.head_size = head_size; return this; }
 
-	drawHead(ctx: CanvasRenderingContext2D, arrow_vector: Vec2, head_pos: Vec2) {
+	drawHead(ctx: CanvasRenderingContext2D, arrow_vector: Vec2, head_pos: Vec2, _: number) {
+		if (arrow_vector.mag() === 0) return;
 		const invt_dir = arrow_vector.norm().invert();
 		const perp_invt_dir = invt_dir.perp();
 		const head_base = head_pos.add(invt_dir.mul(this.head_size));
@@ -50,12 +51,12 @@ export default class ArrowShape extends LineShape {
 		if (this.is_head) { ctx.fillStyle = this.head_color; ctx.fill(); }
 	}
 
-	draw(ctx: CanvasRenderingContext2D, origin: Vec2, arrow_vector: Vec2) {
+	draw(ctx: CanvasRenderingContext2D, origin: Vec2, arrow_vector: Vec2, steps: number) {
 		if (!this.is_enable) return;
-		arrow_vector = arrow_vector.mul(this.length_scale);
+		arrow_vector = arrow_vector.mul(this.length_scale * steps * 10);
 		const head_pos = origin.add(arrow_vector);
 		// could be at head_base instead of head_pos for outline
-		super.draw(ctx, origin, head_pos);
-		this.drawHead(ctx, arrow_vector, head_pos);
+		super.draw(ctx, origin, head_pos, steps);
+		this.drawHead(ctx, arrow_vector, head_pos, steps);
 	}
 }

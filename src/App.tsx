@@ -14,7 +14,7 @@ export default function App() {
 			height: window.innerHeight
 		});
 		// TODO: multiple time steps dealing with visualization
-		const steps = 10.0;
+		const steps = 100.0;
 		const gravity = vec2(0, 9.8);
 
 		const p1 = new PointMass().enableStatic();
@@ -51,14 +51,14 @@ export default function App() {
 
 			canvas.clear();
 			// TODO: pass in dt to make visualization consistant
-			d1.renderer.draw(ctx);
-			d2.renderer.draw(ctx);
-			d3.renderer.draw(ctx);
+			d1.renderer.draw(ctx, steps);
+			d2.renderer.draw(ctx, steps);
+			d3.renderer.draw(ctx, steps);
 
-			p1.renderer.draw(ctx);
-			p2.renderer.draw(ctx);
-			p3.renderer.draw(ctx);
-			p4.renderer.draw(ctx);
+			p1.renderer.draw(ctx, steps);
+			p2.renderer.draw(ctx, steps);
+			p3.renderer.draw(ctx, steps);
+			p4.renderer.draw(ctx, steps);
 		};
 
 		let animation_frame_id: number;

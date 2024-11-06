@@ -16,11 +16,11 @@ export default class PointMassRenderer extends Renderer {
         this.velocity = new ArrowShape().disable();
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, steps: number) {
         const pos = this.pointmass.getPosition();
         const vel = this.pointmass.getVelocity();
-        this.position.draw(ctx, pos);
-        this.velocity.draw(ctx, pos, vel);
+        this.position.draw(ctx, pos, steps);
+        this.velocity.draw(ctx, pos, vel, steps);
         return this;
     }
 }
