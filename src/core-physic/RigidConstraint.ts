@@ -41,6 +41,14 @@ export default class RigidConstraint {
 		return is_second_pointmass ? this.pm2 : this.pm1;
 	}
 
+	/**
+	*	Get the "Stress" value of a rigid constraint
+	*		(I don't even know what exactly stress is)
+	**/
+	getStress() {
+		return -this.diff / this.rest_distance;
+	}
+
 	update(_: number) {
 		const pos1 = this.pm1.getPosition();
 		const pos2 = this.pm2.getPosition();
