@@ -1,4 +1,4 @@
-import { RigidConstraintRenderer } from "../canvas/Renderer";
+import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer";
 import PointMass from "./PointMass";
 
 export interface RigidConstraintParams { };

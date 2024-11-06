@@ -1,9 +1,9 @@
 import PointMass from "../physic/PointMass";
-import { Renderer } from "./Renderer";
-import { ArrowShape, CircleShape } from "../canvas/Style";
+import Renderer from "./Renderer";
+import ArrowShape from "../shape/ArrowShape";
+import CircleShape from "../shape/CircleShape";
 
-
-export class PointMassRenderer extends Renderer {
+export default class PointMassRenderer extends Renderer {
     protected pointmass: PointMass;
 
     public readonly position: CircleShape;

@@ -1,4 +1,4 @@
-import { PointMassRenderer } from "../canvas/Renderer.ts";
+import PointMassRenderer from "../renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/math/Vector.ts";
 
 export interface PointMassParams {

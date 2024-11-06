@@ -1,9 +1,8 @@
 import RigidConstraint from "../physic/RigidConstraint";
-import { Renderer } from "./Renderer";
-import { LineShape } from "../canvas/Style";
+import Renderer from "./Renderer";
+import LineShape from "../shape/LineShape";
 
-
-export class RigidConstraintRenderer extends Renderer {
+export default class RigidConstraintRenderer extends Renderer {
     protected rigid_constraint: RigidConstraint;
 
     public readonly constraint_line: LineShape;
