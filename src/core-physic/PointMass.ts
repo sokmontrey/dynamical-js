@@ -108,6 +108,11 @@ export default class PointMass {
 		return this;
 	}
 
+	setMass(mass: number) {
+		this.mass = mass;
+		return this;
+	}
+
 	/**
 	*	Position-based dynamic (verlet integration)
 	**/
