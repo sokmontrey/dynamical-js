@@ -8,18 +8,20 @@ import Renderer from "./Renderer";
 export default class RigidConstraintRenderer implements Renderer {
 	protected rigid_constraint: RigidConstraint;
 
-	public readonly constraint_line: Style & LineStyle = {
-		is_enable: true,
-		is_stroke: true,
-		stroke_color: 'lightgray',
-		line_width: 3,
-	};
+	public readonly constraint_line: Style
+		& LineStyle = {
+			is_enable: true,
+			is_stroke: true,
+			stroke_color: 'lightgray',
+			line_width: 3,
+		};
 
-	public readonly stress: Style & StressStyle = {
-		is_enable: true,
-		compress_color: Color.fromHex("#5460F9"),
-		tension_color: Color.fromHex("#F40752"),
-	};
+	public readonly stress: Style
+		& StressStyle = {
+			is_enable: true,
+			compress_color: Color.fromHex("#5460F9"),
+			tension_color: Color.fromHex("#F40752"),
+		};
 
 	constructor(rigid_constraint: RigidConstraint) {
 		this.rigid_constraint = rigid_constraint;

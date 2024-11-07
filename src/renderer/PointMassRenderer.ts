@@ -24,7 +24,7 @@ export default class PointMassRenderer implements Renderer {
 		& ArrowStyle
 		& LineStyle
 		& SolidStyle = {
-			is_enable: true,
+			is_enable: false,
 			head_size: 8,
 			is_stroke: true,
 			stroke_color: 'lightgray',
@@ -42,16 +42,12 @@ export default class PointMassRenderer implements Renderer {
 		Draw.circle(ctx, pos, this.current_position);
 	}
 
-	private drawVelocity(ctx: CanvasRenderingContext2D,
-		pos: Vec2,
-		vel: Vec2,
-		steps: number,
-	) {
+	private drawVelocity(ctx: CanvasRenderingContext2D, pos: Vec2, vel: Vec2, steps: number) {
 		if (!this.velocity.is_enable) return;
 		Draw.arrow(ctx, pos, vel.mul(steps * 5), this.velocity);
 	}
 
-	draw(ctx: CanvasRenderingContext2D, steps: number) {
+	public draw(ctx: CanvasRenderingContext2D, steps: number) {
 		const pos = this.pointmass.getPosition();
 		const vel = this.pointmass.getVelocity();
 		this.drawCurrentPosition(ctx, pos);
