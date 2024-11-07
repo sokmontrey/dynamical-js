@@ -1,3 +1,3 @@
-export default class Renderer {
-	draw(_: CanvasRenderingContext2D, __: number): Renderer { return this; }
+export default abstract class Renderer {
+	abstract draw(ctx: CanvasRenderingContext2D, steps: number): Renderer;
 }
