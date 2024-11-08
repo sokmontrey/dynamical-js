@@ -6,6 +6,7 @@ export interface ArrowStyleParams extends ShapeStyleParams {
 
 export default class ArrowStyle extends ShapeStyle {
 	public head_size: number;
+
 	constructor({
 		head_size = 8,
 		...rest_params
@@ -13,5 +14,9 @@ export default class ArrowStyle extends ShapeStyle {
 		super(rest_params);
 		this.head_size = head_size;
 	}
-	setHeadSize(head_size: number) { this.head_size = head_size; return this; }
+
+	setHeadSize(head_size: number) { 
+		this.head_size = head_size; 
+		return this; 
+	}
 }

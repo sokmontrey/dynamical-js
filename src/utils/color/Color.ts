@@ -13,9 +13,13 @@ export default class Color {
 		this.b = b;
 	}
 
-	toStringRGB() { return `rgba(${this.r},${this.g},${this.b})`; }
+	toStringRGB() { 
+		return `rgba(${this.r},${this.g},${this.b})`; 
+	}
 
-	toArrayRGB() { return [this.r, this.g, this.b]; }
+	toArrayRGB() { 
+		return [this.r, this.g, this.b]; 
+	}
 
 	/**
 	*	Linear interpolation between two colors

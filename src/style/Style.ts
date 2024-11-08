@@ -5,12 +5,21 @@ export interface StyleParams {
 
 export default class Style {
 	public is_enable: boolean;
+
 	constructor({
 		is_enable = true
 	}: StyleParams = {}) {
 		this.is_enable = is_enable;
 	}
-	enable() { this.is_enable = true; return this; }
-	disable() { this.is_enable = false; return this; }
+
+	enable() {
+		this.is_enable = true;
+		return this;
+	}
+
+	disable() {
+		this.is_enable = false;
+		return this;
+	}
 }
 

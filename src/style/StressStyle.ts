@@ -9,6 +9,7 @@ export interface StressStyleParams extends StyleParams {
 export default class StressStyle extends Style {
 	public compress_color: Color;
 	public tension_color: Color;
+
 	constructor({
 		compress_color = Color.fromHex("#00d4ff"),
 		tension_color = Color.fromHex("#ff2100"),
@@ -18,6 +19,14 @@ export default class StressStyle extends Style {
 		this.compress_color = compress_color;
 		this.tension_color = tension_color;
 	}
-	setCompressColor(color: Color) { this.compress_color = color; return this; }
-	setTensionColor(color: Color) { this.tension_color = color; return this; }
+
+	setCompressColor(color: Color) {
+		this.compress_color = color;
+		return this;
+	}
+
+	setTensionColor(color: Color) {
+		this.tension_color = color;
+		return this;
+	}
 }

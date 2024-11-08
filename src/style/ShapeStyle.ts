@@ -8,6 +8,7 @@ export interface ShapeStyleParams extends LineStyleParams {
 export default class ShapeStyle extends LineStyle {
 	public is_fill: boolean;
 	public fill_color: string;
+
 	constructor({
 		is_fill = true,
 		fill_color = 'teal',
@@ -17,8 +18,20 @@ export default class ShapeStyle extends LineStyle {
 		this.is_fill = is_fill;
 		this.fill_color = fill_color;
 	}
-	setFillColor(color: string) { this.fill_color = color; return this; }
-	noFill() { this.is_fill = false; return this; }
-	fill() { this.is_fill = true; return this; }
+
+	setFillColor(color: string) {
+		this.fill_color = color;
+		return this;
+	}
+
+	noFill() {
+		this.is_fill = false;
+		return this;
+	}
+
+	fill() {
+		this.is_fill = true;
+		return this;
+	}
 }
 

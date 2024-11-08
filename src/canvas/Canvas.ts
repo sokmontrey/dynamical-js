@@ -34,5 +34,7 @@ export default class Canvas {
 			this.height);
 	}
 
-	getContext() { return this.ctx; }
+	getContext() { 
+		return this.ctx; 
+	}
 }

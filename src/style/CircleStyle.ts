@@ -6,6 +6,7 @@ export interface CircleStyleParams extends ShapeStyleParams {
 
 export default class CircleStyle extends ShapeStyle {
 	public radius: number;
+
 	constructor({
 		radius = 5,
 		...rest_params
@@ -13,6 +14,10 @@ export default class CircleStyle extends ShapeStyle {
 		super(rest_params);
 		this.radius = radius;
 	}
-	setRadius(radius: number) { this.radius = radius; return this; }
+
+	setRadius(radius: number) { 
+		this.radius = radius; 
+		return this; 
+	}
 }
 

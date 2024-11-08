@@ -10,6 +10,7 @@ export default class LineStyle extends Style {
 	public is_stroke: boolean;
 	public stroke_color: string;
 	public line_width: number;
+
 	constructor({
 		is_stroke = true,
 		stroke_color = 'lightgray',
@@ -21,9 +22,25 @@ export default class LineStyle extends Style {
 		this.stroke_color = stroke_color;
 		this.line_width = line_width;
 	}
-	stroke() { this.is_stroke = true; return this; }
-	noStroke() { this.is_stroke = false; return this; }
-	setStrokeColor(color: string) { this.stroke_color = color; return this; }
-	setLineWidth(line_width: number) { this.line_width = line_width; return this; }
+
+	stroke() {
+		this.is_stroke = true;
+		return this;
+	}
+
+	noStroke() {
+		this.is_stroke = false;
+		return this;
+	}
+
+	setStrokeColor(color: string) {
+		this.stroke_color = color;
+		return this;
+	}
+
+	setLineWidth(line_width: number) {
+		this.line_width = line_width;
+		return this;
+	}
 }
 
