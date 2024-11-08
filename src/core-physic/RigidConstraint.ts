@@ -2,10 +2,15 @@ import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer";
 import PointMass from "./PointMass";
 
 export interface RigidConstraintParams { };
+export interface RigidConstraintParams { 
+	is_broken?: boolean;
+};
 
 export default class RigidConstraint {
 	protected pm1: PointMass;
 	protected pm2: PointMass;
+	protected is_broken: boolean;
+
 	protected rest_distance: number = 0;
 	protected diff: number;
 	protected corr: number;
@@ -13,10 +18,12 @@ export default class RigidConstraint {
 	public readonly renderer: RigidConstraintRenderer;
 
 	constructor(pointmass1: PointMass, pointmass2: PointMass, {
+		is_broken = false,
 	}: RigidConstraintParams = {}) {
 
 		this.pm1 = pointmass1;
 		this.pm2 = pointmass2;
+		this.is_broken = is_broken;
 		this.calculateRestDistance();
 		this.diff = 0;
 		this.corr = 0;
@@ -50,9 +57,51 @@ export default class RigidConstraint {
 		return -this.diff / this.rest_distance;
 	}
 
+	getRestDistanec() {
+		return this.rest_distance;
+	}
+
+	//================================ Setters ================================
+	
+	/**
+	*	Set pointmasses free from each other
+	**/
+	break() {
+		this.is_broken = true;
+		return this;
+	}
+
+	/**
+	*	Connect both pointmasses back together
+	*	@param [recalculate_rest_distance=false] false by default. Recalculate rest distance (use current distance between pointmasses). 
+	**/
+	restore(recalculate_rest_distance: boolean = false) {
+		this.is_broken = false;
+		if(recalculate_rest_distance) this.calculateRestDistance();
+		return this;
+	}
+
+	setRestDistance(rest_distance: number, reset_pointmass_velocity: boolean = false) {
+		this.rest_distance = rest_distance;
+		if(reset_pointmass_velocity) {
+			this.pointmass1.resetVelocity();
+			this.pointmass2.resetVelocity();
+		}
+		return this;
+	} 
+
+	/**
+	*	Check for differnece in current distance and rest distance 
+	*		and immediately resolve the constraint by directly updating 
+	*		the pointmasses position based on it relative weight to one another.
+	*		TODO: create a correction build up mechanism for PointMass so that resolution 
+	*			can be done after checking every constraint. 
+	*			(temp_pos += corr_pos; count ++; temp_pos / corr_pos)
+	**/
 	update(_: number) {
 		const pos1 = this.pm1.getPosition();
 		const pos2 = this.pm2.getPosition();
+		if (this.is_broken) return this;
 		const curr_distance = pos1.distance(pos2);
 		this.diff = this.rest_distance - curr_distance;
 
