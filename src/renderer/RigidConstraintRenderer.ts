@@ -1,6 +1,7 @@
 import Draw from "../canvas/Draw";
-import { LineStyle, StressStyle, Style } from "../canvas/Style";
 import RigidConstraint from "../core-physic/RigidConstraint";
+import LineStyle from "../style/LineStyle";
+import StressStyle from "../style/StressStyle";
 import Color from "../utils/color/Color";
 import Vec2 from "../utils/math/Vector";
 import Renderer from "./Renderer";
@@ -8,20 +9,8 @@ import Renderer from "./Renderer";
 export default class RigidConstraintRenderer implements Renderer {
 	protected rigid_constraint: RigidConstraint;
 
-	protected readonly constraint_line: Style
-		& LineStyle = {
-			is_enable: true,
-			is_stroke: true,
-			stroke_color: 'lightgray',
-			line_width: 3,
-		};
-
-	protected readonly stress: Style
-		& StressStyle = {
-			is_enable: true,
-			compress_color: Color.fromHex("#5460F9"),
-			tension_color: Color.fromHex("#F40752"),
-		};
+	public readonly constraint_line = new LineStyle();
+	public readonly stress = new StressStyle().disable();
 
 	constructor(rigid_constraint: RigidConstraint) {
 		this.rigid_constraint = rigid_constraint;
@@ -35,7 +24,7 @@ export default class RigidConstraintRenderer implements Renderer {
 			this.stress.compress_color,
 			this.stress.tension_color,
 			stress,
-		).toRGBA();
+		).toStringRGB();
 	}
 
 	private drawConstraintLine(ctx: CanvasRenderingContext2D, start: Vec2, end: Vec2) {

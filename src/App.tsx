@@ -22,16 +22,14 @@ export default function App() {
 		const p3 = new PointMass().setPosition(Vec2.right(150)).setConstantAcceleration(gravity);
 		const p4 = new PointMass().setPosition(Vec2.right(175)).setConstantAcceleration(gravity);
 
-		// p2.renderer.position_style
-		// 	.setRadius(10)
-		// 	.setFillColor('orange');
-		// p2.renderer.velocity.enable();
+		p2.renderer.position.setRadius(10).setFillColor('orange');
+		p2.renderer.velocity.enable();
 
 		const d1 = new RigidConstraint(p1, p2);
 		const d2 = new RigidConstraint(p2, p3);
 		const d3 = new RigidConstraint(p3, p4);
 
-		// d1.renderer.stress.enable();
+		d1.renderer.stress.enable();
 
 		const update = (dt: number) => {
 			const ctx = canvas.getContext();
