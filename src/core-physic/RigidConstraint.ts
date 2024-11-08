@@ -33,12 +33,13 @@ export default class RigidConstraint {
 		return this;
 	}
 
+	getPointMasses() {
+		return [this.pm1, this.pm2];
+	}
+
 	/**
-	*	return pointmass1 if is_second_pointmass = false
-	*		   pointmass2 otherwise
+	*	The difference between rest distance and current distance
 	**/
-	getPointMass(is_second_pointmass: boolean = false) {
-		return is_second_pointmass ? this.pm2 : this.pm1;
 	}
 
 	/**

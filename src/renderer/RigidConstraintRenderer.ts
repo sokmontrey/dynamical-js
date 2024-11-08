@@ -33,8 +33,9 @@ export default class RigidConstraintRenderer implements Renderer {
 	}
 
 	public draw(ctx: CanvasRenderingContext2D, steps: number) {
-		const start = this.rigid_constraint.getPointMass().getPosition();
-		const end = this.rigid_constraint.getPointMass(true).getPosition();
+		const [pm1, pm2] = this.rigid_constraint.getPointMasses();
+		const start = pm1.getPosition();
+		const end = pm2.getPosition();
 		this.applyStress(ctx, steps);
 		this.drawConstraintLine(ctx, start, end);
 		return this;
