@@ -1,21 +1,21 @@
 import { lerp } from "../math/Basic";
 
-export const color = (r:number, g:number, b:number, a:number = 1) => new Color(r,g,b,a); 
+export const color = (r: number, g: number, b: number) => new Color(r, g, b);
 
 export default class Color {
 	public r: number;
 	public g: number;
 	public b: number;
-	public a: number;
 
-	constructor(r: number, g: number, b: number, a: number = 1) {
+	constructor(r: number, g: number, b: number) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
-		this.a = a;
 	}
 
-	toRGBA() { return `rgba(${this.r},${this.g},${this.b},${this.a})`; }
+	toStringRGB() { return `rgba(${this.r},${this.g},${this.b})`; }
+
+	toArrayRGB() { return [this.r, this.g, this.b]; }
 
 	/**
 	*	Linear interpolation between two colors
@@ -23,19 +23,18 @@ export default class Color {
 	**/
 	static lerp(c1: Color, c2: Color, i: number) {
 		return color(
-			lerp(c1.r, c2.r, i), 
-			lerp(c1.g, c2.g, i), 
+			lerp(c1.r, c2.r, i),
+			lerp(c1.g, c2.g, i),
 			lerp(c1.b, c2.b, i),
-			lerp(c1.a, c2.a, i)
 		);
 	}
 
 	static fromHex(hex: string) {
-	  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	  return result ? new Color(
-		parseInt(result[1], 16),
-		parseInt(result[2], 16),
-		parseInt(result[3], 16)
-	  ) : color(0,0,0);
+		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		return result ? new Color(
+			parseInt(result[1], 16),
+			parseInt(result[2], 16),
+			parseInt(result[3], 16)
+		) : color(0, 0, 0);
 	}
 }
