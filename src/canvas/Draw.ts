@@ -1,8 +1,11 @@
+import ArrowStyle from "../style/ArrowStyle";
+import CircleStyle from "../style/CircleStyle";
+import LineStyle from "../style/LineStyle";
+import ShapeStyle from "../style/ShapeStyle";
 import Vec2 from "../utils/math/Vector";
-import { ArrowStyle, CircleStyle, SolidStyle, LineStyle } from "./Style";
 
 export default class Draw {
-	public static fill(ctx: CanvasRenderingContext2D, style: SolidStyle) {
+	public static fill(ctx: CanvasRenderingContext2D, style: ShapeStyle) {
 		if (!style.is_fill) return;
 		ctx.fillStyle = style.fill_color;
 		ctx.fill();
@@ -17,7 +20,7 @@ export default class Draw {
 
 	public static circle(ctx: CanvasRenderingContext2D,
 		pos: Vec2,
-		style: CircleStyle & SolidStyle & LineStyle
+		style: CircleStyle,
 	) {
 		ctx.beginPath();
 		ctx.arc(pos.x, pos.y, style.radius, 0, 2 * Math.PI);
@@ -41,7 +44,7 @@ export default class Draw {
 	public static arrow(ctx: CanvasRenderingContext2D,
 		origin: Vec2,
 		arrow_vector: Vec2,
-		style: LineStyle & SolidStyle & ArrowStyle,
+		style: ArrowStyle,
 	) {
 		const head_pos = origin.add(arrow_vector);
 		Draw.line(ctx, origin, head_pos, style);
@@ -51,7 +54,7 @@ export default class Draw {
 	public static arrowHead(ctx: CanvasRenderingContext2D,
 		arrow_vector: Vec2,
 		head_pos: Vec2,
-		style: SolidStyle & ArrowStyle,
+		style: ArrowStyle,
 	) {
 		if (arrow_vector.mag() === 0) return;
 		const invt_dir = arrow_vector.norm().invert();
