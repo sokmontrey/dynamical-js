@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import Canvas from "./canvas/Canvas.ts";
+import Canvas from "./core/Canvas.ts";
 import Vec2, { vec2 } from "./utils/math/Vector.ts";
 import PointMass from "./core-physic/PointMass.ts";
 import RigidConstraint from "./core-physic/RigidConstraint.ts";

@@ -1,4 +1,4 @@
-import Draw from "../canvas/Draw";
+import Draw from "../core/Draw";
 import PointMass from "../core-physic/PointMass";
 import ArrowStyle from "../style/ArrowStyle";
 import CircleStyle from "../style/CircleStyle";
