@@ -141,7 +141,6 @@ export default class PointMass {
 	/**
 	*	This library use previous position to keep track of velocity.
 	*	velocity = current - previous position
-	*
 	**/
 	setPreviousPosition(previous_position: Vec2) {
 		this.prev_pos = previous_position.copy();
