@@ -1,4 +1,4 @@
-import Draw from "../canvas/Draw";
+import Draw from "../core/Draw";
 import RigidConstraint from "../core-physic/RigidConstraint";
 import LineStyle from "../style/LineStyle";
 import StressStyle from "../style/StressStyle";
