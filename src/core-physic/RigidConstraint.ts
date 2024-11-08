@@ -105,18 +105,35 @@ export default class RigidConstraint {
 	*			can be done after checking every constraint. 
 	*			(temp_pos += corr_pos; count ++; temp_pos / corr_pos)
 	**/
-	update(_: number) {
+	update(dt: number) {
 		if (this.is_broken) return this;
+		this.check();
+		this.resolve(dt); // Immediately resolve the constraint
+	}
+
+	/**
+	*	Check for the difference
+	**/
+	check() {
 		const pos1 = this.pointmass1.getPosition();
 		const pos2 = this.pointmass2.getPosition();
 		const curr_distance = pos1.distance(pos2);
 		this.diff = this.rest_distance - curr_distance;
+	}
 
-		if (Math.abs(this.diff) < 1e-9) return this;
+	calculateCorrection(_: number) {
+		this.corr = this.diff / this.rest_distance;
+	}
+
+	resolve(dt: number) {
+		if (this.is_broken) return this;
 		if (this.rest_distance === 0)
 			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
+		const pos1 = this.pointmass1.getPosition();
+		const pos2 = this.pointmass2.getPosition();
+		if (Math.abs(this.diff) < 1e-9) return this;
 
-		this.corr = this.diff / this.rest_distance;
+		this.calculateCorrection(dt);
 		const v = pos2.sub(pos1);
 
 		const mass1 = this.pointmass1.isStatic() ? 0 : 1 / this.pointmass1.getMass();
