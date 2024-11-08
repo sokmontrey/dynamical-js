@@ -76,23 +76,43 @@ export default class PointMass {
 
 	//================================ Setters ================================
 
+	/**
+	*	Turn pointmass into a static anchor. 
+	*	Most of the methods will still has an effect on the pointmass except:
+	*		`update`: has no effect even after the pointmass turned back to normal (using `disableStatic`).
+	*		`setCurrentPosition`: has no effect even after the pointmass turned back to normal. Use `setPosition` instead to set position.
+	**/
 	enableStatic() {
 		this.is_static = true; 
 		return this;
 	}
 
+	/**
+	*	Turn pointmass back into a dynamic object.
+	*	Action applied during the static phase will now be in effect (setVelocity, applyForce, etc.)
+	**/
 	disableStatic() {
 		this.is_static = false; 
 		return this;
 	}
 
-	applyForce(force: Vec2) {
-		this.net_force = this.net_force.add(force);
+	/**
+	*	Constant acceleration. Does not get reset after every time step.
+	*	Used for setting gravity, and etc.
+	**/
+	setConstantAcceleration(acceleration: Vec2) {
+		this.const_acc = acceleration.copy();
 		return this;
 	}
 
-	setConstantAcceleration(acceleration: Vec2) {
-		this.const_acc = acceleration.copy();
+	/**
+	*	Add a force to the net force. 
+	*	Unlike constant accelration, net force get reset
+	*		after every update() call.
+	*	Used for applying at a specific time step.
+	**/
+	applyForce(force: Vec2) {
+		this.net_force = this.net_force.add(force);
 		return this;
 	}
 
@@ -109,13 +129,20 @@ export default class PointMass {
 
 	/**
 	*	Update current position and keep its previous position
-	*	allowing the pointmass to response to the interaction (position-based dynamic)
+	*		allowing the pointmass to response to the interaction automatically (position-based dynamic)
+	*	Does not apply when the pointmass is static
 	**/
 	setCurrentPosition(position: Vec2) {
+		if (this.is_static) return;
 		this.curr_pos = position.copy();
 		return this;
 	}
 
+	/**
+	*	This library use previous position to keep track of velocity.
+	*	velocity = current - previous position
+	*
+	**/
 	setPreviousPosition(previous_position: Vec2) {
 		this.prev_pos = previous_position.copy();
 		return this;
