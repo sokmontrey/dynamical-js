@@ -22,9 +22,7 @@ export default function App() {
 		const p3 = new PointMass().setPosition(Vec2.right(150)).setConstantAcceleration(gravity);
 		const p4 = new PointMass().setPosition(Vec2.right(175)).setConstantAcceleration(gravity);
 
-		p2.renderer.position
-			.setRadius(10)
-			.setFillColor('orange');
+		p2.renderer.position.setRadius(10).setFillColor('orange');
 		p2.renderer.velocity.enable();
 
 		const d1 = new RigidConstraint(p1, p2);
