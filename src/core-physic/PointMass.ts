@@ -169,6 +169,7 @@ export default class PointMass {
 			.add(acc.mul(delta_time));
 		this.prev_pos = this.curr_pos.copy();
 		this.curr_pos = this.curr_pos.add(vel.mul(delta_time));
+		this.net_force = Vec2.zero();
 		return this;
 	}
 }
