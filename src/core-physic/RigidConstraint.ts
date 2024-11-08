@@ -1,7 +1,7 @@
 import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer";
 import PointMass from "./PointMass";
 
-export interface RigidConstraintParams { 
+export interface RigidConstraintParams {
 	is_broken?: boolean;
 };
 
@@ -29,7 +29,7 @@ export default class RigidConstraint {
 	}
 
 	//================================ Helpers ================================
-	
+
 	calculateRestDistance() {
 		const pos1 = this.pointmass1.getPosition();
 		const pos2 = this.pointmass2.getPosition();
@@ -69,7 +69,7 @@ export default class RigidConstraint {
 	}
 
 	//================================ Setters ================================
-	
+
 	/**
 	*	Set pointmasses free from each other
 	**/
@@ -84,18 +84,18 @@ export default class RigidConstraint {
 	**/
 	restore(recalculate_rest_distance: boolean = false) {
 		this.is_broken = false;
-		if(recalculate_rest_distance) this.calculateRestDistance();
+		if (recalculate_rest_distance) this.calculateRestDistance();
 		return this;
 	}
 
 	setRestDistance(rest_distance: number, reset_pointmass_velocity: boolean = false) {
 		this.rest_distance = rest_distance;
-		if(reset_pointmass_velocity) {
+		if (reset_pointmass_velocity) {
 			this.pointmass1.resetVelocity();
 			this.pointmass2.resetVelocity();
 		}
 		return this;
-	} 
+	}
 
 	/**
 	*	Check for differnece in current distance and rest distance 
