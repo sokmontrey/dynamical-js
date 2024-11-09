@@ -18,8 +18,15 @@ export default class Loop {
 		constant_dt = null,
 	}: LoopParams = {}) {
 		this.update_func = update_func;
-		this.is_constant_dt = constant_dt !== null;
-		this.constant_dt = constant_dt ?? 0.16;
+
+		this.is_constant_dt = false;
+		this.constant_dt = 0.16;
+		if (constant_dt !== null) {
+			if (constant_dt <= 0) throw new Error("Constant delta time cannot be less than or equal to zero");
+			this.is_constant_dt = true;
+			this.constant_dt = constant_dt;
+		}
+
 		this.prev_time = 0;
 		this.frame_id = null;
 		this.frame_count = 0;
@@ -53,7 +60,8 @@ export default class Loop {
 		this.frame_count = 0;
 	}
 
-	step(dt: number) {
+	step(dt: number = 0.16) {
+		if (dt <= 0) throw new Error("Delta time cannot be less than or equal to zero");
 		this.frame_count ++;
 		this.update_func(dt);
 	}
