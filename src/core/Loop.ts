@@ -56,7 +56,7 @@ export default class Loop {
 		window.cancelAnimationFrame(this.frame_id);
 	}
 
-	restart() {
+	reset() {
 		this.frame_count = 0;
 	}
 
