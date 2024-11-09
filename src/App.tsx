@@ -1,11 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Canvas from "./core/Canvas.ts";
 import Vec2, { vec2 } from "./utils/math/Vector.ts";
 import PointMass from "./core-physic/PointMass.ts";
 import RigidConstraint from "./core-physic/RigidConstraint.ts";
+import Loop from "./core/Loop.ts";
 
 export default function App() {
 	const canvas_ref = useRef(null);
+	const [loop_ref, setLoop] = useState<Loop>();
 
 	useEffect(() => {
 		if (!canvas_ref.current) return;
@@ -31,7 +33,7 @@ export default function App() {
 
 		d1.renderer.stress.enable();
 
-		const update = (dt: number) => {
+		const loop = new Loop((dt: number) => {
 			const ctx = canvas.getContext();
 			if (!ctx) return;
 			dt /= steps;
@@ -57,21 +59,17 @@ export default function App() {
 			p2.renderer.draw(ctx, steps);
 			p3.renderer.draw(ctx, steps);
 			p4.renderer.draw(ctx, steps);
-		};
+		});
 
-		let animation_frame_id: number;
-		let prev_time = 0;
-		const _render = (current_time: number) => {
-			const dt = Math.min((current_time - prev_time) / 10, 0.16);
-			update(dt);
-			prev_time = current_time;
-			animation_frame_id = window.requestAnimationFrame(_render);
-		};
-		window.requestAnimationFrame(_render);
-		return () => window.cancelAnimationFrame(animation_frame_id);
+		setLoop(loop);
+		// loop.run();
+		return () => loop.pause();
 	}, [canvas_ref]);
 
 	return (<>
+		<button onClick={()=>loop_ref?.run()}>Run</button>
+		<button onClick={()=>loop_ref?.pause()}>Pause</button>
+		<button onClick={()=>loop_ref?.step()}>Step</button>
 		<canvas ref={canvas_ref} ></canvas>
 	</>);
 }
