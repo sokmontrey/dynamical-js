@@ -3,18 +3,18 @@ export interface LoopParams {
 	sub_steps?: number,
 }
 
-export type update_func = (dt: number) => {}
+export type UpdateFunction = (dt: number) => {}
 
 export default class Loop {
 	private is_constant_dt: boolean;
 	private constant_dt: number;
 
 	private prev_time: number;
-	private update_func: update_func;
+	private update_func: UpdateFunction;
 	private frame_id: number | null;
 	private frame_count: number;
 
-	constructor(update_func: update_func, {
+	constructor(update_func: UpdateFunction, {
 		constant_dt = null,
 	}: LoopParams = {}) {
 		this.update_func = update_func;
