@@ -57,6 +57,10 @@ export default class Loop {
 		this.frame_count = 0;
 	}
 
+	/**
+	*	Invoke update function once. 
+	*	Can be called while the loop is running, but may cause anomaly.
+	**/
 	step(dt: number = 0.16) {
 		if (dt <= 0) throw new Error("Delta time cannot be less than or equal to zero");
 		this.frame_count++;
