@@ -3,7 +3,7 @@ export interface LoopParams {
 	sub_steps?: number,
 }
 
-export type UpdateFunction = (dt: number) => {}
+export type UpdateFunction = (dt: number) => void
 
 export default class Loop {
 	private is_constant_dt: boolean = false;
