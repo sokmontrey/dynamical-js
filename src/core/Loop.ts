@@ -38,12 +38,12 @@ export default class Loop {
 		const dt = this.getDeltaTime(current_time);
 		this.frame_count++;
 		this.update_func(dt);
-		this.frame_id = window.requestAnimationFrame(this._update);
+		this.frame_id = window.requestAnimationFrame(this._update.bind(this));
 	}
 
 	run(): number {
 		this.is_running = true;
-		this.frame_id = window.requestAnimationFrame(this._update);
+		this.frame_id = window.requestAnimationFrame(this._update.bind(this));
 		return this.frame_id;
 	}
 
