@@ -39,7 +39,7 @@ export default class Loop {
 		return dt;
 	}
 
-	_update(current_time: number) {
+	private _update(current_time: number) {
 		const dt = this.getDeltaTime(current_time);
 		this.frame_count++;
 		this.update_func(dt);
