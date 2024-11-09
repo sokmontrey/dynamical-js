@@ -6,8 +6,8 @@ export interface LoopParams {
 export type UpdateFunction = (dt: number) => {}
 
 export default class Loop {
-	private is_constant_dt: boolean;
-	private constant_dt: number;
+	private is_constant_dt: boolean = false;
+	private constant_dt: number = 0.16;
 
 	private prev_time: number;
 	private update_func: UpdateFunction;
@@ -18,15 +18,7 @@ export default class Loop {
 		constant_dt = null,
 	}: LoopParams = {}) {
 		this.update_func = update_func;
-
-		this.is_constant_dt = false;
-		this.constant_dt = 0.16;
-		if (constant_dt !== null) {
-			if (constant_dt <= 0) throw new Error("Constant delta time cannot be less than or equal to zero");
-			this.is_constant_dt = true;
-			this.constant_dt = constant_dt;
-		}
-
+		this.setConstantDeltaTime(constant_dt);
 		this.prev_time = 0;
 		this.frame_id = null;
 		this.frame_count = 0;
@@ -65,4 +57,17 @@ export default class Loop {
 		this.frame_count ++;
 		this.update_func(dt);
 	}
+	//================================ Setters ================================
+	
+	setConstantDeltaTime(dt: number | null = null) {
+		this.is_constant_dt = false;
+		this.constant_dt = 0.16;
+		if (dt !== null) {
+			if (dt <= 0) throw new Error("Constant delta time cannot be less than or equal to zero");
+			this.is_constant_dt = true;
+			this.constant_dt = dt;
+		}
+		return this;
+	}
+
 }
