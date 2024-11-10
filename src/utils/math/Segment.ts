@@ -39,6 +39,22 @@ export default class Segment {
 		return this.getIntersect(line_segment) !== null;
     }
 
+	//================================ With Vector ================================
+	
+	distanceToPoint(point: Vec2) {
+		const ab = this.b.sub(this.a);
+		const ap = point.sub(this.a);
+		// project vector ap onto ab, get the projection factor t
+		const ab_squared = ab.dot(ab);
+		const t = ab_squared === 0 ? 0 : ap.dot(ab) / ab_squared;
+		// clamp t to be within the segment range [0, 1]
+		const clamped_t = Math.max(0, Math.min(1, t));
+		// find the closest point on the segment to the point
+		const closest_point = this.a.add(ab.mul(clamped_t));
+		// calculate the distance between the closest point and the point
+		return point.distance(closest_point);
+	}
+
 	private isWithinBounds(x: number, y: number): boolean {
 		return (
 			Math.min(this.a.x, this.b.x) <= x && x <= Math.max(this.a.x, this.b.x) &&
