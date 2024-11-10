@@ -71,14 +71,14 @@ export default class Vec2 {
 	
 	/**
 	*	Whether the point is inside a bounding box
-	*	@param start top-left (negative y for above x axis)
-	*	@param end bottom-right (negative y for above x axis)
+	*	@param lower top-left (negative y for above x axis)
+	*	@param upper bottom-right (negative y for above x axis)
 	**/
-	isInBoundingBox(start: Vec2, end: Vec2) {
-		return this.x >= start.x &&
-			this.x <= end.x &&
-			this.y >= start.y &&
-			this.y <= end.y;
+	isInBoundingBox(lower: Vec2, upper: Vec2) {
+		return this.x >= lower.x &&
+			this.x <= upper.x &&
+			this.y >= lower.y &&
+			this.y <= upper.y;
 	}
 
 	/**
