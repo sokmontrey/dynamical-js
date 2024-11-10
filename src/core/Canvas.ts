@@ -14,7 +14,8 @@ export default class Canvas {
 		{
 			width = 500,
 			height = 500,
-		}: CanvasParams = {}) {
+		}: CanvasParams = {}
+	) {
 
 		this.canvas = canvas;
 		this.width = width;
@@ -22,7 +23,7 @@ export default class Canvas {
 		canvas.width = width;
 		canvas.height = height;
 		const ctx = canvas.getContext('2d');
-		if(!ctx) throw new Error("Unable to get 2D context from canvas");
+		if (!ctx) throw new Error("Unable to get 2D context from canvas");
 		this.ctx = ctx;
 		this.ctx.translate(width / 2.0, height / 2.0);
 	}
@@ -36,7 +37,7 @@ export default class Canvas {
 			this.height);
 	}
 
-	getContext() { 
-		return this.ctx; 
+	getContext() {
+		return this.ctx;
 	}
 }
