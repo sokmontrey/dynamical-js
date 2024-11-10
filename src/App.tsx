@@ -11,10 +11,7 @@ export default function App() {
 
 	useEffect(() => {
 		if (!canvas_ref.current) return;
-		const canvas = new Canvas(canvas_ref.current, {
-			width: window.innerWidth,
-			height: window.innerHeight
-		});
+		const canvas = new Canvas(canvas_ref.current);
 		const ctx = canvas.getContext();
 
 		// TODO: multiple sub steps dealing with visualization

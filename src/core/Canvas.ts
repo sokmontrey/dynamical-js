@@ -12,8 +12,8 @@ export default class Canvas {
 	constructor(
 		canvas: HTMLCanvasElement,
 		{
-			width = 500,
-			height = 500,
+			width = window.innerWidth,
+			height = window.innerHeight,
 		}: CanvasParams = {}
 	) {
 
