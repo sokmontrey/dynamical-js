@@ -62,7 +62,7 @@ export default function App() {
 		});
 
 		setLoop(loop);
-		// loop.run();
+		loop.run();
 		return () => loop.pause();
 	}, [canvas_ref]);
 
