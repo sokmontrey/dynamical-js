@@ -1,3 +1,5 @@
+import Segment from "./Segment";
+
 export const vec2 = (x: number, y: number) => new Vec2(x, y);
 
 export default class Vec2 {
@@ -27,6 +29,10 @@ export default class Vec2 {
 	**/
 	mul(value: number) {
 		return vec2(this.x * value, this.y * value);
+	}
+
+	dot(other: Vec2) {
+		return this.x * other.x + this.y * other.y;
 	}
 
 	/**
@@ -68,7 +74,7 @@ export default class Vec2 {
 	}
 
 	//================================ Conveniences ================================
-	
+
 	/**
 	*	Whether the point is inside a bounding box
 	*	@param lower top-left (negative y for above x axis)
