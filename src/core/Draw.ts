@@ -46,6 +46,7 @@ export default class Draw {
 		arrow_vector: Vec2,
 		style: ArrowStyle,
 	) {
+		if (arrow_vector.mag() === 0) return;
 		const head_pos = origin.add(arrow_vector);
 		Draw.line(ctx, origin, head_pos, style);
 		Draw.arrowHead(ctx, arrow_vector, head_pos, style);
@@ -56,7 +57,6 @@ export default class Draw {
 		head_pos: Vec2,
 		style: ArrowStyle,
 	) {
-		if (arrow_vector.mag() === 0) return;
 		const invt_dir = arrow_vector.norm().invert();
 		const perp_invt_dir = invt_dir.perp();
 		const head_base = head_pos.add(invt_dir.mul(style.head_size));
