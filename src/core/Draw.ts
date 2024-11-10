@@ -49,15 +49,16 @@ export default class Draw {
 		if (arrow_vector.mag() === 0) return;
 		const head_pos = origin.add(arrow_vector);
 		Draw.line(ctx, origin, head_pos, style);
-		Draw.arrowHead(ctx, arrow_vector, head_pos, style);
+		Draw.arrowHead(ctx, arrow_vector.norm(), head_pos, style);
 	}
 
 	public static arrowHead(ctx: CanvasRenderingContext2D,
-		arrow_vector: Vec2,
+		dir: Vec2,
 		head_pos: Vec2,
 		style: ArrowStyle,
 	) {
-		const invt_dir = arrow_vector.norm().invert();
+		head_pos = head_pos.add(dir.mul(5));
+		const invt_dir = dir.invert();
 		const perp_invt_dir = invt_dir.perp();
 		const head_base = head_pos.add(invt_dir.mul(style.head_size));
 		const fin = perp_invt_dir.mul(style.head_size * 0.6);
