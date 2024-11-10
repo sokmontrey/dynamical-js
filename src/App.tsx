@@ -17,7 +17,6 @@ export default function App() {
 		});
 		// TODO: multiple sub steps dealing with visualization
 		// For now: < 20000 is recommended. Too many sub steps may cause visual anormally
-		const steps = 20000.0; 
 		const gravity = vec2(0, 9.8);
 
 		const p1 = new PointMass().enableStatic();
@@ -34,6 +33,7 @@ export default function App() {
 
 		d1.renderer.stress.enable();
 
+		const steps = 20000.0; 
 		const loop = new Loop((dt: number) => {
 			const ctx = canvas.getContext();
 			if (!ctx) return;
@@ -55,7 +55,6 @@ export default function App() {
 			d1.renderer.draw(ctx, steps);
 			d2.renderer.draw(ctx, steps);
 			d3.renderer.draw(ctx, steps);
-
 			p1.renderer.draw(ctx, steps);
 			p2.renderer.draw(ctx, steps);
 			p3.renderer.draw(ctx, steps);
@@ -71,6 +70,6 @@ export default function App() {
 		<button onClick={()=>loop_ref?.run()}>Run</button>
 		<button onClick={()=>loop_ref?.pause()}>Pause</button>
 		<button onClick={()=>loop_ref?.step()}>Step</button>
-		<canvas ref={canvas_ref} ></canvas>
+		<canvas ref={canvas_ref} className='primary-canvas'></canvas>
 	</>);
 }
