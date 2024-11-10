@@ -19,6 +19,8 @@ export default class ShapeStyle extends LineStyle {
 		this.fill_color = fill_color;
 	}
 
+	//================================ Setters ================================
+
 	setFillColor(color: string) {
 		this.fill_color = color;
 		return this;
@@ -32,6 +34,16 @@ export default class ShapeStyle extends LineStyle {
 	fill() {
 		this.is_fill = true;
 		return this;
+	}
+
+	//================================ Getters ================================
+
+	isFill() {
+		return this.is_fill;
+	}
+
+	getFillColor() {
+		return this.fill_color;
 	}
 }
 

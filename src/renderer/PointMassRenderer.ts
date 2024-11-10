@@ -16,12 +16,12 @@ export default class PointMassRenderer implements Renderer {
 	}
 
 	private drawCurrentPosition(ctx: CanvasRenderingContext2D, pos: Vec2) {
-		if (!this.position.is_enable) return;
+		if (!this.position.isEnable()) return;
 		Draw.circle(ctx, pos, this.position);
 	}
 
 	private drawVelocity(ctx: CanvasRenderingContext2D, pos: Vec2, vel: Vec2, steps: number) {
-		if (!this.velocity.is_enable) return;
+		if (!this.velocity.isEnable()) return;
 		Draw.arrow(ctx, pos, vel.mul(steps * 5), this.velocity);
 	}
 

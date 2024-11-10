@@ -17,7 +17,7 @@ export default class RigidConstraintRenderer implements Renderer {
 	}
 
 	private applyStress(_: CanvasRenderingContext2D, steps: number) {
-		if (!this.stress.is_enable) return;
+		if (!this.stress.isEnable()) return;
 		// multiply with 1000 * steps to amplify the visual (+ 1/2 offset)
 		let stress = this.rigid_constraint.getStress();
 		stress = stress * steps * steps * 10 + 0.5; // scale by 10 * steps ^ 2 + offset
@@ -29,7 +29,7 @@ export default class RigidConstraintRenderer implements Renderer {
 	}
 
 	private drawConstraintLine(ctx: CanvasRenderingContext2D, start: Vec2, end: Vec2) {
-		if (!this.constraint_line.is_enable) return;
+		if (!this.constraint_line.isEnable()) return;
 		Draw.line(ctx, start, end, this.constraint_line);
 	}
 

@@ -23,6 +23,8 @@ export default class LineStyle extends Style {
 		this.line_width = line_width;
 	}
 
+	//================================ Setters ================================
+
 	stroke() {
 		this.is_stroke = true;
 		return this;
@@ -41,6 +43,20 @@ export default class LineStyle extends Style {
 	setLineWidth(line_width: number) {
 		this.line_width = line_width;
 		return this;
+	}
+
+	//================================ Getters ================================
+
+	isStroke() {
+		return this.is_stroke;
+	}
+
+	getStrokeColor() {
+		return this.stroke_color;
+	}
+
+	getLineWidth() {
+		return this.line_width;
 	}
 }
 

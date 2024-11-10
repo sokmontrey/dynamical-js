@@ -12,6 +12,8 @@ export default class Style {
 		this.is_enable = is_enable;
 	}
 
+	//================================ Setters ================================
+
 	enable() {
 		this.is_enable = true;
 		return this;
@@ -20,6 +22,12 @@ export default class Style {
 	disable() {
 		this.is_enable = false;
 		return this;
+	}
+
+	//================================ Getters ================================
+
+	isEnable() {
+		return this.is_enable;
 	}
 }
 

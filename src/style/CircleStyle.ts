@@ -15,9 +15,17 @@ export default class CircleStyle extends ShapeStyle {
 		this.radius = radius;
 	}
 
-	setRadius(radius: number) { 
-		this.radius = radius; 
-		return this; 
+	//================================ Setters ================================	
+
+	setRadius(radius: number) {
+		this.radius = radius;
+		return this;
+	}
+
+	//================================ Getters ================================
+
+	getRadius() {
+		return this.radius;
 	}
 }
 
