@@ -71,6 +71,6 @@ export default function App() {
 		<button onClick={()=>loop_ref?.run()}>Run</button>
 		<button onClick={()=>loop_ref?.pause()}>Pause</button>
 		<button onClick={()=>loop_ref?.step()}>Step</button>
-		<canvas ref={canvas_ref} ></canvas>
+		<canvas ref={canvas_ref} className='primary-canvas'></canvas>
 	</>);
 }

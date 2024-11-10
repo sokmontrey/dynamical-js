@@ -1,3 +1,10 @@
 body {
 	background-color: #101015;
 }
+
+.primary-canvas {
+	height: 100%;
+	width: 100%;
+	background-image: radial-gradient(#e5e7eb18 1px, transparent 2px);
+	background-size: 32px 32px;
+}
