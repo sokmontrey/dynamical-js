@@ -5,13 +5,14 @@ import CircleStyle from "../style/CircleStyle";
 import Vec2 from "../utils/math/Vector";
 import Renderer from "./Renderer";
 
-export default class PointMassRenderer implements Renderer {
+export default class PointMassRenderer extends Renderer {
 	protected pointmass: PointMass;
 
 	public readonly position = new CircleStyle().noStroke();
 	public readonly velocity = new ArrowStyle().setFillColor('gray').disable();
 
 	constructor(pointmass: PointMass) {
+		super();
 		this.pointmass = pointmass;
 	}
 
@@ -32,5 +33,9 @@ export default class PointMassRenderer implements Renderer {
 		this.drawVelocity(ctx, pos, vel, steps);
 		return this;
 	}
+
+    override getBoundingBox(): [Vec2, Vec2] {
+        throw new Error("Method not implemented.");
+    }
 }
 

@@ -6,13 +6,14 @@ import Color from "../utils/color/Color";
 import Vec2 from "../utils/math/Vector";
 import Renderer from "./Renderer";
 
-export default class RigidConstraintRenderer implements Renderer {
+export default class RigidConstraintRenderer extends Renderer {
 	protected rigid_constraint: RigidConstraint;
 
 	public readonly constraint_line = new LineStyle();
 	public readonly stress = new StressStyle().disable();
 
 	constructor(rigid_constraint: RigidConstraint) {
+		super();
 		this.rigid_constraint = rigid_constraint;
 	}
 
@@ -41,5 +42,9 @@ export default class RigidConstraintRenderer implements Renderer {
 		this.drawConstraintLine(ctx, start, end);
 		return this;
 	}
+
+    override getBoundingBox(): [Vec2, Vec2] {
+        throw new Error("Method not implemented.");
+    }
 }
 
