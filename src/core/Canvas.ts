@@ -5,7 +5,7 @@ export interface CanvasParams {
 
 export default class Canvas {
 	private canvas: HTMLCanvasElement;
-	private ctx: CanvasRenderingContext2D | null;
+	private ctx: CanvasRenderingContext2D;
 	private width: number;
 	private height: number;
 
@@ -21,8 +21,10 @@ export default class Canvas {
 		this.height = height;
 		canvas.width = width;
 		canvas.height = height;
-		this.ctx = canvas.getContext('2d');
-		this.ctx?.translate(width / 2.0, height / 2.0);
+		const ctx = canvas.getContext('2d');
+		if(!ctx) throw new Error("Unable to get 2D context from canvas");
+		this.ctx = ctx;
+		this.ctx.translate(width / 2.0, height / 2.0);
 	}
 
 	clear() {
