@@ -15,8 +15,9 @@ export default function App() {
 			width: window.innerWidth,
 			height: window.innerHeight
 		});
-		// TODO: multiple time steps dealing with visualization
-		const steps = 100.0;
+		// TODO: multiple sub steps dealing with visualization
+		// For now: < 20000 is recommended. Too many sub steps may cause visual anormally
+		const steps = 20000.0; 
 		const gravity = vec2(0, 9.8);
 
 		const p1 = new PointMass().enableStatic();
