@@ -15,8 +15,16 @@ export default class ArrowStyle extends ShapeStyle {
 		this.head_size = head_size;
 	}
 
-	setHeadSize(head_size: number) { 
-		this.head_size = head_size; 
-		return this; 
+	//================================ Setters ================================
+
+	setHeadSize(head_size: number) {
+		this.head_size = head_size;
+		return this;
+	}
+
+	//================================ Getters ================================
+
+	getHeadSize() {
+		return this.head_size;
 	}
 }

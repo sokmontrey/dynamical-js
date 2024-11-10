@@ -20,6 +20,8 @@ export default class StressStyle extends Style {
 		this.tension_color = tension_color;
 	}
 
+	//================================ Setters ================================
+
 	setCompressColor(color: Color) {
 		this.compress_color = color;
 		return this;
@@ -28,5 +30,15 @@ export default class StressStyle extends Style {
 	setTensionColor(color: Color) {
 		this.tension_color = color;
 		return this;
+	}
+
+	//================================ Getters ================================
+	
+	getCompressColor() {
+		return this.compress_color;
+	}
+
+	getTensionColor() {
+		return this.tension_color;
 	}
 }
