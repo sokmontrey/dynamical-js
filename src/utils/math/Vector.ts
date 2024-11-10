@@ -67,6 +67,20 @@ export default class Vec2 {
 		return this.div(this.mag());
 	}
 
+	//================================ Conveniences ================================
+	
+	/**
+	*	Whether the point is inside a bounding box
+	*	@param start top-left (negative y for above x axis)
+	*	@param end bottom-right (negative y for above x axis)
+	**/
+	isInBoundingBox(start: Vec2, end: Vec2) {
+		return this.x >= start.x &&
+			this.x <= end.x &&
+			this.y >= start.y &&
+			this.y <= end.y;
+	}
+
 	/**
 	*	@return [x, y]
 	**/
