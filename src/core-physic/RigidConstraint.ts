@@ -1,3 +1,4 @@
+import RigidConstraintInteractor from "../interactor/RigidConstraintInteractor";
 import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer";
 import PointMass from "./PointMass";
 
@@ -15,6 +16,7 @@ export default class RigidConstraint {
 	protected corr: number;
 
 	public readonly renderer: RigidConstraintRenderer = new RigidConstraintRenderer(this);
+	public readonly interactor: RigidConstraintInteractor = new RigidConstraintInteractor(this);
 
 	constructor(pointmass1: PointMass, pointmass2: PointMass, {
 		is_broken = false,

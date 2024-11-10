@@ -1,3 +1,4 @@
+import PointMassInteractor from "../interactor/PointMassInteractor.ts";
 import PointMassRenderer from "../renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/math/Vector.ts";
 
@@ -18,7 +19,8 @@ export default class PointMass {
 	private mass: number;
 	private is_static: boolean;
 
-	public readonly renderer: PointMassRenderer;
+	public readonly renderer: PointMassRenderer = new PointMassRenderer(this);
+	public readonly interactor: PointMassInteractor = new PointMassInteractor(this);
 
 	constructor({
 		position = Vec2.zero(),
@@ -34,8 +36,6 @@ export default class PointMass {
 		this.is_static = is_static;
 		this.net_force = initial_force.copy();
 		this.const_acc = constant_acceleration.copy();
-
-		this.renderer = new PointMassRenderer(this);
 	}
 
 	//================================ Getters ================================
