@@ -19,7 +19,8 @@ export default class RigidConstraintRenderer implements Renderer {
 	private applyStress(_: CanvasRenderingContext2D, steps: number) {
 		if (!this.stress.is_enable) return;
 		// multiply with 1000 * steps to amplify the visual (+ 1/2 offset)
-		const stress = this.rigid_constraint.getStress() * 1e3 * steps + 0.5;
+		let stress = this.rigid_constraint.getStress();
+		stress = stress * steps * steps * 10 + 0.5; // scale by 10 * steps ^ 2 + offset
 		this.constraint_line.stroke_color = Color.lerp(
 			this.stress.compress_color,
 			this.stress.tension_color,
