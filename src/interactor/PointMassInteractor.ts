@@ -10,11 +10,27 @@ export default class PointMassInteractor extends Interactor {
 		this.pointmass = pointmass;
 	}
 
-    isBoundingBoxContainsPoint(pos: Vec2): boolean {
-        throw new Error("Method not implemented.");
+    isSelected(lower: Vec2, upper: Vec2): boolean {
+		const pm_pos = this.pointmass.getPosition();
+		return pm_pos.isInBoundingBox(lower, upper);
     }
 
-    isContainsPoint(pos: Vec2): boolean {
-        throw new Error("Method not implemented.");
+    isBoundingBoxHovered(pos: Vec2): boolean {
+		const [lower, upper] = this.pointmass.renderer.getBoundingBox();
+		return pos.isInBoundingBox(lower, upper);
+    }
+
+	/**
+	* Check if a point is hovering the pointmass 
+	* by checking against the renderer's radius.
+	* Return false if position renderer is disabled
+	**/
+    isHovered(pos: Vec2): boolean {
+		const pm = this.pointmass;
+		const renderer = pm.renderer;
+		const pm_pos = pm.getPosition();
+		const radius = renderer.position.getRadius();
+		return pos.distance(pm_pos) <= radius 
+			&& renderer.position.isEnable();
     }
 }
