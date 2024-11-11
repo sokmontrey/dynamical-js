@@ -29,6 +29,18 @@ export default class Draw {
 		Draw.stroke(ctx, style);
 	}
 
+	public static rectangle(ctx: CanvasRenderingContext2D,
+		pos: Vec2,
+		dimension: Vec2,
+		style: ShapeStyle
+	) {
+		ctx.beginPath();
+		ctx.rect(pos.x, pos.y, dimension.x, dimension.y);
+		ctx.closePath();
+		Draw.fill(ctx, style);
+		Draw.stroke(ctx, style);
+	}
+
 	public static line(ctx: CanvasRenderingContext2D,
 		start: Vec2,
 		end: Vec2,
@@ -57,11 +69,11 @@ export default class Draw {
 		head_pos: Vec2,
 		style: ArrowStyle,
 	) {
-		head_pos = head_pos.add(dir.mul(5));
+		head_pos = head_pos.add(dir.scale(5));
 		const invt_dir = dir.invert();
 		const perp_invt_dir = invt_dir.perp();
-		const head_base = head_pos.add(invt_dir.mul(style.head_size));
-		const fin = perp_invt_dir.mul(style.head_size * 0.6);
+		const head_base = head_pos.add(invt_dir.scale(style.head_size));
+		const fin = perp_invt_dir.scale(style.head_size * 0.6);
 		const barb1 = head_base.add(fin);
 		const barb2 = head_base.sub(fin);
 
