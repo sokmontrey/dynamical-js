@@ -69,11 +69,11 @@ export default class Draw {
 		head_pos: Vec2,
 		style: ArrowStyle,
 	) {
-		head_pos = head_pos.add(dir.scale(5));
+		head_pos = head_pos.add(dir.mul(5));
 		const invt_dir = dir.invert();
 		const perp_invt_dir = invt_dir.perp();
-		const head_base = head_pos.add(invt_dir.scale(style.head_size));
-		const fin = perp_invt_dir.scale(style.head_size * 0.6);
+		const head_base = head_pos.add(invt_dir.mul(style.head_size));
+		const fin = perp_invt_dir.mul(style.head_size * 0.6);
 		const barb1 = head_base.add(fin);
 		const barb2 = head_base.sub(fin);
 
