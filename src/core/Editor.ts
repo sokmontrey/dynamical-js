@@ -21,5 +21,28 @@ export default class Editor {
 		this.drag_threshold = drag_threshold;
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
+
+		canvas.onMouseDown((_: MouseEvent) => {
+			if (this.is_mouse_down) return;
+			this.is_mouse_down = true;
+			this.mouse_start_pos = canvas.getMousePosition();
+		});
+
+		canvas.onMouseUp((_: MouseEvent) => {
+			if (!this.is_mouse_down) return;
+			this.is_mouse_down = false;
+			const mouse_curr_pos = canvas.getMousePosition()
+			const diff = mouse_curr_pos.sub(this.mouse_start_pos).mag();
+			if (diff < this.drag_threshold) this.click(this.mouse_start_pos);
+			else this.drag(this.mouse_start_pos, mouse_curr_pos);
+		});
+	}
+
+	click(pos: Vec2) {
+		console.log("Click", pos);
+	}
+
+	drag(start: Vec2, end: Vec2) {
+		console.log("Drag", start, end);
 	}
 }
