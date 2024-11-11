@@ -37,6 +37,18 @@ export default class Canvas {
 			this.height);
 	}
 
+	getWidth() {
+		return this.width;
+	}
+
+	getHeight() {
+		return this.height;
+	}
+
+	getCanvas() {
+		return this.canvas;
+	}
+
 	getContext() {
 		return this.ctx;
 	}
