@@ -29,6 +29,18 @@ export default class Draw {
 		Draw.stroke(ctx, style);
 	}
 
+	public static rectangle(ctx: CanvasRenderingContext2D,
+		pos: Vec2,
+		dimension: Vec2,
+		style: ShapeStyle
+	) {
+		ctx.beginPath();
+		ctx.rect(pos.x, pos.y, dimension.x, dimension.y);
+		ctx.closePath();
+		Draw.fill(ctx, style);
+		Draw.stroke(ctx, style);
+	}
+
 	public static line(ctx: CanvasRenderingContext2D,
 		start: Vec2,
 		end: Vec2,

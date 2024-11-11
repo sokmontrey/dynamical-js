@@ -1,5 +1,3 @@
-import Segment from "./Segment";
-
 export const vec2 = (x: number, y: number) => new Vec2(x, y);
 
 export default class Vec2 {
