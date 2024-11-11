@@ -9,12 +9,15 @@ import Renderer from "./Renderer";
 export default class RigidConstraintRenderer extends Renderer {
 	protected rigid_constraint: RigidConstraint;
 
-	public readonly constraint_line = new LineStyle();
-	public readonly stress = new StressStyle().disable();
+	public readonly constraint_line;
+	public readonly stress;
 
 	constructor(rigid_constraint: RigidConstraint) {
 		super();
 		this.rigid_constraint = rigid_constraint;
+
+		this.constraint_line = new LineStyle();
+		this.stress = new StressStyle().disable();
 	}
 
 	private applyStress(_: CanvasRenderingContext2D, steps: number) {
@@ -43,8 +46,8 @@ export default class RigidConstraintRenderer extends Renderer {
 		return this;
 	}
 
-    override getBoundingBox(): [Vec2, Vec2] {
-        throw new Error("Method not implemented.");
-    }
+	override getBoundingBox(): [Vec2, Vec2] {
+		throw new Error("Method not implemented.");
+	}
 }
 

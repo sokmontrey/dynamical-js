@@ -8,12 +8,19 @@ import Renderer from "./Renderer";
 export default class PointMassRenderer extends Renderer {
 	protected pointmass: PointMass;
 
-	public readonly position = new CircleStyle().noStroke();
-	public readonly velocity = new ArrowStyle().setFillColor('gray').disable();
+	public readonly position;
+	public readonly velocity;
 
 	constructor(pointmass: PointMass) {
 		super();
 		this.pointmass = pointmass;
+
+		this.position = new CircleStyle()
+			.setRadius(this.pointmass.getMass() * 10)
+			.noStroke();
+		this.velocity = new ArrowStyle()
+			.setFillColor('gray')
+			.disable();
 	}
 
 	private drawCurrentPosition(ctx: CanvasRenderingContext2D, pos: Vec2) {
@@ -34,8 +41,8 @@ export default class PointMassRenderer extends Renderer {
 		return this;
 	}
 
-    override getBoundingBox(): [Vec2, Vec2] {
-        throw new Error("Method not implemented.");
-    }
+	override getBoundingBox(): [Vec2, Vec2] {
+		throw new Error("Method not implemented.");
+	}
 }
 
