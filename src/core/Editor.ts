@@ -45,4 +45,11 @@ export default class Editor {
 	drag(start: Vec2, end: Vec2) {
 		console.log("Drag", start, end);
 	}
+
+	isDragging() {
+		if (!this.is_mouse_down) return;
+		const mouse_curr_pos = this.canvas.getMousePosition();
+		const diff = mouse_curr_pos.sub(this.mouse_start_pos).mag();
+		return diff >= this.drag_threshold;
+	}
 }
