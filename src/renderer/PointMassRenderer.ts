@@ -15,8 +15,12 @@ export default class PointMassRenderer extends Renderer {
 		super();
 		this.pointmass = pointmass;
 
-		this.position = new CircleStyle().noStroke();
-		this.velocity = new ArrowStyle().setFillColor('gray').disable();
+		this.position = new CircleStyle()
+			.setRadius(this.pointmass.getMass() * 10)
+			.noStroke();
+		this.velocity = new ArrowStyle()
+			.setFillColor('gray')
+			.disable();
 	}
 
 	private drawCurrentPosition(ctx: CanvasRenderingContext2D, pos: Vec2) {
