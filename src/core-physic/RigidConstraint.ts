@@ -15,8 +15,8 @@ export default class RigidConstraint {
 	protected diff: number;
 	protected corr: number;
 
-	public readonly renderer: RigidConstraintRenderer = new RigidConstraintRenderer(this);
-	public readonly interactor: RigidConstraintInteractor = new RigidConstraintInteractor(this);
+	public readonly renderer: RigidConstraintRenderer;
+	public readonly interactor: RigidConstraintInteractor;
 
 	constructor(pointmass1: PointMass, pointmass2: PointMass, {
 		is_broken = false,
@@ -28,6 +28,9 @@ export default class RigidConstraint {
 		this.calculateRestDistance();
 		this.diff = 0;
 		this.corr = 0;
+
+		this.renderer = new RigidConstraintRenderer(this);
+		this.interactor = new RigidConstraintInteractor(this);
 	}
 
 	//================================ Helpers ================================

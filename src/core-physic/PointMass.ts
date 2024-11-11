@@ -19,8 +19,8 @@ export default class PointMass {
 	private mass: number;
 	private is_static: boolean;
 
-	public readonly renderer: PointMassRenderer = new PointMassRenderer(this);
-	public readonly interactor: PointMassInteractor = new PointMassInteractor(this);
+	public readonly renderer: PointMassRenderer;
+	public readonly interactor: PointMassInteractor;
 
 	constructor({
 		position = Vec2.zero(),
@@ -36,6 +36,9 @@ export default class PointMass {
 		this.is_static = is_static;
 		this.net_force = initial_force.copy();
 		this.const_acc = constant_acceleration.copy();
+
+		this.renderer = new PointMassRenderer(this);
+		this.interactor = new PointMassInteractor(this);
 	}
 
 	//================================ Getters ================================
@@ -83,7 +86,7 @@ export default class PointMass {
 	*		`setCurrentPosition`: has no effect even after the pointmass turned back to normal. Use `setPosition` instead to set position.
 	**/
 	enableStatic() {
-		this.is_static = true; 
+		this.is_static = true;
 		return this;
 	}
 
@@ -92,7 +95,7 @@ export default class PointMass {
 	*	Action applied during the static phase will now be in effect (setVelocity, applyForce, etc.)
 	**/
 	disableStatic() {
-		this.is_static = false; 
+		this.is_static = false;
 		return this;
 	}
 
