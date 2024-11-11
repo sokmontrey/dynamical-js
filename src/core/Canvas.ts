@@ -3,6 +3,8 @@ export interface CanvasParams {
 	height?: number;
 }
 
+export type EventCallBack = (e: Event) => void;
+
 export default class Canvas {
 	private canvas: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
@@ -35,6 +37,22 @@ export default class Canvas {
 			-this.height / 2,
 			this.width,
 			this.height);
+	}
+
+	onMouseMove(callback: EventCallBack) {
+		this.canvas.addEventListener('mousemove', callback);
+	}
+
+	onMouseClick(callback: EventCallBack) {
+		this.canvas.addEventListener('click', callback);
+	}
+
+	onMouseDown(callback: EventCallBack) {
+		this.canvas.addEventListener('mousedown', callback);
+	}
+
+	onMouseUp(callback: EventCallBack) {
+		this.canvas.addEventListener('mouseup', callback);
 	}
 
 	getWidth() {
