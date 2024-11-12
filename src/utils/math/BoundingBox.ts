@@ -1,3 +1,4 @@
+import Point from "../../quadtree/Point";
 import Vec2 from "./Vector";
 
 export default class BoundingBox {
@@ -15,7 +16,13 @@ export default class BoundingBox {
 	/**
 	* Inclusive to upper bound
 	**/
-	isContainsPoint(pos: Vec2) {
+	isContainsPoint(point: Point<null>) {
+		const pos = point.pos;
+		return this.isContainsVec2(pos);
+	}
+
+	// TODO: Use this class for Interactor bounding box
+	isContainsVec2(pos: Vec2) {
 		const lower = this.getLower();
 		const upper = this.getUpper();
 		return !(pos.x > upper.x
