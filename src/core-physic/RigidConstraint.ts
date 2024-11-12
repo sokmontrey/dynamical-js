@@ -1,12 +1,13 @@
 import RigidConstraintInteractor from "../interactor/RigidConstraintInteractor";
 import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer";
+import PhysicBody from "./PhysicBody";
 import PointMass from "./PointMass";
 
 export interface RigidConstraintParams {
 	is_broken?: boolean;
 };
 
-export default class RigidConstraint {
+export default class RigidConstraint implements PhysicBody {
 	protected pointmass1: PointMass;
 	protected pointmass2: PointMass;
 	protected is_broken: boolean;

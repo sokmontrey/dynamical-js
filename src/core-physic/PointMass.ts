@@ -1,6 +1,7 @@
 import PointMassInteractor from "../interactor/PointMassInteractor.ts";
 import PointMassRenderer from "../renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/math/Vector.ts";
+import PhysicBody from "./PhysicBody.ts";
 
 export interface PointMassParams {
 	position?: Vec2,
@@ -11,7 +12,7 @@ export interface PointMassParams {
 	is_static?: boolean,
 };
 
-export default class PointMass {
+export default class PointMass implements PhysicBody {
 	private curr_pos: Vec2;
 	private prev_pos: Vec2;
 	private const_acc: Vec2;
