@@ -71,6 +71,10 @@ export default class Vec2 {
 		return this.div(this.mag());
 	}
 
+    abs(): Vec2 {
+		return vec2(Math.abs(this.x), Math.abs(this.y));
+    }
+
 	//================================ Conveniences ================================
 
 	/**
