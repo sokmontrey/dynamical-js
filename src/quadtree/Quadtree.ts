@@ -72,4 +72,34 @@ export default class Quadtree<T> {
 		this.Q4?.queryRange(range, result);
 		return result;
 	}
+
+	//================================ Getters ================================
+
+	getCenter() {
+		return this.bound_box.center;
+	}
+
+	getHalfDim() {
+		return this.bound_box.half_dim;
+	}
+
+	getDim() {
+		return this.bound_box.getDim();
+	}
+
+	getLower() {
+		return this.bound_box.getLower();
+	}
+
+	getUpper() {
+		return this.bound_box.getUpper();
+	}
+
+	isSubdivided() {
+		return this.Q1 !== null;
+	}
+
+	getSubQuads() {
+		return [this.Q1, this.Q2, this.Q3, this.Q4];
+	}
 }
