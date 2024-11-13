@@ -6,6 +6,10 @@ export interface QuadtreeParams {
 	capacity?: number;
 }
 
+/**
+* Basic implementation follow Wikipedia pseudo code
+* https://www.wikiwand.com/en/articles/Quadtree#Pseudocode
+**/
 export default class Quadtree<T> {
 	private readonly capacity: number;
 	private bound_box: BoundingBox;
@@ -31,7 +35,21 @@ export default class Quadtree<T> {
 	}
 
 	insert(point: Point<T>) {
+		if (!this.bound_box.isContainsPoint(point)) return false;
 
+		if (this.points.length < this.capacity && this.Q1 === null) {
+			this.points.push(point);
+			return true;
+		}
+
+		if (this.Q1 === null) this.subdivide();
+
+		if (this.Q1!.insert(point)) return true;
+		if (this.Q2!.insert(point)) return true;
+		if (this.Q3!.insert(point)) return true;
+		if (this.Q4!.insert(point)) return true;
+
+		return false;
 	}
 
 	subdivide() {
