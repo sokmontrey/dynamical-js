@@ -16,7 +16,7 @@ export default class BoundingBox {
 	/**
 	* Inclusive to upper bound
 	**/
-	isContainsPoint(point: Point<null>) {
+	isContainsPoint<T>(point: Point<T>) {
 		const pos = point.pos;
 		return this.isContainsVec2(pos);
 	}
