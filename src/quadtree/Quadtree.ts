@@ -62,7 +62,16 @@ export default class Quadtree<T> {
 		this.Q4 = new Quadtree<T>(center.add(vec2(-sub_half.x, sub_half.y)), sub_half);
 	}
 
-	queryRange(range: BoundingBox) {
+	queryRange(range: BoundingBox, result: Point<T>[] = []) {
+		if (!this.bound_box.isIntersectsBondingBox(range)) return result;
+		for (const point of this.points) if (range.isContainsPoint(point)) result.push(point);
 
+		if (this.Q1 === null) return result;
+
+		this.Q1?.queryRange(range, result);
+		this.Q2?.queryRange(range, result);
+		this.Q3?.queryRange(range, result);
+		this.Q4?.queryRange(range, result);
+		return result;
 	}
 }
