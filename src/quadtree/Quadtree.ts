@@ -1,4 +1,5 @@
 import BoundingBox from "../utils/math/BoundingBox";
+import Vec2, { vec2 } from "../utils/math/Vector";
 import Point from "./Point";
 
 export interface QuadtreeParams {
@@ -21,10 +22,10 @@ export default class Quadtree<T> {
 	private Q3?: Quadtree<T> | null = null;
 	private Q4?: Quadtree<T> | null = null;
 
-	constructor(bounding_box: BoundingBox, {
+	constructor(center: Vec2, half_dim: Vec2, {
 		capacity = 5,
 	}: QuadtreeParams = {}) {
-		this.bound_box = bounding_box;
+		this.bound_box = new BoundingBox(center, half_dim);
 		this.capacity = capacity;
 		this.points = [];
 	}
