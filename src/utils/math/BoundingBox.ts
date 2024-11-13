@@ -46,6 +46,10 @@ export default class BoundingBox {
 		return this.center.add(this.half_dim);
 	}
 
+	getDim() {
+		return this.half_dim.mul(2.0);
+	}
+
 	/**
 	* @params dim Vec2(width, height)
 	**/
