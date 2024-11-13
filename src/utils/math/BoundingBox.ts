@@ -52,6 +52,6 @@ export default class BoundingBox {
 	static fromUpperAndLower(upper: Vec2, lower: Vec2) {
 		return new BoundingBox(
 			lower.add(upper).div(2.0),
-			upper.sub(lower).div(2.0));
+			upper.sub(lower).div(2.0).abs());
 	}
 }
