@@ -58,8 +58,8 @@ export default class Quadtree<T> {
 		const sub_half = this.bound_box.half_dim.div(2.0);
 		this.Q1 = new Quadtree<T>(center.sub(sub_half), sub_half);
 		this.Q2 = new Quadtree<T>(center.add(vec2(sub_half.x, -sub_half.y)), sub_half);
-		this.Q3 = new Quadtree<T>(center.sub(vec2(-sub_half.x, sub_half.y)), sub_half);
-		this.Q4 = new Quadtree<T>(center.add(sub_half), sub_half);
+		this.Q3 = new Quadtree<T>(center.add(sub_half), sub_half);
+		this.Q4 = new Quadtree<T>(center.add(vec2(-sub_half.x, sub_half.y)), sub_half);
 	}
 
 	queryRange(range: BoundingBox) {
