@@ -1,3 +1,4 @@
+import QuadtreeRenderer from "../renderer/QuadtreeRenderer";
 import BoundingBox from "../utils/math/BoundingBox";
 import Vec2, { vec2 } from "../utils/math/Vector";
 import Point from "./Point";
@@ -27,12 +28,15 @@ export default class Quadtree<T> {
 	private Q3?: Quadtree<T> | null = null;
 	private Q4?: Quadtree<T> | null = null;
 
+	public readonly renderer: QuadtreeRenderer<T>;
+
 	constructor(center: Vec2, half_dim: Vec2, {
 		capacity = 5,
 	}: QuadtreeParams = {}) {
 		this.bound_box = new BoundingBox(center, half_dim);
 		this.capacity = capacity;
 		this.points = [];
+		this.renderer = new QuadtreeRenderer(this);
 	}
 
 	insert(point: Point<T>) {
@@ -71,5 +75,35 @@ export default class Quadtree<T> {
 		this.Q3?.queryRange(range, result);
 		this.Q4?.queryRange(range, result);
 		return result;
+	}
+
+	//================================ Getters ================================
+
+	getCenter() {
+		return this.bound_box.center;
+	}
+
+	getHalfDim() {
+		return this.bound_box.half_dim;
+	}
+
+	getDim() {
+		return this.bound_box.getDim();
+	}
+
+	getLower() {
+		return this.bound_box.getLower();
+	}
+
+	getUpper() {
+		return this.bound_box.getUpper();
+	}
+
+	isSubdivided() {
+		return this.Q1 !== null;
+	}
+
+	getSubQuads() {
+		return [this.Q1, this.Q2, this.Q3, this.Q4];
 	}
 }
