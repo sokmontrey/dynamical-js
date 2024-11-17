@@ -9,6 +9,12 @@ export interface EditorParams {
 	drag_threshold?: number;
 }
 
+export enum MouseButton {
+	LEFT = 0,
+	MIDDLE = 1,
+	RIGHT = 2, 
+}
+
 export default class Editor {
 	private canvas: Canvas;
 	private drag_threshold: number;
@@ -35,22 +41,22 @@ export default class Editor {
 			this.mouse_start_pos = this.canvas.getMousePosition();
 		});
 
-		this.canvas.onMouseUp((_: MouseEvent) => {
+		this.canvas.onMouseUp((e: MouseEvent) => {
 			if (!this.is_mouse_down) return;
 			this.is_mouse_down = false;
 			const mouse_curr_pos = this.canvas.getMousePosition();
 			const diff = mouse_curr_pos.sub(this.mouse_start_pos).mag();
-			if (diff < this.drag_threshold) this.click(this.mouse_start_pos);
-			else this.drag(this.mouse_start_pos, mouse_curr_pos);
+			if (diff < this.drag_threshold) this.onClick(e.button, this.mouse_start_pos);
+			else this.onDrag(e.button, this.mouse_start_pos, mouse_curr_pos);
 		});
 	}
 
-	click(pos: Vec2) {
-		console.log("Click", pos);
+	onClick(button: MouseButton, pos: Vec2) {
 	}
 
-	drag(start: Vec2, end: Vec2) {
-		console.log("Drag", start, end);
+	onDrag(button: MouseButton, start: Vec2, end: Vec2) {
+		const lower = Vec2.min(start, end);
+		const upper = Vec2.max(start, end);
 	}
 
 	isDragging() {
