@@ -1,6 +1,8 @@
 import Canvas from "../core/Canvas";
 import EditorRenderer from "../renderer/EditorRenderer";
 import Vec2 from "../utils/math/Vector";
+import EditorMode from "./EditorMode";
+import EditorMoveMode from "./EditorMoveMode";
 
 export interface EditorParams {
 	/**
@@ -20,6 +22,7 @@ export default class Editor {
 	private drag_threshold: number;
 	private is_mouse_down: boolean;
 	private mouse_start_pos: Vec2;
+	private mode: EditorMode;
 
 	public readonly renderer: EditorRenderer;
 
@@ -32,6 +35,7 @@ export default class Editor {
 		this.mouse_start_pos = Vec2.zero();
 		this.setupMouseEvent();
 		this.renderer = new EditorRenderer(this);
+		this.mode = new EditorMoveMode();
 	}
 
 	setupMouseEvent() {
@@ -52,11 +56,13 @@ export default class Editor {
 	}
 
 	onClick(button: MouseButton, pos: Vec2) {
+		this.mode.onClick(button, pos);
 	}
 
 	onDrag(button: MouseButton, start: Vec2, end: Vec2) {
 		const lower = Vec2.min(start, end);
 		const upper = Vec2.max(start, end);
+		this.mode.onDrag(button, lower, upper);
 	}
 
 	isDragging() {
