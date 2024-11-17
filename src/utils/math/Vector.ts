@@ -75,6 +75,20 @@ export default class Vec2 {
 		return vec2(Math.abs(this.x), Math.abs(this.y));
     }
 
+	/**
+	* Find min x and y from two Vectors
+	**/
+	min(other: Vec2) {
+		return vec2(Math.min(this.x, other.x), Math.min(this.y, other.y));
+	}
+
+	/**
+	* Find max x and y from two Vectors
+	**/
+	max(other: Vec2) {
+		return vec2(Math.max(this.x, other.x), Math.max(this.y, other.y));
+	}
+
 	//================================ Conveniences ================================
 
 	/**
