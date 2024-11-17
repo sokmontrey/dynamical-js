@@ -1,6 +1,6 @@
+import Canvas from "../core/Canvas";
 import EditorRenderer from "../renderer/EditorRenderer";
 import Vec2 from "../utils/math/Vector";
-import Canvas from "./Canvas";
 
 export interface EditorParams {
 	/**
