@@ -4,7 +4,7 @@ import Canvas from "./Canvas";
 
 export interface EditorParams {
 	/**
-	* How far (pixels) the move need to move to activate dragging
+	* How far (pixels) the mouse need to move to activate dragging
 	**/
 	drag_threshold?: number;
 }
