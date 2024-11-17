@@ -3,5 +3,5 @@ import { MouseButton } from "./Editor";
 
 export default abstract class EditorMode {
 	abstract onClick(button: MouseButton, pos: Vec2): void;
-	abstract onDrag(button: MouseButton, pos: Vec2): void;
+	abstract onDrag(button: MouseButton, lower: Vec2, upper: Vec2): void;
 }
