@@ -1,5 +1,8 @@
+import { PhysicBodyType } from "../core-physic/PhysicBody";
 import Canvas from "../core/Canvas";
 import Vec2 from "../utils/math/Vector";
+import EditorCreatePointMassMode from "./EditorCreatePointMassMode";
+import EditorMode from "./EditorMode";
 
 export interface EditorParams {
 	/**
@@ -17,6 +20,9 @@ export enum MouseButton {
 export default class Editor {
 	private canvas: Canvas;
 	private drag_threshold: number;
+
+	private editor_mode: EditorMode;
+
 	private is_mouse_down: boolean;
 	private mouse_start_pos: Vec2;
 
@@ -25,12 +31,19 @@ export default class Editor {
 	}: EditorParams = {}) {
 		this.canvas = canvas;
 		this.drag_threshold = drag_threshold;
+
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
+
+		// this.editor_mode = new Edi();
 		this.setupMouseEvent();
 	}
 
 	setupMouseEvent() {
+		this.canvas.onMouseMove((_: MouseEvent) => {
+			this.editor_mode.onMouseMove(this.is_mouse_down, this.canvas.getMousePosition());
+		});
+
 		this.canvas.onMouseDown((_: MouseEvent) => {
 			if (this.is_mouse_down) return;
 			this.is_mouse_down = true;
@@ -48,13 +61,11 @@ export default class Editor {
 	}
 
 	onClick(button: MouseButton, pos: Vec2) {
-		// this.mode.onClick(button, pos);
+		this.editor_mode.onClick(button, pos);
 	}
 
 	onDrag(button: MouseButton, start: Vec2, end: Vec2) {
-		const lower = Vec2.min(start, end);
-		const upper = Vec2.max(start, end);
-		// this.mode.onDrag(button, lower, upper);
+		this.editor_mode.onDrag(button, start, end);
 	}
 
 	isDragging() {
@@ -70,5 +81,17 @@ export default class Editor {
 
 	getMouseCurrentPosition() {
 		return this.canvas.getMousePosition();
+	}
+
+	//================================ State methods ================================
+
+	toCreateMode(body_type: PhysicBodyType) {
+		switch (body_type) {
+			case PhysicBodyType.POINTMASS:
+				this.editor_mode = new EditorCreatePointMassMode(this);
+				break;
+			case PhysicBodyType.RIGID_CONSTRAINT:
+				break;
+		}
 	}
 }
