@@ -1,4 +1,5 @@
-import { PhysicBodyType } from "../core-physic/PhysicBody";
+import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody";
+import PointMass from "../core-physic/PointMass";
 import Canvas from "../core/Canvas";
 import Vec2 from "../utils/math/Vector";
 import EditorCreatePointMassMode from "./EditorCreatePointMassMode";
@@ -83,6 +84,16 @@ export default class Editor {
 		return this.canvas.getMousePosition();
 	}
 
+	selectPhysicBody(pos: Vec2): PhysicBody | null {
+		// Use spatial data structure to return selected physic body
+		return null;
+	}
+
+    addPhysicBody(physic_body: PhysicBody): void {
+		// Add physic body to the spatial data structure
+		return;
+    }
+
 	//================================ State methods ================================
 
 	toCreateMode(body_type: PhysicBodyType) {
@@ -94,4 +105,8 @@ export default class Editor {
 				break;
 		}
 	}
+
+    toMoveMode() {
+        throw new Error("Method not implemented.");
+    }
 }
