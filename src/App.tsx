@@ -4,7 +4,6 @@ import Vec2, { vec2 } from "./utils/math/Vector.ts";
 import PointMass from "./core-physic/PointMass.ts";
 import RigidConstraint from "./core-physic/RigidConstraint.ts";
 import Loop from "./core/Loop.ts";
-import Editor from "./core/Editor.ts";
 
 export default function App() {
 	const canvas_ref = useRef(null);
@@ -14,7 +13,6 @@ export default function App() {
 		if (!canvas_ref.current) return;
 		const canvas = new Canvas(canvas_ref.current);
 		const ctx = canvas.getContext();
-		const editor = new Editor(canvas);
 
 		// TODO: multiple sub steps dealing with visualization
 		// For now: < 20000 is recommended. Too many sub steps may cause visual anormally
@@ -44,8 +42,6 @@ export default function App() {
 
 		const render = (_: number, sub_steps: number) => {
 			canvas.clear();
-			editor.renderer.draw(ctx, sub_steps);
-
 			d1.renderer.draw(ctx, sub_steps);
 			d2.renderer.draw(ctx, sub_steps);
 			d3.renderer.draw(ctx, sub_steps);

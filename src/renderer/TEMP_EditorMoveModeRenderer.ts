@@ -1,16 +1,14 @@
 import Draw from "../core/Draw";
-import Editor from "../core/Editor";
 import ShapeStyle from "../style/ShapeStyle";
-import Vec2, { vec2 } from "../utils/math/Vector";
+import Vec2 from "../utils/math/Vector";
 import Renderer from "./Renderer";
 
-export default class EditorRenderer extends Renderer {
-	private editor: Editor;
+export default class EditorMoveModeRenderer implements Renderer {
+	private editor: EditorMoveMode;
 
 	public readonly drag_rectangle: ShapeStyle;
 
-	constructor(editor: Editor) {
-		super();
+	constructor(editor: EditorMoveMode) {
 		this.editor = editor;
 		this.drag_rectangle = new ShapeStyle()
 			.setFillColor("#4287f522")
