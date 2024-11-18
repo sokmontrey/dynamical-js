@@ -26,7 +26,7 @@ export default abstract class EditorCreateMode implements EditorMode {
 		return;
 	}
 
-	cancel() {
+	cancelMode() {
 		this.editor.toMoveMode();
 	}
 }
