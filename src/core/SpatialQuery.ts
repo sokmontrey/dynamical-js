@@ -27,4 +27,43 @@ export default class SpatialQuery {
 		this.half_dim = vec2(width, height).div(2);
 		this.resetPointMassQuadtree();
 	}
+
+	addPointMass(pointmass: PointMass) {
+		this.body_hierarchy.pointmasses.push(pointmass);
+	}
+
+	addConstraint(constraint: Constraint) {
+		this.body_hierarchy.constraints.push(constraint);
+	}
+
+	/**
+	* Must be called before any query
+	**/
+	update() {
+		this.updatePointMassQuadtree();
+	}
+
+    updatePointMassQuadtree() {
+		this.resetPointMassQuadtree();
+		for(const pm of this.body_hierarchy.pointmasses) {
+			const point = new Point<PointMass>(pm.getPosition(), pm);
+			this.pointmass_quadtree.insert(point);
+		}
+    }
+
+    private resetPointMassQuadtree() {
+        this.pointmass_quadtree = new Quadtree<PointMass>(this.center, this.half_dim);
+    }
+
+    removePointMass(pointmass: PointMass) {
+        throw new Error("Method not implemented.");
+    }
+
+	pickPointMass(pos: Vec2) {
+        throw new Error("Method not implemented.");
+	}
+
+	selectPointMasses(lower: Vec2, upper: Vec2) {
+        throw new Error("Method not implemented.");
+	}
 }
