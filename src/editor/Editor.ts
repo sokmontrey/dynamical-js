@@ -1,6 +1,7 @@
 import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody";
 import PointMass from "../core-physic/PointMass";
 import Canvas from "../core/Canvas";
+import Quadtree from "../quadtree/Quadtree";
 import Vec2 from "../utils/math/Vector";
 import EditorCreatePointMassMode from "./EditorCreatePointMassMode";
 import EditorMode from "./EditorMode";
@@ -84,7 +85,13 @@ export default class Editor {
 		return this.canvas.getMousePosition();
 	}
 
-	selectPhysicBody(pos: Vec2): PhysicBody | null {
+	selectPhysicBodies(lower: Vec2, upper: Vec2): PhysicBody[] | null {
+		// Use spatial data structure to return physic bodies in a selected region
+		return null;
+	}
+
+	// TODO: be specific. i.e. pickPointMass etc.
+	pickPhysicBody(pos: Vec2): PhysicBody | null {
 		// Use spatial data structure to return selected physic body
 		return null;
 	}
