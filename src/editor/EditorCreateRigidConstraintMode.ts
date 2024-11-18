@@ -17,7 +17,7 @@ export default class EditorCreateRigidConstraintMode extends EditorCreateMode {
 	}
 
 	selectPointMass(pos: Vec2) {
-		const pointmass = this.editor.selectPhysicBody(pos);
+		const pointmass = this.editor.pickPhysicBody(pos);
 		if (!pointmass) return;
 		if (!(pointmass instanceof PointMass)) return;
 
