@@ -44,9 +44,5 @@ export default class RigidConstraintRenderer implements Renderer {
 		this.drawConstraintLine(ctx, start, end);
 		return this;
 	}
-
-	getBoundingBox(): [Vec2, Vec2] {
-		throw new Error("Method not implemented.");
-	}
 }
 

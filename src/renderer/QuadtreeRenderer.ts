@@ -32,8 +32,4 @@ export default class QuadtreeRenderer<T> implements Renderer {
 		const sub_quads = this.quadtree.getSubQuads();
 		for (const q of sub_quads) q?.renderer.drawDivisions(ctx, style);
 	}
-
-	getBoundingBox(): [Vec2, Vec2] {
-		throw new Error("Method not implemented.");
-	}
 }

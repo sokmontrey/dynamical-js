@@ -39,9 +39,5 @@ export default class PointMassRenderer implements Renderer {
 		this.drawVelocity(ctx, pos, vel, steps);
 		return this;
 	}
-
-	getBoundingBox(): [Vec2, Vec2] {
-		throw new Error("Method not implemented.");
-	}
 }
 

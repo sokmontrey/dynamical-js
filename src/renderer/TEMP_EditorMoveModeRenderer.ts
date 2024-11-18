@@ -30,8 +30,4 @@ export default class EditorMoveModeRenderer implements Renderer {
 		this.drawDraggingRectangle(ctx);
 		return this;
 	}
-
-	getBoundingBox(): [Vec2, Vec2] {
-		return [Vec2.zero(), Vec2.zero()];
-	}
 }
