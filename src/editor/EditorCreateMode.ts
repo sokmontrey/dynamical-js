@@ -13,7 +13,20 @@ export default abstract class EditorCreateMode implements EditorMode {
 		this.editor = editor;
 	}
 
-	abstract onClick(button: MouseButton, pos: Vec2): void;
-	abstract onDrag(button: MouseButton, start: Vec2, end: Vec2): void;
-	abstract onMouseMove(is_mouse_down: boolean, pos: Vec2): void;
+	onClick(_button: MouseButton, _pos: Vec2): void {
+		return;
+	}
+
+	onDrag(_button: MouseButton, _start: Vec2, _end: Vec2): void {
+		// TODO: implement panning
+		return;
+	}
+
+	onMouseMove(_is_mouse_down: boolean, _pos: Vec2): void {
+		return;
+	}
+
+	cancel() {
+		this.editor.toMoveMode();
+	}
 }
