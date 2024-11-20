@@ -32,6 +32,7 @@ export default class Canvas {
 
 		this.setupCanvasSize();
 		this.setupOverlay();
+		this.setupZIndex();
 		this.createContext();
 		this.applyOffset();
 		this.addMousePositionEvent();
@@ -49,6 +50,12 @@ export default class Canvas {
 		this.overlay_ctx.translate(this.offset.x, this.offset.y);
 	}
 
+	private setupZIndex() {
+		const z = parseInt(this.canvas.style.zIndex) || 0;
+		this.canvas.style.zIndex = z.toString();
+		this.overlay_canvas.style.zIndex = (z + 1).toString();
+	}
+
 	private createContext() {
 		const ctx = this.canvas.getContext('2d');
 		if (!ctx) throw new Error("Unable to get 2D context from canvas");
@@ -63,7 +70,7 @@ export default class Canvas {
         this.overlay_canvas.style.position = "absolute";
         this.overlay_canvas.style.top = `${this.canvas.offsetTop}px`;
         this.overlay_canvas.style.left = `${this.canvas.offsetLeft}px`;
-        this.overlay_canvas.style.pointerEvents = "none"; // Prevent interference with original canvas
+        this.canvas.style.pointerEvents = "none"; // Prevent interference with original canvas
         this.canvas.parentElement!.appendChild(this.overlay_canvas);
 	}
 
