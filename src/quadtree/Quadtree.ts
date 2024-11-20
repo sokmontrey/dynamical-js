@@ -45,7 +45,7 @@ export default class Quadtree<T> {
 			this.points.push(point);
 			return true;
 		}
-		if (this.Q1 === null) this.subdivide();
+		if (!this.isSubdivided()) this.subdivide();
 
 		if (this.Q1?.insert(point)) return true;
 		if (this.Q2?.insert(point)) return true;
@@ -68,7 +68,7 @@ export default class Quadtree<T> {
 		if (!this.bound_box.isIntersectsBondingBox(range)) return result;
 		for (const point of this.points) if (range.isContainsPoint(point)) result.push(point);
 
-		if (this.Q1 === null) return result;
+		if (!this.isSubdivided()) return result;
 
 		this.Q1?.queryRange(range, result);
 		this.Q2?.queryRange(range, result);
