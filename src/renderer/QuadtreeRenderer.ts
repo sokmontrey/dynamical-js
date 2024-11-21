@@ -1,15 +1,14 @@
 import Draw from "../core/Draw";
 import Quadtree from "../quadtree/Quadtree";
 import ShapeStyle from "../style/ShapeStyle";
-import Vec2 from "../utils/math/Vector";
 import Renderer from "./Renderer";
 
-export default class QuadtreeRenderer<T> implements Renderer {
-	private quadtree: Quadtree<T>;
+export default class QuadtreeRenderer implements Renderer {
+	private quadtree: Quadtree;
 
 	public readonly division: ShapeStyle;
 
-	constructor(quadtree: Quadtree<T>) {
+	constructor(quadtree: Quadtree) {
 		this.quadtree = quadtree;
 		this.division = new ShapeStyle()
 			.noFill()
