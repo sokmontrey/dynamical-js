@@ -77,6 +77,21 @@ export default class Quadtree {
 		return result;
 	}
 
+	query(pos: Vec2, _result: PointMass[] = []) {
+		if (!this.bound_box.isContainsVec2(pos)) return _result;
+		for (const point of this.pointmasses) 
+			if (point.interactor.isHovered(pos)) 
+				_result.push(point);
+
+		if (!this.isSubdivided()) return _result;
+
+		this.Q1?.query(pos, _result);
+		this.Q2?.query(pos, _result);
+		this.Q3?.query(pos, _result);
+		this.Q4?.query(pos, _result);
+		return _result;
+	}
+
 	//================================ Getters ================================
 
 	getCenter() {
