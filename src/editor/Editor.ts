@@ -1,5 +1,7 @@
 import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody";
+import PointMass from "../core-physic/PointMass";
 import Canvas from "../core/Canvas";
+import SpatialQuery from "../core/SpatialQuery";
 import Vec2 from "../utils/math/Vector";
 import EditorCreatePointMassMode from "./EditorCreatePointMassMode";
 import EditorMode from "./EditorMode";
@@ -21,6 +23,7 @@ export default class Editor {
 	private canvas: Canvas;
 	private drag_threshold: number;
 
+	private spatial_query: SpatialQuery;
 	private editor_mode: EditorMode;
 
 	private is_mouse_down: boolean;
@@ -35,6 +38,7 @@ export default class Editor {
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
 
+		this.spatial_query = new SpatialQuery(canvas.getWidth(), canvas.getHeight());
 		// this.editor_mode = new Edi();
 		this.setupMouseEvent();
 	}
@@ -88,14 +92,13 @@ export default class Editor {
 		return null;
 	}
 
-	// TODO: be specific. i.e. pickPointMass etc.
 	pickPointMass(pos: Vec2): PhysicBody | null {
-		// Use spatial data structure to return selected physic body
+		this.spatial_query.pickPointMass(pos)[0];
 		return null;
 	}
 
-    addPointMass(physic_body: PhysicBody): void {
-		// Add physic body to the spatial data structure
+    addPointMass(pointmass: PointMass): void {
+		this.spatial_query.addPointMass(pointmass);
 		return;
     }
 
