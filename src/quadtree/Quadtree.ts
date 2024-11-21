@@ -106,4 +106,12 @@ export default class Quadtree<T> {
 	getSubQuads() {
 		return [this.Q1, this.Q2, this.Q3, this.Q4];
 	}
+
+	getPoints() {
+		return this.points;
+	}
+
+	isContains(pos: Vec2) {
+		return this.bound_box.isContainsVec2(pos);
+	}
 }
