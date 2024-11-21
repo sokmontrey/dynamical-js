@@ -17,7 +17,7 @@ export default class EditorCreateRigidConstraintMode extends EditorCreateMode {
 	}
 
 	selectPointMass(pos: Vec2) {
-		const pointmass = this.editor.pickPhysicBody(pos);
+		const pointmass = this.editor.pickPointMass(pos);
 		if (!pointmass) return;
 		if (!(pointmass instanceof PointMass)) return;
 
@@ -31,7 +31,7 @@ export default class EditorCreateRigidConstraintMode extends EditorCreateMode {
 	createRigidConstraint() {
 		if (!this.pointmass1 || !this.pointmass2) return;
 		const rigid_constraint = new RigidConstraint(this.pointmass1, this.pointmass1)
-		this.editor.addPhysicBody(rigid_constraint);
+		this.editor.addPointMass(rigid_constraint);
 		this.reset();
 	}
 

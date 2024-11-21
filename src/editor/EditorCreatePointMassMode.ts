@@ -14,6 +14,6 @@ export default class EditorCreatePointMassMode extends EditorCreateMode {
 
 	createPointMass(pos: Vec2) {
 		const pointmass = new PointMass({ position: pos });
-		this.editor.addPhysicBody(pointmass);
+		this.editor.addPointMass(pointmass);
 	}
 }
