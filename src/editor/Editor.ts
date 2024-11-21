@@ -1,7 +1,5 @@
 import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody";
-import PointMass from "../core-physic/PointMass";
 import Canvas from "../core/Canvas";
-import Quadtree from "../quadtree/Quadtree";
 import Vec2 from "../utils/math/Vector";
 import EditorCreatePointMassMode from "./EditorCreatePointMassMode";
 import EditorMode from "./EditorMode";
