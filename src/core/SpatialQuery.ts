@@ -58,8 +58,8 @@ export default class SpatialQuery {
 		throw new Error("Method not implemented.");
 	}
 
-	pickPointMass(pos: Vec2) {
-		throw new Error("Method not implemented.");
+	pickPointMass(pos: Vec2): PointMass[] {
+		return this.quadtree.query(pos);
 	}
 
 	selectPointMasses(lower: Vec2, upper: Vec2): PointMass[] {
