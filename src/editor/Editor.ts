@@ -4,6 +4,7 @@ import Canvas from "../core/Canvas";
 import SpatialQuery from "../core/SpatialQuery";
 import Vec2 from "../utils/math/Vector";
 import EditorCreatePointMassMode from "./EditorCreatePointMassMode";
+import EditorCreateRigidConstraintMode from "./EditorCreateRigidConstraintMode";
 import EditorMode from "./EditorMode";
 
 export interface EditorParams {
@@ -39,7 +40,7 @@ export default class Editor {
 		this.mouse_start_pos = Vec2.zero();
 
 		this.spatial_query = new SpatialQuery(canvas.getWidth(), canvas.getHeight());
-		// this.editor_mode = new Edi();
+		this.editor_mode = new EditorCreatePointMassMode(this);
 		this.setupMouseEvent();
 	}
 
@@ -110,6 +111,7 @@ export default class Editor {
 				this.editor_mode = new EditorCreatePointMassMode(this);
 				break;
 			case PhysicBodyType.RIGID_CONSTRAINT:
+				this.editor_mode = new EditorCreateRigidConstraintMode(this);
 				break;
 		}
 	}
