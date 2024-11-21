@@ -89,12 +89,12 @@ export default class Editor {
 	}
 
 	// TODO: be specific. i.e. pickPointMass etc.
-	pickPhysicBody(pos: Vec2): PhysicBody | null {
+	pickPointMass(pos: Vec2): PhysicBody | null {
 		// Use spatial data structure to return selected physic body
 		return null;
 	}
 
-    addPhysicBody(physic_body: PhysicBody): void {
+    addPointMass(physic_body: PhysicBody): void {
 		// Add physic body to the spatial data structure
 		return;
     }
