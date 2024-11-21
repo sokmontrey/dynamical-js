@@ -1,7 +1,7 @@
+import PointMass from "../core-physic/PointMass";
 import QuadtreeRenderer from "../renderer/QuadtreeRenderer";
 import BoundingBox from "../utils/math/BoundingBox";
 import Vec2, { vec2 } from "../utils/math/Vector";
-import Point from "./Point";
 
 export interface QuadtreeParams {
 	capacity?: number;
@@ -12,10 +12,10 @@ export interface QuadtreeParams {
 * https://www.wikiwand.com/en/articles/Quadtree#Pseudocode
 * TODO: deal with point radius
 **/
-export default class Quadtree<T> {
+export default class Quadtree {
 	private readonly capacity: number;
 	private bound_box: BoundingBox;
-	private points: Point<T>[];
+	private pointmasses: PointMass[];
 
 	/**
 	* Four Quadrants
@@ -23,34 +23,34 @@ export default class Quadtree<T> {
 	* --------
 	* Q3 | Q4
 	**/
-	private Q1?: Quadtree<T> | null = null;
-	private Q2?: Quadtree<T> | null = null;
-	private Q3?: Quadtree<T> | null = null;
-	private Q4?: Quadtree<T> | null = null;
+	private Q1?: Quadtree | null = null;
+	private Q2?: Quadtree | null = null;
+	private Q3?: Quadtree | null = null;
+	private Q4?: Quadtree | null = null;
 
-	public readonly renderer: QuadtreeRenderer<T>;
+	public readonly renderer: QuadtreeRenderer;
 
 	constructor(center: Vec2, half_dim: Vec2, {
 		capacity = 5,
 	}: QuadtreeParams = {}) {
 		this.bound_box = new BoundingBox(center, half_dim);
 		this.capacity = capacity;
-		this.points = [];
+		this.pointmasses = [];
 		this.renderer = new QuadtreeRenderer(this);
 	}
 
-	insert(point: Point<T>) {
-		if (!this.bound_box.isContainsPoint(point)) return false;
-		if (this.points.length < this.capacity && this.Q1 === null) {
-			this.points.push(point);
+	insert(pointmass: PointMass) {
+		if (!this.bound_box.isContainsPoint(pointmass.getPosition())) return false;
+		if (this.pointmasses.length < this.capacity && this.Q1 === null) {
+			this.pointmasses.push(pointmass);
 			return true;
 		}
 		if (!this.isSubdivided()) this.subdivide();
 
-		if (this.Q1?.insert(point)) return true;
-		if (this.Q2?.insert(point)) return true;
-		if (this.Q3?.insert(point)) return true;
-		if (this.Q4?.insert(point)) return true;
+		if (this.Q1?.insert(pointmass)) return true;
+		if (this.Q2?.insert(pointmass)) return true;
+		if (this.Q3?.insert(pointmass)) return true;
+		if (this.Q4?.insert(pointmass)) return true;
 		return false;
 	}
 
@@ -58,15 +58,15 @@ export default class Quadtree<T> {
 		const center = this.bound_box.center;
 		// new half width and half height for the sub quadtree
 		const sub_half = this.bound_box.half_dim.div(2.0);
-		this.Q1 = new Quadtree<T>(center.sub(sub_half), sub_half);
-		this.Q2 = new Quadtree<T>(center.add(vec2(sub_half.x, -sub_half.y)), sub_half);
-		this.Q3 = new Quadtree<T>(center.add(sub_half), sub_half);
-		this.Q4 = new Quadtree<T>(center.add(vec2(-sub_half.x, sub_half.y)), sub_half);
+		this.Q1 = new Quadtree(center.sub(sub_half), sub_half);
+		this.Q2 = new Quadtree(center.add(vec2(sub_half.x, -sub_half.y)), sub_half);
+		this.Q3 = new Quadtree(center.add(sub_half), sub_half);
+		this.Q4 = new Quadtree(center.add(vec2(-sub_half.x, sub_half.y)), sub_half);
 	}
 
-	queryRange(range: BoundingBox, result: Point<T>[] = []) {
+	queryRange(range: BoundingBox, result: PointMass[] = []) {
 		if (!this.bound_box.isIntersectsBondingBox(range)) return result;
-		for (const point of this.points) if (range.isContainsPoint(point)) result.push(point);
+		for (const point of this.pointmasses) if (range.isContainsPoint(point)) result.push(point);
 
 		if (!this.isSubdivided()) return result;
 
@@ -107,8 +107,8 @@ export default class Quadtree<T> {
 		return [this.Q1, this.Q2, this.Q3, this.Q4];
 	}
 
-	getPoints() {
-		return this.points;
+	getPointMasses() {
+		return this.pointmasses;
 	}
 
 	isContains(pos: Vec2) {
