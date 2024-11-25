@@ -24,14 +24,15 @@ export default class EditorCreateRigidConstraintMode extends EditorCreateMode {
 		if (!this.pointmass1) { // select first pointmass
 			this.pointmass1 = pointmass;
 		} else if (pointmass != this.pointmass1) { // select second pointmass
+			this.pointmass2 = pointmass;
 			this.createRigidConstraint();
 		}
 	}
 
 	createRigidConstraint() {
 		if (!this.pointmass1 || !this.pointmass2) return;
-		const rigid_constraint = new RigidConstraint(this.pointmass1, this.pointmass1)
-		this.editor.addPointMass(rigid_constraint);
+		const rigid_constraint = new RigidConstraint(this.pointmass1, this.pointmass2);
+		this.editor.addRigidConstraint(rigid_constraint);
 		this.reset();
 	}
 
