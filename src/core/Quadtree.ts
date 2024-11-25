@@ -40,7 +40,7 @@ export default class Quadtree {
 	}
 
 	insert(pointmass: PointMass) {
-		if (!this.bound_box.isContainsPoint(pointmass.getPosition())) return false;
+		if (!this.bound_box.isContainsVec2(pointmass.getPosition())) return false;
 		if (this.pointmasses.length < this.capacity && this.Q1 === null) {
 			this.pointmasses.push(pointmass);
 			return true;
@@ -79,9 +79,11 @@ export default class Quadtree {
 
 	query(pos: Vec2, _result: PointMass[] = []) {
 		if (!this.bound_box.isContainsVec2(pos)) return _result;
-		for (const point of this.pointmasses) 
-			if (point.interactor.isHovered(pos)) 
+		for (const point of this.pointmasses) {
+			if (point.interactor.isHovered(pos)) {
 				_result.push(point);
+			}
+		}
 
 		if (!this.isSubdivided()) return _result;
 

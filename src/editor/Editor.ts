@@ -1,17 +1,25 @@
 import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody";
 import PointMass from "../core-physic/PointMass";
+import RigidConstraint from "../core-physic/RigidConstraint";
 import Canvas from "../core/Canvas";
-import SpatialQuery from "../core/SpatialQuery";
 import Vec2 from "../utils/math/Vector";
 import EditorCreatePointMassMode from "./EditorCreatePointMassMode";
 import EditorCreateRigidConstraintMode from "./EditorCreateRigidConstraintMode";
 import EditorMode from "./EditorMode";
+import EditorMoveMode from "./EditorMoveMode";
 
 export interface EditorParams {
 	/**
 	* How far (pixels) the mouse need to move to activate dragging
 	**/
 	drag_threshold?: number;
+}
+
+type Constraint = RigidConstraint;
+
+export interface BodyHierarchy {
+	pointmasses: PointMass[];
+	constraints: Constraint[];
 }
 
 export enum MouseButton {
@@ -24,7 +32,7 @@ export default class Editor {
 	private canvas: Canvas;
 	private drag_threshold: number;
 
-	private spatial_query: SpatialQuery;
+	private bodies: BodyHierarchy;
 	private editor_mode: EditorMode;
 
 	private is_mouse_down: boolean;
@@ -39,8 +47,11 @@ export default class Editor {
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
 
-		this.spatial_query = new SpatialQuery(canvas.getWidth(), canvas.getHeight());
-		this.editor_mode = new EditorCreatePointMassMode(this);
+		this.bodies = {
+			pointmasses: [],
+			constraints: [],
+		};
+		this.editor_mode = new EditorMoveMode(this);
 		this.setupMouseEvent();
 	}
 
@@ -94,14 +105,22 @@ export default class Editor {
 	}
 
 	pickPointMass(pos: Vec2): PhysicBody | null {
-		this.spatial_query.pickPointMass(pos)[0];
+		for(const pm of this.bodies.pointmasses) {
+			if (pm.interactor.isHovered(pos)) {
+				return pm;
+			}
+		}
 		return null;
 	}
 
     addPointMass(pointmass: PointMass): void {
-		this.spatial_query.addPointMass(pointmass);
+		this.bodies.pointmasses.push(pointmass);
 		return;
     }
+
+	addRigidConstraint(rigid_constraint: RigidConstraint): void {
+		this.bodies.constraints.push(rigid_constraint);
+	}
 
 	//================================ State methods ================================
 
@@ -117,6 +136,10 @@ export default class Editor {
 	}
 
     toMoveMode() {
-        throw new Error("Method not implemented.");
+		this.editor_mode = new EditorMoveMode(this);
     }
+
+	getBodies() {
+		return this.bodies;
+	}
 }
