@@ -1,9 +1,9 @@
 import Draw from "../core/Draw";
-import Quadtree from "../quadtree/Quadtree";
+import Quadtree from "../core/Quadtree";
 import ShapeStyle from "../style/ShapeStyle";
-import Renderer from "./Renderer";
+import IRenderer from "./IRenderer";
 
-export default class QuadtreeRenderer implements Renderer {
+export default class QuadtreeRenderer implements IRenderer {
 	private quadtree: Quadtree;
 
 	public readonly division: ShapeStyle;
@@ -17,7 +17,7 @@ export default class QuadtreeRenderer implements Renderer {
 			.setLineWidth(1);
 	}
 
-	draw(ctx: CanvasRenderingContext2D, _: number): Renderer {
+	draw(ctx: CanvasRenderingContext2D, _: number): IRenderer {
 		this.drawDivisions(ctx);
 		return this;
 	}

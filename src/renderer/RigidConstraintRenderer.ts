@@ -4,9 +4,9 @@ import LineStyle from "../style/LineStyle";
 import StressStyle from "../style/StressStyle";
 import Color from "../utils/color/Color";
 import Vec2 from "../utils/math/Vector";
-import Renderer from "./Renderer";
+import IRenderer from "./IRenderer";
 
-export default class RigidConstraintRenderer implements Renderer {
+export default class RigidConstraintRenderer implements IRenderer {
 	protected rigid_constraint: RigidConstraint;
 
 	public readonly constraint_line;

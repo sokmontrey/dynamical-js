@@ -3,9 +3,9 @@ import PointMass from "../core-physic/PointMass";
 import ArrowStyle from "../style/ArrowStyle";
 import CircleStyle from "../style/CircleStyle";
 import Vec2 from "../utils/math/Vector";
-import Renderer from "./Renderer";
+import IRenderer from "./IRenderer";
 
-export default class PointMassRenderer implements Renderer {
+export default class PointMassRenderer implements IRenderer {
 	protected pointmass: PointMass;
 
 	public readonly position;

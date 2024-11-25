@@ -1,6 +1,6 @@
 import PointMass from "../core-physic/PointMass";
 import EditorCreatePointMassModeRenderer from "../renderer/editor/EditorCreatePointMassModeRenderer";
-import Renderer from "../renderer/Renderer";
+import IRenderer from "../renderer/Renderer";
 import Vec2 from "../utils/math/Vector";
 import Editor, { MouseButton } from "./Editor";
 import IEditorMode from "./IEditorMode";
@@ -8,7 +8,7 @@ import IEditorMode from "./IEditorMode";
 export default class EditorCreatePointMassMode implements IEditorMode {
     ctx: CanvasRenderingContext2D;
     editor: Editor;
-    renderer: Renderer;
+    renderer: IRenderer;
 
 	constructor(editor: Editor, ctx: CanvasRenderingContext2D) {
 		this.ctx = ctx;

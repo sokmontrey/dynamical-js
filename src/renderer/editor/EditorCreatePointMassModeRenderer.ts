@@ -1,14 +1,14 @@
 import EditorCreatePointMassMode from "../../editor/EditorCreatePointMassMode";
-import Renderer from "../Renderer";
+import IRenderer from "../IRenderer";
 
-export default class EditorCreatePointMassModeRenderer implements Renderer {
+export default class EditorCreatePointMassModeRenderer implements IRenderer {
 	private editor_mode: EditorCreatePointMassMode;
 
 	constructor(editor_mode: EditorCreatePointMassMode) {
 		this.editor_mode = editor_mode;
 	}
 
-    draw(ctx: CanvasRenderingContext2D, steps: number): Renderer {
+    draw(ctx: CanvasRenderingContext2D, steps: number): IRenderer {
         throw new Error("Method not implemented.");
     }
 }

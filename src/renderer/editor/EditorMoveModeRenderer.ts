@@ -1,9 +1,9 @@
 import Draw from "../../core/Draw";
 import EditorMoveMode from "../../editor/EditorMoveMode";
 import ShapeStyle from "../../style/ShapeStyle";
-import Renderer from "../Renderer";
+import IRenderer from "../IRenderer";
 
-export default class EditorMoveModeRenderer implements Renderer {
+export default class EditorMoveModeRenderer implements IRenderer {
 	private editor_mode: EditorMoveMode;
 	public readonly drag_rectangle: ShapeStyle;
 
@@ -25,7 +25,7 @@ export default class EditorMoveModeRenderer implements Renderer {
 		Draw.rectangle(ctx, start, dim, this.drag_rectangle);
 	}
 
-    draw(ctx: CanvasRenderingContext2D, _steps: number): Renderer {
+    draw(ctx: CanvasRenderingContext2D, _steps: number): IRenderer {
 		this.drawDraggingRectangle(ctx);
 		return this;
     }
