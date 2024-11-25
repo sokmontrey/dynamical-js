@@ -17,7 +17,7 @@ export interface EditorParams {
 
 type Constraint = RigidConstraint;
 
-export interface BodyHierarchy {
+export interface IBodyHierarchy {
 	pointmasses: PointMass[];
 	constraints: Constraint[];
 }
@@ -32,7 +32,7 @@ export default class Editor {
 	private canvas: Canvas;
 	private drag_threshold: number;
 
-	private bodies: BodyHierarchy;
+	private bodies: IBodyHierarchy;
 	private editor_mode: IEditorMode;
 
 	private is_mouse_down: boolean;
