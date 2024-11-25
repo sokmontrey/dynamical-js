@@ -1,18 +1,36 @@
 import PointMass from "../core-physic/PointMass";
 import RigidConstraint from "../core-physic/RigidConstraint";
+import EditorCreateRigidConstraintModeRenderer from "../renderer/editor/EditorCreateRigidConstraintModeRenderer";
 import Vec2 from "../utils/math/Vector";
-import { MouseButton } from "./Editor";
-import EditorCreateMode from "./EditorCreateMode";
+import Editor, { MouseButton } from "./Editor";
+import EditorMode from "./EditorMode";
 
-export default class EditorCreateRigidConstraintMode extends EditorCreateMode {
+export default class EditorCreateRigidConstraintMode implements EditorMode {
+    ctx: CanvasRenderingContext2D;
+    editor: Editor;
+    renderer: EditorCreateRigidConstraintModeRenderer;
 	private pointmass1: PointMass | null = null;
 	private pointmass2: PointMass | null = null;
 
-	override onClick(button: MouseButton, pos: Vec2): void {
+	constructor(editor: Editor, ctx: CanvasRenderingContext2D) {
+		this.editor = editor;
+		this.ctx = ctx;
+		this.renderer = new EditorCreateRigidConstraintModeRenderer(this);
+	}
+
+    onDragEnd(_button: MouseButton, _start: Vec2, _end: Vec2): void {
+		return;
+    }
+
+    onMouseMove(_is_mouse_down: boolean, _pos: Vec2): void {
+		return;
+    }
+
+	onClick(button: MouseButton, pos: Vec2): void {
 		if (button === MouseButton.LEFT) {
 			this.selectPointMass(pos);
 		} else if (button === MouseButton.RIGHT) {
-			this.cancelMode();
+			this.editor.toMoveMode();
 		}
 	}
 

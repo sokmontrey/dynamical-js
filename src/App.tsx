@@ -4,15 +4,23 @@ import Vec2, { vec2 } from "./utils/math/Vector.ts";
 import PointMass from "./core-physic/PointMass.ts";
 import RigidConstraint from "./core-physic/RigidConstraint.ts";
 import Loop from "./core/Loop.ts";
+import Draw from "./core/Draw.ts";
+import CircleStyle from "./style/CircleStyle.ts";
+import Editor from "./editor/Editor.ts";
+import { PhysicBodyType } from "./core-physic/PhysicBody.ts";
 
 export default function App() {
 	const canvas_ref = useRef(null);
 	const [loop_ref, setLoop] = useState<Loop>();
+	const [editor_ref, setEditor] = useState<Editor>();
 
 	useEffect(() => {
 		if (!canvas_ref.current) return;
 		const canvas = new Canvas(canvas_ref.current);
 		const ctx = canvas.getContext();
+
+		const editor = new Editor(canvas);
+		setEditor(editor);
 
 		// TODO: multiple sub steps dealing with visualization
 		// For now: < 20000 is recommended. Too many sub steps may cause visual anormally
@@ -50,12 +58,20 @@ export default function App() {
 			p2.renderer.draw(ctx, sub_steps);
 			p3.renderer.draw(ctx, sub_steps);
 			p4.renderer.draw(ctx, sub_steps);
+
+			const bodies = editor.getBodies();
+			for (const pm of bodies.pointmasses) {
+				pm.renderer.draw(ctx, sub_steps);
+			}
+			for (const c of bodies.constraints) {
+				c.renderer.draw(ctx, sub_steps);
+			}
 		}
 
 		const loop = new Loop(update, render, { sub_steps: 1000 });
 
 		setLoop(loop);
-		loop.run();
+		// loop.run();
 		return () => loop.pause();
 	}, [canvas_ref]);
 
@@ -63,6 +79,9 @@ export default function App() {
 		<button onClick={() => loop_ref?.run()}>Run</button>
 		<button onClick={() => loop_ref?.pause()}>Pause</button>
 		<button onClick={() => loop_ref?.step()}>Step</button>
+		<button onClick={() => editor_ref?.toMoveMode()}>Move</button>
+		<button onClick={() => editor_ref?.toCreateMode(PhysicBodyType.POINTMASS)}>PointMass</button>
+		<button onClick={() => editor_ref?.toCreateMode(PhysicBodyType.RIGID_CONSTRAINT)}>RigidConstraint</button>
 		<canvas ref={canvas_ref} className='primary-canvas'></canvas>
 	</>);
 }
