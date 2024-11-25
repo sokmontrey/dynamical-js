@@ -2,7 +2,7 @@ import Editor, { MouseButton } from "./Editor";
 import Vec2 from "../utils/math/Vector";
 import Renderer from "../renderer/Renderer";
 
-export default interface EditorMode {
+export default interface IEditorMode {
 	ctx: CanvasRenderingContext2D;
 	editor: Editor;
 	readonly renderer: Renderer;

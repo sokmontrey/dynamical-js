@@ -3,9 +3,9 @@ import EditorCreatePointMassModeRenderer from "../renderer/editor/EditorCreatePo
 import Renderer from "../renderer/Renderer";
 import Vec2 from "../utils/math/Vector";
 import Editor, { MouseButton } from "./Editor";
-import EditorMode from "./EditorMode";
+import IEditorMode from "./IEditorMode";
 
-export default class EditorCreatePointMassMode implements EditorMode {
+export default class EditorCreatePointMassMode implements IEditorMode {
     ctx: CanvasRenderingContext2D;
     editor: Editor;
     renderer: Renderer;

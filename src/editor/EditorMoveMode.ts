@@ -1,9 +1,9 @@
 import EditorMoveModeRenderer from "../renderer/editor/EditorMoveModeRenderer";
 import Vec2 from "../utils/math/Vector";
 import Editor, { MouseButton } from "./Editor";
-import EditorMode from "./EditorMode";
+import IEditorMode from "./IEditorMode";
 
-export default class EditorMoveMode implements EditorMode {
+export default class EditorMoveMode implements IEditorMode {
 	ctx: CanvasRenderingContext2D;
     editor: Editor;
     renderer: EditorMoveModeRenderer;

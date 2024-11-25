@@ -5,7 +5,7 @@ import Canvas from "../core/Canvas";
 import Vec2 from "../utils/math/Vector";
 import EditorCreatePointMassMode from "./EditorCreatePointMassMode";
 import EditorCreateRigidConstraintMode from "./EditorCreateRigidConstraintMode";
-import EditorMode from "./EditorMode";
+import IEditorMode from "./IEditorMode";
 import EditorMoveMode from "./EditorMoveMode";
 
 export interface EditorParams {
@@ -33,7 +33,7 @@ export default class Editor {
 	private drag_threshold: number;
 
 	private bodies: BodyHierarchy;
-	private editor_mode: EditorMode;
+	private editor_mode: IEditorMode;
 
 	private is_mouse_down: boolean;
 	private mouse_start_pos: Vec2;

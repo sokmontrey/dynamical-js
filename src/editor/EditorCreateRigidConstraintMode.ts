@@ -3,9 +3,9 @@ import RigidConstraint from "../core-physic/RigidConstraint";
 import EditorCreateRigidConstraintModeRenderer from "../renderer/editor/EditorCreateRigidConstraintModeRenderer";
 import Vec2 from "../utils/math/Vector";
 import Editor, { MouseButton } from "./Editor";
-import EditorMode from "./EditorMode";
+import IEditorMode from "./IEditorMode";
 
-export default class EditorCreateRigidConstraintMode implements EditorMode {
+export default class EditorCreateRigidConstraintMode implements IEditorMode {
     ctx: CanvasRenderingContext2D;
     editor: Editor;
     renderer: EditorCreateRigidConstraintModeRenderer;
