@@ -25,7 +25,7 @@ export interface BodyHierarchy {
 export enum MouseButton {
 	LEFT = 0,
 	MIDDLE = 1,
-	RIGHT = 2, 
+	RIGHT = 2,
 }
 
 export default class Editor {
@@ -51,13 +51,16 @@ export default class Editor {
 			pointmasses: [],
 			constraints: [],
 		};
-		this.editor_mode = new EditorMoveMode(this);
+		this.editor_mode = new EditorMoveMode(this,
+			this.canvas.getOverlayContext());
 		this.setupMouseEvent();
 	}
 
 	setupMouseEvent() {
 		this.canvas.onMouseMove((_: MouseEvent) => {
 			this.editor_mode.onMouseMove(this.is_mouse_down, this.canvas.getMousePosition());
+			this.canvas.clearOverlay();
+			this.editor_mode.renderer.draw(this.canvas.getOverlayContext(), 1);
 		});
 
 		this.canvas.onMouseDown((_: MouseEvent) => {
@@ -81,7 +84,7 @@ export default class Editor {
 	}
 
 	onDrag(button: MouseButton, start: Vec2, end: Vec2) {
-		this.editor_mode.onDrag(button, start, end);
+		this.editor_mode.onDragEnd(button, start, end);
 	}
 
 	isDragging() {
@@ -99,13 +102,13 @@ export default class Editor {
 		return this.canvas.getMousePosition();
 	}
 
-	selectPhysicBodies(lower: Vec2, upper: Vec2): PhysicBody[] | null {
+	selectPhysicBodies(_lower: Vec2, _upper: Vec2): PhysicBody[] | null {
 		// Use spatial data structure to return physic bodies in a selected region
 		return null;
 	}
 
 	pickPointMass(pos: Vec2): PhysicBody | null {
-		for(const pm of this.bodies.pointmasses) {
+		for (const pm of this.bodies.pointmasses) {
 			if (pm.interactor.isHovered(pos)) {
 				return pm;
 			}
@@ -113,10 +116,10 @@ export default class Editor {
 		return null;
 	}
 
-    addPointMass(pointmass: PointMass): void {
+	addPointMass(pointmass: PointMass): void {
 		this.bodies.pointmasses.push(pointmass);
 		return;
-    }
+	}
 
 	addRigidConstraint(rigid_constraint: RigidConstraint): void {
 		this.bodies.constraints.push(rigid_constraint);
@@ -127,17 +130,20 @@ export default class Editor {
 	toCreateMode(body_type: PhysicBodyType) {
 		switch (body_type) {
 			case PhysicBodyType.POINTMASS:
-				this.editor_mode = new EditorCreatePointMassMode(this);
+				this.editor_mode = new EditorCreatePointMassMode(this,
+					this.canvas.getOverlayContext());
 				break;
 			case PhysicBodyType.RIGID_CONSTRAINT:
-				this.editor_mode = new EditorCreateRigidConstraintMode(this);
+				this.editor_mode = new EditorCreateRigidConstraintMode(this,
+					this.canvas.getOverlayContext());
 				break;
 		}
 	}
 
-    toMoveMode() {
-		this.editor_mode = new EditorMoveMode(this);
-    }
+	toMoveMode() {
+		this.editor_mode = new EditorMoveMode(this,
+			this.canvas.getOverlayContext());
+	}
 
 	getBodies() {
 		return this.bodies;

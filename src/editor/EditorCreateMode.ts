@@ -5,10 +5,12 @@ import Renderer from "../renderer/Renderer";
 import EditorCreateModeRenderer from "../renderer/editor/EditorCreateModeRenderer";
 
 export default abstract class EditorCreateMode implements EditorMode {
+	ctx: CanvasRenderingContext2D;
 	renderer: Renderer;
 	editor: Editor;
 
-	constructor(editor: Editor) {
+	constructor(editor: Editor, ctx: CanvasRenderingContext2D) {
+		this.ctx = ctx;
 		this.renderer = new EditorCreateModeRenderer(this);
 		this.editor = editor;
 	}
@@ -17,7 +19,7 @@ export default abstract class EditorCreateMode implements EditorMode {
 		return;
 	}
 
-	onDrag(_button: MouseButton, _start: Vec2, _end: Vec2): void {
+	onDragEnd(_button: MouseButton, _start: Vec2, _end: Vec2): void {
 		// TODO: implement panning
 		return;
 	}
