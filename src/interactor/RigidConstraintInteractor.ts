@@ -37,15 +37,6 @@ export default class RigidConstraintInteractor extends Interactor {
 		return false;
     }
 
-    isBoundingBoxHovered(pos: Vec2): boolean {
-		const [pm1, pm2] = this.rigid_constraint.getPointMasses(); 
-		const pos1 = pm1.getPosition();
-		const pos2 = pm2.getPosition();
-		const lower = vec2(Math.min(pos1.x, pos2.x), Math.min(pos1.y, pos2.y));
-		const upper = vec2(Math.max(pos1.x, pos2.x), Math.max(pos1.y, pos2.y));
-		return pos.isInBoundingBox(lower, upper);
-    }
-
     isHovered(pos: Vec2): boolean {
 		const renderer = this.rigid_constraint.renderer;
 		if (!renderer.constraint_line.isEnable()) return false;

@@ -15,11 +15,6 @@ export default class PointMassInteractor extends Interactor {
 		return pm_pos.isInBoundingBox(lower, upper);
     }
 
-    isBoundingBoxHovered(pos: Vec2): boolean {
-		const [lower, upper] = this.pointmass.renderer.getBoundingBox();
-		return pos.isInBoundingBox(lower, upper);
-    }
-
 	/**
 	* Check if a point is hovering the pointmass 
 	* by checking against the renderer's radius.

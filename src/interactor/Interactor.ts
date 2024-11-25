@@ -10,13 +10,6 @@ export default abstract class Interactor {
 	abstract isHovered(pos: Vec2): boolean;
 
 	/**
-	* Check whether a point (x, y) is inside the bounding box of the body.
-	* Doesn't affected by the locked state. Please use isLocked explicitly.
-	* Used as a pre-check before performing any costly operation for precise checking
-	**/
-	abstract isBoundingBoxHovered(pos: Vec2): boolean;
-
-	/**
 	* Check whether the body is inside a selected area. 
 	* Doesn't affected by the locked state. Please use isLocked explicitly.
 	* @param lower: top-left corner position of the selected rectangle
