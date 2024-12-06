@@ -1,5 +1,7 @@
 import Canvas from "./Canvas.ts";
 import Vec2 from "../utils/Vector.ts";
+import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
+import PhysicBody from "../core-physic/PhysicBody.ts";
 
 export interface EditorParams {
 	/**
@@ -15,6 +17,8 @@ export enum MouseButton {
 }
 
 export default class Editor {
+	private body_manager: PhysicBodyManager;
+
 	private base_canvas!: Canvas;
 	private overlay_canvas!: Canvas;
 
@@ -28,6 +32,7 @@ export default class Editor {
 		this.drag_threshold = drag_threshold;
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
+		this.body_manager = new PhysicBodyManager();
 		this.setupCanvas(canvas_container_id);
 		this.setupMouseEvent();
 	}
@@ -71,4 +76,8 @@ export default class Editor {
 
 	onDrag(button: MouseButton, start: Vec2, end: Vec2) {
 	}
+
+	addBody(body: PhysicBody) {
+		this.body_manager.addBody(body);
+	} 
 }
