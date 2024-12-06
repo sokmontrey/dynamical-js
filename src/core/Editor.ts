@@ -1,7 +1,7 @@
 import Canvas from "./Canvas.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
-import PhysicBody from "../core-physic/PhysicBody.ts";
+import PhysicBody, { isFirstRankBody, isSecondRankBody } from "../core-physic/PhysicBody.ts";
 import Loop from "./Loop.ts";
 
 export interface EditorParams {
@@ -44,12 +44,23 @@ export default class Editor {
 		this.setupMouseEvent();
 	}
 
-	private updateLoop() {
+	private updateLoop(dt: number, _sub_steps: number) {
+		this.body_manager
+			.getAllBodies()
+			.filter(isFirstRankBody)
+			.forEach(x => x.update(dt));
 
+		this.body_manager
+			.getAllBodies()
+			.filter(isSecondRankBody)
+			.forEach(x => x.update(dt));
 	}
 
-	private baseRenderingLoop() {
-
+	private baseRenderingLoop(_dt: number, _sub_steps: number) {
+		this.body_manager
+			.getAllBodies()
+			.forEach(body =>
+				body.renderer.draw(this.base_canvas.getContext(), _sub_steps));
 	}
 
 	private UIRenderingLoop() {
@@ -98,5 +109,5 @@ export default class Editor {
 
 	addBody(body: PhysicBody) {
 		this.body_manager.addBody(body);
-	} 
+	}
 }

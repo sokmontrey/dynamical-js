@@ -1,13 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import Vec2, { vec2 } from "./utils/Vector.ts";
-import PointMass from "./core-physic/PointMass.ts";
-import RigidConstraint from "./core-physic/RigidConstraint.ts";
-import Loop from "./core/Loop.ts";
 import Editor from "./core/Editor.ts";
 
 export default function App() {
 	const canvas_ref = useRef(null);
-	const [loop_ref, setLoop] = useState<Loop>();
 
 	useEffect(() => {
 		const editor = new Editor('canvas-container');
@@ -58,9 +53,6 @@ export default function App() {
 	}, [canvas_ref]);
 
 	return (<>
-		<button onClick={() => loop_ref?.run()}>Run</button>
-		<button onClick={() => loop_ref?.pause()}>Pause</button>
-		<button onClick={() => loop_ref?.step()}>Step</button>
 		<div id='canvas-container'></div>
 	</>);
 }
