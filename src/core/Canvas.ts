@@ -9,7 +9,6 @@ export type EventCallBack = (e: MouseEvent) => void;
 
 export default class Canvas {
 	private canvas: HTMLCanvasElement;
-	private overlay_canvas!: HTMLCanvasElement;
 	private ctx!: CanvasRenderingContext2D;
 	private width: number;
 	private height: number;
@@ -39,11 +38,12 @@ export default class Canvas {
 
 	disableMouseEvent() {
         this.canvas.style.pointerEvents = "none";
+		return this;
 	}
 
 	addMousePositionEvent() {
 		this.onMouseMove((e: MouseEvent) => {
-			const rect = this.overlay_canvas.getBoundingClientRect();
+			const rect = this.canvas.getBoundingClientRect();
 			const raw_x = (e.clientX - rect.left) * (this.width / rect.width);
 			const raw_y = (e.clientY - rect.top) * (this.height / rect.height);
 			const transform = this.ctx.getTransform();
@@ -55,6 +55,7 @@ export default class Canvas {
 			const adjusted_y = (raw_y + inv_translated_y) * inv_scaled_y;
 			this.mouse_pos = vec2(adjusted_x, adjusted_y);
 		});
+		return this;
 	}
 
 	clear() {
@@ -66,19 +67,19 @@ export default class Canvas {
 	}
 
 	onMouseMove(callback: EventCallBack) {
-		this.overlay_canvas.addEventListener('mousemove', callback);
+		this.canvas.addEventListener('mousemove', callback);
 	}
 
 	onMouseClick(callback: EventCallBack) {
-		this.overlay_canvas.addEventListener('click', callback);
+		this.canvas.addEventListener('click', callback);
 	}
 
 	onMouseDown(callback: EventCallBack) {
-		this.overlay_canvas.addEventListener('mousedown', callback);
+		this.canvas.addEventListener('mousedown', callback);
 	}
 
 	onMouseUp(callback: EventCallBack) {
-		this.overlay_canvas.addEventListener('mouseup', callback);
+		this.canvas.addEventListener('mouseup', callback);
 	}
 
 	getWidth() {
