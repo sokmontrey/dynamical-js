@@ -5,7 +5,7 @@ import PointMass from "./PointMass";
 
 export interface RigidConstraintParams {
 	is_broken?: boolean;
-};
+}
 
 export default class RigidConstraint implements PhysicBody {
 	protected pointmass1: PointMass;

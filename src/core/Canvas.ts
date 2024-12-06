@@ -1,4 +1,4 @@
-import Vec2, { vec2 } from "../utils/math/Vector";
+import Vec2, { vec2 } from "../utils/Vector.ts";
 
 export interface CanvasParams {
 	width?: number;
@@ -8,6 +8,8 @@ export interface CanvasParams {
 export type EventCallBack = (e: MouseEvent) => void;
 
 export default class Canvas {
+	public static instance: Canvas;
+
 	private canvas: HTMLCanvasElement;
 	private overlay_canvas!: HTMLCanvasElement;
 	private ctx!: CanvasRenderingContext2D;
@@ -18,7 +20,22 @@ export default class Canvas {
 	private offset: Vec2;
 	private mouse_pos: Vec2;
 
-	constructor(canvas: HTMLCanvasElement, {
+	getInstance() {
+		if (!Canvas.instance) {
+			throw new Error("Canvas instance is not created");
+		}
+		return Canvas.instance;
+	}
+
+	static create(canvas: HTMLCanvasElement, params?: CanvasParams) {
+		if (Canvas.instance) {
+			throw new Error("Canvas instance is already created");
+		}
+		Canvas.instance = new Canvas(canvas, params);
+		return Canvas.instance;
+	}
+
+	private constructor(canvas: HTMLCanvasElement, {
 		width = window.innerWidth,
 		height = window.innerHeight,
 	}: CanvasParams = {}) {

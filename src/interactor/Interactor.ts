@@ -1,4 +1,4 @@
-import Vec2 from "../utils/math/Vector";
+import Vec2 from "../utils/Vector.ts";
 
 export default abstract class Interactor {
 	private is_locked: boolean = false;

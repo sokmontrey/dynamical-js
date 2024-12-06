@@ -2,8 +2,8 @@ import Draw from "../core/Draw";
 import PointMass from "../core-physic/PointMass";
 import ArrowStyle from "../style/ArrowStyle";
 import CircleStyle from "../style/CircleStyle";
-import Vec2 from "../utils/math/Vector";
-import IRenderer from "./IRenderer";
+import Vec2 from "../utils/Vector.ts";
+import IRenderer from "../core/IRenderer.ts";
 
 export default class PointMassRenderer implements IRenderer {
 	protected pointmass: PointMass;

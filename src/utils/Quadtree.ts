@@ -1,7 +1,7 @@
-import PointMass from "../core-physic/PointMass";
-import QuadtreeRenderer from "../renderer/QuadtreeRenderer";
-import BoundingBox from "../utils/math/BoundingBox";
-import Vec2, { vec2 } from "../utils/math/Vector";
+import PointMass from "../core-physic/PointMass.ts";
+import QuadtreeRenderer from "../renderer/QuadtreeRenderer.ts";
+import BoundingBox from "./BoundingBox.ts";
+import Vec2, { vec2 } from "./Vector.ts";
 
 export interface QuadtreeParams {
 	capacity?: number;

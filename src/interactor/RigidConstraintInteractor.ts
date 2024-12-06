@@ -1,6 +1,6 @@
 import RigidConstraint from "../core-physic/RigidConstraint";
-import { segment } from "../utils/math/Segment";
-import Vec2, { vec2 } from "../utils/math/Vector";
+import { segment } from "../utils/Segment.ts";
+import Vec2, { vec2 } from "../utils/Vector.ts";
 import Interactor from "./Interactor";
 
 export default class RigidConstraintInteractor extends Interactor {

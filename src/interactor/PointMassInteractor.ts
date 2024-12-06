@@ -1,5 +1,5 @@
 import PointMass from "../core-physic/PointMass";
-import Vec2 from "../utils/math/Vector";
+import Vec2 from "../utils/Vector.ts";
 import Interactor from "./Interactor";
 
 export default class PointMassInteractor extends Interactor {

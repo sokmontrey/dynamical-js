@@ -2,9 +2,9 @@ import Draw from "../core/Draw";
 import RigidConstraint from "../core-physic/RigidConstraint";
 import LineStyle from "../style/LineStyle";
 import StressStyle from "../style/StressStyle";
-import Color from "../utils/color/Color";
-import Vec2 from "../utils/math/Vector";
-import IRenderer from "./IRenderer";
+import Color from "../utils/Color.ts";
+import Vec2 from "../utils/Vector.ts";
+import IRenderer from "../core/IRenderer.ts";
 
 export default class RigidConstraintRenderer implements IRenderer {
 	protected rigid_constraint: RigidConstraint;

@@ -1,5 +1,5 @@
 import Point from "../../quadtree/Point";
-import Vec2 from "./Vector";
+import Vec2 from "./Vector.ts";
 
 export default class BoundingBox {
 	public readonly center: Vec2;

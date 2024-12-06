@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import Canvas from "./core/Canvas.ts";
-import Vec2, { vec2 } from "./utils/math/Vector.ts";
+import Vec2, { vec2 } from "./utils/Vector.ts";
 import PointMass from "./core-physic/PointMass.ts";
 import RigidConstraint from "./core-physic/RigidConstraint.ts";
 import Loop from "./core/Loop.ts";
-import Draw from "./core/Draw.ts";
-import CircleStyle from "./style/CircleStyle.ts";
-import Editor from "./editor/Editor.ts";
+import Editor from "./core/Editor.ts";
 import { PhysicBodyType } from "./core-physic/PhysicBody.ts";
 
 export default function App() {
