@@ -1,7 +1,7 @@
 import Draw from "../core/Draw";
 import Quadtree from "../utils/Quadtree.ts";
 import ShapeStyle from "../style/ShapeStyle";
-import IRenderer from "../core/IRenderer.ts";
+import IRenderer from "./IRenderer.ts";
 
 export default class QuadtreeRenderer implements IRenderer {
 	private quadtree: Quadtree;
