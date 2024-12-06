@@ -20,7 +20,7 @@ export default class Canvas {
 	private offset: Vec2;
 	private mouse_pos: Vec2;
 
-	getInstance() {
+	public static getInstance() {
 		if (!Canvas.instance) {
 			throw new Error("Canvas instance is not created");
 		}

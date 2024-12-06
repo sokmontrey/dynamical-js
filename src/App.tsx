@@ -5,7 +5,6 @@ import PointMass from "./core-physic/PointMass.ts";
 import RigidConstraint from "./core-physic/RigidConstraint.ts";
 import Loop from "./core/Loop.ts";
 import Editor from "./core/Editor.ts";
-import { PhysicBodyType } from "./core-physic/PhysicBody.ts";
 
 export default function App() {
 	const canvas_ref = useRef(null);
@@ -14,8 +13,8 @@ export default function App() {
 
 	useEffect(() => {
 		if (!canvas_ref.current) return;
-		const canvas = new Canvas(canvas_ref.current);
-		const ctx = canvas.getContext();
+		Canvas.create(canvas_ref.current);
+		const ctx = Canvas.getInstance().getContext();
 
 		const editor = new Editor(canvas);
 		setEditor(editor);
