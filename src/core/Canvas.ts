@@ -17,7 +17,7 @@ export default class Canvas {
 	private offset: Vec2;
 	private mouse_pos: Vec2;
 
-	private constructor(canvas: HTMLCanvasElement, {
+	constructor(canvas: HTMLCanvasElement, {
 		width = window.innerWidth,
 		height = window.innerHeight,
 	}: CanvasParams = {}) {
