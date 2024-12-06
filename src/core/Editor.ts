@@ -2,12 +2,15 @@ import Canvas from "./Canvas.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
 import PhysicBody from "../core-physic/PhysicBody.ts";
+import Loop from "./Loop.ts";
 
 export interface EditorParams {
 	/**
 	* How far (pixels) the mouse need to move to activate dragging
 	**/
 	drag_threshold?: number;
+	sub_steps?: number;
+	constant_dt?: number | null;
 }
 
 export enum MouseButton {
@@ -17,6 +20,7 @@ export enum MouseButton {
 }
 
 export default class Editor {
+	private loop: Loop;
 	private body_manager: PhysicBodyManager;
 
 	private base_canvas!: Canvas;
@@ -28,13 +32,28 @@ export default class Editor {
 
 	constructor(canvas_container_id: string, {
 		drag_threshold = 5,
+		sub_steps = 100,
+		constant_dt = null,
 	}: EditorParams = {}) {
 		this.drag_threshold = drag_threshold;
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
+		this.loop = new Loop(this.updateLoop, this.baseRenderingLoop, { sub_steps, constant_dt });
 		this.body_manager = new PhysicBodyManager();
 		this.setupCanvas(canvas_container_id);
 		this.setupMouseEvent();
+	}
+
+	private updateLoop() {
+
+	}
+
+	private baseRenderingLoop() {
+
+	}
+
+	private UIRenderingLoop() {
+
 	}
 
 	private setupCanvas(canvas_container_id: string) {
