@@ -1,7 +1,7 @@
 import Interactor from "../interactor/Interactor";
-import Renderer from "../renderer/Renderer";
+import IRenderer from "../core/IRenderer.ts";
 
 export default interface PhysicBody {
-	renderer: Renderer;
+	renderer: IRenderer;
 	interactor: Interactor;
 }

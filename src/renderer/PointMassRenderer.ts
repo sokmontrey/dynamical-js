@@ -2,17 +2,16 @@ import Draw from "../core/Draw";
 import PointMass from "../core-physic/PointMass";
 import ArrowStyle from "../style/ArrowStyle";
 import CircleStyle from "../style/CircleStyle";
-import Vec2 from "../utils/math/Vector";
-import Renderer from "./Renderer";
+import Vec2 from "../utils/Vector.ts";
+import IRenderer from "../core/IRenderer.ts";
 
-export default class PointMassRenderer extends Renderer {
+export default class PointMassRenderer implements IRenderer {
 	protected pointmass: PointMass;
 
 	public readonly position;
 	public readonly velocity;
 
 	constructor(pointmass: PointMass) {
-		super();
 		this.pointmass = pointmass;
 
 		this.position = new CircleStyle()
@@ -39,10 +38,6 @@ export default class PointMassRenderer extends Renderer {
 		this.drawCurrentPosition(ctx, pos);
 		this.drawVelocity(ctx, pos, vel, steps);
 		return this;
-	}
-
-	override getBoundingBox(): [Vec2, Vec2] {
-		throw new Error("Method not implemented.");
 	}
 }
 

@@ -1,6 +1,6 @@
 import RigidConstraint from "../core-physic/RigidConstraint";
-import { segment } from "../utils/math/Segment";
-import Vec2, { vec2 } from "../utils/math/Vector";
+import { segment } from "../utils/Segment.ts";
+import Vec2, { vec2 } from "../utils/Vector.ts";
 import Interactor from "./Interactor";
 
 export default class RigidConstraintInteractor extends Interactor {
@@ -35,15 +35,6 @@ export default class RigidConstraintInteractor extends Interactor {
 			if (segment.isIntersect(line_segment)) return true;
 
 		return false;
-    }
-
-    isBoundingBoxHovered(pos: Vec2): boolean {
-		const [pm1, pm2] = this.rigid_constraint.getPointMasses(); 
-		const pos1 = pm1.getPosition();
-		const pos2 = pm2.getPosition();
-		const lower = vec2(Math.min(pos1.x, pos2.x), Math.min(pos1.y, pos2.y));
-		const upper = vec2(Math.max(pos1.x, pos2.x), Math.max(pos1.y, pos2.y));
-		return pos.isInBoundingBox(lower, upper);
     }
 
     isHovered(pos: Vec2): boolean {

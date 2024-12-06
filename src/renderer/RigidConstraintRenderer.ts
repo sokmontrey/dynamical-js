@@ -2,18 +2,17 @@ import Draw from "../core/Draw";
 import RigidConstraint from "../core-physic/RigidConstraint";
 import LineStyle from "../style/LineStyle";
 import StressStyle from "../style/StressStyle";
-import Color from "../utils/color/Color";
-import Vec2 from "../utils/math/Vector";
-import Renderer from "./Renderer";
+import Color from "../utils/Color.ts";
+import Vec2 from "../utils/Vector.ts";
+import IRenderer from "../core/IRenderer.ts";
 
-export default class RigidConstraintRenderer extends Renderer {
+export default class RigidConstraintRenderer implements IRenderer {
 	protected rigid_constraint: RigidConstraint;
 
 	public readonly constraint_line;
 	public readonly stress;
 
 	constructor(rigid_constraint: RigidConstraint) {
-		super();
 		this.rigid_constraint = rigid_constraint;
 
 		this.constraint_line = new LineStyle();
@@ -44,10 +43,6 @@ export default class RigidConstraintRenderer extends Renderer {
 		this.applyStress(ctx, steps);
 		this.drawConstraintLine(ctx, start, end);
 		return this;
-	}
-
-	override getBoundingBox(): [Vec2, Vec2] {
-		throw new Error("Method not implemented.");
 	}
 }
 

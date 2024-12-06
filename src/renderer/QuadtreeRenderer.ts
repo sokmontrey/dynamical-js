@@ -1,16 +1,14 @@
 import Draw from "../core/Draw";
-import Quadtree from "../quadtree/Quadtree";
+import Quadtree from "../utils/Quadtree.ts";
 import ShapeStyle from "../style/ShapeStyle";
-import Vec2 from "../utils/math/Vector";
-import Renderer from "./Renderer";
+import IRenderer from "../core/IRenderer.ts";
 
-export default class QuadtreeRenderer<T> extends Renderer {
-	private quadtree: Quadtree<T>;
+export default class QuadtreeRenderer implements IRenderer {
+	private quadtree: Quadtree;
 
 	public readonly division: ShapeStyle;
 
-	constructor(quadtree: Quadtree<T>) {
-		super();
+	constructor(quadtree: Quadtree) {
 		this.quadtree = quadtree;
 		this.division = new ShapeStyle()
 			.noFill()
@@ -19,7 +17,7 @@ export default class QuadtreeRenderer<T> extends Renderer {
 			.setLineWidth(1);
 	}
 
-	draw(ctx: CanvasRenderingContext2D, _: number): Renderer {
+	draw(ctx: CanvasRenderingContext2D, _: number): IRenderer {
 		this.drawDivisions(ctx);
 		return this;
 	}
@@ -32,9 +30,5 @@ export default class QuadtreeRenderer<T> extends Renderer {
 		if (!this.quadtree.isSubdivided()) return;
 		const sub_quads = this.quadtree.getSubQuads();
 		for (const q of sub_quads) q?.renderer.drawDivisions(ctx, style);
-	}
-
-	getBoundingBox(): [Vec2, Vec2] {
-		throw new Error("Method not implemented.");
 	}
 }

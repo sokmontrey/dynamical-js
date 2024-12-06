@@ -1,5 +1,5 @@
 import PointMass from "../core-physic/PointMass";
-import Vec2 from "../utils/math/Vector";
+import Vec2 from "../utils/Vector.ts";
 import Interactor from "./Interactor";
 
 export default class PointMassInteractor extends Interactor {
@@ -13,11 +13,6 @@ export default class PointMassInteractor extends Interactor {
     isSelected(lower: Vec2, upper: Vec2): boolean {
 		const pm_pos = this.pointmass.getPosition();
 		return pm_pos.isInBoundingBox(lower, upper);
-    }
-
-    isBoundingBoxHovered(pos: Vec2): boolean {
-		const [lower, upper] = this.pointmass.renderer.getBoundingBox();
-		return pos.isInBoundingBox(lower, upper);
     }
 
 	/**

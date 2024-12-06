@@ -1,4 +1,4 @@
-import Vec2 from "../utils/math/Vector";
+import Vec2 from "../utils/Vector.ts";
 
 export default abstract class Interactor {
 	private is_locked: boolean = false;
@@ -8,13 +8,6 @@ export default abstract class Interactor {
 	* Doesn't affected by the locked state. Please use isLocked explicitly.
 	**/
 	abstract isHovered(pos: Vec2): boolean;
-
-	/**
-	* Check whether a point (x, y) is inside the bounding box of the body.
-	* Doesn't affected by the locked state. Please use isLocked explicitly.
-	* Used as a pre-check before performing any costly operation for precise checking
-	**/
-	abstract isBoundingBoxHovered(pos: Vec2): boolean;
 
 	/**
 	* Check whether the body is inside a selected area. 
