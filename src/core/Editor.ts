@@ -57,6 +57,7 @@ export default class Editor {
 	}
 
 	private baseRenderingLoop(_dt: number, _sub_steps: number) {
+		this.base_canvas.clear();
 		this.body_manager
 			.getAllBodies()
 			.forEach(body =>
