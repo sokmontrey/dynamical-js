@@ -4,7 +4,7 @@ import LineStyle from "../style/LineStyle";
 import StressStyle from "../style/StressStyle";
 import Color from "../utils/Color.ts";
 import Vec2 from "../utils/Vector.ts";
-import IRenderer from "../core/IRenderer.ts";
+import IRenderer from "./IRenderer.ts";
 
 export default class RigidConstraintRenderer implements IRenderer {
 	protected rigid_constraint: RigidConstraint;
