@@ -71,11 +71,6 @@ export default class Editor {
 				body.renderer.draw(this.base_canvas.getContext(), _sub_steps));
 	}
 
-	private UIRenderingLoop() {
-		// TODO: call UI rendering from mouse event
-		this.mode_manager.draw(this.overlay_canvas.getContext());
-	}
-
 	private setupCanvas(canvas_container_id: string) {
 		const base_canvas_ele = document.createElement('canvas');
 		const overlay_canvas_ele = document.createElement('canvas');

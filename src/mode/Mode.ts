@@ -1,11 +1,9 @@
 import ModeManager from "./ModeManager.ts";
-import IRenderer from "../renderer/IRenderer.ts";
 import Editor from "../core/Editor.ts";
 
 export default abstract class Mode {
     protected mode_manager!: ModeManager;
     protected editor!: Editor;
-    public abstract renderer: IRenderer;
 
     public abstract init(): void;
 
