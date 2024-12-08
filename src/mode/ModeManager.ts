@@ -40,8 +40,7 @@ export default class ModeManager {
     public toMode(mode: Mode) {
         this.current_mode = mode;
         this.current_mode.setModeManager(this);
-        this.current_mode.setBodyManager(this.editor.getPhysicBodyManager());
-        this.current_mode.setOverlayCanvas(this.editor.getOverlayCanvas());
+        this.current_mode.setEditor(this.editor);
         this.current_mode.init();
     }
 
