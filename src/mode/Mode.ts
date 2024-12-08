@@ -2,6 +2,7 @@ import ModeManager from "./ModeManager.ts";
 import Vec2 from "../utils/Vector.ts";
 import Canvas from "../core/Canvas.ts";
 import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
+import {MouseButton} from "../core/Editor.ts";
 
 export default abstract class Mode {
     protected mode_manager!: ModeManager;
@@ -28,7 +29,7 @@ export default abstract class Mode {
 
     abstract onMouseUp(): void;
 
-    abstract onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void;
+    abstract onMouseDrag(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void;
 
-    abstract onMouseClick(button: number, mouse_start_pos: Vec2): void;
+    abstract onMouseClick(button: MouseButton, mouse_start_pos: Vec2): void;
 }
