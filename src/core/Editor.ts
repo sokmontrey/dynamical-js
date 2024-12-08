@@ -143,6 +143,11 @@ export default class Editor {
 		return this;
 	}
 
+	pause() {
+		this.loop.pause();
+		return this;
+	}
+
 	getPhysicBodyManager() {
 		return this.body_manager;
 	}

@@ -5,7 +5,7 @@ import PointMass from "./core-physic/PointMass.ts";
 import RigidConstraint from "./core-physic/RigidConstraint.ts";
 
 export default function App() {
-	const canvas_ref = useRef(null);
+	const [editor_ref, setEditorRef] = useState<Editor>(null);
 
 	useEffect(() => {
 		const editor = new Editor('canvas-container');
@@ -31,15 +31,18 @@ export default function App() {
 		editor.addBody(d3);
 
 		editor.start();
+		setEditorRef(editor);
 
 		// const loop = new Loop(update, render, { sub_steps: 1000 });
 
 		// setLoop(loop);
 		// loop.run();
-		// return () => loop.pause();
-	}, [canvas_ref]);
+		return () => { editor.pause(); }
+	}, []);
 
 	return (<>
-		<div id='canvas-container' style={{ width: "500px", height: "500px" }}></div>
+		<div id='canvas-container' style={{width: "500px", height: "500px"}}></div>
+		<button onClick={() => editor_ref.run()}>Run</button>
+		<button onClick={() => editor_ref.pause()}>Pause</button>
 	</>);
 }
