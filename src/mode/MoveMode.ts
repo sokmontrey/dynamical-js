@@ -8,8 +8,4 @@ export default class MoveMode extends Mode {
     public init(): void {
         this.renderer = new MoveModeRenderer(this);
     }
-
-    override onMouseMove(canvas: Canvas) {
-        console.log("MoveMode: onMouseMove");
-    }
 }
