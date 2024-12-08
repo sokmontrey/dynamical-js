@@ -4,7 +4,6 @@ import MoveMode from "./MoveMode.ts";
 import Mode from "./Mode.ts";
 import Editor from "../core/Editor.ts";
 import Vec2 from "../utils/Vector.ts";
-import Canvas from "../core/Canvas.ts";
 
 export enum CreateMode {
     POINTMASS,
@@ -41,28 +40,28 @@ export default class ModeManager {
     public toMode(mode: Mode) {
         this.current_mode = mode;
         this.current_mode.setModeManager(this);
-        this.current_mode.setEditor(this.editor);
+        this.current_mode.setBodyManager(this.editor.getPhysicBodyManager());
+        this.current_mode.setOverlayCanvas(this.editor.getOverlayCanvas());
         this.current_mode.init();
     }
 
-    onMouseMove(canvas: Canvas) {
-        this.current_mode.onMouseMove(canvas);
+    onMouseMove() {
+        this.current_mode.onMouseMove();
     }
 
-    onMouseDown(canvas: Canvas) {
-        this.current_mode.onMouseDown(canvas);
-
+    onMouseDown() {
+        this.current_mode.onMouseDown();
     }
 
-    onMouseUp(canvas: Canvas) {
-        this.current_mode.onMouseUp(canvas);
+    onMouseUp() {
+        this.current_mode.onMouseUp();
     }
 
-    onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2, canvas: Canvas) {
-        this.current_mode.onMouseDrag(button, mouse_start_pos, mouse_curr_pos, canvas);
+    onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2) {
+        this.current_mode.onMouseDrag(button, mouse_start_pos, mouse_curr_pos);
     }
 
-    onMouseClick(button: number, mouse_start_pos: Vec2, canvas: Canvas) {
-        this.current_mode.onMouseClick(button, mouse_start_pos, canvas);
+    onMouseClick(button: number, mouse_start_pos: Vec2) {
+        this.current_mode.onMouseClick(button, mouse_start_pos);
     }
 }

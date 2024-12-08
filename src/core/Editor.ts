@@ -41,8 +41,7 @@ export default class Editor {
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
 		this.loop = new Loop(this.updateLoop.bind(this),
-			this.baseRenderingLoop.bind(this),
-			{ sub_steps, constant_dt });
+			this.baseRenderingLoop.bind(this), { sub_steps, constant_dt });
 
 		this.body_manager = new PhysicBodyManager();
 		this.mode_manager = new ModeManager(this);
@@ -51,6 +50,7 @@ export default class Editor {
 		this.setupMouseEvent();
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private updateLoop(dt: number, _sub_steps: number) {
 		this.body_manager
 			.getAllBodies()
@@ -96,15 +96,17 @@ export default class Editor {
 	}
 
 	setupMouseEvent() {
-		this.overlay_canvas.onMouseMove((e: MouseEvent) => {
-			this.mode_manager.onMouseMove(this.overlay_canvas);
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		this.overlay_canvas.onMouseMove((_: MouseEvent) => {
+			this.mode_manager.onMouseMove();
 		});
 
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		this.overlay_canvas.onMouseDown((_: MouseEvent) => {
 			if (this.is_mouse_down) return;
 			this.is_mouse_down = true;
 			this.mouse_start_pos = this.overlay_canvas.getMousePosition();
-			this.mode_manager.onMouseDown(this.overlay_canvas);
+			this.mode_manager.onMouseDown();
 		});
 
 		this.overlay_canvas.onMouseUp((e: MouseEvent) => {
@@ -112,9 +114,9 @@ export default class Editor {
 			this.is_mouse_down = false;
 			const mouse_curr_pos = this.overlay_canvas.getMousePosition();
 			const diff = mouse_curr_pos.sub(this.mouse_start_pos).mag();
-			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button, this.mouse_start_pos, this.overlay_canvas);
-			else this.mode_manager.onMouseDrag(e.button, this.mouse_start_pos, mouse_curr_pos, this.overlay_canvas);
-			this.mode_manager.onMouseUp(this.overlay_canvas);
+			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button, this.mouse_start_pos);
+			else this.mode_manager.onMouseDrag(e.button, this.mouse_start_pos, mouse_curr_pos);
+			this.mode_manager.onMouseUp();
 		});
 	}
 
@@ -126,5 +128,13 @@ export default class Editor {
 	start() {
 		this.loop.run();
 		return this;
+	}
+
+	getPhysicBodyManager() {
+		return this.body_manager;
+	}
+
+	getOverlayCanvas() {
+		return this.overlay_canvas;
 	}
 }
