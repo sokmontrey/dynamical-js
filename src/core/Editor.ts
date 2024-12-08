@@ -114,8 +114,8 @@ export default class Editor {
 			this.is_mouse_down = false;
 			const mouse_curr_pos = this.overlay_canvas.getMousePosition();
 			const diff = mouse_curr_pos.sub(this.mouse_start_pos).mag();
-			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button, this.mouse_start_pos);
-			else this.mode_manager.onMouseDrag(e.button, this.mouse_start_pos, mouse_curr_pos);
+			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button as MouseButton, this.mouse_start_pos);
+			else this.mode_manager.onMouseDrag(e.button as MouseButton, this.mouse_start_pos, mouse_curr_pos);
 			this.mode_manager.onMouseUp();
 		});
 	}

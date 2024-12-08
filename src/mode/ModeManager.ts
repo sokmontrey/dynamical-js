@@ -2,7 +2,7 @@ import CreatePointMassMode from "./CreatePointMassMode.ts";
 import CreateRigidConstraintMode from "./CreateRigidConstraintMode.ts";
 import MoveMode from "./MoveMode.ts";
 import Mode from "./Mode.ts";
-import Editor from "../core/Editor.ts";
+import Editor, {MouseButton} from "../core/Editor.ts";
 import Vec2 from "../utils/Vector.ts";
 
 export enum CreateMode {
@@ -57,11 +57,11 @@ export default class ModeManager {
         this.current_mode.onMouseUp();
     }
 
-    onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2) {
+    onMouseDrag(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2) {
         this.current_mode.onMouseDrag(button, mouse_start_pos, mouse_curr_pos);
     }
 
-    onMouseClick(button: number, mouse_start_pos: Vec2) {
+    onMouseClick(button: MouseButton, mouse_start_pos: Vec2) {
         this.current_mode.onMouseClick(button, mouse_start_pos);
     }
 }
