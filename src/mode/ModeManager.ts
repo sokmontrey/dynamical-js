@@ -15,8 +15,8 @@ export default class ModeManager {
     private editor: Editor;
 
     constructor(editor: Editor) {
-        this.toMoveMode();
         this.editor = editor;
+        this.toMoveMode();
     }
 
     public toCreateMode(create_mode: CreateMode) {
