@@ -42,4 +42,8 @@ export default class ModeManager {
         this.current_mode.setEditor(this.editor);
         this.current_mode.init();
     }
+
+    public draw(ctx: CanvasRenderingContext2D): void {
+        this.current_mode.renderer.draw(ctx, 1);
+    }
 }

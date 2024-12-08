@@ -3,6 +3,7 @@ import Vec2 from "../utils/Vector.ts";
 import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
 import PhysicBody, { isFirstRankBody, isSecondRankBody } from "../core-physic/PhysicBody.ts";
 import Loop from "./Loop.ts";
+import ModeManager from "../mode/ModeManager.ts";
 
 export interface EditorParams {
 	/**
@@ -22,6 +23,7 @@ export enum MouseButton {
 export default class Editor {
 	private loop: Loop;
 	private body_manager: PhysicBodyManager;
+	private mode_manager: ModeManager;
 
 	private base_canvas!: Canvas;
 	private overlay_canvas!: Canvas;
@@ -43,6 +45,8 @@ export default class Editor {
 			{ sub_steps, constant_dt });
 
 		this.body_manager = new PhysicBodyManager();
+		this.mode_manager = new ModeManager(this);
+
 		this.setupCanvas(canvas_container_id);
 		this.setupMouseEvent();
 	}
@@ -68,7 +72,8 @@ export default class Editor {
 	}
 
 	private UIRenderingLoop() {
-
+		// TODO: call UI rendering from mouse event
+		this.mode_manager.draw(this.overlay_canvas.getContext());
 	}
 
 	private setupCanvas(canvas_container_id: string) {
