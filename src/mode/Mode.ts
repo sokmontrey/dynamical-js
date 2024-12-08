@@ -17,23 +17,13 @@ export default abstract class Mode {
         this.editor = editor;
     }
 
-    onMouseMove(canvas: Canvas) {
-        return;
-    }
+    abstract onMouseMove(canvas: Canvas): void;
 
-    onMouseDown(canvas: Canvas) {
-        return;
-    }
+    abstract onMouseDown(canvas: Canvas): void;
 
-    onMouseUp(canvas: Canvas) {
-        return;
-    }
+    abstract onMouseUp(canvas: Canvas): void;
 
-    onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2, canvas: Canvas) {
-        return;
-    }
+    abstract onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2, canvas: Canvas): void;
 
-    onMouseClick(button: number, mouse_start_pos: Vec2, canvas: Canvas) {
-        return;
-    }
+    abstract onMouseClick(button: number, mouse_start_pos: Vec2, canvas: Canvas): void;
 }
