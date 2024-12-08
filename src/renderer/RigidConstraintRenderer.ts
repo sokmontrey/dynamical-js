@@ -44,5 +44,9 @@ export default class RigidConstraintRenderer implements IRenderer {
 		this.drawConstraintLine(ctx, start, end);
 		return this;
 	}
+
+	drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+		return this;
+	}
 }
 

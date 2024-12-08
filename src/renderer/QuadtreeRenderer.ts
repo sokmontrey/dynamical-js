@@ -31,4 +31,8 @@ export default class QuadtreeRenderer implements IRenderer {
 		const sub_quads = this.quadtree.getSubQuads();
 		for (const q of sub_quads) q?.renderer.drawDivisions(ctx, style);
 	}
+
+	drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+		return this;
+	}
 }

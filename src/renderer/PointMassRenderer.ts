@@ -39,5 +39,9 @@ export default class PointMassRenderer implements IRenderer {
 		this.drawVelocity(ctx, pos, vel, steps);
 		return this;
 	}
+
+	drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+		return this;
+	}
 }
 
