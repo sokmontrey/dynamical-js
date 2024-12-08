@@ -72,16 +72,27 @@ export default class Editor {
 	}
 
 	private setupCanvas(canvas_container_id: string) {
-		const base_canvas_ele = document.createElement('canvas');
-		const overlay_canvas_ele = document.createElement('canvas');
-
-		this.base_canvas = new Canvas(base_canvas_ele).disableMouseEvent();
-		this.overlay_canvas = new Canvas(overlay_canvas_ele).addMousePositionEvent();
-
 		const container = document.getElementById(canvas_container_id);
 		if (!container) throw new Error("No container found for canvas");
+
+		// create two canvas elements
+		const base_canvas_ele = document.createElement('canvas');
+		const overlay_canvas_ele = document.createElement('canvas');
 		container.appendChild(base_canvas_ele);
 		container.appendChild(overlay_canvas_ele);
+
+		// setting up the overlay canvas
+		container.style.position = "relative";
+		base_canvas_ele.style.position = overlay_canvas_ele.style.position = "absolute";
+		base_canvas_ele.style.top = overlay_canvas_ele.style.top = "0";
+		base_canvas_ele.style.left = overlay_canvas_ele.style.left = "0";
+		base_canvas_ele.style.zIndex = "0";
+		overlay_canvas_ele.style.zIndex = "1";
+
+		// setting up the canvas size + create the canvas object
+		const { clientWidth: width, clientHeight: height } = container;
+		this.base_canvas = new Canvas(base_canvas_ele, {width, height}).disableMouseEvent();
+		this.overlay_canvas = new Canvas(overlay_canvas_ele, {width, height}).addMousePositionEvent();
 	}
 
 	setupMouseEvent() {

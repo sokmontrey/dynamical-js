@@ -17,16 +17,15 @@ export default function App() {
 		const p3 = new PointMass().setPosition(Vec2.right(150)).setConstantAcceleration(gravity);
 		const p4 = new PointMass().setPosition(Vec2.right(200)).setConstantAcceleration(gravity);
 
-		editor.addBody(p1);
-		editor.addBody(p2);
-		editor.addBody(p3);
-		editor.addBody(p4);
-
 		const d1 = new RigidConstraint(p1, p2);
 		const d2 = new RigidConstraint(p2, p3);
 		const d3 = new RigidConstraint(p3, p4);
 		d1.renderer.stress.enable();
 
+		editor.addBody(p1);
+		editor.addBody(p2);
+		editor.addBody(p3);
+		editor.addBody(p4);
 		editor.addBody(d1);
 		editor.addBody(d2);
 		editor.addBody(d3);
@@ -41,6 +40,6 @@ export default function App() {
 	}, [canvas_ref]);
 
 	return (<>
-		<div id='canvas-container'></div>
+		<div id='canvas-container' style={{ width: "500px", height: "500px" }}></div>
 	</>);
 }
