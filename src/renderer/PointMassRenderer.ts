@@ -11,6 +11,8 @@ export default class PointMassRenderer implements IRenderer {
 	public readonly position;
 	public readonly velocity;
 
+	public readonly selected: CircleStyle;
+
 	constructor(pointmass: PointMass) {
 		this.pointmass = pointmass;
 
@@ -20,6 +22,12 @@ export default class PointMassRenderer implements IRenderer {
 		this.velocity = new ArrowStyle()
 			.setFillColor('gray')
 			.disable();
+
+		this.selected = new CircleStyle()
+			.setRadius(this.position.radius + 2)
+			.setFillColor('rgba(3,144,252,0.28)')
+			.setStrokeColor('#0390fc')
+			.setLineWidth(1);
 	}
 
 	private drawCurrentPosition(ctx: CanvasRenderingContext2D, pos: Vec2) {
@@ -37,6 +45,11 @@ export default class PointMassRenderer implements IRenderer {
 		const vel = this.pointmass.getVelocity();
 		this.drawCurrentPosition(ctx, pos);
 		this.drawVelocity(ctx, pos, vel, steps);
+		return this;
+	}
+
+	drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+		Draw.circle(ctx, this.pointmass.getPosition(), this.selected);
 		return this;
 	}
 }

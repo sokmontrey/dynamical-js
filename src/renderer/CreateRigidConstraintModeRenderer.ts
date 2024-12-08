@@ -11,4 +11,8 @@ export default class CreateRigidConstraintModeRenderer implements IRenderer {
     draw(ctx: CanvasRenderingContext2D, steps: number): IRenderer {
         throw new Error("Method not implemented.");
     }
+
+    drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+        return this;
+    }
 }
