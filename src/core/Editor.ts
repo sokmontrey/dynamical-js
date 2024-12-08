@@ -31,6 +31,7 @@ export default class Editor {
 	private drag_threshold: number;
 	private is_mouse_down: boolean;
 	private mouse_start_pos: Vec2;
+	private holding_keys: Set<string>;
 
 	constructor(canvas_container_id: string, {
 		drag_threshold = 5,
@@ -40,6 +41,7 @@ export default class Editor {
 		this.drag_threshold = drag_threshold;
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
+		this.holding_keys = new Set<string>();
 		this.loop = new Loop(this.updateLoop.bind(this),
 			this.baseRenderingLoop.bind(this), { sub_steps, constant_dt });
 
@@ -48,6 +50,7 @@ export default class Editor {
 
 		this.setupCanvas(canvas_container_id);
 		this.setupMouseEvent();
+		this.setupKeyboardEvent();
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -120,6 +123,16 @@ export default class Editor {
 		});
 	}
 
+	setupKeyboardEvent() {
+		document.addEventListener('keydown', (e) => {
+			this.holding_keys.add(e.key);
+		});
+
+		document.addEventListener('keyup', (e) => {
+			this.holding_keys.delete(e.key);
+		});
+	}
+
 	addBody(body: PhysicBody) {
 		this.body_manager.addBody(body);
 		return this;
@@ -136,5 +149,9 @@ export default class Editor {
 
 	getOverlayCanvas() {
 		return this.overlay_canvas;
+	}
+
+	isKeyDown(key: string) {
+		return this.holding_keys.has(key);
 	}
 }
