@@ -36,7 +36,7 @@ export default class PhysicBodyManager {
 		return Object.values(this.bodies);
 	}
 
-	getHoveredBody(pos: Vec2) {
+	getHoveredBodies(pos: Vec2) {
 		return Object
 			.values(this.bodies)
 			.filter(x => !x.interactor.isLocked() && x.interactor.isHovered(pos));
