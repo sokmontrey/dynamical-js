@@ -29,11 +29,11 @@ export default abstract class Mode {
         return;
     }
 
-    onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2) {
+    onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2, canvas: Canvas) {
         return;
     }
 
-    onMouseClick(button: number, mouse_start_pos: Vec2) {
+    onMouseClick(button: number, mouse_start_pos: Vec2, canvas: Canvas) {
         return;
     }
 }

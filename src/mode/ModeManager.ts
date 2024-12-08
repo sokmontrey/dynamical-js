@@ -58,11 +58,11 @@ export default class ModeManager {
         this.current_mode.onMouseUp(canvas);
     }
 
-    onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2) {
-        this.current_mode.onMouseDrag(button, mouse_start_pos, mouse_curr_pos);
+    onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2, canvas: Canvas) {
+        this.current_mode.onMouseDrag(button, mouse_start_pos, mouse_curr_pos, canvas);
     }
 
-    onMouseClick(button: number, mouse_start_pos: Vec2) {
-        this.current_mode.onMouseClick(button, mouse_start_pos);
+    onMouseClick(button: number, mouse_start_pos: Vec2, canvas: Canvas) {
+        this.current_mode.onMouseClick(button, mouse_start_pos, canvas);
     }
 }
