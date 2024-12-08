@@ -38,7 +38,10 @@ export default class Editor {
 		this.drag_threshold = drag_threshold;
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
-		this.loop = new Loop(this.updateLoop, this.baseRenderingLoop, { sub_steps, constant_dt });
+		this.loop = new Loop(this.updateLoop.bind(this),
+			this.baseRenderingLoop.bind(this),
+			{ sub_steps, constant_dt });
+
 		this.body_manager = new PhysicBodyManager();
 		this.setupCanvas(canvas_container_id);
 		this.setupMouseEvent();
@@ -110,5 +113,11 @@ export default class Editor {
 
 	addBody(body: PhysicBody) {
 		this.body_manager.addBody(body);
+		return this;
+	}
+
+	start() {
+		this.loop.run();
+		return this;
 	}
 }
