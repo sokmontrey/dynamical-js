@@ -42,7 +42,7 @@ export default function App() {
 
 	return (<>
 		<div id='canvas-container' style={{width: "500px", height: "500px"}}></div>
-		<button onClick={() => editor_ref.run()}>Run</button>
+		<button onClick={() => editor_ref.start()}>Run</button>
 		<button onClick={() => editor_ref.pause()}>Pause</button>
 	</>);
 }

@@ -8,11 +8,16 @@ export default class MoveModeRenderer implements IRenderer {
         this.move_mode = move_mode;
     }
 
-    draw(ctx: CanvasRenderingContext2D, steps: number): IRenderer {
-        throw new Error("Method not implemented.");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    draw(ctx: CanvasRenderingContext2D, _steps: number): IRenderer {
+        this.drawBoundingBox(ctx);
+        return this;
     }
 
     drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+        this.move_mode.getPhysicBodies().forEach((body) => {
+            body.renderer.drawBoundingBox(ctx);
+        });
         return this;
     }
 }

@@ -21,13 +21,13 @@ export default class MoveMode extends Mode {
             if (this.editor.isKeyDown("Shift")) this.addOneBody(mouse_pos);
             else this.resetSelectedBodies().addOneBody(mouse_pos);
         }
-        this.renderSelectedBodies();
-        console.log(this.physic_bodies);
+        this.draw();
     }
 
-    private renderSelectedBodies() {
-        const ctx = this.editor.getOverlayCanvas().getContext();
-        this.physic_bodies.forEach(body => body.renderer.drawBoundingBox(ctx));
+    private draw() {
+        const canvas = this.editor.getOverlayCanvas();
+        canvas.clear();
+        this.renderer.draw(canvas.getContext(), 1);
     }
 
     private resetSelectedBodies() {
@@ -44,6 +44,10 @@ export default class MoveMode extends Mode {
 
     onMouseDrag(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void {
         console.log("MoveMode.onMouseDrag");
+    }
+
+    getPhysicBodies(): Set<PhysicBody> {
+        return this.physic_bodies;
     }
 
     onMouseMove(): void { return; }
