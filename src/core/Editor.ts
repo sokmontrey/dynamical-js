@@ -85,14 +85,15 @@ export default class Editor {
 	}
 
 	setupMouseEvent() {
-		this.overlay_canvas.onMouseMove((_: MouseEvent) => {
-			this.overlay_canvas.clear();
+		this.overlay_canvas.onMouseMove((e: MouseEvent) => {
+			this.mode_manager.onMouseMove(this.overlay_canvas);
 		});
 
 		this.overlay_canvas.onMouseDown((_: MouseEvent) => {
 			if (this.is_mouse_down) return;
 			this.is_mouse_down = true;
 			this.mouse_start_pos = this.overlay_canvas.getMousePosition();
+			this.mode_manager.onMouseDown(this.overlay_canvas);
 		});
 
 		this.overlay_canvas.onMouseUp((e: MouseEvent) => {
@@ -100,15 +101,10 @@ export default class Editor {
 			this.is_mouse_down = false;
 			const mouse_curr_pos = this.overlay_canvas.getMousePosition();
 			const diff = mouse_curr_pos.sub(this.mouse_start_pos).mag();
-			if (diff < this.drag_threshold) this.onClick(e.button, this.mouse_start_pos);
-			else this.onDrag(e.button, this.mouse_start_pos, mouse_curr_pos);
+			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button, this.mouse_start_pos, this.overlay_canvas);
+			else this.mode_manager.onMouseDrag(e.button, this.mouse_start_pos, mouse_curr_pos, this.overlay_canvas);
+			this.mode_manager.onMouseUp(this.overlay_canvas);
 		});
-	}
-
-	onClick(button: MouseButton, pos: Vec2) {
-	}
-
-	onDrag(button: MouseButton, start: Vec2, end: Vec2) {
 	}
 
 	addBody(body: PhysicBody) {
