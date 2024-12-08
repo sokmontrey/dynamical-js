@@ -1,7 +1,10 @@
 import Mode from "./Mode.ts";
+import CreateRigidConstraintModeRenderer from "../renderer/CreateRigidConstraintModeRenderer.ts";
 
 export default class CreateRigidConstraintMode extends Mode {
+    public renderer!: CreateRigidConstraintModeRenderer;
+
     public init(): void {
-        throw new Error("Create rigid constraint mode not implemented.");
+        this.renderer = new CreateRigidConstraintModeRenderer(this);
     }
 }

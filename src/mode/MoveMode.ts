@@ -1,7 +1,10 @@
 import Mode from "./Mode.ts";
+import MoveModeRenderer from "../renderer/MoveModeRenderer.ts";
 
 export default class MoveMode extends Mode {
+    public renderer!: MoveModeRenderer;
+
     public init(): void {
-        throw new Error("Move mode not implemented.");
+        this.renderer = new MoveModeRenderer(this);
     }
 }

@@ -1,7 +1,10 @@
 import Mode from "./Mode.ts";
+import CreatePointMassModeRenderer from "../renderer/CreatePointMassModeRenderer.ts";
 
 export default class CreatePointMassMode extends Mode {
+    public renderer!: CreatePointMassModeRenderer;
+
     public init() {
-        throw new Error("Create pointmass mode not implemented.");
+        this.renderer = new CreatePointMassModeRenderer(this);
     }
 }
