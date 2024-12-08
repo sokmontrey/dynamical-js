@@ -1,11 +1,12 @@
 import ModeManager from "./ModeManager.ts";
-import Editor from "../core/Editor.ts";
 import Vec2 from "../utils/Vector.ts";
 import Canvas from "../core/Canvas.ts";
+import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
 
 export default abstract class Mode {
     protected mode_manager!: ModeManager;
-    protected editor!: Editor;
+    protected body_manager!: PhysicBodyManager;
+    protected overlay_canvas!: Canvas;
 
     public abstract init(): void;
 
@@ -13,17 +14,21 @@ export default abstract class Mode {
         this.mode_manager = mode_manager;
     }
 
-    public setEditor(editor: Editor) {
-        this.editor = editor;
+    public setBodyManager(body_manager: PhysicBodyManager) {
+        this.body_manager = body_manager
     }
 
-    abstract onMouseMove(canvas: Canvas): void;
+    public setOverlayCanvas(overlay_canvas: Canvas) {
+        this.overlay_canvas = overlay_canvas;
+    }
 
-    abstract onMouseDown(canvas: Canvas): void;
+    abstract onMouseMove(): void;
 
-    abstract onMouseUp(canvas: Canvas): void;
+    abstract onMouseDown(): void;
 
-    abstract onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2, canvas: Canvas): void;
+    abstract onMouseUp(): void;
 
-    abstract onMouseClick(button: number, mouse_start_pos: Vec2, canvas: Canvas): void;
+    abstract onMouseDrag(button: number, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void;
+
+    abstract onMouseClick(button: number, mouse_start_pos: Vec2): void;
 }
