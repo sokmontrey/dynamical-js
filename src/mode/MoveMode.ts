@@ -38,7 +38,9 @@ export default class MoveMode extends Mode {
     private addOneBody(mouse_pos: Vec2) {
         const hovered_bodies = this.body_manager.getHoveredBodies(mouse_pos);
         if (!hovered_bodies.length) return this;
-        this.physic_bodies.add(hovered_bodies[0]);
+        const body = hovered_bodies[0];
+        if (this.physic_bodies.has(body)) this.physic_bodies.delete(body);
+        else this.physic_bodies.add(body);
         return this;
     }
 
