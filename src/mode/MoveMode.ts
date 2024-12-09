@@ -52,9 +52,10 @@ export default class MoveMode extends Mode {
     }
 
     onMouseDown(): void { return; }
+
     onMouseUp(): void { return; }
 
-    onMouseDrag(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void {
+    onMouseDragging(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void {
         console.log("MoveMode.onMouseDrag");
     }
 

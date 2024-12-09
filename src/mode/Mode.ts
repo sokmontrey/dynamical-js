@@ -22,7 +22,7 @@ export default abstract class Mode {
 
     abstract onMouseUp(): void;
 
-    abstract onMouseDrag(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void;
+    abstract onMouseDragging(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void;
 
     abstract onMouseClick(button: MouseButton, mouse_start_pos: Vec2): void;
 }

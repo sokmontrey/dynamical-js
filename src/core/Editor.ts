@@ -31,6 +31,7 @@ export default class Editor {
 	private drag_threshold: number;
 	private is_mouse_down: boolean;
 	private mouse_start_pos: Vec2;
+	private mouse_curr_pos: Vec2;
 	private holding_keys: Set<string>;
 
 	constructor(canvas_container_id: string, {
@@ -41,6 +42,7 @@ export default class Editor {
 		this.drag_threshold = drag_threshold;
 		this.is_mouse_down = false;
 		this.mouse_start_pos = Vec2.zero();
+		this.mouse_curr_pos = Vec2.zero();
 		this.holding_keys = new Set<string>();
 		this.loop = new Loop(this.updateLoop.bind(this),
 			this.baseRenderingLoop.bind(this), { sub_steps, constant_dt });
@@ -49,7 +51,7 @@ export default class Editor {
 		this.mode_manager = new ModeManager(this);
 
 		this.setupCanvas(canvas_container_id);
-		this.setupMouseEvent();
+		this.setupMouseEvents();
 		this.setupKeyboardEvent();
 	}
 
@@ -98,10 +100,18 @@ export default class Editor {
 		this.overlay_canvas = new Canvas(overlay_canvas_ele, {width, height}).addMousePositionEvent();
 	}
 
-	setupMouseEvent() {
+	setupMouseEvents() {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		this.overlay_canvas.onMouseMove((_: MouseEvent) => {
 			this.mode_manager.onMouseMove();
+			if (!this.is_mouse_down) return;
+			this.mouse_curr_pos = this.overlay_canvas.getMousePosition();
+			const diff = this.mouse_curr_pos.distance(this.mouse_start_pos);
+			if (diff < this.drag_threshold) return;
+			this.mode_manager.onMouseDragging(
+				e.button as MouseButton,
+				this.mouse_start_pos,
+				this.mouse_curr_pos);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -115,10 +125,11 @@ export default class Editor {
 		this.overlay_canvas.onMouseUp((e: MouseEvent) => {
 			if (!this.is_mouse_down) return;
 			this.is_mouse_down = false;
-			const mouse_curr_pos = this.overlay_canvas.getMousePosition();
-			const diff = mouse_curr_pos.sub(this.mouse_start_pos).mag();
-			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button as MouseButton, this.mouse_start_pos);
-			else this.mode_manager.onMouseDrag(e.button as MouseButton, this.mouse_start_pos, mouse_curr_pos);
+			const diff = this.mouse_curr_pos.distance(this.mouse_start_pos);
+			if (diff < this.drag_threshold)
+				this.mode_manager.onMouseClick(
+					e.button as MouseButton,
+					this.mouse_start_pos);
 			this.mode_manager.onMouseUp();
 		});
 	}
