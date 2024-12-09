@@ -124,6 +124,7 @@ export default class Editor {
 		this.overlay_canvas.onMouseUp((e: MouseEvent) => {
 			if (!this.is_mouse_down) return;
 			this.is_mouse_down = false;
+			this.mouse_curr_pos = this.overlay_canvas.getMousePosition();
 			const diff = this.mouse_curr_pos.distance(this.mouse_start_pos);
 			if (diff < this.drag_threshold)
 				this.mode_manager.onMouseClick(

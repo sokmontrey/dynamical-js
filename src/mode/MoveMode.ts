@@ -31,6 +31,7 @@ export default class MoveMode extends Mode {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onMouseClick(button: MouseButton, _mouse_pos: Vec2): void {
+        console.log("MoveMode.onMouseClick");
         if (button == MouseButton.LEFT) {
             if (this.editor.isKeyDown("Shift")) this.addHoveredBody();
             else this.resetSelectedBodies().addHoveredBody();
@@ -40,8 +41,8 @@ export default class MoveMode extends Mode {
     onMouseMove(): void {
         const mouse_pos = this.editor.getOverlayCanvas().getMousePosition();
         const hovered_bodies = this.body_manager.getHoveredBodies(mouse_pos);
-        if (!hovered_bodies.length) return;
-        this.hovered_body= hovered_bodies[0];
+        if (hovered_bodies.length) this.hovered_body = hovered_bodies[0];
+        else this.hovered_body = null;
         this.draw();
     }
 
