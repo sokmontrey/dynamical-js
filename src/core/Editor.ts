@@ -129,6 +129,11 @@ export default class Editor {
 				this.mode_manager.onMouseClick(
 					e.button as MouseButton,
 					this.mouse_start_pos);
+			else
+				this.mode_manager.onMouseDragged(
+					e.button as MouseButton,
+					this.mouse_start_pos,
+					this.mouse_curr_pos);
 			this.mode_manager.onMouseUp();
 		});
 	}

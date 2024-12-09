@@ -60,6 +60,10 @@ export default class ModeManager {
         this.current_mode.onMouseDragging(button, mouse_start_pos, mouse_curr_pos);
     }
 
+    onMouseDragged(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2) {
+        this.current_mode.onMouseDragged(button, mouse_start_pos, mouse_curr_pos);
+    }
+
     onMouseClick(button: MouseButton, mouse_start_pos: Vec2) {
         this.current_mode.onMouseClick(button, mouse_start_pos);
     }
