@@ -101,8 +101,7 @@ export default class Editor {
 	}
 
 	setupMouseEvents() {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		this.overlay_canvas.onMouseMove((_: MouseEvent) => {
+		this.overlay_canvas.onMouseMove((e: MouseEvent) => {
 			this.mode_manager.onMouseMove();
 			if (!this.is_mouse_down) return;
 			this.mouse_curr_pos = this.overlay_canvas.getMousePosition();
