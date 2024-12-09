@@ -59,6 +59,10 @@ export default class MoveMode extends Mode {
         console.log("MoveMode.onMouseDrag");
     }
 
+    onMouseDragged(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void {
+        console.log("MoveMode.onMouseDragged");
+    }
+
     getPhysicBodies(): Set<PhysicBody> {
         return this.physic_bodies;
     }
