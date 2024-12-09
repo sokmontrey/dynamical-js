@@ -10,14 +10,22 @@ export default class MoveModeRenderer implements IRenderer {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     draw(ctx: CanvasRenderingContext2D, _steps: number): IRenderer {
-        this.drawBoundingBox(ctx);
+        this.drawHoveredBody(ctx);
+        this.drawSelectedBodies(ctx);
         return this;
     }
 
-    drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
-        this.move_mode.getPhysicBodies().forEach((body) => {
+    private drawHoveredBody(ctx: CanvasRenderingContext2D) {
+        this.move_mode.getHoveredBody()?.renderer.drawBoundingBox(ctx);
+    }
+
+    private drawSelectedBodies(ctx: CanvasRenderingContext2D) {
+        this.move_mode.getPhysicBodies().forEach(body => {
             body.renderer.drawBoundingBox(ctx);
         });
+    }
+
+    drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
         return this;
     }
 }
