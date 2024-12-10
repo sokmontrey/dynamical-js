@@ -91,6 +91,7 @@ export default class MoveMode extends Mode {
         this.mouse_body_offset!.forEach((offset, body) => {
             body.setPosition(mouse_pos.add(offset));
         });
+        this.resetBodies();
         this.editor.stepBaseRenderer();
     }
 
@@ -104,6 +105,10 @@ export default class MoveMode extends Mode {
     onMouseDown(_button: MouseButton): void {
         this.body_mouse_down_on = this.hovered_body;
         if(this.isMouseDownOnSelectedBody()) {
+            this.onMouseDownOnSelectedBody();
+        } else if (this.isMouseDownOnBody()) {
+            if (this.physic_bodies.size) this.resetSelectedBodies();
+            this.physic_bodies.add(this.body_mouse_down_on!);
             this.onMouseDownOnSelectedBody();
         }
     }
