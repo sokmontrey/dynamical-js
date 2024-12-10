@@ -30,7 +30,8 @@ export default class Editor {
 
 	private drag_threshold: number;
 	private is_mouse_down: boolean;
-	private mouse_start_pos: Vec2;
+	private mouse_down_pos: Vec2;
+	private holding_keys: Set<string>;
 
 	constructor(canvas_container_id: string, {
 		drag_threshold = 5,
@@ -38,8 +39,9 @@ export default class Editor {
 		constant_dt = null,
 	}: EditorParams = {}) {
 		this.drag_threshold = drag_threshold;
+		this.holding_keys = new Set<string>();
 		this.is_mouse_down = false;
-		this.mouse_start_pos = Vec2.zero();
+		this.mouse_down_pos = Vec2.zero();
 		this.loop = new Loop(this.updateLoop.bind(this),
 			this.baseRenderingLoop.bind(this), { sub_steps, constant_dt });
 
@@ -47,7 +49,8 @@ export default class Editor {
 		this.mode_manager = new ModeManager(this);
 
 		this.setupCanvas(canvas_container_id);
-		this.setupMouseEvent();
+		this.setupMouseEvents();
+		this.setupKeyboardEvent();
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -95,29 +98,40 @@ export default class Editor {
 		this.overlay_canvas = new Canvas(overlay_canvas_ele, {width, height}).addMousePositionEvent();
 	}
 
-	setupMouseEvent() {
+	setupMouseEvents() {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		this.overlay_canvas.onMouseMove((_: MouseEvent) => {
+		this.overlay_canvas.onMouseMove((_e: MouseEvent) => {
 			this.mode_manager.onMouseMove();
 		});
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		this.overlay_canvas.onMouseDown((_: MouseEvent) => {
+		this.overlay_canvas.onMouseDown((e: MouseEvent) => {
 			if (this.is_mouse_down) return;
 			this.is_mouse_down = true;
-			this.mouse_start_pos = this.overlay_canvas.getMousePosition();
-			this.mode_manager.onMouseDown();
+			this.mouse_down_pos = this.getMouseCurrentPosition();
+			this.mode_manager.onMouseDown(e.button as MouseButton);
 		});
 
 		this.overlay_canvas.onMouseUp((e: MouseEvent) => {
 			if (!this.is_mouse_down) return;
 			this.is_mouse_down = false;
-			const mouse_curr_pos = this.overlay_canvas.getMousePosition();
-			const diff = mouse_curr_pos.sub(this.mouse_start_pos).mag();
-			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button as MouseButton, this.mouse_start_pos);
-			else this.mode_manager.onMouseDrag(e.button as MouseButton, this.mouse_start_pos, mouse_curr_pos);
-			this.mode_manager.onMouseUp();
+			this.mode_manager.onMouseUp(e.button as MouseButton);
+			const diff = this.getMouseCurrentPosition().distance(this.mouse_down_pos);
+			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button as MouseButton);
 		});
+	}
+
+	setupKeyboardEvent() {
+		document.addEventListener('keydown', (e) => {
+			this.holding_keys.add(e.key);
+		});
+
+		document.addEventListener('keyup', (e) => {
+			this.holding_keys.delete(e.key);
+		});
+	}
+
+	stepBaseRenderer() {
+		this.loop.render();
 	}
 
 	addBody(body: PhysicBody) {
@@ -130,11 +144,36 @@ export default class Editor {
 		return this;
 	}
 
+	pause() {
+		this.loop.pause();
+		return this;
+	}
+
 	getPhysicBodyManager() {
 		return this.body_manager;
 	}
 
 	getOverlayCanvas() {
 		return this.overlay_canvas;
+	}
+
+	getMouseCurrentPosition() {
+		return this.overlay_canvas.getMousePosition();
+	}
+
+	getMouseDownPosition() {
+		return this.mouse_down_pos;
+	}
+
+	getDragThreshold() {
+		return this.drag_threshold;
+	}
+
+	isMouseDown() {
+		return this.is_mouse_down;
+	}
+
+	isKeyDown(key: string) {
+		return this.holding_keys.has(key);
 	}
 }

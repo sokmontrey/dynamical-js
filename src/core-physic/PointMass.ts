@@ -91,6 +91,11 @@ export default class PointMass implements PhysicBody {
 		return this;
 	}
 
+	resetAfterMoved() {
+		this.prev_pos = this.curr_pos.copy();
+		return this;
+	}
+
 	/**
 	*	Turn pointmass back into a dynamic object.
 	*	Action applied during the static phase will now be in effect (setVelocity, applyForce, etc.)

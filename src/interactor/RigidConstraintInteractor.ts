@@ -46,6 +46,6 @@ export default class RigidConstraintInteractor extends Interactor {
 			pm1.getPosition(), 
 			pm2.getPosition()
 		).distanceToPoint(pos);
-		return distance_to_point <= line_width * 0.5;
+		return distance_to_point <= line_width * 2;
     }
 }

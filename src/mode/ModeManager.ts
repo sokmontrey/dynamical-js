@@ -40,8 +40,7 @@ export default class ModeManager {
     public toMode(mode: Mode) {
         this.current_mode = mode;
         this.current_mode.setModeManager(this);
-        this.current_mode.setBodyManager(this.editor.getPhysicBodyManager());
-        this.current_mode.setOverlayCanvas(this.editor.getOverlayCanvas());
+        this.current_mode.setEditor(this.editor);
         this.current_mode.init();
     }
 
@@ -49,19 +48,15 @@ export default class ModeManager {
         this.current_mode.onMouseMove();
     }
 
-    onMouseDown() {
-        this.current_mode.onMouseDown();
+    onMouseDown(button: MouseButton) {
+        this.current_mode.onMouseDown(button);
     }
 
-    onMouseUp() {
-        this.current_mode.onMouseUp();
+    onMouseUp(button: MouseButton) {
+        this.current_mode.onMouseUp(button);
     }
 
-    onMouseDrag(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2) {
-        this.current_mode.onMouseDrag(button, mouse_start_pos, mouse_curr_pos);
-    }
-
-    onMouseClick(button: MouseButton, mouse_start_pos: Vec2) {
-        this.current_mode.onMouseClick(button, mouse_start_pos);
+    onMouseClick(button: MouseButton) {
+        this.current_mode.onMouseClick(button);
     }
 }
