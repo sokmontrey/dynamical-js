@@ -32,6 +32,14 @@ export default class PhysicBodyManager {
 		return this;
 	}
 
+	removeBody(body: PhysicBody) {
+		const key = Object.keys(this.bodies).find(key => this.bodies[key] === body);
+		if (key) delete this.bodies[key];
+		// TODO: cascade pointmass delete to also delete constraints
+		// TRY: PhysicBody.isUsingBody(body) to check if body is used by other bodies
+		return this;
+	}
+
 	getAllBodies() {
 		return Object.values(this.bodies);
 	}

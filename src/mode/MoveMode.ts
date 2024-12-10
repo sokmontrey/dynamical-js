@@ -159,4 +159,12 @@ export default class MoveMode extends Mode {
     getHoveredBody(): PhysicBody | null {
         return this.hovered_body;
     }
+
+    deleteSelectedBodies() {
+        this.physic_bodies.forEach(body => {
+            this.body_manager.removeBody(body);
+        });
+        this.resetSelectedBodies();
+        this.draw();
+    }
 }
