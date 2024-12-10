@@ -41,4 +41,10 @@ export default class PhysicBodyManager {
 			.values(this.bodies)
 			.filter(x => !x.interactor.isLocked() && x.interactor.isHovered(pos));
 	}
+
+	getSelectedBodies(lower: Vec2, upper: Vec2) {
+		return Object
+			.values(this.bodies)
+			.filter(x => !x.interactor.isLocked() && x.interactor.isSelected(lower, upper));
+	}
 }

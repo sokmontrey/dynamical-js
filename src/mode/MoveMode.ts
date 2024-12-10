@@ -32,8 +32,8 @@ export default class MoveMode extends Mode {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onMouseClick(button: MouseButton, _mouse_pos: Vec2): void {
         if (button == MouseButton.LEFT) {
-            if (this.editor.isKeyDown("Shift")) this.addHoveredBody();
-            else this.resetSelectedBodies().addHoveredBody();
+            if (!this.editor.isKeyDown("Shift")) this.resetSelectedBodies();
+            this.addHoveredBody();
         }
         this.draw();
     }
@@ -64,6 +64,16 @@ export default class MoveMode extends Mode {
     onMouseUp(): void { return; }
 
     onMouseDragged(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void {
+        if (button == MouseButton.LEFT) {
+            const lower= Vec2.min(mouse_start_pos, mouse_curr_pos);
+            const upper= Vec2.max(mouse_start_pos, mouse_curr_pos);
+            if (!this.editor.isKeyDown("Shift")) this.resetSelectedBodies()
+            this.body_manager
+                .getSelectedBodies(lower, upper)
+                .forEach(body => {
+                    this.physic_bodies.add(body);
+                });
+        }
     }
 
     getPhysicBodies(): Set<PhysicBody> {
