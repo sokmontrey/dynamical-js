@@ -31,15 +31,15 @@ export default class MoveMode extends Mode {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onMouseClick(button: MouseButton, _mouse_pos: Vec2): void {
-        console.log("MoveMode.onMouseClick");
         if (button == MouseButton.LEFT) {
             if (this.editor.isKeyDown("Shift")) this.addHoveredBody();
             else this.resetSelectedBodies().addHoveredBody();
         }
+        this.draw();
     }
 
     onMouseMove(): void {
-        const mouse_pos = this.editor.getOverlayCanvas().getMousePosition();
+        const mouse_pos = this.editor.getMouseCurrentPosition();
         const hovered_bodies = this.body_manager.getHoveredBodies(mouse_pos);
         if (hovered_bodies.length) this.hovered_body = hovered_bodies[0];
         else this.hovered_body = null;
@@ -48,20 +48,22 @@ export default class MoveMode extends Mode {
 
     private draw() {
         const canvas = this.editor.getOverlayCanvas();
+        const ctx = canvas.getContext();
         canvas.clear();
-        this.renderer.draw(canvas.getContext(), 1);
+        this.renderer.drawHoveredBody(ctx, this.hovered_body);
+        this.renderer.drawSelectedBodies(ctx, this.physic_bodies);
+        if (this.editor.isMouseDragging()) {
+            this.renderer.drawDraggingBox(ctx,
+                this.editor.getMouseStartPosition(),
+                this.editor.getMouseCurrentPosition());
+        }
     }
 
     onMouseDown(): void { return; }
 
     onMouseUp(): void { return; }
 
-    onMouseDragging(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void {
-        console.log("MoveMode.onMouseDrag");
-    }
-
     onMouseDragged(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void {
-        console.log("MoveMode.onMouseDragged");
     }
 
     getPhysicBodies(): Set<PhysicBody> {
