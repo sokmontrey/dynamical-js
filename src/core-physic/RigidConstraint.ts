@@ -2,6 +2,7 @@ import RigidConstraintInteractor from "../interactor/RigidConstraintInteractor";
 import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer";
 import PhysicBody from "./PhysicBody";
 import PointMass from "./PointMass";
+import Vec2 from "../utils/Vector.ts";
 
 export interface RigidConstraintParams {
 	is_broken?: boolean;
@@ -40,6 +41,8 @@ export default class RigidConstraint implements PhysicBody {
 		const pos1 = this.pointmass1.getPosition();
 		const pos2 = this.pointmass2.getPosition();
 		this.rest_distance = pos1.distance(pos2);
+		this.diff = 0;
+		this.corr = 0;
 		if (this.rest_distance === 0)
 			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
 		return this;
@@ -72,6 +75,13 @@ export default class RigidConstraint implements PhysicBody {
 
 	getRestDistanec() {
 		return this.rest_distance;
+	}
+
+	getPosition(): Vec2 {
+		return this.pointmass1
+			.getPosition()
+			.add(this.pointmass2.getPosition())
+			.div(2);
 	}
 
 	//================================ Setters ================================
@@ -125,6 +135,19 @@ export default class RigidConstraint implements PhysicBody {
 		const pos2 = this.pointmass2.getPosition();
 		const curr_distance = pos1.distance(pos2);
 		this.diff = this.rest_distance - curr_distance;
+	}
+
+	/**
+	 * Only re-calculating the rest distance
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	setPosition(_position: Vec2) {
+		return this;
+	}
+
+	resetAfterMoved() {
+		this.calculateRestDistance();
+		return this;
 	}
 
 	calculateCorrection(_: number) {

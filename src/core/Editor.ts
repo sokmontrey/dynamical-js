@@ -130,6 +130,10 @@ export default class Editor {
 		});
 	}
 
+	stepBaseRenderer() {
+		this.loop.render();
+	}
+
 	addBody(body: PhysicBody) {
 		this.body_manager.addBody(body);
 		return this;

@@ -14,6 +14,7 @@ export default class MoveMode extends Mode {
 
     private is_mouse_dragging: boolean = false;
     private body_mouse_down_on: PhysicBody | null = null;
+    private mouse_body_offset: Map<PhysicBody, Vec2> | null = null;
 
     public init(): void {
         this.renderer = new MoveModeRenderer(this);
@@ -51,13 +52,7 @@ export default class MoveMode extends Mode {
     private checkDragging() {
         const mouse_pos = this.editor.getMouseCurrentPosition();
         const diff = mouse_pos.distance(this.editor.getMouseDownPosition());
-        this.is_mouse_dragging =
-            diff > this.editor.getDragThreshold() &&
-            this.editor.isMouseDown();
-        if (this.is_mouse_dragging && this.isMouseDownOnSelectedBody()) {
-            // TODO: move selected bodies
-        }
-        this.checkMoveDragging();
+        this.is_mouse_dragging = diff > this.editor.getDragThreshold() && this.editor.isMouseDown();
     }
 
     private checkHoveredBody() {
@@ -67,28 +62,62 @@ export default class MoveMode extends Mode {
         else this.hovered_body = null;
     }
 
+    private onMouseDownOnSelectedBody() {
+        this.mouse_body_offset = new Map<PhysicBody, Vec2>();
+        const mouse_pos = this.editor.getMouseCurrentPosition();
+        this.physic_bodies.forEach(body => {
+            this.mouse_body_offset!.set(body, body.getPosition().sub(mouse_pos));
+        });
+    }
+
     private draw() {
         const canvas = this.editor.getOverlayCanvas();
         const ctx = canvas.getContext();
         canvas.clear();
         this.renderer.drawHoveredBody(ctx, this.hovered_body);
         this.renderer.drawSelectedBodies(ctx, this.physic_bodies);
-        if (this.is_mouse_dragging && !this.isMouseDownOnBody()) {
+        if (this.is_mouse_dragging && !this.isMouseDownOnSelectedBody()) {
             this.renderer.drawDraggingBox(ctx,
                 this.editor.getMouseDownPosition(),
                 this.editor.getMouseCurrentPosition());
+        } else if(this.isMouseDownOnSelectedBody()) {
+            this.moveSelectedBodies();
         }
+    }
+
+    private moveSelectedBodies() {
+        if (!this.mouse_body_offset ) return;
+        const mouse_pos = this.editor.getMouseCurrentPosition();
+        this.mouse_body_offset!.forEach((offset, body) => {
+            body.setPosition(mouse_pos.add(offset));
+        });
+        this.editor.stepBaseRenderer();
+    }
+
+    private resetBodies() {
+        this.body_manager.getAllBodies().forEach(body => {
+            body.resetAfterMoved();
+        });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onMouseDown(_button: MouseButton): void {
         this.body_mouse_down_on = this.hovered_body;
+        if(this.isMouseDownOnSelectedBody()) {
+            this.onMouseDownOnSelectedBody();
+        }
     }
 
     onMouseUp(button: MouseButton): void {
         if (!this.is_mouse_dragging) return;
         if (!this.isMouseDownOnBody()) this.onSelectDragged(button);
         this.is_mouse_dragging = false;
+        if (this.isMouseDownOnSelectedBody()){
+            this.moveSelectedBodies();
+            this.resetBodies();
+            this.body_mouse_down_on = null;
+            this.mouse_body_offset = null;
+        }
     }
 
     isMouseDownOnBody(): boolean {
@@ -98,10 +127,6 @@ export default class MoveMode extends Mode {
     isMouseDownOnSelectedBody(): boolean {
         return this.body_mouse_down_on != null &&
             this.physic_bodies.has(this.body_mouse_down_on);
-    }
-
-    private checkMoveDragging() {
-
     }
 
     /**
