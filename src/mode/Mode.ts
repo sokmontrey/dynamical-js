@@ -1,5 +1,4 @@
 import ModeManager from "./ModeManager.ts";
-import Vec2 from "../utils/Vector.ts";
 import Editor, {MouseButton} from "../core/Editor.ts";
 
 export default abstract class Mode {
@@ -18,11 +17,9 @@ export default abstract class Mode {
 
     abstract onMouseMove(): void;
 
-    abstract onMouseDown(): void;
+    abstract onMouseDown(button: MouseButton): void;
 
-    abstract onMouseUp(): void;
+    abstract onMouseUp(button: MouseButton): void;
 
-    abstract onMouseDragged(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2): void;
-
-    abstract onMouseClick(button: MouseButton, mouse_start_pos: Vec2): void;
+    abstract onMouseClick(button: MouseButton): void;
 }

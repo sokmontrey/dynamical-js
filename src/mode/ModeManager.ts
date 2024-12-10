@@ -48,19 +48,15 @@ export default class ModeManager {
         this.current_mode.onMouseMove();
     }
 
-    onMouseDown() {
-        this.current_mode.onMouseDown();
+    onMouseDown(button: MouseButton) {
+        this.current_mode.onMouseDown(button);
     }
 
-    onMouseUp() {
-        this.current_mode.onMouseUp();
+    onMouseUp(button: MouseButton) {
+        this.current_mode.onMouseUp(button);
     }
 
-    onMouseDragged(button: MouseButton, mouse_start_pos: Vec2, mouse_curr_pos: Vec2) {
-        this.current_mode.onMouseDragged(button, mouse_start_pos, mouse_curr_pos);
-    }
-
-    onMouseClick(button: MouseButton, mouse_start_pos: Vec2) {
-        this.current_mode.onMouseClick(button, mouse_start_pos);
+    onMouseClick(button: MouseButton) {
+        this.current_mode.onMouseClick(button);
     }
 }
