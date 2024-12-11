@@ -12,7 +12,7 @@ export default class CreatePointMassModeRenderer implements IRenderer {
         throw new Error("Method not implemented.");
     }
 
-    drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+    drawSelection(ctx: CanvasRenderingContext2D): IRenderer {
         return this;
     }
 }

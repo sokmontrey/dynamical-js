@@ -57,7 +57,7 @@ export default class RigidConstraintRenderer implements IRenderer {
 		return this;
 	}
 
-	drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+	drawSelection(ctx: CanvasRenderingContext2D): IRenderer {
 		const [pm1, pm2] = this.rigid_constraint.getPointMasses();
 		Draw.circle(ctx, pm1.getPosition(), this.selected_circle);
 		Draw.circle(ctx, pm2.getPosition(), this.selected_circle);

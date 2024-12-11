@@ -26,12 +26,12 @@ export default class MoveModeRenderer implements IRenderer {
     }
 
     public drawHoveredBody(ctx: CanvasRenderingContext2D, hovered_body: PhysicBody | null) {
-        hovered_body?.renderer.drawBoundingBox(ctx);
+        hovered_body?.renderer.drawSelection(ctx);
     }
 
     public drawSelectedBodies(ctx: CanvasRenderingContext2D, bodies: Set<PhysicBody>) {
         bodies.forEach(body => {
-            body.renderer.drawBoundingBox(ctx);
+            body.renderer.drawSelection(ctx);
         });
     }
 
@@ -42,7 +42,7 @@ export default class MoveModeRenderer implements IRenderer {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    drawBoundingBox(_ctx: CanvasRenderingContext2D): IRenderer {
+    drawSelection(_ctx: CanvasRenderingContext2D): IRenderer {
         return this;
     }
 }

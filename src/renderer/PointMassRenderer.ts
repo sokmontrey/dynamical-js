@@ -48,7 +48,7 @@ export default class PointMassRenderer implements IRenderer {
 		return this;
 	}
 
-	drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+	drawSelection(ctx: CanvasRenderingContext2D): IRenderer {
 		Draw.circle(ctx, this.pointmass.getPosition(), this.selected);
 		return this;
 	}

@@ -32,7 +32,7 @@ export default class QuadtreeRenderer implements IRenderer {
 		for (const q of sub_quads) q?.renderer.drawDivisions(ctx, style);
 	}
 
-	drawBoundingBox(ctx: CanvasRenderingContext2D): IRenderer {
+	drawSelection(ctx: CanvasRenderingContext2D): IRenderer {
 		return this;
 	}
 }
