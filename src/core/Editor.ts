@@ -176,4 +176,8 @@ export default class Editor {
 	isKeyDown(key: string) {
 		return this.holding_keys.has(key);
 	}
+
+	getModeManager() {
+		return this.mode_manager;
+	}
 }

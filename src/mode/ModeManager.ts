@@ -3,11 +3,10 @@ import CreateRigidConstraintMode from "./CreateRigidConstraintMode.ts";
 import MoveMode from "./MoveMode.ts";
 import Mode from "./Mode.ts";
 import Editor, {MouseButton} from "../core/Editor.ts";
-import Vec2 from "../utils/Vector.ts";
 
 export enum CreateMode {
-    POINTMASS,
-    RIGID_CONSTRAINT,
+    POINTMASS = "PointMass",
+    RIGID_CONSTRAINT = "RigidConstraint",
 }
 
 export default class ModeManager {
@@ -30,7 +29,6 @@ export default class ModeManager {
             default:
                 throw new Error("Invalid create mode");
         }
-        this.current_mode.init();
     }
 
     public toMoveMode() {
