@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import {useEffect, useState} from "react";
 import Editor from "./core/Editor.ts";
-import Vec2, { vec2 } from "./utils/Vector.ts";
+import Vec2, {vec2} from "./utils/Vector.ts";
 import PointMass from "./core-physic/PointMass.ts";
 import RigidConstraint from "./core-physic/RigidConstraint.ts";
+import {CreateMode} from "./mode/ModeManager.ts";
+import SelectButton from "./ui-components/SelectButton.tsx";
 
 export default function App() {
 	const [editor_ref, setEditorRef] = useState<Editor>(null);
@@ -44,5 +46,11 @@ export default function App() {
 		<div id='canvas-container' style={{width: "500px", height: "500px"}}></div>
 		<button onClick={() => editor_ref.start()}>Run</button>
 		<button onClick={() => editor_ref.pause()}>Pause</button>
+		<button onClick={() => editor_ref.getModeManager().toMoveMode()}>
+			Move
+		</button>
+		<SelectButton options={Object.values(CreateMode)}
+					  onSelect={(mode: CreateMode) => editor_ref.getModeManager().toCreateMode(mode)}
+		></SelectButton>
 	</>);
 }

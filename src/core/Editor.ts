@@ -12,6 +12,7 @@ export interface EditorParams {
 	drag_threshold?: number;
 	sub_steps?: number;
 	constant_dt?: number | null;
+	gravity?: Vec2;
 }
 
 export enum MouseButton {
@@ -33,10 +34,13 @@ export default class Editor {
 	private mouse_down_pos: Vec2;
 	private holding_keys: Set<string>;
 
+	private gravity: Vec2;
+
 	constructor(canvas_container_id: string, {
 		drag_threshold = 5,
 		sub_steps = 100,
 		constant_dt = null,
+		gravity = Vec2.down(9.8),
 	}: EditorParams = {}) {
 		this.drag_threshold = drag_threshold;
 		this.holding_keys = new Set<string>();
@@ -44,6 +48,8 @@ export default class Editor {
 		this.mouse_down_pos = Vec2.zero();
 		this.loop = new Loop(this.updateLoop.bind(this),
 			this.baseRenderingLoop.bind(this), { sub_steps, constant_dt });
+
+		this.gravity = gravity;
 
 		this.body_manager = new PhysicBodyManager();
 		this.mode_manager = new ModeManager(this);
@@ -175,5 +181,13 @@ export default class Editor {
 
 	isKeyDown(key: string) {
 		return this.holding_keys.has(key);
+	}
+
+	getModeManager() {
+		return this.mode_manager;
+	}
+
+	getGravity() {
+		return this.gravity;
 	}
 }
