@@ -13,7 +13,7 @@ export default function SelectButton<T>({ options, onSelect }: SelectButtonProps
         onSelect(selectedOption);
     };
 
-    const handleDropdownToggle = (e) => {
+    const handleDropdownToggle = (e: Event) => {
         e.stopPropagation(); // Prevent the button click from firing
         setShowDropdown(prev => !prev);
     };

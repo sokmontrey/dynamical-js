@@ -15,7 +15,8 @@ export default class ModeManager {
 
     constructor(editor: Editor) {
         this.editor = editor;
-        this.toMoveMode();
+        // this.toMoveMode();
+        this.toCreateMode(CreateMode.POINTMASS);
     }
 
     public toCreateMode(create_mode: CreateMode) {
