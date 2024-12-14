@@ -9,7 +9,7 @@ export default interface PhysicBody {
 	interactor: Interactor;
 
 	getPosition(): Vec2;
-	setPosition(position: Vec2): PhysicBody;
+	move(position: Vec2): PhysicBody;
 	resetAfterMoved(): PhysicBody;
 }
 

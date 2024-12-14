@@ -46,6 +46,8 @@ export default class MoveMode extends Mode {
     onMouseMove(): void {
         this.checkHoveredBody();
         this.checkDragging();
+        if(this.is_mouse_dragging && this.isMouseDownOnSelectedBody())
+            this.moveSelectedBodies();
         this.draw();
     }
 
@@ -80,8 +82,6 @@ export default class MoveMode extends Mode {
             this.renderer.drawDraggingBox(ctx,
                 this.editor.getMouseDownPosition(),
                 this.editor.getMouseCurrentPosition());
-        } else if(this.isMouseDownOnSelectedBody()) {
-            this.moveSelectedBodies();
         }
     }
 
@@ -89,13 +89,13 @@ export default class MoveMode extends Mode {
         if (!this.mouse_body_offset ) return;
         const mouse_pos = this.editor.getMouseCurrentPosition();
         this.mouse_body_offset!.forEach((offset, body) => {
-            body.setPosition(mouse_pos.add(offset));
+            body.move(mouse_pos.add(offset));
         });
-        this.resetBodies();
+        this.resetBodiesAfterMoved();
         this.editor.stepBaseRenderer();
     }
 
-    private resetBodies() {
+    private resetBodiesAfterMoved() {
         this.body_manager.getAllBodies().forEach(body => {
             body.resetAfterMoved();
         });
@@ -119,7 +119,7 @@ export default class MoveMode extends Mode {
         this.is_mouse_dragging = false;
         if (this.isMouseDownOnSelectedBody()){
             this.moveSelectedBodies();
-            this.resetBodies();
+            this.resetBodiesAfterMoved();
             this.body_mouse_down_on = null;
             this.mouse_body_offset = null;
         }

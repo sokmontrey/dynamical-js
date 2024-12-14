@@ -145,6 +145,10 @@ export default class RigidConstraint implements PhysicBody {
 		return this;
 	}
 
+	move() {
+		return this;
+	}
+
 	resetAfterMoved() {
 		this.calculateRestDistance();
 		return this;

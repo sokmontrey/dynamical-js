@@ -91,11 +91,6 @@ export default class PointMass implements PhysicBody {
 		return this;
 	}
 
-	resetAfterMoved() {
-		this.prev_pos = this.curr_pos.copy();
-		return this;
-	}
-
 	/**
 	*	Turn pointmass back into a dynamic object.
 	*	Action applied during the static phase will now be in effect (setVelocity, applyForce, etc.)
@@ -129,7 +124,7 @@ export default class PointMass implements PhysicBody {
 	*	Move the pointmass to a specific coordinate 
 	*	while reserving its velocity
 	**/
-	changePosition(position: Vec2) {
+	move(position: Vec2) {
 		const vel = this.curr_pos.sub(this.prev_pos);
 		this.curr_pos = position.copy();
 		this.prev_pos = position.sub(vel);
@@ -181,6 +176,10 @@ export default class PointMass implements PhysicBody {
 
 	resetVelocity() {
 		this.prev_pos = this.curr_pos.copy();
+		return this;
+	}
+
+	resetAfterMoved(): PhysicBody {
 		return this;
 	}
 

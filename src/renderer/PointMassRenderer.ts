@@ -9,6 +9,7 @@ export default class PointMassRenderer implements IRenderer {
 	protected pointmass: PointMass;
 
 	public readonly position;
+	public readonly static_position;
 	public readonly velocity;
 
 	public readonly selected: CircleStyle;
@@ -19,6 +20,11 @@ export default class PointMassRenderer implements IRenderer {
 		this.position = new CircleStyle()
 			.setRadius(this.pointmass.getMass() * 10)
 			.noStroke();
+		this.static_position = new CircleStyle()
+			.setFillColor('#bdb5b5')
+			.setRadius(this.pointmass.getMass() * 10)
+			.noStroke();
+
 		this.velocity = new ArrowStyle()
 			.setFillColor('gray')
 			.disable();
@@ -32,7 +38,8 @@ export default class PointMassRenderer implements IRenderer {
 
 	private drawCurrentPosition(ctx: CanvasRenderingContext2D, pos: Vec2) {
 		if (!this.position.isEnable()) return;
-		Draw.circle(ctx, pos, this.position);
+		if (this.pointmass.isStatic()) Draw.circle(ctx, pos, this.static_position);
+		else Draw.circle(ctx, pos, this.position);
 	}
 
 	private drawVelocity(ctx: CanvasRenderingContext2D, pos: Vec2, vel: Vec2, steps: number) {
