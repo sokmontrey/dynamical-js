@@ -91,14 +91,7 @@ export default class MoveMode extends Mode {
         this.mouse_body_offset!.forEach((offset, body) => {
             body.move(mouse_pos.add(offset));
         });
-        this.resetBodiesAfterMoved();
         this.editor.stepBaseRenderer();
-    }
-
-    private resetBodiesAfterMoved() {
-        this.body_manager.getAllBodies().forEach(body => {
-            body.resetAfterMoved();
-        });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -119,7 +112,6 @@ export default class MoveMode extends Mode {
         this.is_mouse_dragging = false;
         if (this.isMouseDownOnSelectedBody()){
             this.moveSelectedBodies();
-            this.resetBodiesAfterMoved();
             this.body_mouse_down_on = null;
             this.mouse_body_offset = null;
         }

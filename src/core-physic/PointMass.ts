@@ -179,10 +179,6 @@ export default class PointMass implements PhysicBody {
 		return this;
 	}
 
-	resetAfterMoved(): PhysicBody {
-		return this;
-	}
-
 	setMass(mass: number) {
 		this.mass = mass;
 		return this;

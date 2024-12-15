@@ -10,7 +10,6 @@ export default interface PhysicBody {
 
 	getPosition(): Vec2;
 	move(position: Vec2): PhysicBody;
-	resetAfterMoved(): PhysicBody;
 }
 
 export const isFirstRankBody = (x: PhysicBody) => x instanceof PointMass;

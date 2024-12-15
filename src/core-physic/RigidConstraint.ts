@@ -149,11 +149,6 @@ export default class RigidConstraint implements PhysicBody {
 		return this;
 	}
 
-	resetAfterMoved() {
-		this.calculateRestDistance();
-		return this;
-	}
-
 	calculateCorrection(_: number) {
 		this.corr = this.diff / this.rest_distance;
 	}
