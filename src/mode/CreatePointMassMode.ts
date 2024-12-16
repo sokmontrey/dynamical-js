@@ -18,13 +18,7 @@ export default class CreatePointMassMode extends Mode {
 
     private addPointMass() {
         const position = this.editor.getMouseCurrentPosition();
-        const gravity = this.editor.getGravity();
-        this.editor
-            .getPhysicBodyManager()
-            .addPointmass({
-                position,
-                constant_acceleration: gravity
-            });
+        this.editor.createPointMass(position);
     }
 
     private draw() {

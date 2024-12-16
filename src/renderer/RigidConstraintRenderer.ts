@@ -6,8 +6,9 @@ import Color from "../utils/Color.ts";
 import Vec2 from "../utils/Vector.ts";
 import IRenderer from "./IRenderer.ts";
 import CircleStyle, {CircleStyleParams} from "../style/CircleStyle.ts";
+import RendererParams from "./RendererParams.ts";
 
-export interface RigidConstraintRendererParams {
+export interface RigidConstraintRendererParams extends RendererParams {
 	constraint_line?: LineStyleParams;
 	stress?: StressStyleParams;
 	selected?: LineStyleParams;
@@ -69,6 +70,15 @@ export default class RigidConstraintRenderer implements IRenderer {
 		Draw.circle(ctx, pm2.getPosition(), this.selected_circle);
 		Draw.line(ctx, pm1.getPosition(), pm2.getPosition(), this.selected);
 		return this;
+	}
+
+	getProps() {
+		return {
+			constraint_line: this.constraint_line.getProps(),
+			stress: this.stress.getProps(),
+			selected: this.selected.getProps(),
+			selected_circle: this.selected_circle.getProps(),
+		};
 	}
 }
 

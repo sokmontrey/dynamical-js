@@ -67,10 +67,7 @@ export default class CreateRigidConstraintMode extends Mode {
 
     private createRigidConstraint() {
         if (!this.pointmass1 || !this.pointmass2) return;
-        this.editor.getPhysicBodyManager().addRigidConstraint(
-            this.pointmass1,
-            this.pointmass2,
-            {});
+        this.editor.createRigidConstraint(this.pointmass1, this.pointmass2);
         this.editor.stepBaseRenderer();
     }
 

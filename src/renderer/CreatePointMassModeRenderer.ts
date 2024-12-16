@@ -18,7 +18,11 @@ export default class CreatePointMassModeRenderer implements IRenderer {
             .setLineWidth(1);
     }
 
-    draw(ctx: CanvasRenderingContext2D, _steps: number): IRenderer {
+    getProps() {
+        throw new Error("Method not implemented.");
+    }
+
+    draw(_ctx: CanvasRenderingContext2D, _steps: number): IRenderer {
         return this;
     }
 
@@ -27,7 +31,7 @@ export default class CreatePointMassModeRenderer implements IRenderer {
         return this;
     }
 
-    drawSelection(ctx: CanvasRenderingContext2D): IRenderer {
+    drawSelection(_ctx: CanvasRenderingContext2D): IRenderer {
         return this;
     }
 }

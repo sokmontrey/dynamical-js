@@ -1,10 +1,11 @@
 import RigidConstraintInteractor from "../interactor/RigidConstraintInteractor";
 import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer";
-import PhysicBody from "./PhysicBody";
+import PhysicBody, {PhysicBodyType} from "./PhysicBody";
 import PointMass from "./PointMass";
 import Vec2 from "../utils/Vector.ts";
+import PhysicBodyProps from "../core/PhysicBodyProps.ts";
 
-export interface RigidConstraintParams {
+export interface RigidConstraintProps extends PhysicBodyProps {
 	is_broken?: boolean;
 }
 
@@ -17,12 +18,12 @@ export default class RigidConstraint implements PhysicBody {
 	protected diff: number;
 	protected corr: number;
 
-	public readonly renderer: RigidConstraintRenderer;
-	public readonly interactor: RigidConstraintInteractor;
+	public renderer: RigidConstraintRenderer;
+	public interactor: RigidConstraintInteractor;
 
 	constructor(pointmass1: PointMass, pointmass2: PointMass, {
 		is_broken = false,
-	}: RigidConstraintParams = {}) {
+	}: RigidConstraintProps = {}) {
 
 		this.pointmass1 = pointmass1;
 		this.pointmass2 = pointmass2;
@@ -82,6 +83,20 @@ export default class RigidConstraint implements PhysicBody {
 			.getPosition()
 			.add(this.pointmass2.getPosition())
 			.div(2);
+	}
+
+	getProps() {
+		return {
+			is_broken: this.isBroken(),
+		};
+	}
+
+	getType(): PhysicBodyType {
+		return PhysicBodyType.RIGID_CONSTRAINT;
+	}
+
+	isBroken(): boolean {
+		return this.is_broken;
 	}
 
 	//================================ Setters ================================
@@ -146,7 +161,7 @@ export default class RigidConstraint implements PhysicBody {
 	}
 
 	move() {
-		return this;
+		return;
 	}
 
 	calculateCorrection(_: number) {

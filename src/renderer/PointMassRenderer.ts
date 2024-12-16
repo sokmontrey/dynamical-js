@@ -4,8 +4,9 @@ import ArrowStyle, {ArrowStyleParams} from "../style/ArrowStyle";
 import CircleStyle, {CircleStyleParams} from "../style/CircleStyle";
 import Vec2 from "../utils/Vector.ts";
 import IRenderer from "./IRenderer.ts";
+import RendererParams from "./RendererParams.ts";
 
-export interface PointMassRendererParams {
+export interface PointMassRendererParams extends RendererParams {
 	position?: CircleStyleParams;
 	static_position?: CircleStyleParams;
 	velocity?: ArrowStyleParams;
@@ -61,6 +62,15 @@ export default class PointMassRenderer implements IRenderer {
 	drawSelection(ctx: CanvasRenderingContext2D): IRenderer {
 		Draw.circle(ctx, this.pointmass.getPosition(), this.selected);
 		return this;
+	}
+
+	getProps() {
+		return {
+			position: this.position.getProps(),
+			static_position: this.static_position.getProps(),
+			velocity: this.velocity.getProps(),
+			selected: this.selected.getProps(),
+		};
 	}
 }
 

@@ -27,5 +27,12 @@ export default class CircleStyle extends ShapeStyle {
 	getRadius() {
 		return this.radius;
 	}
+
+	getProps() {
+		return {
+			...super.getProps(),
+			radius: this.radius,
+		}
+	}
 }
 

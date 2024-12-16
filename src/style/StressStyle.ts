@@ -41,4 +41,12 @@ export default class StressStyle extends Style {
 	getTensionColor() {
 		return this.tension_color;
 	}
+
+	getProps() {
+		return {
+			...super.getProps(),
+			compress_color: this.compress_color,
+			tension_color: this.tension_color,
+		}
+	}
 }
