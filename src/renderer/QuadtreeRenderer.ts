@@ -17,6 +17,10 @@ export default class QuadtreeRenderer implements IRenderer {
 			.setLineWidth(1);
 	}
 
+	getProps() {
+        throw new Error("Method not implemented.");
+    }
+
 	draw(ctx: CanvasRenderingContext2D, _: number): IRenderer {
 		this.drawDivisions(ctx);
 		return this;
@@ -32,7 +36,7 @@ export default class QuadtreeRenderer implements IRenderer {
 		for (const q of sub_quads) q?.renderer.drawDivisions(ctx, style);
 	}
 
-	drawSelection(ctx: CanvasRenderingContext2D): IRenderer {
+	drawSelection(_ctx: CanvasRenderingContext2D): IRenderer {
 		return this;
 	}
 }

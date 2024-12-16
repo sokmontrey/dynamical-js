@@ -17,6 +17,10 @@ export default class CreateRigidConstraintModeRenderer implements IRenderer {
             .setLineWidth(1);
     }
 
+    getProps() {
+        throw new Error("Method not implemented.");
+    }
+
     draw(_ctx: CanvasRenderingContext2D, _steps: number): IRenderer {
         return this;
     }

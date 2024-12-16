@@ -2,7 +2,6 @@ import IRenderer from "./IRenderer.ts";
 import MoveMode from "../mode/MoveMode.ts";
 import PhysicBody from "../core-physic/PhysicBody.ts";
 import Vec2 from "../utils/Vector.ts";
-import CircleStyle from "../style/CircleStyle.ts";
 import ShapeStyle from "../style/ShapeStyle.ts";
 import Draw from "../core/Draw.ts";
 
@@ -20,8 +19,12 @@ export default class MoveModeRenderer implements IRenderer {
             .setLineWidth(1);
     }
 
+    getProps() {
+        throw new Error("Method not implemented.");
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    draw(ctx: CanvasRenderingContext2D, _steps: number): IRenderer {
+    draw(_ctx: CanvasRenderingContext2D, _steps: number): IRenderer {
         return this;
     }
 

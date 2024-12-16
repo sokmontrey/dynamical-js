@@ -58,5 +58,14 @@ export default class LineStyle extends Style {
 	getLineWidth() {
 		return this.line_width;
 	}
+
+	getProps() {
+		return {
+			...super.getProps(),
+			is_stroke: this.is_stroke,
+			stroke_color: this.stroke_color,
+			line_width: this.line_width,
+		}
+	}
 }
 

@@ -1,44 +1,44 @@
 import {useEffect, useState} from "react";
 import Editor from "./core/Editor.ts";
-import Vec2, {vec2} from "./utils/Vector.ts";
-import PointMass from "./core-physic/PointMass.ts";
-import RigidConstraint from "./core-physic/RigidConstraint.ts";
+import Vec2  from "./utils/Vector.ts";
 import {CreateMode} from "./mode/ModeManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
+import {PhysicBodyType} from "./core-physic/PhysicBody.ts";
+import PhysicBodyState from "./core/PhysicBodyState.ts";
 
 export default function App() {
 	const [editor_ref, setEditorRef] = useState<Editor>(null);
 
+	const state: PhysicBodyState = {
+		"point1": {
+			type: PhysicBodyType.POINT_MASS,
+			props: {
+				is_static: true,
+			},
+			renderer: {
+				static_position: { radius: 5, fill_color: "red" },
+			}
+		},
+		"point2": {
+			type: PhysicBodyType.POINT_MASS,
+			props: {
+				position: Vec2.right(100),
+			}
+		},
+		"rigid1": {
+			type: PhysicBodyType.RIGID_CONSTRAINT,
+			dependencies: {
+				pointmass1: "point1",
+				pointmass2: "point2",
+			},
+			props: { is_broken: false, }
+		},
+	};
+
 	useEffect(() => {
-		const editor = new Editor('canvas-container');
-
-		const gravity = vec2(0, 9.8);
-
-		const p1 = new PointMass().enableStatic()
-		const p2 = new PointMass().setPosition(Vec2.right(100)).setConstantAcceleration(gravity);
-		const p3 = new PointMass().setPosition(Vec2.right(150)).setConstantAcceleration(gravity);
-		const p4 = new PointMass().setPosition(Vec2.right(200)).setConstantAcceleration(gravity);
-
-		const d1 = new RigidConstraint(p1, p2);
-		const d2 = new RigidConstraint(p2, p3);
-		const d3 = new RigidConstraint(p3, p4);
-		d1.renderer.stress.enable();
-
-		editor.addBody(p1);
-		editor.addBody(p2);
-		editor.addBody(p3);
-		editor.addBody(p4);
-		editor.addBody(d1);
-		editor.addBody(d2);
-		editor.addBody(d3);
-
+		const editor = new Editor('canvas-container', state);
 		editor.start();
 		setEditorRef(editor);
-
-		// const loop = new Loop(update, render, { sub_steps: 1000 });
-
-		// setLoop(loop);
-		// loop.run();
 		return () => { editor.pause(); }
 	}, []);
 
@@ -46,6 +46,8 @@ export default function App() {
 		<div id='canvas-container' style={{width: "500px", height: "500px"}}></div>
 		<button onClick={() => editor_ref.start()}>Run</button>
 		<button onClick={() => editor_ref.pause()}>Pause</button>
+		<button onClick={() => editor_ref.reset()}>Reset</button>
+		<button onClick={() => editor_ref.save()}>Save</button>
 		<button onClick={() => editor_ref.getModeManager().toMoveMode()}>
 			Move
 		</button>

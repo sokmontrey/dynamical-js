@@ -29,5 +29,11 @@ export default class Style {
 	isEnable() {
 		return this.is_enable;
 	}
+
+	getProps() {
+		return {
+			is_enable: this.is_enable
+		};
+	}
 }
 

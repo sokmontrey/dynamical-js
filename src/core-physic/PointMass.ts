@@ -1,9 +1,10 @@
 import PointMassInteractor from "../interactor/PointMassInteractor.ts";
 import PointMassRenderer from "../renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
-import PhysicBody from "./PhysicBody.ts";
+import PhysicBody, {PhysicBodyType} from "./PhysicBody.ts";
+import PhysicBodyProps from "../core/PhysicBodyProps.ts";
 
-export interface PointMassParams {
+export interface PointMassProps extends PhysicBodyProps {
 	position?: Vec2,
 	velocity?: Vec2,
 	constant_acceleration?: Vec2,
@@ -20,17 +21,17 @@ export default class PointMass implements PhysicBody {
 	private mass: number;
 	private is_static: boolean;
 
-	public readonly renderer: PointMassRenderer;
-	public readonly interactor: PointMassInteractor;
+	public renderer: PointMassRenderer;
+	public interactor: PointMassInteractor;
 
 	constructor({
 		position = Vec2.zero(),
 		velocity = Vec2.zero(),
 		mass = 1,
 		is_static = false,
-		constant_acceleration = Vec2.zero(),
+		constant_acceleration = Vec2.down(9.8),
 		initial_force = Vec2.zero(),
-	}: PointMassParams = {}) {
+	}: PointMassProps = {}) {
 		this.curr_pos = position.copy();
 		this.prev_pos = position.sub(velocity);
 		this.mass = mass;
@@ -76,6 +77,21 @@ export default class PointMass implements PhysicBody {
 
 	getConstantAcceleration() {
 		return this.const_acc;
+	}
+
+	getProps() {
+		return {
+			position: this.getPosition(),
+			velocity: this.getVelocity(),
+			constant_acceleration: this.getConstantAcceleration(),
+			initial_force: this.getNetForce(),
+			mass: this.getMass(),
+			is_static: this.isStatic(),
+		};
+	}
+
+	getType(): PhysicBodyType {
+		return PhysicBodyType.POINT_MASS;
 	}
 
 	//================================ Setters ================================
@@ -124,11 +140,10 @@ export default class PointMass implements PhysicBody {
 	*	Move the pointmass to a specific coordinate 
 	*	while reserving its velocity
 	**/
-	move(position: Vec2) {
+	move(position: Vec2){
 		const vel = this.curr_pos.sub(this.prev_pos);
 		this.curr_pos = position.copy();
 		this.prev_pos = position.sub(vel);
-		return this;
 	}
 
 	/**

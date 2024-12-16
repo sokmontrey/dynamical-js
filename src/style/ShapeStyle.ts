@@ -14,6 +14,7 @@ export default class ShapeStyle extends LineStyle {
 		fill_color = 'teal',
 		...rest_params
 	}: ShapeStyleParams = {}) {
+		rest_params.is_stroke = rest_params.is_stroke ?? false;
 		super(rest_params);
 		this.is_fill = is_fill;
 		this.fill_color = fill_color;
@@ -44,6 +45,14 @@ export default class ShapeStyle extends LineStyle {
 
 	getFillColor() {
 		return this.fill_color;
+	}
+
+	getProps() {
+		return {
+			...super.getProps(),
+			is_fill: this.is_fill,
+			fill_color: this.fill_color,
+		}
 	}
 }
 

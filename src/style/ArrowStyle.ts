@@ -27,4 +27,11 @@ export default class ArrowStyle extends ShapeStyle {
 	getHeadSize() {
 		return this.head_size;
 	}
+
+	getProps() {
+		return {
+			...super.getProps(),
+			head_size: this.head_size,
+		};
+	}
 }

@@ -1,11 +1,19 @@
 import Draw from "../core/Draw";
 import RigidConstraint from "../core-physic/RigidConstraint";
-import LineStyle from "../style/LineStyle";
-import StressStyle from "../style/StressStyle";
+import LineStyle, {LineStyleParams} from "../style/LineStyle";
+import StressStyle, {StressStyleParams} from "../style/StressStyle";
 import Color from "../utils/Color.ts";
 import Vec2 from "../utils/Vector.ts";
 import IRenderer from "./IRenderer.ts";
-import CircleStyle from "../style/CircleStyle.ts";
+import CircleStyle, {CircleStyleParams} from "../style/CircleStyle.ts";
+import RendererParams from "./RendererParams.ts";
+
+export interface RigidConstraintRendererParams extends RendererParams {
+	constraint_line?: LineStyleParams;
+	stress?: StressStyleParams;
+	selected?: LineStyleParams;
+	selected_circle?: CircleStyleParams;
+}
 
 export default class RigidConstraintRenderer implements IRenderer {
 	protected rigid_constraint: RigidConstraint;
@@ -16,19 +24,18 @@ export default class RigidConstraintRenderer implements IRenderer {
 	public readonly selected: LineStyle;
 	public readonly selected_circle: CircleStyle;
 
-	constructor(rigid_constraint: RigidConstraint) {
+	constructor(rigid_constraint: RigidConstraint, {
+		constraint_line = {},
+		stress = { is_enable: false },
+		selected = { line_width: 2, stroke_color: '#0390fc' },
+		selected_circle = { radius: 4, fill_color: '#0390fc', is_stroke: false }
+	}: RigidConstraintRendererParams = {}) {
 		this.rigid_constraint = rigid_constraint;
 
-		this.constraint_line = new LineStyle();
-		this.stress = new StressStyle().disable();
-
-		this.selected = new LineStyle()
-			.setLineWidth(2)
-			.setStrokeColor('#0390fc');
-		this.selected_circle = new CircleStyle()
-			.setRadius(4)
-			.setFillColor('#0390fc')
-			.noStroke();
+		this.constraint_line = new LineStyle(constraint_line);
+		this.stress = new StressStyle(stress);
+		this.selected = new LineStyle(selected);
+		this.selected_circle = new CircleStyle(selected_circle);
 	}
 
 	private applyStress(_: CanvasRenderingContext2D, steps: number) {
@@ -63,6 +70,15 @@ export default class RigidConstraintRenderer implements IRenderer {
 		Draw.circle(ctx, pm2.getPosition(), this.selected_circle);
 		Draw.line(ctx, pm1.getPosition(), pm2.getPosition(), this.selected);
 		return this;
+	}
+
+	getProps() {
+		return {
+			constraint_line: this.constraint_line.getProps(),
+			stress: this.stress.getProps(),
+			selected: this.selected.getProps(),
+			selected_circle: this.selected_circle.getProps(),
+		};
 	}
 }
 

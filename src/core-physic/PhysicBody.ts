@@ -9,7 +9,15 @@ export default interface PhysicBody {
 	interactor: Interactor;
 
 	getPosition(): Vec2;
-	move(position: Vec2): PhysicBody;
+	move(position: Vec2): void;
+	// TODO: determine the return type
+	getProps(): any;
+	getType(): PhysicBodyType;
+}
+
+export enum PhysicBodyType {
+	POINT_MASS,
+	RIGID_CONSTRAINT,
 }
 
 export const isFirstRankBody = (x: PhysicBody) => x instanceof PointMass;

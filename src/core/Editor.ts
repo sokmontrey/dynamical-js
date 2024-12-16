@@ -4,6 +4,10 @@ import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
 import PhysicBody, { isFirstRankBody, isSecondRankBody } from "../core-physic/PhysicBody.ts";
 import Loop from "./Loop.ts";
 import ModeManager from "../mode/ModeManager.ts";
+import PhysicBodyState from "./PhysicBodyState.ts";
+import DependencyManager from "./DependencyManager.ts";
+import PointMass from "../core-physic/PointMass.ts";
+import RigidConstraint from "../core-physic/RigidConstraint.ts";
 
 export interface EditorParams {
 	/**
@@ -12,7 +16,6 @@ export interface EditorParams {
 	drag_threshold?: number;
 	sub_steps?: number;
 	constant_dt?: number | null;
-	gravity?: Vec2;
 }
 
 export enum MouseButton {
@@ -22,8 +25,10 @@ export enum MouseButton {
 }
 
 export default class Editor {
+	private physic_state: PhysicBodyState;
 	private loop: Loop;
-	private body_manager: PhysicBodyManager;
+	private body_manager!: PhysicBodyManager;
+	private dependency_manager!: DependencyManager;
 	private mode_manager: ModeManager;
 
 	private base_canvas!: Canvas;
@@ -34,24 +39,25 @@ export default class Editor {
 	private mouse_down_pos: Vec2;
 	private holding_keys: Set<string>;
 
-	private gravity: Vec2;
-
-	constructor(canvas_container_id: string, {
+	constructor(canvas_container_id: string, state: PhysicBodyState, {
 		drag_threshold = 5,
 		sub_steps = 100,
 		constant_dt = null,
-		gravity = Vec2.down(9.8),
 	}: EditorParams = {}) {
+		this.physic_state = state;
 		this.drag_threshold = drag_threshold;
 		this.holding_keys = new Set<string>();
 		this.is_mouse_down = false;
 		this.mouse_down_pos = Vec2.zero();
-		this.loop = new Loop(this.updateLoop.bind(this),
-			this.baseRenderingLoop.bind(this), { sub_steps, constant_dt });
+		this.loop = new Loop(
+			this.updateLoop.bind(this),
+			this.baseRenderingLoop.bind(this),
+			{
+				sub_steps,
+				constant_dt
+			});
 
-		this.gravity = gravity;
-
-		this.body_manager = new PhysicBodyManager();
+		this.loadState(state);
 		this.mode_manager = new ModeManager(this);
 
 		this.setupCanvas(canvas_container_id);
@@ -187,7 +193,41 @@ export default class Editor {
 		return this.mode_manager;
 	}
 
-	getGravity() {
-		return this.gravity;
+	loadState(state: PhysicBodyState): Editor {
+		// TODO: too many moving parts, need to refactor
+		this.body_manager = PhysicBodyManager.fromState(state);
+		this.dependency_manager = DependencyManager.fromState(state);
+		console.log(this.dependency_manager);
+		return this;
+	}
+
+	reset() {
+		this.loadState(this.physic_state);
+		this.stepBaseRenderer();
+		return this;
+	}
+
+	/**
+	 * Save the current configuration of physic state.
+	 * .reset() will then restore to this state.
+	 */
+	save(): PhysicBodyState {
+		const new_state = this.body_manager.toState(this.dependency_manager);
+		console.log(new_state);
+		return this.physic_state = new_state;
+	}
+
+	createPointMass(position: Vec2) {
+		const pointmass = new PointMass({ position });
+		const name = this.body_manager.addBody(pointmass);
+		this.dependency_manager.setDependency(name, {});
+	}
+
+	createRigidConstraint(pointmass1: PointMass, pointmass2: PointMass) {
+		const rigid = new RigidConstraint(pointmass1, pointmass2);
+		const name = this.body_manager.addBody(rigid);
+		const pm1_name = this.body_manager.getName(pointmass1) || "";
+		const pm2_name = this.body_manager.getName(pointmass2) || "";
+		this.dependency_manager.setDependency(name, { pointmass1: pm1_name, pointmass2: pm2_name });
 	}
 }
