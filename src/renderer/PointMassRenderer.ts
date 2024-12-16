@@ -1,9 +1,16 @@
 import Draw from "../core/Draw";
 import PointMass from "../core-physic/PointMass";
-import ArrowStyle from "../style/ArrowStyle";
-import CircleStyle from "../style/CircleStyle";
+import ArrowStyle, {ArrowStyleParams} from "../style/ArrowStyle";
+import CircleStyle, {CircleStyleParams} from "../style/CircleStyle";
 import Vec2 from "../utils/Vector.ts";
 import IRenderer from "./IRenderer.ts";
+
+export interface PointMassRendererParams {
+	position?: CircleStyleParams;
+	static_position?: CircleStyleParams;
+	velocity?: ArrowStyleParams;
+	selected?: CircleStyleParams;
+}
 
 export default class PointMassRenderer implements IRenderer {
 	protected pointmass: PointMass;
@@ -14,26 +21,22 @@ export default class PointMassRenderer implements IRenderer {
 
 	public readonly selected: CircleStyle;
 
-	constructor(pointmass: PointMass) {
+	constructor(pointmass: PointMass, {
+		position = { is_stroke: false },
+		static_position = { fill_color: '#bdb5b5', is_stroke: false },
+		velocity = { fill_color: 'gray', is_enable: false },
+		selected = { fill_color: 'rgba(3,144,252,0.28)', stroke_color: '#0390fc', line_width: 1 }
+	}: PointMassRendererParams = {}) {
 		this.pointmass = pointmass;
 
-		this.position = new CircleStyle()
-			.setRadius(this.pointmass.getMass() * 10)
-			.noStroke();
-		this.static_position = new CircleStyle()
-			.setFillColor('#bdb5b5')
-			.setRadius(this.pointmass.getMass() * 10)
-			.noStroke();
+		position.radius = position.radius ?? (pointmass.getMass() ?? 1) * 10;
+		static_position.radius = static_position.radius ?? position.radius;
+		selected.radius = selected.radius ?? (position.radius + 2);
 
-		this.velocity = new ArrowStyle()
-			.setFillColor('gray')
-			.disable();
-
-		this.selected = new CircleStyle()
-			.setRadius(this.position.radius + 2)
-			.setFillColor('rgba(3,144,252,0.28)')
-			.setStrokeColor('#0390fc')
-			.setLineWidth(1);
+		this.position = new CircleStyle(position);
+		this.static_position = new CircleStyle(static_position);
+		this.velocity = new ArrowStyle(velocity);
+		this.selected = new CircleStyle(selected);
 	}
 
 	private drawCurrentPosition(ctx: CanvasRenderingContext2D, pos: Vec2) {
