@@ -1,6 +1,4 @@
 import PhysicBodyState from "./PhysicBodyState.ts";
-import {PhysicBodyType} from "../core-physic/PhysicBody.ts";
-import RigidConstraintConfig from "../config/RigidConstraintConfig.ts";
 
 export default class DependencyManager {
     private table: Map<string, {[key: string]: string}>;
@@ -20,12 +18,7 @@ export default class DependencyManager {
     static fromState(state: PhysicBodyState): DependencyManager {
         const manager = new DependencyManager();
         for(const key in state){
-            const config = state[key];
-            switch (config.type) {
-                case PhysicBodyType.RIGID_CONSTRAINT:
-                    manager.setDependency(key, (config as RigidConstraintConfig).dependencies);
-                    break;
-            }
+            manager.setDependency(key, state[key].dependencies || {});
         }
         return manager;
     }
