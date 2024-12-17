@@ -1,31 +1,25 @@
-import IRenderer from "./IRenderer.ts";
+import Renderer from "./Renderer.ts";
 import MoveMode from "../mode/MoveMode.ts";
 import PhysicBody from "../core-physic/PhysicBody.ts";
 import Vec2 from "../utils/Vector.ts";
 import ShapeStyle from "../style/ShapeStyle.ts";
 import Draw from "../core/Draw.ts";
 
-export default class MoveModeRenderer implements IRenderer {
+export default class MoveModeRenderer implements Renderer {
     move_mode: MoveMode;
 
-    public drag_rectangle: ShapeStyle;
+    public drag_rectangle: ShapeStyle = new ShapeStyle({
+        fill_color: 'rgba(3,144,252,0.28)',
+        stroke_color: '#0390fc',
+        line_width: 1,
+    });
 
     constructor(move_mode: MoveMode) {
         this.move_mode = move_mode;
-
-        this.drag_rectangle = new ShapeStyle()
-            .setFillColor('rgba(3,144,252,0.28)')
-            .setStrokeColor('#0390fc')
-            .setLineWidth(1);
     }
 
-    getProps() {
-        throw new Error("Method not implemented.");
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    draw(_ctx: CanvasRenderingContext2D, _steps: number): IRenderer {
-        return this;
+    public draw(_ctx: CanvasRenderingContext2D, _steps: number) {
+        return;
     }
 
     public drawHoveredBody(ctx: CanvasRenderingContext2D, hovered_body: PhysicBody | null) {
@@ -44,8 +38,7 @@ export default class MoveModeRenderer implements IRenderer {
         Draw.rectangle(ctx, pos, dim, this.drag_rectangle);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    drawSelection(_ctx: CanvasRenderingContext2D): IRenderer {
-        return this;
+    public drawSelection(_ctx: CanvasRenderingContext2D) {
+        return;
     }
 }

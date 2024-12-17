@@ -64,9 +64,10 @@ export default class PhysicBodyManager {
 				type: body.getType(),
 				props: body.getProps(),
 				dependencies: dependency_manager.getDependency(key) ?? {},
-				renderer: body.renderer.getProps(),
+				renderer: body.renderer,
 			};
 		}
+		console.log(state);
 		return state;
 	}
 

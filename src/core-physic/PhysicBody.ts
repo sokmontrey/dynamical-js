@@ -1,11 +1,11 @@
 import Interactor from "../interactor/Interactor";
-import IRenderer from "../renderer/IRenderer.ts";
+import Renderer from "../renderer/Renderer.ts";
 import PointMass from "./PointMass.ts";
 import RigidConstraint from "./RigidConstraint.ts";
 import Vec2 from "../utils/Vector.ts";
 
 export default interface PhysicBody {
-	renderer: IRenderer;
+	renderer: Renderer;
 	interactor: Interactor;
 
 	getPosition(): Vec2;

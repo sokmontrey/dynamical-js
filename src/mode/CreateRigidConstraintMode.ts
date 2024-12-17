@@ -2,8 +2,6 @@ import Mode from "./Mode.ts";
 import CreateRigidConstraintModeRenderer from "../renderer/CreateRigidConstraintModeRenderer.ts";
 import { MouseButton } from "../core/Editor.ts";
 import PointMass from "../core-physic/PointMass.ts";
-import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
-import Vec2 from "../utils/Vector.ts";
 
 export default class CreateRigidConstraintMode extends Mode {
     public renderer!: CreateRigidConstraintModeRenderer;

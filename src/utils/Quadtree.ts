@@ -1,5 +1,4 @@
 import PointMass from "../core-physic/PointMass.ts";
-import QuadtreeRenderer from "../renderer/QuadtreeRenderer.ts";
 import BoundingBox from "./BoundingBox.ts";
 import Vec2, { vec2 } from "./Vector.ts";
 
@@ -28,15 +27,12 @@ export default class Quadtree {
 	private Q3?: Quadtree | null = null;
 	private Q4?: Quadtree | null = null;
 
-	public readonly renderer: QuadtreeRenderer;
-
 	constructor(center: Vec2, half_dim: Vec2, {
 		capacity = 5,
 	}: QuadtreeParams = {}) {
 		this.bound_box = new BoundingBox(center, half_dim);
 		this.capacity = capacity;
 		this.pointmasses = [];
-		this.renderer = new QuadtreeRenderer(this);
 	}
 
 	insert(pointmass: PointMass) {

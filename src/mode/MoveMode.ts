@@ -3,7 +3,6 @@ import MoveModeRenderer from "../renderer/MoveModeRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
 import {MouseButton} from "../core/Editor.ts";
 import PhysicBody from "../core-physic/PhysicBody.ts";
-import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
 
 export default class MoveMode extends Mode {
     public renderer!: MoveModeRenderer;

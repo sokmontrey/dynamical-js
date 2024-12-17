@@ -24,8 +24,8 @@ export default class PointMassInteractor extends Interactor {
 		const pm = this.pointmass;
 		const renderer = pm.renderer;
 		const pm_pos = pm.getPosition();
-		const radius = renderer.position.getRadius();
+		const radius = renderer.position.radius;
 		return pos.distance(pm_pos) <= radius * 1.5
-			&& renderer.position.isEnable();
+			&& renderer.position.is_enable;
     }
 }

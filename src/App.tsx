@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import Editor from "./core/Editor.ts";
-import Vec2  from "./utils/Vector.ts";
+import Vec2 from "./utils/Vector.ts";
 import {CreateMode} from "./mode/ModeManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
 import {PhysicBodyType} from "./core-physic/PhysicBody.ts";
