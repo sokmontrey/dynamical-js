@@ -197,7 +197,6 @@ export default class Editor {
 		// TODO: too many moving parts, need to refactor
 		this.body_manager = PhysicBodyManager.fromState(state);
 		this.dependency_manager = DependencyManager.fromState(state);
-		console.log(this.dependency_manager);
 		return this;
 	}
 
@@ -213,7 +212,6 @@ export default class Editor {
 	 */
 	save(): PhysicBodyState {
 		const new_state = this.body_manager.toState(this.dependency_manager);
-		console.log(new_state);
 		return this.physic_state = new_state;
 	}
 

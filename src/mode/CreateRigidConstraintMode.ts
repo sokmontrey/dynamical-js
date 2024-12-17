@@ -11,12 +11,10 @@ export default class CreateRigidConstraintMode extends Mode {
     private pointmass1: PointMass | null = null;
     private pointmass2: PointMass | null = null;
 
-    private body_manager!: PhysicBodyManager;
     private hovered_pointmass: PointMass | null = null;
 
     public init(): void {
         this.renderer = new CreateRigidConstraintModeRenderer(this);
-        this.body_manager = this.editor.getPhysicBodyManager();
     }
 
     private reset() {
@@ -26,7 +24,8 @@ export default class CreateRigidConstraintMode extends Mode {
 
     onMouseMove(): void {
         const mouse_pos = this.editor.getMouseCurrentPosition();
-        const hovered_bodies = this.body_manager.getHoveredBodies(mouse_pos);
+        const body_manager = this.editor.getPhysicBodyManager();
+        const hovered_bodies = body_manager.getHoveredBodies(mouse_pos);
         if (!hovered_bodies.length) this.hovered_pointmass = null;
         else this.hovered_pointmass = hovered_bodies[0] as PointMass;
         this.draw();

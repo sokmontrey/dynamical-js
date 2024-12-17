@@ -1,9 +1,7 @@
 import Vec2 from "../utils/Vector";
 import PhysicBody, {PhysicBodyType} from "./PhysicBody";
-import PointMass, {PointMassProps} from "./PointMass";
-import RigidConstraint, {RigidConstraintProps} from "./RigidConstraint";
-import PointMassConfig from "../config/PointMassConfig.ts";
-import RigidConstraintConfig from "../config/RigidConstraintConfig.ts";
+import PointMass  from "./PointMass";
+import RigidConstraint  from "./RigidConstraint";
 import PointMassRenderer from "../renderer/PointMassRenderer.ts";
 import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer.ts";
 import PhysicBodyState from "../core/PhysicBodyState.ts";
@@ -20,8 +18,9 @@ export default class PhysicBodyManager {
 	}
 
 	addBody(body: PhysicBody, name: string = ""): string {
-		name = name || "__body" + this.seed++;
+		name = name || "__body" + this.seed;
 		this.bodies[name] = body;
+		this.seed++;
 		return name;
 	}
 
@@ -91,22 +90,15 @@ export default class PhysicBodyManager {
 		const body = body_manager.getByKey(key);
 		if (body) return body;
 
-		const config = state[key];
-		switch (config.type) {
-			case PhysicBodyType.POINT_MASS:
-				return PhysicBodyManager.loadPointmassConfig(
-					state,
-					key,
-					config as PointMassConfig,
-					body_manager);
-			case PhysicBodyType.RIGID_CONSTRAINT:
-				return PhysicBodyManager.loadRigidConstraintConfig(
-					state,
-					key,
-					config as RigidConstraintConfig,
-					body_manager);
-			default: break;
+		const body_load_mapper = {
+			[PhysicBodyType.POINT_MASS]: PhysicBodyManager.loadPointmassConfig,
+			[PhysicBodyType.RIGID_CONSTRAINT]: PhysicBodyManager.loadRigidConstraintConfig,
 		}
+
+		const config = state[key];
+		if (!config) throw new Error("Unknown body key");
+		const loader = body_load_mapper[config.type];
+		if (loader) return loader(state, key, config, body_manager);
 
 		throw new Error("Unknown body type");
 	}
@@ -114,7 +106,7 @@ export default class PhysicBodyManager {
 	static loadPointmassConfig(
 		_state: PhysicBodyState,
 		key: string,
-		config: PointMassConfig,
+		config: PhysicBodyConfig,
 		body_manager: PhysicBodyManager
 	): PointMass {
 		const body = body_manager.getByKey(key);

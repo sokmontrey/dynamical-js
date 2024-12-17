@@ -10,7 +10,6 @@ export default class MoveMode extends Mode {
 
     private physic_bodies: Set<PhysicBody> = new Set<PhysicBody>();
     private hovered_body: PhysicBody | null = null;
-    private body_manager!: PhysicBodyManager;
 
     private is_mouse_dragging: boolean = false;
     private body_mouse_down_on: PhysicBody | null = null;
@@ -18,7 +17,6 @@ export default class MoveMode extends Mode {
 
     public init(): void {
         this.renderer = new MoveModeRenderer(this);
-        this.body_manager = this.editor.getPhysicBodyManager();
     }
 
     private resetSelectedBodies() {
@@ -59,7 +57,8 @@ export default class MoveMode extends Mode {
 
     private checkHoveredBody() {
         const mouse_pos = this.editor.getMouseCurrentPosition();
-        const hovered_bodies = this.body_manager.getHoveredBodies(mouse_pos);
+        const body_manager = this.editor.getPhysicBodyManager();
+        const hovered_bodies = body_manager.getHoveredBodies(mouse_pos);
         if (hovered_bodies.length) this.hovered_body = hovered_bodies[0];
         else this.hovered_body = null;
     }
@@ -136,7 +135,8 @@ export default class MoveMode extends Mode {
         const lower= Vec2.min(down_pos, curr_pos);
         const upper= Vec2.max(down_pos, curr_pos);
         if (!this.editor.isKeyDown("Shift")) this.resetSelectedBodies();
-        this.body_manager
+        this.editor
+            .getPhysicBodyManager()
             .getSelectedBodies(lower, upper)
             .forEach(body => {
                 this.physic_bodies.add(body);
@@ -154,7 +154,7 @@ export default class MoveMode extends Mode {
 
     deleteSelectedBodies() {
         this.physic_bodies.forEach(body => {
-            this.body_manager.removeBody(body);
+            this.editor.getPhysicBodyManager().removeBody(body);
         });
         this.resetSelectedBodies();
         this.draw();
