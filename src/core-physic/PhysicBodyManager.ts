@@ -7,6 +7,7 @@ import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer.ts";
 import PhysicBodyState from "../core/PhysicBodyState.ts";
 import PhysicBodyConfig from "../core/PhysicBodyConfig.ts";
 import DependencyManager from "../core/DependencyManager.ts";
+import Style from "../style/Style.ts";
 
 export default class PhysicBodyManager {
 	private bodies: { [key: string]: PhysicBody };
@@ -64,10 +65,9 @@ export default class PhysicBodyManager {
 				type: body.getType(),
 				props: body.getProps(),
 				dependencies: dependency_manager.getDependency(key) ?? {},
-				renderer: body.renderer,
+				renderer: body.renderer.toPlainObject(),
 			};
 		}
-		console.log(state);
 		return state;
 	}
 

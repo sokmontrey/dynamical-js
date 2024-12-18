@@ -4,21 +4,22 @@ import ArrowStyle, {ArrowStyleProps} from "../style/ArrowStyle";
 import CircleStyle, {CircleStyleProps} from "../style/CircleStyle";
 import Vec2 from "../utils/Vector.ts";
 import Renderer from "./Renderer.ts";
-import RendererParams from "./RendererParams.ts";
+import RendererProps from "./RendererProps.ts";
+import Style from "../style/Style.ts";
 
-export interface PointMassRendererParams extends RendererParams {
+export interface PointMassRendererProps extends RendererProps {
 	position?: CircleStyleProps;
 	static_position?: CircleStyleProps;
 	velocity?: ArrowStyleProps;
 	selected?: CircleStyleProps;
 }
 
-export default class PointMassRenderer implements Renderer {
+export default class PointMassRenderer extends Renderer {
 	private pointmass: PointMass;
 
-	public readonly position;
-	public readonly static_position;
-	public readonly velocity;
+	public readonly position: CircleStyle;
+	public readonly static_position: CircleStyle;
+	public readonly velocity: ArrowStyle;
 	public readonly selected: CircleStyle;
 
 	constructor(pointmass: PointMass, {
@@ -26,7 +27,8 @@ export default class PointMassRenderer implements Renderer {
 		static_position = { fill_color: '#bdb5b5', is_stroke: false },
 		velocity = { fill_color: 'gray', is_enable: false },
 		selected = { fill_color: 'rgba(3,144,252,0.28)', stroke_color: '#0390fc', line_width: 1 }
-	}: PointMassRendererParams = {}) {
+	}: PointMassRendererProps = {}) {
+		super();
 		this.pointmass = pointmass;
 
 		position.radius = position.radius ?? (pointmass.getMass() ?? 1) * 10;
@@ -61,4 +63,3 @@ export default class PointMassRenderer implements Renderer {
 		Draw.circle(ctx, this.pointmass.getPosition(), this.selected);
 	}
 }
-

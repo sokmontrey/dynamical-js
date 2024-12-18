@@ -4,18 +4,18 @@ import LineStyle, {LineStyleProps} from "../style/LineStyle";
 import StressStyle, {StressStyleProps} from "../style/StressStyle";
 import Color from "../utils/Color.ts";
 import Vec2 from "../utils/Vector.ts";
-import Renderer from "./Renderer.ts";
 import CircleStyle, {CircleStyleProps} from "../style/CircleStyle.ts";
-import RendererParams from "./RendererParams.ts";
+import RendererProps from "./RendererProps.ts";
+import Renderer from "./Renderer.ts";
 
-export interface RigidConstraintRendererParams extends RendererParams {
+export interface RigidConstraintRendererProps extends RendererProps {
 	constraint_line?: LineStyleProps;
 	stress?: StressStyleProps;
 	selected?: LineStyleProps;
 	selected_circle?: CircleStyleProps;
 }
 
-export default class RigidConstraintRenderer implements Renderer {
+export default class RigidConstraintRenderer extends Renderer {
 	private rigid_constraint: RigidConstraint;
 
 	public readonly constraint_line: LineStyle;
@@ -28,7 +28,8 @@ export default class RigidConstraintRenderer implements Renderer {
 		stress = { is_enable: false },
 		selected = { line_width: 2, stroke_color: '#0390fc' },
 		selected_circle = { radius: 4, fill_color: '#0390fc', is_stroke: false }
-	}: RigidConstraintRendererParams = {}) {
+	}: RigidConstraintRendererProps = {}) {
+		super();
 		this.rigid_constraint = rigid_constraint;
 
 		this.constraint_line = new LineStyle(constraint_line);
