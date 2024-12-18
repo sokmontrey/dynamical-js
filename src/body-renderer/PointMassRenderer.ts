@@ -5,7 +5,6 @@ import CircleStyle, {CircleStyleProps} from "../style/CircleStyle";
 import Vec2 from "../utils/Vector.ts";
 import Renderer from "./Renderer.ts";
 import RendererProps from "./RendererProps.ts";
-import Style from "../style/Style.ts";
 
 export interface PointMassRendererProps extends RendererProps {
 	position?: CircleStyleProps;

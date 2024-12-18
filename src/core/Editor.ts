@@ -79,6 +79,7 @@ export default class Editor {
 	}
 
 	private baseRenderingLoop(_dt: number, _sub_steps: number) {
+		this.drawMode();
 		this.base_canvas.clear();
 		this.body_manager
 			.getAllBodies()
@@ -114,6 +115,9 @@ export default class Editor {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		this.overlay_canvas.onMouseMove((_e: MouseEvent) => {
 			this.mode_manager.onMouseMove();
+			if (!this.loop.isRunning()) {
+				this.drawMode();
+			}
 		});
 
 		this.overlay_canvas.onMouseDown((e: MouseEvent) => {
@@ -124,12 +128,25 @@ export default class Editor {
 		});
 
 		this.overlay_canvas.onMouseUp((e: MouseEvent) => {
-			if (!this.is_mouse_down) return;
+			if (!this.is_mouse_down) { return; }
 			this.is_mouse_down = false;
 			this.mode_manager.onMouseUp(e.button as MouseButton);
 			const diff = this.getMouseCurrentPosition().distance(this.mouse_down_pos);
-			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button as MouseButton);
+			if (diff < this.drag_threshold) {
+				this.mode_manager.onMouseClick(e.button as MouseButton);
+			}
+			if (!this.loop.isRunning()) {
+				this.drawMode();
+			}
 		});
+	}
+
+	public drawMode(): void {
+		this.overlay_canvas.clear();
+		this.mode_manager
+			.getCurrentMode()
+			.renderer
+			.draw(this.overlay_canvas.getContext());
 	}
 
 	setupKeyboardEvent() {

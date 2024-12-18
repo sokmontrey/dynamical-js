@@ -1,5 +1,5 @@
 import PointMassInteractor from "../interactor/PointMassInteractor.ts";
-import PointMassRenderer from "../renderer/PointMassRenderer.ts";
+import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBody, {PhysicBodyType} from "./PhysicBody.ts";
 import PhysicBodyProps from "../core/PhysicBodyProps.ts";

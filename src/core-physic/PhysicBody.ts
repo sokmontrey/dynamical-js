@@ -1,5 +1,5 @@
 import Interactor from "../interactor/Interactor";
-import Renderer from "../renderer/Renderer.ts";
+import Renderer from "../body-renderer/Renderer.ts";
 import PointMass from "./PointMass.ts";
 import RigidConstraint from "./RigidConstraint.ts";
 import Vec2 from "../utils/Vector.ts";

@@ -2,12 +2,11 @@ import Vec2 from "../utils/Vector";
 import PhysicBody, {PhysicBodyType} from "./PhysicBody";
 import PointMass  from "./PointMass";
 import RigidConstraint  from "./RigidConstraint";
-import PointMassRenderer from "../renderer/PointMassRenderer.ts";
-import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer.ts";
+import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
+import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer.ts";
 import PhysicBodyState from "../core/PhysicBodyState.ts";
 import PhysicBodyConfig from "../core/PhysicBodyConfig.ts";
 import DependencyManager from "../core/DependencyManager.ts";
-import Style from "../style/Style.ts";
 
 export default class PhysicBodyManager {
 	private bodies: { [key: string]: PhysicBody };
