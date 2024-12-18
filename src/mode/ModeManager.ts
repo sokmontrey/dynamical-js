@@ -11,7 +11,7 @@ export enum CreateMode {
 
 export default class ModeManager {
     private current_mode!: Mode;
-    private editor: Editor;
+    private readonly editor: Editor;
 
     constructor(editor: Editor) {
         this.editor = editor;
@@ -40,22 +40,25 @@ export default class ModeManager {
         this.current_mode = mode;
         this.current_mode.setModeManager(this);
         this.current_mode.setEditor(this.editor);
-        this.current_mode.init();
     }
 
-    onMouseMove() {
+    public onMouseMove() {
         this.current_mode.onMouseMove();
     }
 
-    onMouseDown(button: MouseButton) {
+    public onMouseDown(button: MouseButton) {
         this.current_mode.onMouseDown(button);
     }
 
-    onMouseUp(button: MouseButton) {
+    public onMouseUp(button: MouseButton) {
         this.current_mode.onMouseUp(button);
     }
 
-    onMouseClick(button: MouseButton) {
+    public onMouseClick(button: MouseButton) {
         this.current_mode.onMouseClick(button);
+    }
+
+    public getCurrentMode(): Mode {
+        return this.current_mode;
     }
 }

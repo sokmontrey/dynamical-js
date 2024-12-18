@@ -1,5 +1,5 @@
 import RigidConstraintInteractor from "../interactor/RigidConstraintInteractor";
-import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer";
+import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer";
 import PhysicBody, {PhysicBodyType} from "./PhysicBody";
 import PointMass from "./PointMass";
 import Vec2 from "../utils/Vector.ts";

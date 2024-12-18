@@ -1,11 +1,11 @@
 import ModeManager from "./ModeManager.ts";
 import Editor, {MouseButton} from "../core/Editor.ts";
+import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
 
 export default abstract class Mode {
+    public abstract renderer: ModeRenderer;
     protected mode_manager!: ModeManager;
     protected editor!: Editor;
-
-    public abstract init(): void;
 
     public setModeManager(mode_manager: ModeManager) {
         this.mode_manager = mode_manager;
@@ -15,11 +15,11 @@ export default abstract class Mode {
         this.editor = editor;
     }
 
-    abstract onMouseMove(): void;
+    onMouseMove(): void { return; }
 
-    abstract onMouseDown(button: MouseButton): void;
+    onMouseDown(_button: MouseButton): void { return; }
 
-    abstract onMouseUp(button: MouseButton): void;
+    onMouseUp(_button: MouseButton): void { return; }
 
-    abstract onMouseClick(button: MouseButton): void;
+    onMouseClick(_button: MouseButton): void { return; }
 }

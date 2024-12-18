@@ -1,19 +1,15 @@
 import Mode from "./Mode.ts";
-import CreateRigidConstraintModeRenderer from "../renderer/CreateRigidConstraintModeRenderer.ts";
+import CreateRigidConstraintModeRenderer from "../mode-renderer/CreateRigidConstraintModeRenderer.ts";
 import { MouseButton } from "../core/Editor.ts";
 import PointMass from "../core-physic/PointMass.ts";
+import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
 
 export default class CreateRigidConstraintMode extends Mode {
-    public renderer!: CreateRigidConstraintModeRenderer;
+    public renderer: ModeRenderer = new CreateRigidConstraintModeRenderer(this);
 
     private pointmass1: PointMass | null = null;
     private pointmass2: PointMass | null = null;
-
     private hovered_pointmass: PointMass | null = null;
-
-    public init(): void {
-        this.renderer = new CreateRigidConstraintModeRenderer(this);
-    }
 
     private reset() {
         this.pointmass1 = null;
@@ -26,21 +22,6 @@ export default class CreateRigidConstraintMode extends Mode {
         const hovered_bodies = body_manager.getHoveredBodies(mouse_pos);
         if (!hovered_bodies.length) this.hovered_pointmass = null;
         else this.hovered_pointmass = hovered_bodies[0] as PointMass;
-        this.draw();
-    }
-
-    private draw() {
-        const mouse_pos = this.editor.getMouseCurrentPosition();
-        const canvas = this.editor.getOverlayCanvas();
-        const ctx = canvas.getContext();
-        canvas.clear();
-        if (this.hovered_pointmass) {
-            this.renderer.drawSelectedPointmass(ctx, this.hovered_pointmass);
-        }
-        if (this.pointmass1) {
-            this.renderer.drawSelectedPointmass(ctx, this.pointmass1);
-            this.renderer.drawConstraintLine(ctx, this.pointmass1.getPosition(), mouse_pos);
-        }
     }
 
     onMouseClick(_button: MouseButton): void {
@@ -68,11 +49,15 @@ export default class CreateRigidConstraintMode extends Mode {
         this.editor.stepBaseRenderer();
     }
 
-    onMouseDown(_button: MouseButton): void {
-        return ;
+    getHoveredPointMass() {
+        return this.hovered_pointmass;
     }
 
-    onMouseUp(_button: MouseButton): void {
-        return ;
+    getMouseCurrentPosition() {
+        return this.editor.getMouseCurrentPosition();
+    }
+
+    getFirstPointMass() {
+        return this.pointmass1;
     }
 }

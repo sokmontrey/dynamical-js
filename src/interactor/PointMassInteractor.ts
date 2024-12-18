@@ -17,8 +17,8 @@ export default class PointMassInteractor extends Interactor {
 
 	/**
 	* Check if a point is hovering the pointmass 
-	* by checking against the renderer's radius.
-	* Return false if position renderer is disabled
+	* by checking against the body-renderer's radius.
+	* Return false if position body-renderer is disabled
 	**/
     isHovered(pos: Vec2): boolean {
 		const pm = this.pointmass;

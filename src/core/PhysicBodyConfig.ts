@@ -1,6 +1,6 @@
 import {PhysicBodyType} from "../core-physic/PhysicBody.ts";
 import PhysicBodyProps from "./PhysicBodyProps.ts";
-import RendererProps from "../renderer/RendererProps.ts";
+import RendererProps from "../body-renderer/RendererProps.ts";
 
 export default interface PhysicBodyConfig {
     type: PhysicBodyType;
