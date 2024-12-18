@@ -127,7 +127,14 @@ export default class PhysicBodyManager {
 		const body = body_manager.getByKey(key);
 		if (body) return body as RigidConstraint;
 
-		const { pointmass1: pm1_key, pointmass2: pm2_key } = config.dependencies;
+		const {
+			pointmass1: pm1_key,
+			pointmass2: pm2_key
+		} = config.dependencies as {
+			pointmass1: string,
+			pointmass2: string
+		};
+
 		if (!pm1_key || !state[pm1_key]) throw new Error("Pointmass1 not found");
 		if (!pm2_key || !state[pm2_key]) throw new Error("Pointmass2 not found");
 
