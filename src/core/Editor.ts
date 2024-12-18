@@ -219,6 +219,7 @@ export default class Editor {
 
 	reset() {
 		this.loadState(this.physic_state);
+		this.mode_manager.reset();
 		this.stepBaseRenderer();
 		return this;
 	}

@@ -61,4 +61,8 @@ export default class ModeManager {
     public getCurrentMode(): Mode {
         return this.current_mode;
     }
+
+    reset() {
+        this.toMoveMode();
+    }
 }
