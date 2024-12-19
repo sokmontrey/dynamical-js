@@ -82,7 +82,7 @@ export default class PointMass implements PhysicBody {
 		return this.const_acc;
 	}
 
-	getProps() {
+	toPlainObject() {
 		return {
 			position: this.getPosition(),
 			velocity: this.getVelocity(),

@@ -15,7 +15,7 @@ export default interface PhysicBody {
 	interactor: Interactor;
 
 	update(dt: number): void;
-	getProps(): any;
+	toPlainObject(): any;
 	getType(): PhysicBodyType;
 	getPosition(): Vec2;
 }

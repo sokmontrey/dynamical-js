@@ -87,7 +87,7 @@ export default class RigidConstraint implements PhysicBody {
 		return this.rest_distance;
 	}
 
-	getProps() {
+	toPlainObject() {
 		return {
 			is_broken: this.isBroken(),
 		};
