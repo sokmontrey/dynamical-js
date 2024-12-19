@@ -1,9 +1,11 @@
 import Mode from "./Mode.ts";
 import Vec2 from "../utils/Vector.ts";
 import {MouseButton} from "../core/Editor.ts";
-import PhysicBody from "../core-physic/PhysicBody.ts";
+import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody.ts";
 import MoveModeRenderer from "../mode-renderer/MoveModeRenderer.ts";
 import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
+import PointMass from "../core-physic/PointMass.ts";
+import RigidConstraint from "../core-physic/RigidConstraint.ts";
 
 export default class MoveMode extends Mode {
     public renderer: ModeRenderer = new MoveModeRenderer(this);
@@ -66,15 +68,40 @@ export default class MoveMode extends Mode {
     }
 
     private moveSelectedBodies() {
-        if (!this.mouse_body_offset ) return;
+        if (!this.mouse_body_offset) return;
         const mouse_pos = this.editor.getMouseCurrentPosition();
         this.mouse_body_offset!.forEach((offset, body) => {
-            body.move(mouse_pos.add(offset));
+            this.moveBody(body, mouse_pos.add(offset));
         });
-        this.editor.stepBaseRenderer();
+        if (!this.editor.isRunning()) {
+            this.editor.stepBaseRenderer();
+        }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+	private moveBody(body: PhysicBody, position: Vec2) {
+		if (body.type === PhysicBodyType.POINT_MASS) {
+			const pointmass = body as PointMass;
+			pointmass.moveTo(position);
+			if (!this.editor.isRunning()) {
+                this.updateRigidConstraint(pointmass);
+            }
+		} 
+	}
+
+    private updateRigidConstraint(pointmass: PointMass) {
+        const name = this.editor.getPhysicBodyManager().getName(pointmass);
+        if (!name) return;
+        this.editor.getDependencyManager()
+            .findChilds(name)
+            .map(child => this.editor.getPhysicBodyManager().getByName(child))
+            .filter(child => child && child.type === PhysicBodyType.RIGID_CONSTRAINT)
+            .forEach(_rigid => {
+                const rigid = _rigid as RigidConstraint;
+                // TODO: generalize this for other types of dependencies
+                rigid?.calculateRestDistance();
+            });
+    }
+
     onMouseDown(_button: MouseButton): void {
         this.body_mouse_down_on = this.hovered_body;
         if(this.isMouseDownOnSelectedBody()) {

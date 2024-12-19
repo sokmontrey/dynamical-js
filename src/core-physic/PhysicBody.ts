@@ -5,14 +5,14 @@ import RigidConstraint from "./RigidConstraint.ts";
 import Vec2 from "../utils/Vector.ts";
 
 export default interface PhysicBody {
+	readonly type: PhysicBodyType;
+
 	renderer: Renderer;
 	interactor: Interactor;
 
-	getPosition(): Vec2;
-	move(position: Vec2): void;
-	// TODO: determine the return type
 	getProps(): any;
 	getType(): PhysicBodyType;
+	getPosition(): Vec2;
 }
 
 export enum PhysicBodyType {

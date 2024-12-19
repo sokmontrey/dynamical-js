@@ -1,7 +1,7 @@
 import Canvas from "./Canvas.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
-import PhysicBody, { isFirstRankBody, isSecondRankBody } from "../core-physic/PhysicBody.ts";
+import PhysicBody, { isFirstRankBody, isSecondRankBody, PhysicBodyType } from "../core-physic/PhysicBody.ts";
 import Loop from "./Loop.ts";
 import ModeManager from "../mode/ModeManager.ts";
 import PhysicBodyState from "./PhysicBodyState.ts";
@@ -206,6 +206,10 @@ export default class Editor {
 		return this.holding_keys.has(key);
 	}
 
+	isRunning() {
+		return this.loop.isRunning();
+	}
+
 	getModeManager() {
 		return this.mode_manager;
 	}
@@ -245,5 +249,9 @@ export default class Editor {
 		const pm1_name = this.body_manager.getName(pointmass1) || "";
 		const pm2_name = this.body_manager.getName(pointmass2) || "";
 		this.dependency_manager.setDependency(name, { pointmass1: pm1_name, pointmass2: pm2_name });
+	}
+
+	getDependencyManager() {
+		return this.dependency_manager;
 	}
 }
