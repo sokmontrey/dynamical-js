@@ -2,10 +2,9 @@ import Vec2 from "../utils/Vector";
 import PhysicBody, {PhysicBodyType} from "./PhysicBody";
 import PointMass  from "./PointMass";
 import RigidConstraint  from "./RigidConstraint";
-import PointMassRenderer from "../renderer/PointMassRenderer.ts";
-import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer.ts";
-import PhysicBodyState from "../core/PhysicBodyState.ts";
-import PhysicBodyConfig from "../core/PhysicBodyConfig.ts";
+import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
+import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer.ts";
+import PhysicBodyState, { PhysicBodyConfig } from "../core/PhysicBodyState.ts";
 import DependencyManager from "../core/DependencyManager.ts";
 
 export default class PhysicBodyManager {
@@ -40,8 +39,8 @@ export default class PhysicBodyManager {
 		return Object.values(this.bodies);
 	}
 
-	getByKey(key: string): PhysicBody | null {
-		return this.bodies[key] || null;
+	getByName(name: string): PhysicBody | null {
+		return this.bodies[name] || null;
 	}
 
 	getHoveredBodies(pos: Vec2) {
@@ -62,9 +61,9 @@ export default class PhysicBodyManager {
 			const body = this.bodies[key];
 			state[key] = {
 				type: body.getType(),
-				props: body.getProps(),
+				props: body.toPlainObject(),
 				dependencies: dependency_manager.getDependency(key) ?? {},
-				renderer: body.renderer.getProps(),
+				renderer: body.renderer.toPlainObject(),
 			};
 		}
 		return state;
@@ -87,7 +86,7 @@ export default class PhysicBodyManager {
 		key: string,
 		body_manager: PhysicBodyManager
 	): PhysicBody {
-		const body = body_manager.getByKey(key);
+		const body = body_manager.getByName(key);
 		if (body) return body;
 
 		const body_load_mapper = {
@@ -109,7 +108,7 @@ export default class PhysicBodyManager {
 		config: PhysicBodyConfig,
 		body_manager: PhysicBodyManager
 	): PointMass {
-		const body = body_manager.getByKey(key);
+		const body = body_manager.getByName(key);
 		if (body) return body as PointMass;
 
 		const pointmass = new PointMass(config.props);
@@ -124,10 +123,17 @@ export default class PhysicBodyManager {
 		config: PhysicBodyConfig,
 		body_manager: PhysicBodyManager
 	): RigidConstraint {
-		const body = body_manager.getByKey(key);
+		const body = body_manager.getByName(key);
 		if (body) return body as RigidConstraint;
 
-		const { pointmass1: pm1_key, pointmass2: pm2_key } = config.dependencies;
+		const {
+			pointmass1: pm1_key,
+			pointmass2: pm2_key
+		} = config.dependencies as {
+			pointmass1: string,
+			pointmass2: string
+		};
+
 		if (!pm1_key || !state[pm1_key]) throw new Error("Pointmass1 not found");
 		if (!pm2_key || !state[pm2_key]) throw new Error("Pointmass2 not found");
 

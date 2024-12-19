@@ -1,38 +1,15 @@
-import ShapeStyle, { ShapeStyleParams } from "./ShapeStyle";
+import ShapeStyle, { ShapeStyleProps } from "./ShapeStyle";
 
-export interface CircleStyleParams extends ShapeStyleParams {
+export interface CircleStyleProps extends ShapeStyleProps {
 	radius?: number;
 }
 
 export default class CircleStyle extends ShapeStyle {
-	public radius: number;
+	public radius: number = 5;
 
-	constructor({
-		radius = 5,
-		...rest_params
-	}: CircleStyleParams = {}) {
-		super(rest_params);
-		this.radius = radius;
-	}
-
-	//================================ Setters ================================	
-
-	setRadius(radius: number) {
-		this.radius = radius;
-		return this;
-	}
-
-	//================================ Getters ================================
-
-	getRadius() {
-		return this.radius;
-	}
-
-	getProps() {
-		return {
-			...super.getProps(),
-			radius: this.radius,
-		}
+	constructor(params: CircleStyleProps = {}) {
+		super(params);
+		Object.assign(this, params);
 	}
 }
 

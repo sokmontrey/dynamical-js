@@ -1,52 +1,17 @@
 import Color from "../utils/Color.ts";
-import Style, { StyleParams } from "./Style";
+import Style, { StyleProps } from "./Style";
 
-export interface StressStyleParams extends StyleParams {
+export interface StressStyleProps extends StyleProps {
 	compress_color?: Color;
 	tension_color?: Color;
 }
 
 export default class StressStyle extends Style {
-	public compress_color: Color;
-	public tension_color: Color;
+	public compress_color: Color = Color.fromHex("#00d4ff");
+	public tension_color: Color = Color.fromHex("#ff2100");
 
-	constructor({
-		compress_color = Color.fromHex("#00d4ff"),
-		tension_color = Color.fromHex("#ff2100"),
-		...rest_params
-	}: StressStyleParams = {}) {
-		super(rest_params)
-		this.compress_color = compress_color;
-		this.tension_color = tension_color;
-	}
-
-	//================================ Setters ================================
-
-	setCompressColor(color: Color) {
-		this.compress_color = color;
-		return this;
-	}
-
-	setTensionColor(color: Color) {
-		this.tension_color = color;
-		return this;
-	}
-
-	//================================ Getters ================================
-	
-	getCompressColor() {
-		return this.compress_color;
-	}
-
-	getTensionColor() {
-		return this.tension_color;
-	}
-
-	getProps() {
-		return {
-			...super.getProps(),
-			compress_color: this.compress_color,
-			tension_color: this.tension_color,
-		}
+	constructor(params: StressStyleProps = {}) {
+		super(params);
+		Object.assign(this, params);
 	}
 }

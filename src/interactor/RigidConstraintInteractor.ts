@@ -39,8 +39,8 @@ export default class RigidConstraintInteractor extends Interactor {
 
     isHovered(pos: Vec2): boolean {
 		const renderer = this.rigid_constraint.renderer;
-		if (!renderer.constraint_line.isEnable()) return false;
-		const line_width = renderer.constraint_line.getLineWidth();
+		if (!renderer.constraint_line.is_enable) return false;
+		const line_width = renderer.constraint_line.line_width;
 		const [pm1, pm2] = this.rigid_constraint.getPointMasses();
 		const distance_to_point = segment(
 			pm1.getPosition(), 

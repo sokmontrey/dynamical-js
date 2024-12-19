@@ -1,13 +1,10 @@
 import Mode from "./Mode.ts";
-import CreatePointMassModeRenderer from "../renderer/CreatePointMassModeRenderer.ts";
 import { MouseButton } from "../core/Editor.ts";
+import CreatePointMassModeRenderer from "../mode-renderer/CreatePointMassModeRenderer.ts";
+import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
 
 export default class CreatePointMassMode extends Mode {
-    public renderer!: CreatePointMassModeRenderer;
-
-    public init() {
-        this.renderer = new CreatePointMassModeRenderer(this);
-    }
+    public renderer: ModeRenderer = new CreatePointMassModeRenderer(this);
 
     onMouseClick(button: MouseButton): void {
         if (button == MouseButton.LEFT) {
@@ -21,21 +18,7 @@ export default class CreatePointMassMode extends Mode {
         this.editor.createPointMass(position);
     }
 
-    private draw() {
-        const canvas = this.editor.getOverlayCanvas();
-        canvas.clear();
-        this.renderer.drawHint(canvas.getContext(), this.editor.getMouseCurrentPosition());
-    }
-
-    onMouseMove(): void {
-        this.draw();
-    }
-
-    onMouseDown(_button: MouseButton): void {
-        return;
-    }
-
-    onMouseUp(_button: MouseButton): void {
-        return;
+    getMouseCurrentPosition() {
+        return this.editor.getMouseCurrentPosition();
     }
 }

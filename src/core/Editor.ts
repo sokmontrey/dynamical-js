@@ -1,7 +1,7 @@
 import Canvas from "./Canvas.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
-import PhysicBody, { isFirstRankBody, isSecondRankBody } from "../core-physic/PhysicBody.ts";
+import PhysicBody from "../core-physic/PhysicBody.ts";
 import Loop from "./Loop.ts";
 import ModeManager from "../mode/ModeManager.ts";
 import PhysicBodyState from "./PhysicBodyState.ts";
@@ -65,25 +65,19 @@ export default class Editor {
 		this.setupKeyboardEvent();
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private updateLoop(dt: number, _sub_steps: number) {
-		this.body_manager
-			.getAllBodies()
-			.filter(isFirstRankBody)
-			.forEach(x => x.update(dt));
-
-		this.body_manager
-			.getAllBodies()
-			.filter(isSecondRankBody)
-			.forEach(x => x.update(dt));
+		const bodies = this.body_manager.getAllBodies();
+		bodies.sort((a, b) => a.rank - b.rank);
+		bodies.forEach(x => x.update(dt));
 	}
 
-	private baseRenderingLoop(_dt: number, _sub_steps: number) {
+	private baseRenderingLoop(_dt: number, sub_steps: number) {
+		this.drawMode();
 		this.base_canvas.clear();
-		this.body_manager
-			.getAllBodies()
-			.forEach(body =>
-				body.renderer.draw(this.base_canvas.getContext(), _sub_steps));
+		const bodies = this.body_manager.getAllBodies();
+		// sort bodies by rank (higher rank first)
+		bodies.sort((a, b) => b.rank - a.rank);
+		bodies.forEach(x => x.renderer.draw(this.base_canvas.getContext(), sub_steps));
 	}
 
 	private setupCanvas(canvas_container_id: string) {
@@ -114,6 +108,9 @@ export default class Editor {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		this.overlay_canvas.onMouseMove((_e: MouseEvent) => {
 			this.mode_manager.onMouseMove();
+			if (!this.loop.isRunning()) {
+				this.drawMode();
+			}
 		});
 
 		this.overlay_canvas.onMouseDown((e: MouseEvent) => {
@@ -124,12 +121,25 @@ export default class Editor {
 		});
 
 		this.overlay_canvas.onMouseUp((e: MouseEvent) => {
-			if (!this.is_mouse_down) return;
+			if (!this.is_mouse_down) { return; }
 			this.is_mouse_down = false;
 			this.mode_manager.onMouseUp(e.button as MouseButton);
 			const diff = this.getMouseCurrentPosition().distance(this.mouse_down_pos);
-			if (diff < this.drag_threshold) this.mode_manager.onMouseClick(e.button as MouseButton);
+			if (diff < this.drag_threshold) {
+				this.mode_manager.onMouseClick(e.button as MouseButton);
+			}
+			if (!this.loop.isRunning()) {
+				this.drawMode();
+			}
 		});
+	}
+
+	public drawMode(): void {
+		this.overlay_canvas.clear();
+		this.mode_manager
+			.getCurrentMode()
+			.renderer
+			.draw(this.overlay_canvas.getContext());
 	}
 
 	setupKeyboardEvent() {
@@ -189,6 +199,10 @@ export default class Editor {
 		return this.holding_keys.has(key);
 	}
 
+	isRunning() {
+		return this.loop.isRunning();
+	}
+
 	getModeManager() {
 		return this.mode_manager;
 	}
@@ -202,6 +216,7 @@ export default class Editor {
 
 	reset() {
 		this.loadState(this.physic_state);
+		this.mode_manager.reset();
 		this.stepBaseRenderer();
 		return this;
 	}
@@ -227,5 +242,9 @@ export default class Editor {
 		const pm1_name = this.body_manager.getName(pointmass1) || "";
 		const pm2_name = this.body_manager.getName(pointmass2) || "";
 		this.dependency_manager.setDependency(name, { pointmass1: pm1_name, pointmass2: pm2_name });
+	}
+
+	getDependencyManager() {
+		return this.dependency_manager;
 	}
 }

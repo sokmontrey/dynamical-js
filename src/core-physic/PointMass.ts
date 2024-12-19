@@ -1,8 +1,8 @@
 import PointMassInteractor from "../interactor/PointMassInteractor.ts";
-import PointMassRenderer from "../renderer/PointMassRenderer.ts";
+import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBody, {PhysicBodyType} from "./PhysicBody.ts";
-import PhysicBodyProps from "../core/PhysicBodyProps.ts";
+import { PhysicBodyProps } from "../core/PhysicBodyState.ts";
 
 export interface PointMassProps extends PhysicBodyProps {
 	position?: Vec2,
@@ -14,6 +14,9 @@ export interface PointMassProps extends PhysicBodyProps {
 }
 
 export default class PointMass implements PhysicBody {
+	public readonly rank = 1;
+	public readonly type = PhysicBodyType.POINT_MASS;
+
 	private curr_pos: Vec2;
 	private prev_pos: Vec2;
 	private const_acc: Vec2;
@@ -79,7 +82,7 @@ export default class PointMass implements PhysicBody {
 		return this.const_acc;
 	}
 
-	getProps() {
+	toPlainObject() {
 		return {
 			position: this.getPosition(),
 			velocity: this.getVelocity(),
@@ -140,7 +143,7 @@ export default class PointMass implements PhysicBody {
 	*	Move the pointmass to a specific coordinate 
 	*	while reserving its velocity
 	**/
-	move(position: Vec2){
+	moveTo(position: Vec2){
 		const vel = this.curr_pos.sub(this.prev_pos);
 		this.curr_pos = position.copy();
 		this.prev_pos = position.sub(vel);

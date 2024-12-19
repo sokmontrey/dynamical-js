@@ -1,36 +1,33 @@
 import Mode from "./Mode.ts";
-import MoveModeRenderer from "../renderer/MoveModeRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
 import {MouseButton} from "../core/Editor.ts";
-import PhysicBody from "../core-physic/PhysicBody.ts";
-import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
+import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody.ts";
+import MoveModeRenderer from "../mode-renderer/MoveModeRenderer.ts";
+import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
+import PointMass from "../core-physic/PointMass.ts";
+import RigidConstraint from "../core-physic/RigidConstraint.ts";
 
 export default class MoveMode extends Mode {
-    public renderer!: MoveModeRenderer;
+    public renderer: ModeRenderer = new MoveModeRenderer(this);
 
-    private physic_bodies: Set<PhysicBody> = new Set<PhysicBody>();
+    private selected_bodies: Set<PhysicBody> = new Set<PhysicBody>();
     private hovered_body: PhysicBody | null = null;
 
     private is_mouse_dragging: boolean = false;
     private body_mouse_down_on: PhysicBody | null = null;
     private mouse_body_offset: Map<PhysicBody, Vec2> | null = null;
 
-    public init(): void {
-        this.renderer = new MoveModeRenderer(this);
+    private resetSelectedBodies(): void {
+        this.selected_bodies = new Set<PhysicBody>();
     }
 
-    private resetSelectedBodies() {
-        this.physic_bodies = new Set<PhysicBody>();
-        return this;
-    }
-
-    private addHoveredBody() {
-        if (!this.hovered_body) return this;
-        if (this.physic_bodies.has(this.hovered_body)) // an option to remove selected body
-            this.physic_bodies.delete(this.hovered_body);
+    private addHoveredBody(): void{
+        if (!this.hovered_body) return;
+        if (this.selected_bodies.has(this.hovered_body)) // an option to remove selected body
+            this.selected_bodies.delete(this.hovered_body);
         else
-            this.physic_bodies.add(this.hovered_body);
-        return this;
+            this.selected_bodies.add(this.hovered_body);
+        return;
     }
 
     onMouseClick(button: MouseButton): void {
@@ -38,15 +35,14 @@ export default class MoveMode extends Mode {
             if (!this.editor.isKeyDown("Shift")) this.resetSelectedBodies();
             this.addHoveredBody();
         }
-        this.draw();
     }
 
     onMouseMove(): void {
         this.checkHoveredBody();
         this.checkDragging();
-        if(this.is_mouse_dragging && this.isMouseDownOnSelectedBody())
+        if (this.is_mouse_dragging && this.isMouseDownOnSelectedBody()){
             this.moveSelectedBodies();
-        this.draw();
+        }
     }
 
     private checkDragging() {
@@ -66,41 +62,53 @@ export default class MoveMode extends Mode {
     private onMouseDownOnSelectedBody() {
         this.mouse_body_offset = new Map<PhysicBody, Vec2>();
         const mouse_pos = this.editor.getMouseCurrentPosition();
-        this.physic_bodies.forEach(body => {
+        this.selected_bodies.forEach(body => {
             this.mouse_body_offset!.set(body, body.getPosition().sub(mouse_pos));
         });
     }
 
-    private draw() {
-        const canvas = this.editor.getOverlayCanvas();
-        const ctx = canvas.getContext();
-        canvas.clear();
-        this.renderer.drawHoveredBody(ctx, this.hovered_body);
-        this.renderer.drawSelectedBodies(ctx, this.physic_bodies);
-        if (this.is_mouse_dragging && !this.isMouseDownOnSelectedBody()) {
-            this.renderer.drawDraggingBox(ctx,
-                this.editor.getMouseDownPosition(),
-                this.editor.getMouseCurrentPosition());
+    private moveSelectedBodies() {
+        if (!this.mouse_body_offset) return;
+        const mouse_pos = this.editor.getMouseCurrentPosition();
+        this.mouse_body_offset!.forEach((offset, body) => {
+            this.moveBody(body, mouse_pos.add(offset));
+        });
+        if (!this.editor.isRunning()) {
+            this.editor.stepBaseRenderer();
         }
     }
 
-    private moveSelectedBodies() {
-        if (!this.mouse_body_offset ) return;
-        const mouse_pos = this.editor.getMouseCurrentPosition();
-        this.mouse_body_offset!.forEach((offset, body) => {
-            body.move(mouse_pos.add(offset));
-        });
-        this.editor.stepBaseRenderer();
+	private moveBody(body: PhysicBody, position: Vec2) {
+		if (body.type === PhysicBodyType.POINT_MASS) {
+			const pointmass = body as PointMass;
+			pointmass.moveTo(position);
+			if (!this.editor.isRunning()) {
+                this.updateRigidConstraint(pointmass);
+            }
+		} 
+	}
+
+    private updateRigidConstraint(pointmass: PointMass) {
+        const name = this.editor.getPhysicBodyManager().getName(pointmass);
+        if (!name) return;
+        this.editor.getDependencyManager()
+            .findChilds(name)
+            .map(child => this.editor.getPhysicBodyManager().getByName(child))
+            .filter(child => child && child.type === PhysicBodyType.RIGID_CONSTRAINT)
+            .forEach(_rigid => {
+                const rigid = _rigid as RigidConstraint;
+                // TODO: generalize this for other types of dependencies
+                rigid?.calculateRestDistance();
+            });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onMouseDown(_button: MouseButton): void {
         this.body_mouse_down_on = this.hovered_body;
         if(this.isMouseDownOnSelectedBody()) {
             this.onMouseDownOnSelectedBody();
         } else if (this.isMouseDownOnBody()) {
-            if (this.physic_bodies.size) this.resetSelectedBodies();
-            this.physic_bodies.add(this.body_mouse_down_on!);
+            if (this.selected_bodies.size) this.resetSelectedBodies();
+            this.selected_bodies.add(this.body_mouse_down_on!);
             this.onMouseDownOnSelectedBody();
         }
     }
@@ -122,7 +130,7 @@ export default class MoveMode extends Mode {
 
     isMouseDownOnSelectedBody(): boolean {
         return this.body_mouse_down_on != null &&
-            this.physic_bodies.has(this.body_mouse_down_on);
+            this.selected_bodies.has(this.body_mouse_down_on);
     }
 
     /**
@@ -139,24 +147,27 @@ export default class MoveMode extends Mode {
             .getPhysicBodyManager()
             .getSelectedBodies(lower, upper)
             .forEach(body => {
-                this.physic_bodies.add(body);
+                this.selected_bodies.add(body);
             });
-        this.draw();
     }
 
-    getPhysicBodies(): Set<PhysicBody> {
-        return this.physic_bodies;
+    getSelectedBodies(): Set<PhysicBody> {
+        return this.selected_bodies;
     }
 
     getHoveredBody(): PhysicBody | null {
         return this.hovered_body;
     }
 
-    deleteSelectedBodies() {
-        this.physic_bodies.forEach(body => {
-            this.editor.getPhysicBodyManager().removeBody(body);
-        });
-        this.resetSelectedBodies();
-        this.draw();
+    public isDragging(): boolean {
+        return this.is_mouse_dragging;
+    }
+
+    public getMouseDownPosition(): Vec2 {
+        return this.editor.getMouseDownPosition();
+    }
+
+    public getMouseCurrentPosition(): Vec2 {
+        return this.editor.getMouseCurrentPosition();
     }
 }

@@ -1,25 +1,23 @@
 import Draw from "../core/Draw";
 import PointMass from "../core-physic/PointMass";
-import ArrowStyle, {ArrowStyleParams} from "../style/ArrowStyle";
-import CircleStyle, {CircleStyleParams} from "../style/CircleStyle";
+import ArrowStyle, {ArrowStyleProps} from "../style/ArrowStyle";
+import CircleStyle, {CircleStyleProps} from "../style/CircleStyle";
 import Vec2 from "../utils/Vector.ts";
-import IRenderer from "./IRenderer.ts";
-import RendererParams from "./RendererParams.ts";
+import PhysicBodyRenderer from "./PhysicBodyRenderer.ts";
 
-export interface PointMassRendererParams extends RendererParams {
-	position?: CircleStyleParams;
-	static_position?: CircleStyleParams;
-	velocity?: ArrowStyleParams;
-	selected?: CircleStyleParams;
+export interface PointMassRendererProps {
+	position?: CircleStyleProps;
+	static_position?: CircleStyleProps;
+	velocity?: ArrowStyleProps;
+	selected?: CircleStyleProps;
 }
 
-export default class PointMassRenderer implements IRenderer {
-	protected pointmass: PointMass;
+export default class PointMassRenderer extends PhysicBodyRenderer {
+	private pointmass: PointMass;
 
-	public readonly position;
-	public readonly static_position;
-	public readonly velocity;
-
+	public readonly position: CircleStyle;
+	public readonly static_position: CircleStyle;
+	public readonly velocity: ArrowStyle;
 	public readonly selected: CircleStyle;
 
 	constructor(pointmass: PointMass, {
@@ -27,7 +25,8 @@ export default class PointMassRenderer implements IRenderer {
 		static_position = { fill_color: '#bdb5b5', is_stroke: false },
 		velocity = { fill_color: 'gray', is_enable: false },
 		selected = { fill_color: 'rgba(3,144,252,0.28)', stroke_color: '#0390fc', line_width: 1 }
-	}: PointMassRendererParams = {}) {
+	}: PointMassRendererProps = {}) {
+		super();
 		this.pointmass = pointmass;
 
 		position.radius = position.radius ?? (pointmass.getMass() ?? 1) * 10;
@@ -41,13 +40,13 @@ export default class PointMassRenderer implements IRenderer {
 	}
 
 	private drawCurrentPosition(ctx: CanvasRenderingContext2D, pos: Vec2) {
-		if (!this.position.isEnable()) return;
+		if (!this.position.is_enable) return;
 		if (this.pointmass.isStatic()) Draw.circle(ctx, pos, this.static_position);
 		else Draw.circle(ctx, pos, this.position);
 	}
 
 	private drawVelocity(ctx: CanvasRenderingContext2D, pos: Vec2, vel: Vec2, steps: number) {
-		if (!this.velocity.isEnable()) return;
+		if (!this.velocity.is_enable) return;
 		Draw.arrow(ctx, pos, vel.mul(steps * 5), this.velocity);
 	}
 
@@ -56,21 +55,9 @@ export default class PointMassRenderer implements IRenderer {
 		const vel = this.pointmass.getVelocity();
 		this.drawCurrentPosition(ctx, pos);
 		this.drawVelocity(ctx, pos, vel, steps);
-		return this;
 	}
 
-	drawSelection(ctx: CanvasRenderingContext2D): IRenderer {
+	public drawSelection(ctx: CanvasRenderingContext2D) {
 		Draw.circle(ctx, this.pointmass.getPosition(), this.selected);
-		return this;
-	}
-
-	getProps() {
-		return {
-			position: this.position.getProps(),
-			static_position: this.static_position.getProps(),
-			velocity: this.velocity.getProps(),
-			selected: this.selected.getProps(),
-		};
 	}
 }
-
