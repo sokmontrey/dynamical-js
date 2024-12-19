@@ -3,17 +3,16 @@ import PointMass from "../core-physic/PointMass";
 import ArrowStyle, {ArrowStyleProps} from "../style/ArrowStyle";
 import CircleStyle, {CircleStyleProps} from "../style/CircleStyle";
 import Vec2 from "../utils/Vector.ts";
-import Renderer from "./Renderer.ts";
-import RendererProps from "./RendererProps.ts";
+import BodyRenderer from "./BodyRenderer.ts";
 
-export interface PointMassRendererProps extends RendererProps {
+export interface PointMassRendererProps {
 	position?: CircleStyleProps;
 	static_position?: CircleStyleProps;
 	velocity?: ArrowStyleProps;
 	selected?: CircleStyleProps;
 }
 
-export default class PointMassRenderer extends Renderer {
+export default class PointMassRenderer extends BodyRenderer {
 	private pointmass: PointMass;
 
 	public readonly position: CircleStyle;

@@ -4,7 +4,7 @@ import Vec2 from "./utils/Vector.ts";
 import {CreateMode} from "./mode/ModeManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
 import {PhysicBodyType} from "./core-physic/PhysicBody.ts";
-import { PhysicBodyState } from "./core/PhysicBodyState.ts";
+import PhysicBodyState from "./core/PhysicBodyState.ts";
 
 export default function App() {
 	const [editor_ref, setEditorRef] = useState<Editor>(null);
@@ -12,25 +12,18 @@ export default function App() {
 	const state: PhysicBodyState = {
 		"point1": {
 			type: PhysicBodyType.POINT_MASS,
-			props: {
-				is_static: true,
-			},
+			props: { is_static: true, },
 			renderer: {
 				static_position: { radius: 5, fill_color: "red" },
 			}
 		},
 		"point2": {
 			type: PhysicBodyType.POINT_MASS,
-			props: {
-				position: Vec2.right(100),
-			}
+			props: { position: Vec2.right(100), }
 		},
 		"rigid1": {
 			type: PhysicBodyType.RIGID_CONSTRAINT,
-			dependencies: {
-				pointmass1: "point1",
-				pointmass2: "point2",
-			},
+			dependencies: { pointmass1: "point1", pointmass2: "point2", },
 			props: { is_broken: false, }
 		},
 	};
