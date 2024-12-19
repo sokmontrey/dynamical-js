@@ -67,24 +67,21 @@ export default class Editor {
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private updateLoop(dt: number, _sub_steps: number) {
-		this.body_manager
-			.getAllBodies()
-			.filter(isFirstRankBody)
-			.forEach(x => x.update(dt));
-
-		this.body_manager
-			.getAllBodies()
-			.filter(isSecondRankBody)
-			.forEach(x => x.update(dt));
+		const bodies = this.body_manager.getAllBodies();
+		bodies.filter(isFirstRankBody).forEach(x => x.update(dt));
+		bodies.filter(isSecondRankBody).forEach(x => x.update(dt));
 	}
 
-	private baseRenderingLoop(_dt: number, _sub_steps: number) {
+	private baseRenderingLoop(_dt: number, sub_steps: number) {
 		this.drawMode();
 		this.base_canvas.clear();
-		this.body_manager
-			.getAllBodies()
-			.forEach(body =>
-				body.renderer.draw(this.base_canvas.getContext(), _sub_steps));
+		const bodies = this.body_manager.getAllBodies();
+		bodies.filter(isSecondRankBody).forEach(
+			x => x.renderer.draw(this.base_canvas.getContext(), sub_steps)
+		);
+		bodies.filter(isFirstRankBody).forEach(
+			x => x.renderer.draw(this.base_canvas.getContext(), sub_steps)
+		);
 	}
 
 	private setupCanvas(canvas_container_id: string) {
