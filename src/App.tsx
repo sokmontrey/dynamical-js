@@ -4,7 +4,7 @@ import Vec2 from "./utils/Vector.ts";
 import {CreateMode} from "./mode/ModeManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
 import {PhysicBodyType} from "./core-physic/PhysicBody.ts";
-import PhysicBodyState from "./core/PhysicBodyState.ts";
+import { PhysicBodyState } from "./core/PhysicBodyState.ts";
 
 export default function App() {
 	const [editor_ref, setEditorRef] = useState<Editor>(null);

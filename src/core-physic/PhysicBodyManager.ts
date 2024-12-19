@@ -4,8 +4,7 @@ import PointMass  from "./PointMass";
 import RigidConstraint  from "./RigidConstraint";
 import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer.ts";
-import PhysicBodyState from "../core/PhysicBodyState.ts";
-import PhysicBodyConfig from "../core/PhysicBodyConfig.ts";
+import PhysicBodyState, { PhysicBodyConfig } from "../core/PhysicBodyState.ts";
 import DependencyManager from "../core/DependencyManager.ts";
 
 export default class PhysicBodyManager {

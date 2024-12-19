@@ -3,7 +3,7 @@ import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer";
 import PhysicBody, {PhysicBodyType} from "./PhysicBody";
 import PointMass from "./PointMass";
 import Vec2 from "../utils/Vector.ts";
-import PhysicBodyProps from "../core/PhysicBodyProps.ts";
+import { PhysicBodyProps } from "../core/PhysicBodyState.ts";
 
 export interface RigidConstraintProps extends PhysicBodyProps {
 	is_broken?: boolean;

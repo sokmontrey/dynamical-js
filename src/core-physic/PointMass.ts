@@ -2,7 +2,7 @@ import PointMassInteractor from "../interactor/PointMassInteractor.ts";
 import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBody, {PhysicBodyType} from "./PhysicBody.ts";
-import PhysicBodyProps from "../core/PhysicBodyProps.ts";
+import { PhysicBodyProps } from "../core/PhysicBodyState.ts";
 
 export interface PointMassProps extends PhysicBodyProps {
 	position?: Vec2,
