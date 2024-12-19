@@ -14,6 +14,7 @@ export interface PointMassProps extends PhysicBodyProps {
 }
 
 export default class PointMass implements PhysicBody {
+	public readonly rank = 1;
 	public readonly type = PhysicBodyType.POINT_MASS;
 
 	private curr_pos: Vec2;

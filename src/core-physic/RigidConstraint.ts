@@ -10,6 +10,7 @@ export interface RigidConstraintProps extends PhysicBodyProps {
 }
 
 export default class RigidConstraint implements PhysicBody {
+	public readonly rank = 2;
 	public readonly type = PhysicBodyType.RIGID_CONSTRAINT;
 
 	protected pointmass1: PointMass;

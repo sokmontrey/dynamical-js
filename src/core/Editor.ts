@@ -1,7 +1,7 @@
 import Canvas from "./Canvas.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
-import PhysicBody, { isFirstRankBody, isSecondRankBody, PhysicBodyType } from "../core-physic/PhysicBody.ts";
+import PhysicBody from "../core-physic/PhysicBody.ts";
 import Loop from "./Loop.ts";
 import ModeManager from "../mode/ModeManager.ts";
 import PhysicBodyState from "./PhysicBodyState.ts";
@@ -65,23 +65,19 @@ export default class Editor {
 		this.setupKeyboardEvent();
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private updateLoop(dt: number, _sub_steps: number) {
 		const bodies = this.body_manager.getAllBodies();
-		bodies.filter(isFirstRankBody).forEach(x => x.update(dt));
-		bodies.filter(isSecondRankBody).forEach(x => x.update(dt));
+		bodies.sort((a, b) => a.rank - b.rank);
+		bodies.forEach(x => x.update(dt));
 	}
 
 	private baseRenderingLoop(_dt: number, sub_steps: number) {
 		this.drawMode();
 		this.base_canvas.clear();
 		const bodies = this.body_manager.getAllBodies();
-		bodies.filter(isSecondRankBody).forEach(
-			x => x.renderer.draw(this.base_canvas.getContext(), sub_steps)
-		);
-		bodies.filter(isFirstRankBody).forEach(
-			x => x.renderer.draw(this.base_canvas.getContext(), sub_steps)
-		);
+		// sort bodies by rank (higher rank first)
+		bodies.sort((a, b) => b.rank - a.rank);
+		bodies.forEach(x => x.renderer.draw(this.base_canvas.getContext(), sub_steps));
 	}
 
 	private setupCanvas(canvas_container_id: string) {
