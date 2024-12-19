@@ -21,7 +21,9 @@ export default class Segment {
 
 		if (this.slope === null) { // If this segment is vertical
 			x = this.a.x;
-			y = other.slope * (x - other.a.x) + other.a.y;
+			y = other.slope === null 
+				? other.a.y 
+				: other.slope * (x - other.a.x) + other.a.y;
 		} else if (other.slope === null) {// If the other segment is vertical
 			x = other.a.x;
 			y = this.slope * (x - this.a.x) + this.a.y;
