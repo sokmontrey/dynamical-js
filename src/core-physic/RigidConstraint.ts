@@ -1,13 +1,18 @@
 import RigidConstraintInteractor from "../interactor/RigidConstraintInteractor";
-import RigidConstraintRenderer from "../renderer/RigidConstraintRenderer";
-import PhysicBody from "./PhysicBody";
+import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer";
+import PhysicBody, {PhysicBodyType} from "./PhysicBody";
 import PointMass from "./PointMass";
+import Vec2 from "../utils/Vector.ts";
+import { PhysicBodyProps } from "../core/PhysicBodyState.ts";
 
-export interface RigidConstraintParams {
+export interface RigidConstraintProps extends PhysicBodyProps {
 	is_broken?: boolean;
 }
 
 export default class RigidConstraint implements PhysicBody {
+	public readonly rank = 2;
+	public readonly type = PhysicBodyType.RIGID_CONSTRAINT;
+
 	protected pointmass1: PointMass;
 	protected pointmass2: PointMass;
 	protected is_broken: boolean;
@@ -16,12 +21,12 @@ export default class RigidConstraint implements PhysicBody {
 	protected diff: number;
 	protected corr: number;
 
-	public readonly renderer: RigidConstraintRenderer;
-	public readonly interactor: RigidConstraintInteractor;
+	public renderer: RigidConstraintRenderer;
+	public interactor: RigidConstraintInteractor;
 
 	constructor(pointmass1: PointMass, pointmass2: PointMass, {
 		is_broken = false,
-	}: RigidConstraintParams = {}) {
+	}: RigidConstraintProps = {}) {
 
 		this.pointmass1 = pointmass1;
 		this.pointmass2 = pointmass2;
@@ -34,12 +39,20 @@ export default class RigidConstraint implements PhysicBody {
 		this.interactor = new RigidConstraintInteractor(this);
 	}
 
+	getPosition(): Vec2 {
+		return this.pointmass1.getPosition()
+			.add(this.pointmass2.getPosition())
+			.div(2);
+	}
+
 	//================================ Helpers ================================
 
 	calculateRestDistance() {
 		const pos1 = this.pointmass1.getPosition();
 		const pos2 = this.pointmass2.getPosition();
 		this.rest_distance = pos1.distance(pos2);
+		this.diff = 0;
+		this.corr = 0;
 		if (this.rest_distance === 0)
 			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
 		return this;
@@ -72,6 +85,20 @@ export default class RigidConstraint implements PhysicBody {
 
 	getRestDistanec() {
 		return this.rest_distance;
+	}
+
+	toPlainObject() {
+		return {
+			is_broken: this.isBroken(),
+		};
+	}
+
+	getType(): PhysicBodyType {
+		return PhysicBodyType.RIGID_CONSTRAINT;
+	}
+
+	isBroken(): boolean {
+		return this.is_broken;
 	}
 
 	//================================ Setters ================================
@@ -125,6 +152,14 @@ export default class RigidConstraint implements PhysicBody {
 		const pos2 = this.pointmass2.getPosition();
 		const curr_distance = pos1.distance(pos2);
 		this.diff = this.rest_distance - curr_distance;
+	}
+
+	/**
+	 * Only re-calculating the rest distance
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	setPosition(_position: Vec2) {
+		return this;
 	}
 
 	calculateCorrection(_: number) {
