@@ -3,7 +3,7 @@ import PointMass from "../core-physic/PointMass";
 import ArrowStyle, {ArrowStyleProps} from "../style/ArrowStyle";
 import CircleStyle, {CircleStyleProps} from "../style/CircleStyle";
 import Vec2 from "../utils/Vector.ts";
-import BodyRenderer from "./BodyRenderer.ts";
+import PhysicBodyRenderer from "./PhysicBodyRenderer.ts";
 
 export interface PointMassRendererProps {
 	position?: CircleStyleProps;
@@ -12,7 +12,7 @@ export interface PointMassRendererProps {
 	selected?: CircleStyleProps;
 }
 
-export default class PointMassRenderer extends BodyRenderer {
+export default class PointMassRenderer extends PhysicBodyRenderer {
 	private pointmass: PointMass;
 
 	public readonly position: CircleStyle;

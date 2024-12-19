@@ -5,7 +5,7 @@ import StressStyle, {StressStyleProps} from "../style/StressStyle";
 import Color from "../utils/Color.ts";
 import Vec2 from "../utils/Vector.ts";
 import CircleStyle, {CircleStyleProps} from "../style/CircleStyle.ts";
-import BodyRenderer from "./BodyRenderer.ts";
+import PhysicBodyRenderer from "./PhysicBodyRenderer.ts";
 
 export interface RigidConstraintRendererProps {
 	constraint_line?: LineStyleProps;
@@ -14,7 +14,7 @@ export interface RigidConstraintRendererProps {
 	selected_circle?: CircleStyleProps;
 }
 
-export default class RigidConstraintRenderer extends BodyRenderer {
+export default class RigidConstraintRenderer extends PhysicBodyRenderer {
 	private rigid_constraint: RigidConstraint;
 
 	public readonly constraint_line: LineStyle;

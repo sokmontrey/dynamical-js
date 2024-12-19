@@ -1,6 +1,6 @@
 import Style from "../style/Style.ts";
 
-export default abstract class BodyRenderer {
+export default abstract class PhysicBodyRenderer {
 	abstract draw(ctx: CanvasRenderingContext2D, steps: number): void;
 	abstract drawSelection(ctx: CanvasRenderingContext2D): void;
 

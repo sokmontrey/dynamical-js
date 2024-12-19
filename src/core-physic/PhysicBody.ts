@@ -1,5 +1,5 @@
 import Interactor from "../interactor/Interactor";
-import BodyRenderer from "../body-renderer/BodyRenderer.ts";
+import PhysicBodyRenderer from "../body-renderer/PhysicBodyRenderer.ts";
 import PointMass from "./PointMass.ts";
 import RigidConstraint from "./RigidConstraint.ts";
 import Vec2 from "../utils/Vector.ts";
@@ -7,7 +7,7 @@ import Vec2 from "../utils/Vector.ts";
 export default interface PhysicBody {
 	readonly type: PhysicBodyType;
 
-	renderer: BodyRenderer;
+	renderer: PhysicBodyRenderer;
 	interactor: Interactor;
 
 	getProps(): any;
