@@ -7,7 +7,7 @@ import {PhysicBodyType} from "./core-physic/PhysicBody.ts";
 import PhysicBodyState from "./core/PhysicBodyState.ts";
 
 export default function App() {
-	const [editor_ref, setEditorRef] = useState<Editor>(null);
+	const [editor_ref, setEditorRef] = useState<Editor | null>(null);
 
 	const state: PhysicBodyState = {
 		"point1": {
@@ -37,15 +37,15 @@ export default function App() {
 
 	return (<>
 		<div id='canvas-container' style={{width: "500px", height: "500px"}}></div>
-		<button onClick={() => editor_ref.start()}>Run</button>
-		<button onClick={() => editor_ref.pause()}>Pause</button>
-		<button onClick={() => editor_ref.reset()}>Reset</button>
-		<button onClick={() => editor_ref.save()}>Save</button>
-		<button onClick={() => editor_ref.getModeManager().toMoveMode()}>
+		<button onClick={() => editor_ref?.start()}>Run</button>
+		<button onClick={() => editor_ref?.pause()}>Pause</button>
+		<button onClick={() => editor_ref?.reset()}>Reset</button>
+		<button onClick={() => editor_ref?.save()}>Save</button>
+		<button onClick={() => editor_ref?.getModeManager().toMoveMode()}>
 			Move
 		</button>
 		<SelectButton options={Object.values(CreateMode)}
-					  onSelect={(mode: CreateMode) => editor_ref.getModeManager().toCreateMode(mode)}
+					  onSelect={(mode: CreateMode) => editor_ref?.getModeManager().toCreateMode(mode)}
 		></SelectButton>
 	</>);
 }
