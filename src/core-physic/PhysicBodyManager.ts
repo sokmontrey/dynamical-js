@@ -40,8 +40,8 @@ export default class PhysicBodyManager {
 		return Object.values(this.bodies);
 	}
 
-	getByKey(key: string): PhysicBody | null {
-		return this.bodies[key] || null;
+	getByName(name: string): PhysicBody | null {
+		return this.bodies[name] || null;
 	}
 
 	getHoveredBodies(pos: Vec2) {
@@ -87,7 +87,7 @@ export default class PhysicBodyManager {
 		key: string,
 		body_manager: PhysicBodyManager
 	): PhysicBody {
-		const body = body_manager.getByKey(key);
+		const body = body_manager.getByName(key);
 		if (body) return body;
 
 		const body_load_mapper = {
@@ -109,7 +109,7 @@ export default class PhysicBodyManager {
 		config: PhysicBodyConfig,
 		body_manager: PhysicBodyManager
 	): PointMass {
-		const body = body_manager.getByKey(key);
+		const body = body_manager.getByName(key);
 		if (body) return body as PointMass;
 
 		const pointmass = new PointMass(config.props);
@@ -124,7 +124,7 @@ export default class PhysicBodyManager {
 		config: PhysicBodyConfig,
 		body_manager: PhysicBodyManager
 	): RigidConstraint {
-		const body = body_manager.getByKey(key);
+		const body = body_manager.getByName(key);
 		if (body) return body as RigidConstraint;
 
 		const {

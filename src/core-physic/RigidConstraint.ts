@@ -10,6 +10,8 @@ export interface RigidConstraintProps extends PhysicBodyProps {
 }
 
 export default class RigidConstraint implements PhysicBody {
+	public readonly type = PhysicBodyType.RIGID_CONSTRAINT;
+
 	protected pointmass1: PointMass;
 	protected pointmass2: PointMass;
 	protected is_broken: boolean;
@@ -34,6 +36,12 @@ export default class RigidConstraint implements PhysicBody {
 
 		this.renderer = new RigidConstraintRenderer(this);
 		this.interactor = new RigidConstraintInteractor(this);
+	}
+
+	getPosition(): Vec2 {
+		return this.pointmass1.getPosition()
+			.add(this.pointmass2.getPosition())
+			.div(2);
 	}
 
 	//================================ Helpers ================================
@@ -76,13 +84,6 @@ export default class RigidConstraint implements PhysicBody {
 
 	getRestDistanec() {
 		return this.rest_distance;
-	}
-
-	getPosition(): Vec2 {
-		return this.pointmass1
-			.getPosition()
-			.add(this.pointmass2.getPosition())
-			.div(2);
 	}
 
 	getProps() {
@@ -158,10 +159,6 @@ export default class RigidConstraint implements PhysicBody {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	setPosition(_position: Vec2) {
 		return this;
-	}
-
-	move() {
-		return;
 	}
 
 	calculateCorrection(_: number) {
