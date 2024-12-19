@@ -1,5 +1,4 @@
 import {PhysicBodyType} from "../core-physic/PhysicBody.ts";
-import Style from "../style/Style.ts";
 
 export interface PhysicBodyProps { }
 
