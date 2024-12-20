@@ -19,9 +19,13 @@ export default class CreateRigidConstraintMode extends Mode {
     onMouseMove(): void {
         const mouse_pos = this.editor.getMouseCurrentPosition();
         const body_manager = this.editor.getPhysicBodyManager();
+
         const hovered_bodies = body_manager.getHoveredBodies(mouse_pos);
-        if (!hovered_bodies.length) this.hovered_pointmass = null;
-        else this.hovered_pointmass = hovered_bodies[0] as PointMass;
+        if (!hovered_bodies.length || !(hovered_bodies[0] instanceof PointMass)) {
+            this.hovered_pointmass = null;
+        } else {
+            this.hovered_pointmass = hovered_bodies[0] as PointMass;
+        }
     }
 
     onMouseClick(_button: MouseButton): void {
@@ -34,7 +38,7 @@ export default class CreateRigidConstraintMode extends Mode {
 
     private selectPointmass() {
         if (!this.hovered_pointmass) return;
-        if (!this.pointmass1 ) {
+        if (!this.pointmass1) {
             this.pointmass1 = this.hovered_pointmass;
         } else if (!this.pointmass2) {
             this.pointmass2 = this.hovered_pointmass;
