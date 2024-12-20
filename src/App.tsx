@@ -1,12 +1,13 @@
 import {useEffect, useState} from "react";
 import Editor from "./core/Editor.ts";
 import Vec2 from "./utils/Vector.ts";
-import {CreateMode} from "./mode/ModeManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
+import {ModeType} from "./mode/ModeManager.ts";
 import {PhysicBodyType} from "./core-physic/PhysicBody.ts";
 import PhysicBodyState from "./core/PhysicBodyState.ts";
 
 export default function App() {
+	const [mode, setMode] = useState<ModeType | null>(null);
 	const [editor_ref, setEditorRef] = useState<Editor | null>(null);
 
 	const state: PhysicBodyState = {
@@ -32,10 +33,12 @@ export default function App() {
 		const editor = new Editor('canvas-container', state);
 		editor.start();
 		setEditorRef(editor);
+		editor.getModeManager().onModeChange((mode: ModeType) => setMode(mode));
 		return () => { editor.pause(); }
 	}, []);
 
 	return (<>
+		<p style={{color: "white"}}>Mode: {mode ?? "None"}</p>
 		<div id='canvas-container' style={{width: "500px", height: "500px"}}></div>
 		<button onClick={() => editor_ref?.start()}>Run</button>
 		<button onClick={() => editor_ref?.pause()}>Pause</button>
@@ -44,8 +47,8 @@ export default function App() {
 		<button onClick={() => editor_ref?.getModeManager().toMoveMode()}>
 			Move
 		</button>
-		<SelectButton options={Object.values(CreateMode)}
-					  onSelect={(mode: CreateMode) => editor_ref?.getModeManager().toCreateMode(mode)}
+		<SelectButton options={editor_ref?.getModeManager().getCreateModeTypes() ?? []}
+					  onSelect={(mode: ModeType) => editor_ref?.getModeManager().toCreateMode(mode)}
 		></SelectButton>
 	</>);
 }
