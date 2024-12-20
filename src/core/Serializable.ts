@@ -1,4 +1,4 @@
-export default interface Serializable {
-    serialize(): Record<string, unknown>;
-    deserialize(data: Record<string, unknown>): void;
+export default interface Serializable<T> {
+    serialize(): T;
+    deserialize(data: T): void;
 }

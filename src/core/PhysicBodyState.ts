@@ -1,14 +1,11 @@
 import {PhysicBodyType} from "../core-physic/PhysicBody.ts";
-
-export interface PhysicBodyProps { }
+import { PhysicBodyProps } from "../core-physic/PhysicBody.ts";
 
 export interface PhysicBodyConfig {
     type: PhysicBodyType;
-    dependencies?: {
-        [key: string]: string
-    };
+    dependencies?: Record<string, string>;
     props: PhysicBodyProps;
-    renderer?: {
+    renderer?: { // TODO: deal with this later
         [key: string]: {
             [key: string]: any
         }

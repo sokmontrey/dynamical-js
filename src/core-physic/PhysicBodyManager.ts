@@ -61,7 +61,7 @@ export default class PhysicBodyManager {
 			const body = this.bodies[key];
 			state[key] = {
 				type: body.getType(),
-				props: body.toPlainObject(),
+				props: body.serialize(),
 				dependencies: dependency_manager.getDependency(key) ?? {},
 				renderer: body.renderer.toPlainObject(),
 			};
