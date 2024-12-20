@@ -4,8 +4,9 @@ import ArrowStyle, {ArrowStyleProps} from "../style/ArrowStyle";
 import CircleStyle, {CircleStyleProps} from "../style/CircleStyle";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBodyRenderer from "./PhysicBodyRenderer.ts";
+import { PhysicBodyRendererProps } from "./PhysicBodyRenderer.ts";
 
-export interface PointMassRendererProps {
+export interface PointMassRendererProps extends PhysicBodyRendererProps {
 	position?: CircleStyleProps;
 	static_position?: CircleStyleProps;
 	velocity?: ArrowStyleProps;

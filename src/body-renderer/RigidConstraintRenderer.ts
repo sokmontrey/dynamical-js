@@ -6,8 +6,9 @@ import Color from "../utils/Color.ts";
 import Vec2 from "../utils/Vector.ts";
 import CircleStyle, {CircleStyleProps} from "../style/CircleStyle.ts";
 import PhysicBodyRenderer from "./PhysicBodyRenderer.ts";
+import { PhysicBodyRendererProps } from "./PhysicBodyRenderer.ts";
 
-export interface RigidConstraintRendererProps {
+export interface RigidConstraintRendererProps extends PhysicBodyRendererProps {
 	constraint_line?: LineStyleProps;
 	stress?: StressStyleProps;
 	selected?: LineStyleProps;

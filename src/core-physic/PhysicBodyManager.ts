@@ -63,7 +63,7 @@ export default class PhysicBodyManager {
 				type: body.getType(),
 				props: body.serialize(),
 				dependencies: dependency_manager.getDependency(key) ?? {},
-				renderer: body.renderer.toPlainObject(),
+				renderer: body.renderer.serialize(),
 			};
 		}
 		return state;
