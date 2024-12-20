@@ -1,18 +1,12 @@
+import { PhysicBodyRendererProps } from "../body-renderer/PhysicBodyRenderer.ts";
 import {PhysicBodyType} from "../core-physic/PhysicBody.ts";
-
-export interface PhysicBodyProps { }
+import { PhysicBodyProps } from "../core-physic/PhysicBody.ts";
 
 export interface PhysicBodyConfig {
     type: PhysicBodyType;
-    dependencies?: {
-        [key: string]: string
-    };
+    dependencies?: Record<string, string>;
     props: PhysicBodyProps;
-    renderer?: {
-        [key: string]: {
-            [key: string]: any
-        }
-    };
+    renderer?: PhysicBodyRendererProps;
 }
 
 export default interface PhysicBodyState {

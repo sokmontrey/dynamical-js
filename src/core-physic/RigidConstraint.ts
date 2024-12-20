@@ -3,7 +3,7 @@ import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer";
 import PhysicBody, {PhysicBodyType} from "./PhysicBody";
 import PointMass from "./PointMass";
 import Vec2 from "../utils/Vector.ts";
-import { PhysicBodyProps } from "../core/PhysicBodyState.ts";
+import { PhysicBodyProps } from "../core-physic/PhysicBody.ts";
 
 export interface RigidConstraintProps extends PhysicBodyProps {
 	is_broken?: boolean;
@@ -85,12 +85,6 @@ export default class RigidConstraint implements PhysicBody {
 
 	getRestDistanec() {
 		return this.rest_distance;
-	}
-
-	toPlainObject() {
-		return {
-			is_broken: this.isBroken(),
-		};
 	}
 
 	getType(): PhysicBodyType {
@@ -186,5 +180,15 @@ export default class RigidConstraint implements PhysicBody {
 
 		if (!this.pointmass1.isStatic()) this.pointmass1.setCurrentPosition(new_pos1);
 		if (!this.pointmass2.isStatic()) this.pointmass2.setCurrentPosition(new_pos2);
+	}
+
+	serialize(): RigidConstraintProps {
+		return {
+			is_broken: this.isBroken(),
+		};
+	}
+
+	deserialize(_data: RigidConstraintProps): void {
+		// TODO: Implement this later
 	}
 }

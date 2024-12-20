@@ -1,8 +1,7 @@
 import PointMassInteractor from "../interactor/PointMassInteractor.ts";
 import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
-import PhysicBody, {PhysicBodyType} from "./PhysicBody.ts";
-import { PhysicBodyProps } from "../core/PhysicBodyState.ts";
+import PhysicBody, {PhysicBodyProps, PhysicBodyType} from "./PhysicBody.ts";
 
 export interface PointMassProps extends PhysicBodyProps {
 	position?: Vec2,
@@ -80,17 +79,6 @@ export default class PointMass implements PhysicBody {
 
 	getConstantAcceleration() {
 		return this.const_acc;
-	}
-
-	toPlainObject() {
-		return {
-			position: this.getPosition(),
-			velocity: this.getVelocity(),
-			constant_acceleration: this.getConstantAcceleration(),
-			initial_force: this.getNetForce(),
-			mass: this.getMass(),
-			is_static: this.isStatic(),
-		};
 	}
 
 	getType(): PhysicBodyType {
@@ -219,5 +207,28 @@ export default class PointMass implements PhysicBody {
 		this.curr_pos = this.curr_pos.add(vel.mul(delta_time));
 		this.net_force = Vec2.zero();
 		return this;
+	}
+
+	serialize(): PointMassProps {
+		return {
+			position: this.getPosition(),
+			velocity: this.getVelocity(),
+			constant_acceleration: this.getConstantAcceleration(),
+			initial_force: this.getNetForce(),
+			mass: this.getMass(),
+			is_static: this.isStatic(),
+		};
+	}
+
+	// TODO: Implement this later
+	deserialize(_data: PointMassProps): void {
+		// if (data.position instanceof Vec2) this.setPosition(data.position);
+		// if (data.velocity instanceof Vec2) this.setVelocity(data.velocity);
+		// if (data.constant_acceleration instanceof Vec2) this.setConstantAcceleration(data.constant_acceleration);
+		// if (data.initial_force instanceof Vec2) this.applyForce(data.initial_force);
+		// if (typeof data.mass === 'number') this.setMass(data.mass);
+		// if (typeof data.is_static === 'boolean') {
+		// 	data.is_static ? this.enableStatic() : this.disableStatic();
+		// }
 	}
 }
