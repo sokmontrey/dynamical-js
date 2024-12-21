@@ -11,16 +11,25 @@ export enum ModeType {
 }
 
 export default class ModeManager {
+    private static instance: ModeManager;
+
     private current_mode_type!: ModeType;
     private current_mode!: Mode;
 
-    constructor() {
+    private constructor() {
         this.toMoveMode();
+    }
+
+    static getInstance(): ModeManager {
+        if (!ModeManager.instance) {
+            ModeManager.instance = new ModeManager();
+        }
+        return ModeManager.instance;
     }
 
     //================================ Mode Management ================================ 
 
-    public toCreateMode(create_mode: ModeType) {
+    toCreateMode(create_mode: ModeType): void {
         switch (create_mode) {
             case ModeType.CREATE_POINTMASS:
                 this.toMode(new CreatePointMassMode(), ModeType.CREATE_POINTMASS);
@@ -33,47 +42,46 @@ export default class ModeManager {
         }
     }
 
-    public toMoveMode() {
+    toMoveMode(): void {
         this.toMode(new MoveMode(), ModeType.MOVE);
     }
 
-    private toMode(mode: Mode, mode_type: ModeType) {
+    private toMode(mode: Mode, mode_type: ModeType): void {
         this.current_mode = mode;
         this.current_mode_type = mode_type;
-        this.current_mode.setModeManager(this);
     }
 
-	//================================ Mouse Events ================================
+    //================================ Mouse Events ================================
 
-    public onMouseMove() {
+    onMouseMove(): void {
         this.current_mode.onMouseMove();
     }
 
-    public onMouseDown(button: MouseButton) {
+    onMouseDown(button: MouseButton): void {
         this.current_mode.onMouseDown(button);
     }
 
-    public onMouseUp(button: MouseButton) {
+    onMouseUp(button: MouseButton): void {
         this.current_mode.onMouseUp(button);
     }
 
-    public onMouseClick(button: MouseButton) {
+    onMouseClick(button: MouseButton): void {
         this.current_mode.onMouseClick(button);
     }
 
-	//================================ Getters ================================
+    //================================ Getters ================================
 
-    public getCurrentModeType(): ModeType {
+    getCurrentModeType(): ModeType {
         return this.current_mode_type;
     }
 
-    public getCreateModeTypes(): ModeType[] {
+    getCreateModeTypes(): ModeType[] {
         return [ModeType.CREATE_POINTMASS, ModeType.CREATE_RIGID_CONSTRAINT];
     }  
 
-	//================================ Reset ================================
+    //================================ Reset ================================
 
-    public reset() {
+    reset(): void {
         this.toMoveMode();
     }
 }
