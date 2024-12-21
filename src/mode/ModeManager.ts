@@ -2,7 +2,7 @@ import CreatePointMassMode from "./CreatePointMassMode.ts";
 import CreateRigidConstraintMode from "./CreateRigidConstraintMode.ts";
 import MoveMode from "./MoveMode.ts";
 import Mode from "./Mode.ts";
-import { MouseButton } from "../core/Editor.ts";
+import { MouseButton } from "../core/InputManager.ts";
 
 export enum ModeType {
     MOVE = "Move",
@@ -11,77 +11,77 @@ export enum ModeType {
 }
 
 export default class ModeManager {
-    private static instance: ModeManager;
+    private static current_mode_type!: ModeType;
+    private static current_mode!: Mode;
+    private static initialized: boolean = false;
 
-    private current_mode_type!: ModeType;
-    private current_mode!: Mode;
+    private constructor() {} // Prevent instantiation
 
-    private constructor() {
-        this.toMoveMode();
-    }
-
-    static getInstance(): ModeManager {
-        if (!ModeManager.instance) {
-            ModeManager.instance = new ModeManager();
-        }
-        return ModeManager.instance;
+    static init(): void {
+        if (ModeManager.initialized) return;
+        ModeManager.initialized = true;
+        ModeManager.toMoveMode();
     }
 
     //================================ Mode Management ================================ 
 
-    toCreateMode(create_mode: ModeType): void {
+    static toCreateMode(create_mode: ModeType): void {
         switch (create_mode) {
             case ModeType.CREATE_POINTMASS:
-                this.toMode(new CreatePointMassMode(), ModeType.CREATE_POINTMASS);
+                ModeManager.toMode(new CreatePointMassMode(), ModeType.CREATE_POINTMASS);
                 break;
             case ModeType.CREATE_RIGID_CONSTRAINT:
-                this.toMode(new CreateRigidConstraintMode(), ModeType.CREATE_RIGID_CONSTRAINT);
+                ModeManager.toMode(new CreateRigidConstraintMode(), ModeType.CREATE_RIGID_CONSTRAINT);
                 break;
             default:
                 throw new Error("Invalid create mode");
         }
     }
 
-    toMoveMode(): void {
-        this.toMode(new MoveMode(), ModeType.MOVE);
+    static toMoveMode(): void {
+        ModeManager.toMode(new MoveMode(), ModeType.MOVE);
     }
 
-    private toMode(mode: Mode, mode_type: ModeType): void {
-        this.current_mode = mode;
-        this.current_mode_type = mode_type;
+    private static toMode(mode: Mode, mode_type: ModeType): void {
+        ModeManager.current_mode = mode;
+        ModeManager.current_mode_type = mode_type;
     }
 
     //================================ Mouse Events ================================
 
-    onMouseMove(): void {
-        this.current_mode.onMouseMove();
+    static onMouseMove(): void {
+        ModeManager.current_mode.onMouseMove();
     }
 
-    onMouseDown(button: MouseButton): void {
-        this.current_mode.onMouseDown(button);
+    static onMouseDown(button: MouseButton): void {
+        ModeManager.current_mode.onMouseDown(button);
     }
 
-    onMouseUp(button: MouseButton): void {
-        this.current_mode.onMouseUp(button);
+    static onMouseUp(button: MouseButton): void {
+        ModeManager.current_mode.onMouseUp(button);
     }
 
-    onMouseClick(button: MouseButton): void {
-        this.current_mode.onMouseClick(button);
+    static onMouseClick(button: MouseButton): void {
+        ModeManager.current_mode.onMouseClick(button);
     }
 
     //================================ Getters ================================
 
-    getCurrentModeType(): ModeType {
-        return this.current_mode_type;
+    static getCurrentMode(): Mode {
+        return ModeManager.current_mode;
     }
 
-    getCreateModeTypes(): ModeType[] {
+    static getCurrentModeType(): ModeType {
+        return ModeManager.current_mode_type;
+    }
+
+    static getCreateModeTypes(): ModeType[] {
         return [ModeType.CREATE_POINTMASS, ModeType.CREATE_RIGID_CONSTRAINT];
     }  
 
     //================================ Reset ================================
 
-    reset(): void {
-        this.toMoveMode();
+    static reset(): void {
+        ModeManager.toMoveMode();
     }
 }

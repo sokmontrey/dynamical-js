@@ -11,147 +11,141 @@ type MouseEventHandler = (button: MouseButton) => void;
 type MousePositionHandler = () => void;
 
 export default class InputManager {
-    private static instance: InputManager;
-    
-    private mouse_position: Vec2 = Vec2.zero();
-    private is_mouse_down: boolean = false;
-    private mouse_down_pos: Vec2 = Vec2.zero();
-    private holding_keys: Set<string> = new Set();
+    private static mouse_position: Vec2 = Vec2.zero();
+    private static is_mouse_down: boolean = false;
+    private static mouse_down_pos: Vec2 = Vec2.zero();
+    private static holding_keys: Set<string> = new Set();
 
-    private mouse_move_handlers: Set<MousePositionHandler> = new Set();
-    private mouse_down_handlers: Set<MouseEventHandler> = new Set();
-    private mouse_up_handlers: Set<MouseEventHandler> = new Set();
-    private mouse_click_handlers: Set<MouseEventHandler> = new Set();
+    private static mouse_move_handlers: Set<MousePositionHandler> = new Set();
+    private static mouse_down_handlers: Set<MouseEventHandler> = new Set();
+    private static mouse_up_handlers: Set<MouseEventHandler> = new Set();
+    private static mouse_click_handlers: Set<MouseEventHandler> = new Set();
 
-    private constructor() {
-        this.setupKeyboardEvents();
-    }
+    private static initialized: boolean = false;
 
-    static getInstance(): InputManager {
-        if (!InputManager.instance) {
-            InputManager.instance = new InputManager();
-        }
-        return InputManager.instance;
-    }
+    private constructor() {} // Prevent instantiation
 
     static init(canvas: Canvas): void {
-        const instance = InputManager.getInstance();
-        instance.setupMouseEvents(canvas);
+        if (InputManager.initialized) return;
+        InputManager.initialized = true;
+
+        InputManager.setupMouseEvents(canvas);
+        InputManager.setupKeyboardEvents();
     }
 
-    private setupMouseEvents(canvas: Canvas): void {
+    private static setupMouseEvents(canvas: Canvas): void {
         if (!canvas) return;
 
         canvas.onMouseMove((_e: MouseEvent) => {
-            this.mouse_position = canvas.getMousePosition();
-            this.notifyMouseMove();
+            InputManager.mouse_position = canvas.getMousePosition();
+            InputManager.notifyMouseMove();
         });
 
         canvas.onMouseDown((e: MouseEvent) => {
-            if (this.is_mouse_down) return;
-            this.is_mouse_down = true;
-            this.mouse_down_pos = this.getMousePosition();
-            this.notifyMouseDown(e);
+            if (InputManager.is_mouse_down) return;
+            InputManager.is_mouse_down = true;
+            InputManager.mouse_down_pos = InputManager.mouse_position;
+            InputManager.notifyMouseDown(e);
         });
 
         canvas.onMouseUp((e: MouseEvent) => {
-            if (!this.is_mouse_down) return;
-            this.is_mouse_down = false;
-            this.notifyMouseUp(e);
-            this.notifyMouseClick(e);
+            if (!InputManager.is_mouse_down) return;
+            InputManager.is_mouse_down = false;
+            InputManager.notifyMouseUp(e);
+            InputManager.notifyMouseClick(e);
         });
     }
 
-    private setupKeyboardEvents(): void {
+    private static setupKeyboardEvents(): void {
         document.addEventListener('keydown', (e) => {
-            this.holding_keys.add(e.key);
+            InputManager.holding_keys.add(e.key);
         });
 
         document.addEventListener('keyup', (e) => {
-            this.holding_keys.delete(e.key);
+            InputManager.holding_keys.delete(e.key);
         });
     }
 
     //================================ Notifiers ================================
 
-    private notifyMouseMove(): void {
-        this.mouse_move_handlers.forEach(handler => handler());
+    private static notifyMouseMove(): void {
+        InputManager.mouse_move_handlers.forEach(handler => handler());
     }
 
-    private notifyMouseDown(e: MouseEvent): void {
-        this.mouse_down_handlers.forEach(handler => handler(e.button as MouseButton));
+    private static notifyMouseDown(e: MouseEvent): void {
+        InputManager.mouse_down_handlers.forEach(handler => handler(e.button as MouseButton));
     }
 
-    private notifyMouseUp(e: MouseEvent): void {
-        this.mouse_up_handlers.forEach(handler => handler(e.button as MouseButton));
+    private static notifyMouseUp(e: MouseEvent): void {
+        InputManager.mouse_up_handlers.forEach(handler => handler(e.button as MouseButton));
     }
 
-    private notifyMouseClick(e: MouseEvent): void {
-        this.mouse_click_handlers.forEach(handler => handler(e.button as MouseButton));
+    private static notifyMouseClick(e: MouseEvent): void {
+        InputManager.mouse_click_handlers.forEach(handler => handler(e.button as MouseButton));
     }
 
     //================================ Event Subscribers ================================
 
-    onMouseMove(handler: MousePositionHandler): void {
-        this.mouse_move_handlers.add(handler);
+    static onMouseMove(handler: MousePositionHandler): void {
+        InputManager.mouse_move_handlers.add(handler);
     }
 
-    onMouseDown(handler: MouseEventHandler): void {
-        this.mouse_down_handlers.add(handler);
+    static onMouseDown(handler: MouseEventHandler): void {
+        InputManager.mouse_down_handlers.add(handler);
     }
 
-    onMouseUp(handler: MouseEventHandler): void {
-        this.mouse_up_handlers.add(handler);
+    static onMouseUp(handler: MouseEventHandler): void {
+        InputManager.mouse_up_handlers.add(handler);
     }
 
-    onMouseClick(handler: MouseEventHandler): void {
-        this.mouse_click_handlers.add(handler);
+    static onMouseClick(handler: MouseEventHandler): void {
+        InputManager.mouse_click_handlers.add(handler);
     }
 
-    removeMouseMoveHandler(handler: MousePositionHandler): void {
-        this.mouse_move_handlers.delete(handler);
+    static removeMouseMoveHandler(handler: MousePositionHandler): void {
+        InputManager.mouse_move_handlers.delete(handler);
     }
 
-    removeMouseDownHandler(handler: MouseEventHandler): void {
-        this.mouse_down_handlers.delete(handler);
+    static removeMouseDownHandler(handler: MouseEventHandler): void {
+        InputManager.mouse_down_handlers.delete(handler);
     }
 
-    removeMouseUpHandler(handler: MouseEventHandler): void {
-        this.mouse_up_handlers.delete(handler);
+    static removeMouseUpHandler(handler: MouseEventHandler): void {
+        InputManager.mouse_up_handlers.delete(handler);
     }
 
-    removeMouseClickHandler(handler: MouseEventHandler): void {
-        this.mouse_click_handlers.delete(handler);
+    static removeMouseClickHandler(handler: MouseEventHandler): void {
+        InputManager.mouse_click_handlers.delete(handler);
     }
 
     //================================ State Getters ================================
 
-    getMousePosition(): Vec2 {
-        return this.mouse_position;
+    static getMousePosition(): Vec2 {
+        return InputManager.mouse_position;
     }
 
-    getMouseDownPosition(): Vec2 {
-        return this.mouse_down_pos;
+    static getMouseDownPosition(): Vec2 {
+        return InputManager.mouse_down_pos;
     }
 
-    isMouseDown(): boolean {
-        return this.is_mouse_down;
+    static isMouseDown(): boolean {
+        return InputManager.is_mouse_down;
     }
 
-    isKeyDown(key: string): boolean {
-        return this.holding_keys.has(key);
+    static isKeyDown(key: string): boolean {
+        return InputManager.holding_keys.has(key);
     }
 
     //================================ Reset ================================
 
-    clear(): void {
-        this.mouse_position = Vec2.zero();
-        this.is_mouse_down = false;
-        this.mouse_down_pos = Vec2.zero();
-        this.holding_keys.clear();
-        this.mouse_move_handlers.clear();
-        this.mouse_down_handlers.clear();
-        this.mouse_up_handlers.clear();
-        this.mouse_click_handlers.clear();
+    static clear(): void {
+        InputManager.mouse_position = Vec2.zero();
+        InputManager.is_mouse_down = false;
+        InputManager.mouse_down_pos = Vec2.zero();
+        InputManager.holding_keys.clear();
+        InputManager.mouse_move_handlers.clear();
+        InputManager.mouse_down_handlers.clear();
+        InputManager.mouse_up_handlers.clear();
+        InputManager.mouse_click_handlers.clear();
     }
 }

@@ -1,57 +1,51 @@
 import PhysicBodyState from "./PhysicBodyState.ts";
 
 export default class DependencyManager {
-    private static instance: DependencyManager;
-    private table: Map<string, Record<string, string>> = new Map();
+    private static table: Map<string, Record<string, string>> = new Map();
+    private static initialized: boolean = false;
 
-    private constructor() {
-        this.clear();
-    }
+    private constructor() {} // Prevent instantiation
 
-    static getInstance(): DependencyManager {
-        if (!DependencyManager.instance) {
-            DependencyManager.instance = new DependencyManager();
+    static init(state: PhysicBodyState): void {
+        if (!DependencyManager.initialized) {
+            DependencyManager.initialized = true;
         }
-        return DependencyManager.instance;
-    }
-
-    static init(state: PhysicBodyState): DependencyManager {
-        const instance = DependencyManager.getInstance();
-        instance.loadFromState(state);
-        return instance;
+        DependencyManager.loadFromState(state);
     }
 
     /**
      * Child dependending on parents. 
      */
-    setDependency(child_name: string, parent: Record<string, string>) {
-        if (!this.table.has(child_name)) this.table.set(child_name, parent);
+    static setDependency(child_name: string, parent: Record<string, string>): void {
+        if (!DependencyManager.table.has(child_name)) {
+            DependencyManager.table.set(child_name, parent);
+        }
     }
 
     /**
      * Get all parents that the child depends on.
      */
-    getDependency(child_name: string): Record<string, string> | null {
-        return this.table.get(child_name) || null;
+    static getDependency(child_name: string): Record<string, string> | null {
+        return DependencyManager.table.get(child_name) || null;
     }
 
     /**
      * Find all children that depend on the parent. 
      */
-    findChilds(parent_name: string) {
-        return Array.from(this.table.entries())
+    static findChilds(parent_name: string): string[] {
+        return Array.from(DependencyManager.table.entries())
             .filter(([_, parent]) => Object.values(parent).includes(parent_name))
             .map(([child]) => child);
     }
 
-    loadFromState(state: PhysicBodyState): void {
-        this.clear();
+    private static loadFromState(state: PhysicBodyState): void {
+        DependencyManager.clear();
         for(const key in state){
-            this.setDependency(key, state[key].dependencies || {});
+            DependencyManager.setDependency(key, state[key].dependencies || {});
         }
     }
 
-    clear(): void {
-        this.table.clear();
+    static clear(): void {
+        DependencyManager.table.clear();
     }
 }
