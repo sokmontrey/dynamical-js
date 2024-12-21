@@ -8,12 +8,11 @@ import PhysicBodyState, { PhysicBodyConfig } from "../core/PhysicBodyState.ts";
 import DependencyManager from "../core/DependencyManager.ts";
 
 export default class PhysicBodyManager {
-	private bodies: { [key: string]: PhysicBody };
-	private seed: number;
+	private bodies: Record<string, PhysicBody> = {};
+	private seed: number = 0;
 
 	constructor() {
-		this.bodies = {};
-		this.seed = 0;
+		this.clear();
 	}
 
 	addBody(body: PhysicBody, name: string = ""): string {
@@ -69,61 +68,57 @@ export default class PhysicBodyManager {
 		return state;
 	}
 
-	static fromState(state: PhysicBodyState): PhysicBodyManager {
-		const manager = new PhysicBodyManager();
+	loadFromState(state: PhysicBodyState): void {
+		this.clear();
 		for (const key in state) {
-			PhysicBodyManager.configToBody(state, key, manager);
+			this.loadBodyFromConfig(state, key);
 		}
-		return manager;
 	}
 
 	/**
 	 * Recursively process the config of a body and its dependencies.
 	 * Automatically add the body to the manager.
 	 */
-	static configToBody(
+	private loadBodyFromConfig(
 		state: PhysicBodyState,
-		key: string,
-		body_manager: PhysicBodyManager
+		key: string
 	): PhysicBody {
-		const body = body_manager.getByName(key);
+		const body = this.getByName(key);
 		if (body) return body;
 
 		const body_load_mapper = {
-			[PhysicBodyType.POINT_MASS]: PhysicBodyManager.loadPointmassConfig,
-			[PhysicBodyType.RIGID_CONSTRAINT]: PhysicBodyManager.loadRigidConstraintConfig,
+			[PhysicBodyType.POINT_MASS]: this.loadPointmassConfig.bind(this),
+			[PhysicBodyType.RIGID_CONSTRAINT]: this.loadRigidConstraintConfig.bind(this),
 		}
 
 		const config = state[key];
 		if (!config) throw new Error("Unknown body key");
 		const loader = body_load_mapper[config.type];
-		if (loader) return loader(state, key, config, body_manager);
+		if (loader) return loader(state, key, config);
 
 		throw new Error("Unknown body type");
 	}
 
-	static loadPointmassConfig(
+	private loadPointmassConfig(
 		_state: PhysicBodyState,
 		key: string,
-		config: PhysicBodyConfig,
-		body_manager: PhysicBodyManager
+		config: PhysicBodyConfig
 	): PointMass {
-		const body = body_manager.getByName(key);
+		const body = this.getByName(key);
 		if (body) return body as PointMass;
 
 		const pointmass = new PointMass(config.props);
-		pointmass.renderer = new PointMassRenderer(pointmass, config.renderer);
-		body_manager.addBody(pointmass, key);
-		return pointmass;
+			pointmass.renderer = new PointMassRenderer(pointmass, config.renderer);
+			this.addBody(pointmass, key);
+			return pointmass;
 	}
 	
-	static loadRigidConstraintConfig(
+	private loadRigidConstraintConfig(
 		state: PhysicBodyState,
 		key: string,
-		config: PhysicBodyConfig,
-		body_manager: PhysicBodyManager
+		config: PhysicBodyConfig
 	): RigidConstraint {
-		const body = body_manager.getByName(key);
+		const body = this.getByName(key);
 		if (body) return body as RigidConstraint;
 
 		const {
@@ -137,11 +132,16 @@ export default class PhysicBodyManager {
 		if (!pm1_key || !state[pm1_key]) throw new Error("Pointmass1 not found");
 		if (!pm2_key || !state[pm2_key]) throw new Error("Pointmass2 not found");
 
-		const pm1 = PhysicBodyManager.configToBody(state, pm1_key, body_manager) as PointMass;
-		const pm2 = PhysicBodyManager.configToBody(state, pm2_key, body_manager) as PointMass;
+		const pm1 = this.loadBodyFromConfig(state, pm1_key) as PointMass;
+		const pm2 = this.loadBodyFromConfig(state, pm2_key) as PointMass;
 		const rigid_constraint = new RigidConstraint(pm1, pm2, config.props);
 		rigid_constraint.renderer = new RigidConstraintRenderer(rigid_constraint, config.renderer);
-		body_manager.addBody(rigid_constraint, key);
+		this.addBody(rigid_constraint, key);
 		return rigid_constraint;
+	}
+
+	clear(): void {
+		this.bodies = {};
+		this.seed = 0;
 	}
 }

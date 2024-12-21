@@ -1,23 +1,23 @@
 import PhysicBodyState from "./PhysicBodyState.ts";
 
 export default class DependencyManager {
-    private table: Map<string, {[key: string]: string}>;
+    private table: Map<string, Record<string, string>> = new Map();
 
     constructor() {
-        this.table = new Map();
+        this.clear();
     }
 
     /**
      * Child dependending on parents. 
      */
-    setDependency(child_name: string, parent: {[key: string]: string}) {
+    setDependency(child_name: string, parent: Record<string, string>) {
         if (!this.table.has(child_name)) this.table.set(child_name, parent);
     }
 
     /**
      * Get all parents that the child depends on.
      */
-    getDependency(child_name: string): {[key: string]: string} | null {
+    getDependency(child_name: string): Record<string, string> | null {
         return this.table.get(child_name) || null;
     }
 
@@ -30,11 +30,14 @@ export default class DependencyManager {
             .map(([child]) => child);
     }
 
-    static fromState(state: PhysicBodyState): DependencyManager {
-        const manager = new DependencyManager();
+    loadFromState(state: PhysicBodyState): void {
+        this.clear();
         for(const key in state){
-            manager.setDependency(key, state[key].dependencies || {});
+            this.setDependency(key, state[key].dependencies || {});
         }
-        return manager;
+    }
+
+    clear(): void {
+        this.table.clear();
     }
 }

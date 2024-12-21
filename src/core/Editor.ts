@@ -209,8 +209,11 @@ export default class Editor {
 
 	loadState(state: PhysicBodyState): Editor {
 		// TODO: too many moving parts, need to refactor
-		this.body_manager = PhysicBodyManager.fromState(state);
-		this.dependency_manager = DependencyManager.fromState(state);
+		this.body_manager = new PhysicBodyManager();
+		this.body_manager.loadFromState(state);
+
+		this.dependency_manager = new DependencyManager();
+		this.dependency_manager.loadFromState(state);
 		return this;
 	}
 
