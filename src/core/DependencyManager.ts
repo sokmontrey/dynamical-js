@@ -1,10 +1,24 @@
 import PhysicBodyState from "./PhysicBodyState.ts";
 
 export default class DependencyManager {
+    private static instance: DependencyManager;
     private table: Map<string, Record<string, string>> = new Map();
 
-    constructor() {
+    private constructor() {
         this.clear();
+    }
+
+    static getInstance(): DependencyManager {
+        if (!DependencyManager.instance) {
+            DependencyManager.instance = new DependencyManager();
+        }
+        return DependencyManager.instance;
+    }
+
+    static init(state: PhysicBodyState): DependencyManager {
+        const instance = DependencyManager.getInstance();
+        instance.loadFromState(state);
+        return instance;
     }
 
     /**
