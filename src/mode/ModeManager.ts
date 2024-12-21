@@ -11,8 +11,8 @@ export enum ModeType {
 }
 
 export default class ModeManager {
-    private static current_mode_type!: ModeType;
-    private static current_mode!: Mode;
+    private static current_mode_type: ModeType;
+    private static current_mode: Mode;
     private static initialized: boolean = false;
 
     private constructor() {} // Prevent instantiation

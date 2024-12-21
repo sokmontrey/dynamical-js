@@ -59,14 +59,14 @@ export default class PhysicBodyManager {
 			.filter(x => !x.interactor.isLocked() && x.interactor.isSelected(lower, upper));
 	}
 
-	static toState(dependency_manager: DependencyManager): PhysicBodyState {
+	static toState(): PhysicBodyState {
 		const state: PhysicBodyState = {};
 		for (const key in PhysicBodyManager.bodies) {
 			const body = PhysicBodyManager.bodies[key];
 			state[key] = {
 				type: body.getType(),
 				props: body.serialize(),
-				dependencies: dependency_manager.getDependency(key) ?? {},
+				dependencies: DependencyManager.getDependency(key) ?? {},
 					renderer: body.renderer.serialize(),
 			};
 		}
