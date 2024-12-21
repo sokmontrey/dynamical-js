@@ -8,11 +8,25 @@ import PhysicBodyState, { PhysicBodyConfig } from "../core/PhysicBodyState.ts";
 import DependencyManager from "../core/DependencyManager.ts";
 
 export default class PhysicBodyManager {
+	private static instance: PhysicBodyManager;
 	private bodies: Record<string, PhysicBody> = {};
 	private seed: number = 0;
 
-	constructor() {
+	private constructor() {
 		this.clear();
+	}
+
+	static getInstance(): PhysicBodyManager {
+		if (!PhysicBodyManager.instance) {
+			PhysicBodyManager.instance = new PhysicBodyManager();
+		}
+		return PhysicBodyManager.instance;
+	}
+
+	static init(state: PhysicBodyState): PhysicBodyManager {
+		const instance = PhysicBodyManager.getInstance();
+		instance.loadFromState(state);
+		return instance;
 	}
 
 	addBody(body: PhysicBody, name: string = ""): string {
