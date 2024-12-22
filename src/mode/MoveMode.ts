@@ -22,18 +22,18 @@ export default class MoveMode extends Mode {
         this.selected_bodies = new Set<PhysicBody>();
     }
 
-    private addHoveredBody(): void {
-        if (!this.hovered_body) return;
-        if (this.selected_bodies.has(this.hovered_body)) // an option to remove selected body
-            this.selected_bodies.delete(this.hovered_body);
-        else
-            this.selected_bodies.add(this.hovered_body);
+    addBodyToSelection(body: PhysicBody): void {
+        if (this.selected_bodies.has(body)) { // an option to remove selected body
+            this.selected_bodies.delete(body);
+        } else {
+            this.selected_bodies.add(body);
+        }
     }
 
     onMouseClick(button: MouseButton): void {
         if (button == MouseButton.LEFT) {
             if (!InputManager.isKeyDown("Shift")) this.resetSelectedBodies();
-            this.addHoveredBody();
+            if (this.hovered_body) this.addBodyToSelection(this.hovered_body);
         }
     }
 
