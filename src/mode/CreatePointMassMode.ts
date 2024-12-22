@@ -1,7 +1,12 @@
 import Mode from "./Mode.ts";
-import { MouseButton } from "../core/Editor.ts";
+import InputManager, { MouseButton } from "../core/InputManager.ts";
 import CreatePointMassModeRenderer from "../mode-renderer/CreatePointMassModeRenderer.ts";
 import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
+import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
+import DependencyManager from "../core/DependencyManager.ts";
+import PointMass from "../core-physic/PointMass.ts";
+import Vec2 from "../utils/Vector.ts";
+import LoopManager from "../core/LoopManager.ts";
 
 export default class CreatePointMassMode extends Mode {
     public renderer: ModeRenderer = new CreatePointMassModeRenderer(this);
@@ -10,15 +15,21 @@ export default class CreatePointMassMode extends Mode {
         if (button == MouseButton.LEFT) {
             this.addPointMass();
         }
-        this.editor.stepBaseRenderer();
+        if (!LoopManager.isRunning()) {
+            LoopManager.render();
+        }
     }
 
-    private addPointMass() {
-        const position = this.editor.getMouseCurrentPosition();
-        this.editor.createPointMass(position);
+    private addPointMass(): void {
+        const position = InputManager.getMousePosition();
+        // TODO: reuse this part of adding body along with updating the dependency manager
+        // write this code somewhere in top-level
+        const pointmass = new PointMass({ position });
+        const name = PhysicBodyManager.addBody(pointmass);
+        DependencyManager.setDependency(name, {});
     }
 
-    getMouseCurrentPosition() {
-        return this.editor.getMouseCurrentPosition();
+    getMouseCurrentPosition(): Vec2 {
+        return InputManager.getMousePosition();
     }
 }

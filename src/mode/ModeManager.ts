@@ -2,7 +2,7 @@ import CreatePointMassMode from "./CreatePointMassMode.ts";
 import CreateRigidConstraintMode from "./CreateRigidConstraintMode.ts";
 import MoveMode from "./MoveMode.ts";
 import Mode from "./Mode.ts";
-import Editor, {MouseButton} from "../core/Editor.ts";
+import { MouseButton } from "../core/InputManager.ts";
 
 export enum ModeType {
     MOVE = "Move",
@@ -11,74 +11,77 @@ export enum ModeType {
 }
 
 export default class ModeManager {
-    private current_mode_type!: ModeType;
-    private current_mode!: Mode;
-    private readonly editor: Editor;
-    private on_mode_change: (mode: ModeType) => void = () => {};
+    private static current_mode_type: ModeType;
+    private static current_mode: Mode;
+    private static initialized: boolean = false;
 
-    constructor(editor: Editor) {
-        this.editor = editor;
-        this.toMoveMode();
+    private constructor() {} // Prevent instantiation
+
+    static init(): void {
+        if (ModeManager.initialized) return;
+        ModeManager.initialized = true;
+        ModeManager.toMoveMode();
     }
 
-    public toCreateMode(create_mode: ModeType) {
+    //================================ Mode Management ================================ 
+
+    static toCreateMode(create_mode: ModeType): void {
         switch (create_mode) {
             case ModeType.CREATE_POINTMASS:
-                this.toMode(new CreatePointMassMode(), ModeType.CREATE_POINTMASS);
+                ModeManager.toMode(new CreatePointMassMode(), ModeType.CREATE_POINTMASS);
                 break;
             case ModeType.CREATE_RIGID_CONSTRAINT:
-                this.toMode(new CreateRigidConstraintMode(), ModeType.CREATE_RIGID_CONSTRAINT);
+                ModeManager.toMode(new CreateRigidConstraintMode(), ModeType.CREATE_RIGID_CONSTRAINT);
                 break;
             default:
                 throw new Error("Invalid create mode");
         }
     }
 
-    public toMoveMode() {
-        this.toMode(new MoveMode(), ModeType.MOVE);
+    static toMoveMode(): void {
+        ModeManager.toMode(new MoveMode(), ModeType.MOVE);
     }
 
-    public toMode(mode: Mode, mode_type: ModeType) {
-        this.current_mode = mode;
-        this.current_mode_type = mode_type;
-        this.current_mode.setModeManager(this);
-        this.current_mode.setEditor(this.editor);
-        this.on_mode_change?.(mode_type);
+    private static toMode(mode: Mode, mode_type: ModeType): void {
+        ModeManager.current_mode = mode;
+        ModeManager.current_mode_type = mode_type;
     }
 
-    public onMouseMove() {
-        this.current_mode.onMouseMove();
+    //================================ Mouse Events ================================
+
+    static onMouseMove(): void {
+        ModeManager.current_mode.onMouseMove();
     }
 
-    public onMouseDown(button: MouseButton) {
-        this.current_mode.onMouseDown(button);
+    static onMouseDown(button: MouseButton): void {
+        ModeManager.current_mode.onMouseDown(button);
     }
 
-    public onMouseUp(button: MouseButton) {
-        this.current_mode.onMouseUp(button);
+    static onMouseUp(button: MouseButton): void {
+        ModeManager.current_mode.onMouseUp(button);
     }
 
-    public onMouseClick(button: MouseButton) {
-        this.current_mode.onMouseClick(button);
+    static onMouseClick(button: MouseButton): void {
+        ModeManager.current_mode.onMouseClick(button);
     }
 
-    public getCurrentMode(): Mode {
-        return this.current_mode;
+    //================================ Getters ================================
+
+    static getCurrentMode(): Mode {
+        return ModeManager.current_mode;
     }
 
-    public getCurrentModeType(): ModeType {
-        return this.current_mode_type;
+    static getCurrentModeType(): ModeType {
+        return ModeManager.current_mode_type;
     }
 
-    public getCreateModeTypes(): ModeType[] {
+    static getCreateModeTypes(): ModeType[] {
         return [ModeType.CREATE_POINTMASS, ModeType.CREATE_RIGID_CONSTRAINT];
     }  
 
-    public onModeChange(callback: (mode: ModeType) => void) {
-        this.on_mode_change = callback;
-    }   
+    //================================ Reset ================================
 
-    reset() {
-        this.toMoveMode();
+    static reset(): void {
+        ModeManager.toMoveMode();
     }
 }

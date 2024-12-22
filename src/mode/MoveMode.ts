@@ -1,11 +1,14 @@
 import Mode from "./Mode.ts";
 import Vec2 from "../utils/Vector.ts";
-import {MouseButton} from "../core/Editor.ts";
+import InputManager, { MouseButton } from "../core/InputManager.ts";
 import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody.ts";
 import MoveModeRenderer from "../mode-renderer/MoveModeRenderer.ts";
 import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
 import PointMass from "../core-physic/PointMass.ts";
 import RigidConstraint from "../core-physic/RigidConstraint.ts";
+import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
+import DependencyManager from "../core/DependencyManager.ts";
+import LoopManager from "../core/LoopManager.ts";
 
 export default class MoveMode extends Mode {
     public renderer: ModeRenderer = new MoveModeRenderer(this);
@@ -21,18 +24,17 @@ export default class MoveMode extends Mode {
         this.selected_bodies = new Set<PhysicBody>();
     }
 
-    private addHoveredBody(): void{
+    private addHoveredBody(): void {
         if (!this.hovered_body) return;
         if (this.selected_bodies.has(this.hovered_body)) // an option to remove selected body
             this.selected_bodies.delete(this.hovered_body);
         else
             this.selected_bodies.add(this.hovered_body);
-        return;
     }
 
     onMouseClick(button: MouseButton): void {
         if (button == MouseButton.LEFT) {
-            if (!this.editor.isKeyDown("Shift")) this.resetSelectedBodies();
+            if (!InputManager.isKeyDown("Shift")) this.resetSelectedBodies();
             this.addHoveredBody();
         }
     }
@@ -40,71 +42,69 @@ export default class MoveMode extends Mode {
     onMouseMove(): void {
         this.checkHoveredBody();
         this.checkDragging();
-        if (this.is_mouse_dragging && this.isMouseDownOnSelectedBody()){
+        if (this.is_mouse_dragging && this.isMouseDownOnSelectedBody()) {
             this.moveSelectedBodies();
         }
     }
 
-    private checkDragging() {
-        const mouse_pos = this.editor.getMouseCurrentPosition();
-        const diff = mouse_pos.distance(this.editor.getMouseDownPosition());
-        this.is_mouse_dragging = diff > this.editor.getDragThreshold() && this.editor.isMouseDown();
+    private checkDragging(): void {
+        const mouse_pos = InputManager.getMousePosition();
+        const diff = mouse_pos.distance(InputManager.getMouseDownPosition());
+        // TODO: get drag threshold from somewhere
+        // implement drag threshold in InputManager
+        this.is_mouse_dragging = diff > 5 && InputManager.isMouseDown(); 
     }
 
-    private checkHoveredBody() {
-        const mouse_pos = this.editor.getMouseCurrentPosition();
-        const body_manager = this.editor.getPhysicBodyManager();
-        const hovered_bodies = body_manager.getHoveredBodies(mouse_pos);
-        if (hovered_bodies.length) this.hovered_body = hovered_bodies[0];
-        else this.hovered_body = null;
+    private checkHoveredBody(): void {
+        const mouse_pos = InputManager.getMousePosition();
+        const hovered_bodies = PhysicBodyManager.getHoveredBodies(mouse_pos);
+        this.hovered_body = hovered_bodies.length ? hovered_bodies[0] : null;
     }
 
-    private onMouseDownOnSelectedBody() {
+    private onMouseDownOnSelectedBody(): void {
         this.mouse_body_offset = new Map<PhysicBody, Vec2>();
-        const mouse_pos = this.editor.getMouseCurrentPosition();
+        const mouse_pos = InputManager.getMousePosition();
         this.selected_bodies.forEach(body => {
             this.mouse_body_offset!.set(body, body.getPosition().sub(mouse_pos));
         });
     }
 
-    private moveSelectedBodies() {
+    private moveSelectedBodies(): void {
         if (!this.mouse_body_offset) return;
-        const mouse_pos = this.editor.getMouseCurrentPosition();
-        this.mouse_body_offset!.forEach((offset, body) => {
+        const mouse_pos = InputManager.getMousePosition();
+        this.mouse_body_offset.forEach((offset, body) => {
             this.moveBody(body, mouse_pos.add(offset));
         });
-        if (!this.editor.isRunning()) {
-            this.editor.stepBaseRenderer();
+        if (!LoopManager.isRunning()) {
+            LoopManager.render();
         }
     }
 
-	private moveBody(body: PhysicBody, position: Vec2) {
-		if (body.type === PhysicBodyType.POINT_MASS) {
-			const pointmass = body as PointMass;
-			pointmass.moveTo(position);
-			if (!this.editor.isRunning()) {
+    private moveBody(body: PhysicBody, position: Vec2): void {
+        if (body.type === PhysicBodyType.POINT_MASS) {
+            const pointmass = body as PointMass;
+            pointmass.moveTo(position);
+            if (!LoopManager.isRunning()) {
                 this.updateRigidConstraint(pointmass);
             }
-		} 
-	}
+        }
+    }
 
-    private updateRigidConstraint(pointmass: PointMass) {
-        const name = this.editor.getPhysicBodyManager().getName(pointmass);
+    private updateRigidConstraint(pointmass: PointMass): void {
+        const name = PhysicBodyManager.getName(pointmass);
         if (!name) return;
-        this.editor.getDependencyManager()
-            .findChilds(name)
-            .map(child => this.editor.getPhysicBodyManager().getByName(child))
-            .filter(child => child && child.type === PhysicBodyType.RIGID_CONSTRAINT)
-            .forEach(_rigid => {
-                const rigid = _rigid as RigidConstraint;
-                // TODO: generalize this for other types of dependencies
-                rigid?.calculateRestDistance();
+        DependencyManager.findChilds(name)
+            .map(child => PhysicBodyManager.getByName(child))
+            .filter((child): child is RigidConstraint => 
+                child !== null && child.type === PhysicBodyType.RIGID_CONSTRAINT)
+            .forEach(rigid => {
+                rigid.calculateRestDistance();
             });
     }
 
     onMouseDown(_button: MouseButton): void {
         this.body_mouse_down_on = this.hovered_body;
-        if(this.isMouseDownOnSelectedBody()) {
+        if (this.isMouseDownOnSelectedBody()) {
             this.onMouseDownOnSelectedBody();
         } else if (this.isMouseDownOnBody()) {
             if (this.selected_bodies.size) this.resetSelectedBodies();
@@ -117,7 +117,7 @@ export default class MoveMode extends Mode {
         if (!this.is_mouse_dragging) return;
         if (!this.isMouseDownOnBody()) this.onSelectDragged(button);
         this.is_mouse_dragging = false;
-        if (this.isMouseDownOnSelectedBody()){
+        if (this.isMouseDownOnSelectedBody()) {
             this.moveSelectedBodies();
             this.body_mouse_down_on = null;
             this.mouse_body_offset = null;
@@ -138,17 +138,17 @@ export default class MoveMode extends Mode {
      */
     private onSelectDragged(button: MouseButton): void {
         if (button != MouseButton.LEFT) return;
-        const down_pos = this.editor.getMouseDownPosition();
-        const curr_pos = this.editor.getMouseCurrentPosition();
-        const lower= Vec2.min(down_pos, curr_pos);
-        const upper= Vec2.max(down_pos, curr_pos);
-        if (!this.editor.isKeyDown("Shift")) this.resetSelectedBodies();
-        this.editor
-            .getPhysicBodyManager()
-            .getSelectedBodies(lower, upper)
-            .forEach(body => {
-                this.selected_bodies.add(body);
-            });
+        const down_pos = InputManager.getMouseDownPosition();
+        const curr_pos = InputManager.getMousePosition();
+        const lower = Vec2.min(down_pos, curr_pos);
+        const upper = Vec2.max(down_pos, curr_pos);
+        
+        if (!InputManager.isKeyDown("Shift")) {
+            this.resetSelectedBodies();
+        }
+        
+        PhysicBodyManager.getSelectedBodies(lower, upper)
+            .forEach(body => this.selected_bodies.add(body));
     }
 
     getSelectedBodies(): Set<PhysicBody> {
@@ -159,15 +159,7 @@ export default class MoveMode extends Mode {
         return this.hovered_body;
     }
 
-    public isDragging(): boolean {
+    isDragging(): boolean {
         return this.is_mouse_dragging;
-    }
-
-    public getMouseDownPosition(): Vec2 {
-        return this.editor.getMouseDownPosition();
-    }
-
-    public getMouseCurrentPosition(): Vec2 {
-        return this.editor.getMouseCurrentPosition();
     }
 }
