@@ -3,7 +3,10 @@ import Canvas from "../core/Canvas";
 
 export interface SimulationCanvasProps {
 	container_id?: string;
-    onCanvasMounted: (base_canvas: Canvas, overlay_canvas: Canvas) => void;
+    onCanvasMounted: (canvas: {
+        base_canvas: Canvas, 
+        overlay_canvas: Canvas 
+    }) => void;
 }
 
 export default function SimulationCanvas({ 
@@ -27,7 +30,7 @@ export default function SimulationCanvas({
         const base_canvas = new Canvas(base_canvas_ele, {width, height}).disableMouseEvent();
 		const overlay_canvas = new Canvas(overlay_canvas_ele, {width, height}).addMousePositionEvent();
 
-        onCanvasMounted(base_canvas, overlay_canvas);
+        onCanvasMounted({ base_canvas, overlay_canvas });
     }, [onCanvasMounted]);
 
     return <div id={container_id} 
