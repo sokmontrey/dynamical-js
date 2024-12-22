@@ -1,13 +1,11 @@
 import Mode from "./Mode.ts";
 import CreateRigidConstraintModeRenderer from "../mode-renderer/CreateRigidConstraintModeRenderer.ts";
-import { MouseButton } from "../core/InputManager.ts";
+import { MouseButton } from "../manager/InputManager.ts";
 import PointMass from "../core-physic/PointMass.ts";
 import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
-import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
-import InputManager from "../core/InputManager.ts";
-import LoopManager from "../core/LoopManager.ts";
-import RigidConstraint from "../core-physic/RigidConstraint.ts";
-import DependencyManager from "../core/DependencyManager.ts";
+import PhysicBodyManager from "../manager/PhysicBodyManager.ts";
+import InputManager from "../manager/InputManager.ts";
+import LoopManager from "../manager/LoopManager.ts";
 import Vec2 from "../utils/Vector.ts";
 
 export default class CreateRigidConstraintMode extends Mode {
@@ -45,7 +43,7 @@ export default class CreateRigidConstraintMode extends Mode {
         if (!this.hovered_pointmass) return;
         if (!this.pointmass1) {
             this.pointmass1 = this.hovered_pointmass;
-        } else if (!this.pointmass2) {
+        } else if (!this.pointmass2 && this.pointmass1 != this.hovered_pointmass) {
             this.pointmass2 = this.hovered_pointmass;
             this.createRigidConstraint();
             this.reset();
@@ -54,20 +52,8 @@ export default class CreateRigidConstraintMode extends Mode {
 
     private createRigidConstraint(): void {
         if (!this.pointmass1 || !this.pointmass2) return;
-        
-        const rigid_constraint = new RigidConstraint(this.pointmass1, this.pointmass2);
-        const pm1_name = PhysicBodyManager.getName(this.pointmass1) || "";
-        const pm2_name = PhysicBodyManager.getName(this.pointmass2) || "";
-
-        const name = PhysicBodyManager.addBody(rigid_constraint);
-        DependencyManager.setDependency(name, { 
-            pointmass1: pm1_name, 
-            pointmass2: pm2_name 
-        });
-
-        if (!LoopManager.isRunning()) {
-            LoopManager.render();
-        }
+        PhysicBodyManager.createRigidConstraint(this.pointmass1, this.pointmass2);
+        if (!LoopManager.isRunning()) LoopManager.render();
     }
 
     getHoveredPointMass(): PointMass | null {

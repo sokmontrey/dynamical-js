@@ -2,7 +2,7 @@ import CreatePointMassMode from "./CreatePointMassMode.ts";
 import CreateRigidConstraintMode from "./CreateRigidConstraintMode.ts";
 import MoveMode from "./MoveMode.ts";
 import Mode from "./Mode.ts";
-import { MouseButton } from "../core/InputManager.ts";
+import { MouseButton } from "../manager/InputManager.ts";
 
 export enum ModeType {
     MOVE = "Move",

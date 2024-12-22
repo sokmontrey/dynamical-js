@@ -1,14 +1,12 @@
 import Mode from "./Mode.ts";
 import Vec2 from "../utils/Vector.ts";
-import InputManager, { MouseButton } from "../core/InputManager.ts";
+import InputManager, { MouseButton } from "../manager/InputManager.ts";
 import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody.ts";
 import MoveModeRenderer from "../mode-renderer/MoveModeRenderer.ts";
 import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
 import PointMass from "../core-physic/PointMass.ts";
-import RigidConstraint from "../core-physic/RigidConstraint.ts";
-import PhysicBodyManager from "../core-physic/PhysicBodyManager.ts";
-import DependencyManager from "../core/DependencyManager.ts";
-import LoopManager from "../core/LoopManager.ts";
+import PhysicBodyManager from "../manager/PhysicBodyManager.ts";
+import LoopManager from "../manager/LoopManager.ts";
 
 export default class MoveMode extends Mode {
     public renderer: ModeRenderer = new MoveModeRenderer(this);
@@ -85,21 +83,9 @@ export default class MoveMode extends Mode {
             const pointmass = body as PointMass;
             pointmass.moveTo(position);
             if (!LoopManager.isRunning()) {
-                this.updateRigidConstraint(pointmass);
+                PhysicBodyManager.updateConnectedConstraints(pointmass);
             }
         }
-    }
-
-    private updateRigidConstraint(pointmass: PointMass): void {
-        const name = PhysicBodyManager.getName(pointmass);
-        if (!name) return;
-        DependencyManager.findChilds(name)
-            .map(child => PhysicBodyManager.getByName(child))
-            .filter((child): child is RigidConstraint => 
-                child !== null && child.type === PhysicBodyType.RIGID_CONSTRAINT)
-            .forEach(rigid => {
-                rigid.calculateRestDistance();
-            });
     }
 
     onMouseDown(_button: MouseButton): void {
