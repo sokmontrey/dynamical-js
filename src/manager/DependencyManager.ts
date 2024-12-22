@@ -1,4 +1,4 @@
-import PhysicBodyState from "./PhysicBodyState.ts";
+import PhysicBodyState from "../core/PhysicBodyState.ts";
 
 export default class DependencyManager {
     private static table: Map<string, Record<string, string>> = new Map();

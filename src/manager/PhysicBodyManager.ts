@@ -1,11 +1,11 @@
-import Vec2 from "../utils/Vector";
-import PhysicBody, {PhysicBodyType} from "./PhysicBody";
-import PointMass from "./PointMass";
-import RigidConstraint from "./RigidConstraint";
+import Vec2 from "../utils/Vector.ts";
+import PhysicBody, {PhysicBodyType} from "../core-physic/PhysicBody.ts";
+import PointMass from "../core-physic/PointMass.ts";
+import RigidConstraint from "../core-physic/RigidConstraint.ts";
 import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer.ts";
 import PhysicBodyState, { PhysicBodyConfig } from "../core/PhysicBodyState.ts";
-import DependencyManager from "../core/DependencyManager.ts";
+import DependencyManager from "./DependencyManager.ts";
 
 export default class PhysicBodyManager {
 	private static bodies: Record<string, PhysicBody> = {};

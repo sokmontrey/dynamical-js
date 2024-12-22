@@ -4,11 +4,11 @@ import PhysicBodyState from "./core/PhysicBodyState.ts";
 import SimulationCanvas from "./ui-components/SimulationCanvas.tsx";
 import { useCallback, useEffect, useState } from "react";
 import Canvas from "./core/Canvas.ts";
-import InputManager from "./core/InputManager.ts";
-import PhysicBodyManager from "./core-physic/PhysicBodyManager.ts";
+import InputManager from "./manager/InputManager.ts";
+import PhysicBodyManager from "./manager/PhysicBodyManager.ts";
 import ModeManager, { ModeType } from "./mode/ModeManager.ts";
-import DependencyManager from "./core/DependencyManager.ts";
-import LoopManager from "./core/LoopManager.ts";
+import DependencyManager from "./manager/DependencyManager.ts";
+import LoopManager from "./manager/LoopManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
 
 export default function App() {

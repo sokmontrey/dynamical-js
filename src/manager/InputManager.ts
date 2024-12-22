@@ -1,4 +1,4 @@
-import Canvas from "./Canvas";
+import Canvas from "../core/Canvas";
 import Vec2 from "../utils/Vector";
 
 export enum MouseButton {

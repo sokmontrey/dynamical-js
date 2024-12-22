@@ -1,4 +1,4 @@
-import { MouseButton } from "../core/InputManager.ts";
+import { MouseButton } from "../manager/InputManager.ts";
 import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
 
 export default abstract class Mode {
