@@ -6,8 +6,6 @@ import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
 import PhysicBodyManager from "../manager/PhysicBodyManager.ts";
 import InputManager from "../manager/InputManager.ts";
 import LoopManager from "../manager/LoopManager.ts";
-import RigidConstraint from "../core-physic/RigidConstraint.ts";
-import DependencyManager from "../manager/DependencyManager.ts";
 import Vec2 from "../utils/Vector.ts";
 
 export default class CreateRigidConstraintMode extends Mode {
@@ -55,15 +53,7 @@ export default class CreateRigidConstraintMode extends Mode {
     private createRigidConstraint(): void {
         if (!this.pointmass1 || !this.pointmass2) return;
         
-        const rigid_constraint = new RigidConstraint(this.pointmass1, this.pointmass2);
-        const pm1_name = PhysicBodyManager.getName(this.pointmass1) || "";
-        const pm2_name = PhysicBodyManager.getName(this.pointmass2) || "";
-
-        const name = PhysicBodyManager.addBody(rigid_constraint);
-        DependencyManager.setDependency(name, { 
-            pointmass1: pm1_name, 
-            pointmass2: pm2_name 
-        });
+        PhysicBodyManager.addRigidConstraint(this.pointmass1, this.pointmass2);
 
         if (!LoopManager.isRunning()) {
             LoopManager.render();
