@@ -10,14 +10,34 @@ export enum PhysicBodyType {
 	RIGID_CONSTRAINT,
 }
 
-export default interface PhysicBody extends Serializable<PhysicBodyProps> {
-	readonly type: PhysicBodyType;
-	readonly rank: number;
+export default abstract class PhysicBody implements Serializable<PhysicBodyProps> {
+	protected id: string | null = null;
+	protected abstract readonly type: PhysicBodyType;
+	protected abstract readonly rank: number;
 
-	renderer: PhysicBodyRenderer;
-	interactor: Interactor;
+	public abstract renderer: PhysicBodyRenderer;
+	public abstract interactor: Interactor;
 
-	update(dt: number): void;
-	getType(): PhysicBodyType;
-	getPosition(): Vec2;
+	abstract serialize(): PhysicBodyProps;
+	abstract deserialize(props: PhysicBodyProps): void;
+
+	abstract update(dt: number): void;
+	abstract getPosition(): Vec2;
+
+	getType(): PhysicBodyType {
+		return this.type;
+	}
+
+	getId(): string | null {
+		return this.id;
+	}
+
+	setId(id: string): void {
+		if (this.id) throw new Error("Physic body already has an id");
+		this.id = id;
+	}
+
+	getRank(): number {
+		return this.rank;
+	}
 }

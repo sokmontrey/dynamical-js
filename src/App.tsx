@@ -7,7 +7,6 @@ import Canvas from "./core/Canvas.ts";
 import InputManager from "./manager/InputManager.ts";
 import PhysicBodyManager from "./manager/PhysicBodyManager.ts";
 import ModeManager, { ModeType } from "./mode/ModeManager.ts";
-import DependencyManager from "./manager/DependencyManager.ts";
 import LoopManager from "./manager/LoopManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
 
@@ -46,7 +45,7 @@ export default function App() {
 
 	const update = (dt: number, _sub_steps: number) => {
 		const bodies = PhysicBodyManager.getAllBodies();
-		bodies.sort((a, b) => a.rank - b.rank);
+		bodies.sort((a, b) => a.getRank() - b.getRank());
 		bodies.forEach(x => x.update(dt));
 	}
 
@@ -55,7 +54,7 @@ export default function App() {
 		if (!base_canvas) return;
 		base_canvas.clear();
 		const bodies = PhysicBodyManager.getAllBodies();
-		bodies.sort((a, b) => b.rank - a.rank);
+		bodies.sort((a, b) => b.getRank() - a.getRank());
 		bodies.forEach(
 			x => x.renderer.draw(base_canvas.getContext(), sub_steps)
 		);
@@ -72,7 +71,6 @@ export default function App() {
 
 	const resetState = () => {
 		PhysicBodyManager.loadFromState(initial_state);
-		DependencyManager.loadFromState(initial_state);
 		ModeManager.reset();
 		LoopManager.render();
 	}
@@ -92,7 +90,6 @@ export default function App() {
 			renderUI();
 		}, { sub_steps: 1000, constant_dt: null, });
 		PhysicBodyManager.init(state);
-		DependencyManager.init(state);
 		ModeManager.init();
 		InputManager.onMouseMove(() => {
 			ModeManager.onMouseMove();

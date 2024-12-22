@@ -43,7 +43,7 @@ export default class CreateRigidConstraintMode extends Mode {
         if (!this.hovered_pointmass) return;
         if (!this.pointmass1) {
             this.pointmass1 = this.hovered_pointmass;
-        } else if (!this.pointmass2) {
+        } else if (!this.pointmass2 && this.pointmass1 != this.hovered_pointmass) {
             this.pointmass2 = this.hovered_pointmass;
             this.createRigidConstraint();
             this.reset();
@@ -52,12 +52,8 @@ export default class CreateRigidConstraintMode extends Mode {
 
     private createRigidConstraint(): void {
         if (!this.pointmass1 || !this.pointmass2) return;
-        
-        PhysicBodyManager.addRigidConstraint(this.pointmass1, this.pointmass2);
-
-        if (!LoopManager.isRunning()) {
-            LoopManager.render();
-        }
+        PhysicBodyManager.createRigidConstraint(this.pointmass1, this.pointmass2);
+        if (!LoopManager.isRunning()) LoopManager.render();
     }
 
     getHoveredPointMass(): PointMass | null {

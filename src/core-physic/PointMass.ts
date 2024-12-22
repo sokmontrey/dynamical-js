@@ -12,9 +12,9 @@ export interface PointMassProps extends PhysicBodyProps {
 	is_static?: boolean,
 }
 
-export default class PointMass implements PhysicBody {
-	public readonly rank = 1;
-	public readonly type = PhysicBodyType.POINT_MASS;
+export default class PointMass extends PhysicBody {
+	readonly rank = 1;
+	readonly type = PhysicBodyType.POINT_MASS;
 
 	private curr_pos: Vec2;
 	private prev_pos: Vec2;
@@ -34,6 +34,7 @@ export default class PointMass implements PhysicBody {
 		constant_acceleration = Vec2.down(9.8),
 		initial_force = Vec2.zero(),
 	}: PointMassProps = {}) {
+		super();
 		this.curr_pos = position.copy();
 		this.prev_pos = position.sub(velocity);
 		this.mass = mass;

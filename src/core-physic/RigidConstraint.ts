@@ -9,9 +9,9 @@ export interface RigidConstraintProps extends PhysicBodyProps {
 	is_broken?: boolean;
 }
 
-export default class RigidConstraint implements PhysicBody {
-	public readonly rank = 2;
-	public readonly type = PhysicBodyType.RIGID_CONSTRAINT;
+export default class RigidConstraint extends PhysicBody {
+	readonly rank = 2;
+	readonly type = PhysicBodyType.RIGID_CONSTRAINT;
 
 	protected pointmass1: PointMass;
 	protected pointmass2: PointMass;
@@ -27,7 +27,7 @@ export default class RigidConstraint implements PhysicBody {
 	constructor(pointmass1: PointMass, pointmass2: PointMass, {
 		is_broken = false,
 	}: RigidConstraintProps = {}) {
-
+		super();
 		this.pointmass1 = pointmass1;
 		this.pointmass2 = pointmass2;
 		this.is_broken = is_broken;

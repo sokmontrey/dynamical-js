@@ -21,22 +21,6 @@ export default class PhysicBodyManager {
 		PhysicBodyManager.loadFromState(state);
 	}
 
-	static addBody(body: PhysicBody, name: string = ""): string {
-		name = name || "__body" + PhysicBodyManager.seed;
-		PhysicBodyManager.bodies[name] = body;
-		PhysicBodyManager.seed++;
-		
-		if (!PhysicBodyManager.hasDependency(name)) {
-			PhysicBodyManager.setDependency(name, {});
-		}
-		
-		return name;
-	}
-
-	static getName(body: PhysicBody): string | undefined {
-		return Object.keys(PhysicBodyManager.bodies).find(key => PhysicBodyManager.bodies[key] === body);
-	}
-
 	static removeBody(body: PhysicBody): void {
 		const key = Object.keys(PhysicBodyManager.bodies).find(key => PhysicBodyManager.bodies[key] === body);
 		if (key) delete PhysicBodyManager.bodies[key];
@@ -44,13 +28,18 @@ export default class PhysicBodyManager {
 		// TRY: PhysicBody.isUsingBody(body) to check if body is used by other bodies
 	}
 
-	static getAllBodies(): PhysicBody[] {
-		return Object.values(PhysicBodyManager.bodies);
+	// ============================== Getters ==============================
+
+	static getId(body: PhysicBody): string | undefined {
+		return Object.keys(PhysicBodyManager.bodies).find(key => PhysicBodyManager.bodies[key] === body);
 	}
 
-	// TODO: rename name to id
-	static getByName(name: string): PhysicBody | null {
-		return PhysicBodyManager.bodies[name] || null;
+	static getById(id: string): PhysicBody | null {
+		return PhysicBodyManager.bodies[id] || null;
+	}
+
+	static getAllBodies(): PhysicBody[] {
+		return Object.values(PhysicBodyManager.bodies);
 	}
 
 	static getHoveredBodies(pos: Vec2): PhysicBody[] {
@@ -79,24 +68,24 @@ export default class PhysicBodyManager {
 		return state;
 	}
 
+	// ============================== Loaders ==============================
+
 	static loadFromState(state: PhysicBodyState): void {
 		PhysicBodyManager.clear();
 		for (const key in state) {
 			PhysicBodyManager.loadBodyFromConfig(state, key);
-			// TODO: once createPointMass and createRigidConstraint are implemented,
-			// this line will be moved there
 			PhysicBodyManager.setDependency(key, state[key].dependencies || {});
 		}
 	}
 
 	private static loadBodyFromConfig(
 		state: PhysicBodyState,
-		key: string
+		id: string
 	): PhysicBody {
-		const body = PhysicBodyManager.getByName(key);
+		const body = PhysicBodyManager.getById(id);
 		if (body) return body;
 
-		const config = state[key];
+		const config = state[id];
 		if (!config) throw new Error("Unknown body key");
 
 		const body_load_mapper = {
@@ -105,50 +94,50 @@ export default class PhysicBodyManager {
 		};
 
 		const loader = body_load_mapper[config.type];
-		if (loader) return loader(state, key, config);
+		if (loader) return loader(state, id, config);
 
 		throw new Error("Unknown body type");
 	}
 
 	private static loadPointmassConfig(
 		_state: PhysicBodyState,
-		key: string,
+		id: string,
 		config: PhysicBodyConfig
 	): PointMass {
-		const body = PhysicBodyManager.getByName(key);
+		const body = PhysicBodyManager.getById(id);
 		if (body) return body as PointMass;
 
 		const pointmass = new PointMass(config.props);
 		pointmass.renderer = new PointMassRenderer(pointmass, config.renderer);
-		PhysicBodyManager.addBody(pointmass, key);
+		PhysicBodyManager.addBody(pointmass, id);
 		return pointmass;
 	}
 	
 	private static loadRigidConstraintConfig(
 		state: PhysicBodyState,
-		key: string,
+		id: string,
 		config: PhysicBodyConfig
 	): RigidConstraint {
-		const body = PhysicBodyManager.getByName(key);
+		const body = PhysicBodyManager.getById(id);
 		if (body) return body as RigidConstraint;
 
 		const {
-			pointmass1: pm1_key,
-			pointmass2: pm2_key
+			pointmass1: pm1_id,
+			pointmass2: pm2_id
 		} = config.dependencies as {
 			pointmass1: string,
 			pointmass2: string
 		};
 
 		// TODO: better error handling message
-		if (!pm1_key || !state[pm1_key]) throw new Error("Pointmass1 not found");
-		if (!pm2_key || !state[pm2_key]) throw new Error("Pointmass2 not found");
+		if (!pm1_id || !state[pm1_id]) throw new Error("Pointmass1 not found");
+		if (!pm2_id || !state[pm2_id]) throw new Error("Pointmass2 not found");
+		const pm1 = PhysicBodyManager.loadBodyFromConfig(state, pm1_id) as PointMass;
+		const pm2 = PhysicBodyManager.loadBodyFromConfig(state, pm2_id) as PointMass;
 
-		const pm1 = PhysicBodyManager.loadBodyFromConfig(state, pm1_key) as PointMass;
-		const pm2 = PhysicBodyManager.loadBodyFromConfig(state, pm2_key) as PointMass;
 		const rigid_constraint = new RigidConstraint(pm1, pm2, config.props);
 		rigid_constraint.renderer = new RigidConstraintRenderer(rigid_constraint, config.renderer);
-		PhysicBodyManager.addBody(rigid_constraint, key);
+		PhysicBodyManager.addBody(rigid_constraint, id);
 		return rigid_constraint;
 	}
 
@@ -160,44 +149,53 @@ export default class PhysicBodyManager {
 
 	// ============================== Body dependency ==============================
 
-	private static setDependency(child_name: string, parent: Record<string, string>): void {
-		PhysicBodyManager.dependency_table.set(child_name, parent);
+	private static setDependency(child_id: string, parent: Record<string, string>): void {
+		PhysicBodyManager.dependency_table.set(child_id, parent);
 	}
 
-	private static getDependency(child_name: string): Record<string, string> | null {
-		return PhysicBodyManager.dependency_table.get(child_name) || null;
+	private static getDependency(child_id: string): Record<string, string> | null {
+		return PhysicBodyManager.dependency_table.get(child_id) || null;
 	}
 
-	private static hasDependency(child_name: string): boolean {
-		return PhysicBodyManager.dependency_table.has(child_name);
+	private static hasDependency(child_id: string): boolean {
+		return PhysicBodyManager.dependency_table.has(child_id);
 	}
 
-	private static getDependentBodies(parent_name: string): string[] {
+	private static getDependentBodies(parent_id: string): string[] {
 		return Array.from(PhysicBodyManager.dependency_table.entries())
-			.filter(([_, parent]) => Object.values(parent).includes(parent_name))
+			.filter(([_, parent]) => Object.values(parent).includes(parent_id))
 			.map(([child]) => child);
 	}
 
 	// ============================== Body creation ==============================
 
-	static addPointMass(position: Vec2, name: string = ""): string {
+	static addBody(body: PhysicBody, id: string = ""): string {
+		id = id || "__body" + PhysicBodyManager.seed;
+		body.setId(id);
+		PhysicBodyManager.bodies[id] = body;
+		PhysicBodyManager.seed++;
+		if (!PhysicBodyManager.hasDependency(id)) {
+			PhysicBodyManager.setDependency(id, {});
+		}
+		return id;
+	}
+
+	static createPointMass(position: Vec2): string {
 		const pointmass = new PointMass({ position });
-		const body_name = PhysicBodyManager.addBody(pointmass, name);
+		const body_name = PhysicBodyManager.addBody(pointmass);
 		PhysicBodyManager.setDependency(body_name, {});
 		return body_name;
 	}
 
-	static addRigidConstraint(pointmass1: PointMass, pointmass2: PointMass): string {
-		// TODO: implement id in each body for better id accessing without searching
+	static createRigidConstraint(
+		pointmass1: PointMass, 
+		pointmass2: PointMass
+	): string {
 		const rigid_constraint = new RigidConstraint(pointmass1, pointmass2);
-		const pm1_name = PhysicBodyManager.getName(pointmass1) || "";
-		const pm2_name = PhysicBodyManager.getName(pointmass2) || "";
-		
-		// TODO: why not adding name while addPointMass has it?
 		const body_name = PhysicBodyManager.addBody(rigid_constraint);
 		PhysicBodyManager.setDependency(body_name, { 
-			pointmass1: pm1_name, 
-			pointmass2: pm2_name 
+			pointmass1: pointmass1.getId()!, 
+			pointmass2: pointmass2.getId()! 
 		});
 		return body_name;
 	}
@@ -205,15 +203,12 @@ export default class PhysicBodyManager {
 	// ============================== Body update ==============================
 
 	static updateConnectedConstraints(pointmass: PointMass): void {
-		const name = PhysicBodyManager.getName(pointmass);
-		if (!name) return;
+		const pm_name = pointmass.getId();
+		if (!pm_name) throw new Error("Pointmass has no id");
 		
-		PhysicBodyManager.getDependentBodies(name)
-			.map(child => PhysicBodyManager.getByName(child))
-			.filter((child): child is RigidConstraint => 
-				child !== null && child.type === PhysicBodyType.RIGID_CONSTRAINT)
-			.forEach(rigid => {
-				rigid.calculateRestDistance();
-			});
+		PhysicBodyManager.getDependentBodies(pm_name) // dependent names
+			.map(child => PhysicBodyManager.getById(child)) // dependent bodies
+			.filter((child): child is RigidConstraint => child !== null && child.getType() === PhysicBodyType.RIGID_CONSTRAINT)
+			.forEach(rigid => rigid.calculateRestDistance());
 	}
 }
