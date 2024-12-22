@@ -32,7 +32,6 @@ export default function App() {
 	};
 
 	const [initial_state, setInitialState] = useState<PhysicBodyState>(state);
-
 	const [canvas, setCanvas] = useState<{
 		base_canvas: Canvas | null, 
 		overlay_canvas: Canvas | null
@@ -40,8 +39,8 @@ export default function App() {
 		base_canvas: null, 
 		overlay_canvas: null
 	});
-
 	const onCanvasMounted = useCallback(setCanvas, []);
+	const [mode, setMode] = useState<ModeType>(ModeType.MOVE);
 
 	const update = (dt: number, _sub_steps: number) => {
 		const bodies = PhysicBodyManager.getAllBodies();
@@ -91,6 +90,7 @@ export default function App() {
 		}, { sub_steps: 1000, constant_dt: null, });
 		PhysicBodyManager.init(state);
 		ModeManager.init();
+		ModeManager.setOnModeChange(setMode);
 		InputManager.onMouseMove(() => {
 			ModeManager.onMouseMove();
 			renderUI();
@@ -107,7 +107,7 @@ export default function App() {
 		{/* TODO: remove current_mode_type from ModeManager
 		And make mode type here reactive */}
 		<p style={{color: "white"}}>
-			Mode: {ModeManager.getCurrentModeType() ?? "None"}
+			Mode: {mode ?? "None"}
 		</p>
 		<button onClick={() => LoopManager.run()}>Run</button>
 		<button onClick={() => LoopManager.pause()}>Pause</button>
