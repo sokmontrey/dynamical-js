@@ -6,14 +6,15 @@ import { MouseButton } from "../manager/InputManager.ts";
 
 export enum ModeType {
     MOVE = "Move",
-    CREATE_POINTMASS = "CreatePointMass",
-    CREATE_RIGID_CONSTRAINT = "CreateRigidConstraint",
+    CREATE_POINTMASS = "Create Point Mass",
+    CREATE_RIGID_CONSTRAINT = "Create Rigid Constraint",
 }
 
 export default class ModeManager {
     private static current_mode_type: ModeType;
     private static current_mode: Mode;
     private static initialized: boolean = false;
+    private static on_mode_change: (mode_type: ModeType) => void = () => {};
 
     private constructor() {} // Prevent instantiation
 
@@ -45,6 +46,7 @@ export default class ModeManager {
     private static toMode(mode: Mode, mode_type: ModeType): void {
         ModeManager.current_mode = mode;
         ModeManager.current_mode_type = mode_type;
+        ModeManager.on_mode_change(mode_type);
     }
 
     //================================ Mouse Events ================================
@@ -63,6 +65,10 @@ export default class ModeManager {
 
     static onMouseClick(button: MouseButton): void {
         ModeManager.current_mode.onMouseClick(button);
+    }
+
+    static setOnModeChange(callback: (mode_type: ModeType) => void): void {
+        ModeManager.on_mode_change = callback;
     }
 
     //================================ Getters ================================
