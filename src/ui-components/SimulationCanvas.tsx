@@ -1,14 +1,13 @@
 import { useEffect, useRef } from "react";
 import Canvas from "../core/Canvas";
-import InputManager from "../core/InputManager";
 
 export interface SimulationCanvasProps {
-	container_id: string;
+	container_id?: string;
     onCanvasMounted: (base_canvas: Canvas, overlay_canvas: Canvas) => void;
 }
 
 export default function SimulationCanvas({ 
-    container_id, 
+    container_id = "", 
     onCanvasMounted
 }: SimulationCanvasProps) {
     const base_canvas_ref = useRef<HTMLCanvasElement>(null);
