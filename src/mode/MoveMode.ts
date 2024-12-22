@@ -79,7 +79,7 @@ export default class MoveMode extends Mode {
     }
 
     private moveBody(body: PhysicBody, position: Vec2): void {
-        if (body.type === PhysicBodyType.POINT_MASS) {
+        if (body.getType() === PhysicBodyType.POINT_MASS) {
             const pointmass = body as PointMass;
             pointmass.moveTo(position);
             if (!LoopManager.isRunning()) {
