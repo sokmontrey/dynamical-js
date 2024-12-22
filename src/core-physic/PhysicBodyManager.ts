@@ -73,7 +73,7 @@ export default class PhysicBodyManager {
 		return state;
 	}
 
-	private static loadFromState(state: PhysicBodyState): void {
+	static loadFromState(state: PhysicBodyState): void {
 		PhysicBodyManager.clear();
 		for (const key in state) {
 			PhysicBodyManager.loadBodyFromConfig(state, key);

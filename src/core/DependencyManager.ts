@@ -38,7 +38,7 @@ export default class DependencyManager {
             .map(([child]) => child);
     }
 
-    private static loadFromState(state: PhysicBodyState): void {
+    static loadFromState(state: PhysicBodyState): void {
         DependencyManager.clear();
         for(const key in state){
             DependencyManager.setDependency(key, state[key].dependencies || {});
