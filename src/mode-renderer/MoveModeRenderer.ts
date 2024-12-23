@@ -4,6 +4,7 @@ import Vec2 from "../utils/Vector.ts";
 import ShapeStyle from "../style/ShapeStyle.ts";
 import Draw from "../core/Draw.ts";
 import ModeRenderer from "./ModeRenderer.ts";
+import InputManager from "../manager/InputManager.ts";
 
 export default class MoveModeRenderer extends ModeRenderer {
     public drag_rectangle: ShapeStyle = new ShapeStyle({
@@ -19,7 +20,9 @@ export default class MoveModeRenderer extends ModeRenderer {
         this.drawHoveredBody(ctx, _mode.getHoveredBody());
         this.drawSelectedBodies(ctx, _mode.getSelectedBodies());
         if (_mode.isDragging() && !_mode.isMouseDownOnSelectedBody()) {
-            this.drawDraggingBox(ctx, _mode.getMouseDownPosition(), _mode.getMouseCurrentPosition());
+            this.drawDraggingBox(ctx, 
+                InputManager.getMouseDownPosition(), 
+                InputManager.getMousePosition());
         }
     }
 

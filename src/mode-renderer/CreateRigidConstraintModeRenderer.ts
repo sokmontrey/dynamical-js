@@ -4,6 +4,7 @@ import LineStyle from "../style/LineStyle.ts";
 import Vec2 from "../utils/Vector.ts";
 import Draw from "../core/Draw.ts";
 import ModeRenderer from "./ModeRenderer.ts";
+import InputManager from "../manager/InputManager.ts";
 
 export default class CreateRigidConstraintModeRenderer extends ModeRenderer {
     public constraint_line: LineStyle = new LineStyle({
@@ -16,7 +17,7 @@ export default class CreateRigidConstraintModeRenderer extends ModeRenderer {
     ): void {
         const _mode = this.mode as CreateRigidConstraintMode;
         this.drawHoveredPointMass(ctx, _mode.getHoveredPointMass());
-        this.drawSelectedPointMass(ctx, _mode.getFirstPointMass(), _mode.getMouseCurrentPosition());
+        this.drawSelectedPointMass(ctx, _mode.getFirstPointMass(), InputManager.getMousePosition());
     }
 
     private drawHoveredPointMass(

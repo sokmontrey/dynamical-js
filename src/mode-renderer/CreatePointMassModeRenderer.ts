@@ -1,8 +1,8 @@
 import CircleStyle from "../style/CircleStyle.ts";
 import Draw from "../core/Draw.ts";
 import Vec2 from "../utils/Vector.ts";
-import CreatePointMassMode from "../mode/CreatePointMassMode.ts";
 import ModeRenderer from "./ModeRenderer.ts";
+import InputManager from "../manager/InputManager.ts";
 
 export default class CreatePointMassModeRenderer extends ModeRenderer {
     public hint_circle: CircleStyle = new CircleStyle({
@@ -16,8 +16,7 @@ export default class CreatePointMassModeRenderer extends ModeRenderer {
     public draw(
         ctx: CanvasRenderingContext2D,
     ): void {
-        const _mode = this.mode as CreatePointMassMode;
-        this.drawCursor(ctx, _mode.getMouseCurrentPosition());
+        this.drawCursor(ctx, InputManager.getMousePosition());
     }
 
     private drawCursor(
