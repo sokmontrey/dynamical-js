@@ -41,6 +41,7 @@ export default function App() {
 	});
 	const onCanvasMounted = useCallback(setCanvas, []);
 	const [mode, setMode] = useState<ModeType>(ModeType.MOVE);
+	const [body_ids, setBodyIds] = useState<string[]>([]);
 
 	const update = (dt: number, _sub_steps: number) => {
 		const bodies = PhysicBodyManager.getAllBodies();
@@ -88,6 +89,7 @@ export default function App() {
 			renderPhysics(sub_steps);
 			renderUI();
 		}, { sub_steps: 1000, constant_dt: null, });
+		PhysicBodyManager.setOnTreeChange(setBodyIds);
 		PhysicBodyManager.init(state);
 		ModeManager.init();
 		ModeManager.setOnModeChange(setMode);
@@ -103,6 +105,10 @@ export default function App() {
 
 	return (<>
 		<SimulationCanvas onCanvasMounted={onCanvasMounted} />
+
+		<p style={{color: "white"}}>
+			{body_ids.join(", ")}
+		</p>
 
 		{/* TODO: remove current_mode_type from ModeManager
 		And make mode type here reactive */}

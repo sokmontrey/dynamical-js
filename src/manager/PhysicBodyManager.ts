@@ -6,11 +6,14 @@ import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer.ts";
 import PhysicBodyState, { PhysicBodyConfig } from "../core/PhysicBodyState.ts";
 
+type TreeChangeCallback = (body_ids: string[]) => void;
+
 export default class PhysicBodyManager {
 	private static bodies: Record<string, PhysicBody> = {};
 	private static seed: number = 0;
 	private static initialized: boolean = false;
 	private static dependency_table: Map<string, Record<string, string>> = new Map();
+	private static on_tree_change: TreeChangeCallback = () => {};
 
 	private constructor() {} // Prevent instantiation
 
@@ -21,12 +24,19 @@ export default class PhysicBodyManager {
 		PhysicBodyManager.loadFromState(state);
 	}
 
+	static setOnTreeChange(callback: TreeChangeCallback): void {
+		PhysicBodyManager.on_tree_change = callback;
+	}
+
 	static removeBody(body_id: string): void {
 		if (!body_id) return;
 		const dependent_ids = PhysicBodyManager.getDependentBodies(body_id);
 		dependent_ids.forEach(dependent_id => PhysicBodyManager.removeBody(dependent_id));
+		const body = PhysicBodyManager.getById(body_id);
+		if (!body) return;
 		delete PhysicBodyManager.bodies[body_id];
 		PhysicBodyManager.dependency_table.delete(body_id);
+		PhysicBodyManager.on_tree_change(PhysicBodyManager.getAllBodyIds());
 	}
 
 	// ============================== Getters ==============================
@@ -67,6 +77,10 @@ export default class PhysicBodyManager {
 			};
 		}
 		return state;
+	}
+
+	static getAllBodyIds(): string[] {
+		return Object.keys(PhysicBodyManager.bodies);
 	}
 
 	// ============================== Loaders ==============================
@@ -171,13 +185,14 @@ export default class PhysicBodyManager {
 	// ============================== Body creation ==============================
 
 	static addBody(body: PhysicBody, id: string = ""): string {
-		id = id || "__body" + PhysicBodyManager.seed;
+		id = id || body.getType().toString() + PhysicBodyManager.seed;
 		body.setId(id);
 		PhysicBodyManager.bodies[id] = body;
 		PhysicBodyManager.seed++;
 		if (!PhysicBodyManager.hasDependency(id)) {
 			PhysicBodyManager.setDependency(id, {});
 		}
+		PhysicBodyManager.on_tree_change(PhysicBodyManager.getAllBodyIds());
 		return id;
 	}
 
@@ -207,9 +222,10 @@ export default class PhysicBodyManager {
 		const pm_name = pointmass.getId();
 		if (!pm_name) throw new Error("Pointmass has no id");
 		
-		PhysicBodyManager.getDependentBodies(pm_name) // dependent names
-			.map(child => PhysicBodyManager.getById(child)) // dependent bodies
-			.filter((child): child is RigidConstraint => child !== null && child.getType() === PhysicBodyType.RIGID_CONSTRAINT)
+		PhysicBodyManager.getDependentBodies(pm_name)
+			.map(child => PhysicBodyManager.getById(child))
+			.filter((child): child is RigidConstraint => 
+				child !== null && child.getType() === PhysicBodyType.RIGID_CONSTRAINT)
 			.forEach(rigid => rigid.calculateRestDistance());
 	}
 }
