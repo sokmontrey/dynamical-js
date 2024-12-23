@@ -9,6 +9,8 @@ import PhysicBodyManager from "./manager/PhysicBodyManager.ts";
 import ModeManager, { ModeType } from "./mode/ModeManager.ts";
 import LoopManager from "./manager/LoopManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
+import BodyTreePanel from "./ui-components/BodyTreePanel.tsx";
+import MoveMode from "./mode/MoveMode.ts";
 
 export default function App() {
 	// TODO: move this to a separate file
@@ -103,18 +105,24 @@ export default function App() {
 		LoopManager.run();
 	}, [canvas]);
 
+	// TODO: should I put this directly inside the component?
+	const onBodySelected = (body_id: string) => {
+		if (ModeManager.getCurrentModeType() !== ModeType.MOVE) 
+			ModeManager.toMoveMode();
+		const move_mode = ModeManager.getCurrentMode() as MoveMode;
+		const body = PhysicBodyManager.getById(body_id);
+		if (!body) return;
+		if (!InputManager.isKeyDown("Shift")) 
+			move_mode.resetSelectedBodies();
+		move_mode.addBodyToSelection(body);
+		renderUI();
+	}
+
 	return (<>
 		<SimulationCanvas onCanvasMounted={onCanvasMounted} />
+		<BodyTreePanel body_ids={body_ids} onBodySelected={onBodySelected} />
 
-		<p style={{color: "white"}}>
-			{body_ids.join(", ")}
-		</p>
-
-		{/* TODO: remove current_mode_type from ModeManager
-		And make mode type here reactive */}
-		<p style={{color: "white"}}>
-			Mode: {mode ?? "None"}
-		</p>
+		<p> Mode: {mode ?? "None"} </p>
 		<button onClick={() => LoopManager.run()}>Run</button>
 		<button onClick={() => LoopManager.pause()}>Pause</button>
 		<button onClick={() => resetState()}>Reset</button>

@@ -18,7 +18,7 @@ export default class MoveMode extends Mode {
     private body_mouse_down_on: PhysicBody | null = null;
     private mouse_body_offset: Map<PhysicBody, Vec2> | null = null;
 
-    private resetSelectedBodies(): void {
+    resetSelectedBodies(): void {
         this.selected_bodies = new Set<PhysicBody>();
     }
 
