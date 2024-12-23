@@ -18,22 +18,22 @@ export default class MoveMode extends Mode {
     private body_mouse_down_on: PhysicBody | null = null;
     private mouse_body_offset: Map<PhysicBody, Vec2> | null = null;
 
-    private resetSelectedBodies(): void {
-        this.selected_bodies = new Set<PhysicBody>();
+    resetSelectedBodies(): void {
+        this.selected_bodies.clear();
     }
 
-    private addHoveredBody(): void {
-        if (!this.hovered_body) return;
-        if (this.selected_bodies.has(this.hovered_body)) // an option to remove selected body
-            this.selected_bodies.delete(this.hovered_body);
-        else
-            this.selected_bodies.add(this.hovered_body);
+    selectBody(body: PhysicBody): void {
+        if (this.selected_bodies.has(body)) {
+            this.selected_bodies.delete(body);
+        } else {
+            this.selected_bodies.add(body);
+        }
     }
 
     onMouseClick(button: MouseButton): void {
         if (button == MouseButton.LEFT) {
             if (!InputManager.isKeyDown("Shift")) this.resetSelectedBodies();
-            this.addHoveredBody();
+            if (this.hovered_body) this.selectBody(this.hovered_body);
         }
     }
 
@@ -94,7 +94,7 @@ export default class MoveMode extends Mode {
             this.onMouseDownOnSelectedBody();
         } else if (this.isMouseDownOnBody()) {
             if (this.selected_bodies.size) this.resetSelectedBodies();
-            this.selected_bodies.add(this.body_mouse_down_on!);
+            this.selectBody(this.body_mouse_down_on!);
             this.onMouseDownOnSelectedBody();
         }
     }
@@ -134,7 +134,7 @@ export default class MoveMode extends Mode {
         }
         
         PhysicBodyManager.getSelectedBodies(lower, upper)
-            .forEach(body => this.selected_bodies.add(body));
+            .forEach(body => this.selectBody(body));
     }
 
     getSelectedBodies(): Set<PhysicBody> {

@@ -9,6 +9,8 @@ import PhysicBodyManager from "./manager/PhysicBodyManager.ts";
 import ModeManager, { ModeType } from "./mode/ModeManager.ts";
 import LoopManager from "./manager/LoopManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
+import BodyTreePanel from "./ui-components/BodyTreePanel.tsx";
+import MoveMode from "./mode/MoveMode.ts";
 
 export default function App() {
 	// TODO: move this to a separate file
@@ -41,6 +43,7 @@ export default function App() {
 	});
 	const onCanvasMounted = useCallback(setCanvas, []);
 	const [mode, setMode] = useState<ModeType>(ModeType.MOVE);
+	const [body_ids, setBodyIds] = useState<string[]>([]);
 
 	const update = (dt: number, _sub_steps: number) => {
 		const bodies = PhysicBodyManager.getAllBodies();
@@ -88,6 +91,7 @@ export default function App() {
 			renderPhysics(sub_steps);
 			renderUI();
 		}, { sub_steps: 1000, constant_dt: null, });
+		PhysicBodyManager.setOnTreeChange(setBodyIds);
 		PhysicBodyManager.init(state);
 		ModeManager.init();
 		ModeManager.setOnModeChange(setMode);
@@ -103,12 +107,9 @@ export default function App() {
 
 	return (<>
 		<SimulationCanvas onCanvasMounted={onCanvasMounted} />
+		<BodyTreePanel body_ids={body_ids} renderUI={renderUI} />
 
-		{/* TODO: remove current_mode_type from ModeManager
-		And make mode type here reactive */}
-		<p style={{color: "white"}}>
-			Mode: {mode ?? "None"}
-		</p>
+		<p> Mode: {mode ?? "None"} </p>
 		<button onClick={() => LoopManager.run()}>Run</button>
 		<button onClick={() => LoopManager.pause()}>Pause</button>
 		<button onClick={() => resetState()}>Reset</button>

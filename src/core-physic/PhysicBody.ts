@@ -6,8 +6,8 @@ import Serializable from "../core/Serializable.ts";
 export interface PhysicBodyProps { }
 
 export enum PhysicBodyType {
-	POINT_MASS,
-	RIGID_CONSTRAINT,
+	POINT_MASS = "point_mass",
+	RIGID_CONSTRAINT = "rigid_constraint",
 }
 
 export default abstract class PhysicBody implements Serializable<PhysicBodyProps> {
