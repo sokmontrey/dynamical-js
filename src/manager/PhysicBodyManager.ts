@@ -21,11 +21,12 @@ export default class PhysicBodyManager {
 		PhysicBodyManager.loadFromState(state);
 	}
 
-	static removeBody(body: PhysicBody): void {
-		const key = Object.keys(PhysicBodyManager.bodies).find(key => PhysicBodyManager.bodies[key] === body);
-		if (key) delete PhysicBodyManager.bodies[key];
-		// TODO: cascade pointmass delete to also delete constraints
-		// TRY: PhysicBody.isUsingBody(body) to check if body is used by other bodies
+	static removeBody(body_id: string): void {
+		if (!body_id) return;
+		const dependent_ids = PhysicBodyManager.getDependentBodies(body_id);
+		dependent_ids.forEach(dependent_id => PhysicBodyManager.removeBody(dependent_id));
+		delete PhysicBodyManager.bodies[body_id];
+		PhysicBodyManager.dependency_table.delete(body_id);
 	}
 
 	// ============================== Getters ==============================
@@ -163,8 +164,8 @@ export default class PhysicBodyManager {
 
 	private static getDependentBodies(parent_id: string): string[] {
 		return Array.from(PhysicBodyManager.dependency_table.entries())
-			.filter(([_, parent]) => Object.values(parent).includes(parent_id))
-			.map(([child]) => child);
+			.filter(([_, deps]) => Object.values(deps).includes(parent_id))
+			.map(([child_id]) => child_id);
 	}
 
 	// ============================== Body creation ==============================
