@@ -1,21 +1,38 @@
+import InputManager from "../manager/InputManager";
+import PhysicBodyManager from "../manager/PhysicBodyManager";
+import ModeManager, { ModeType } from "../mode/ModeManager";
+import MoveMode from "../mode/MoveMode";
+
 export interface BodyTreePanelProps {
 	body_ids: string[];
-	onBodySelected: (body_id: string) => void;
+	renderUI: () => void;
 }
 
 export default function BodyTreePanel({ 
 	body_ids, 
-	onBodySelected 
+	renderUI,
 }: BodyTreePanelProps) {
+
+	const onBodyClicked = (body_id: string) => {
+		if (ModeManager.getCurrentModeType() !== ModeType.MOVE) 
+			ModeManager.toMoveMode();
+		const move_mode = ModeManager.getCurrentMode() as MoveMode;
+		const body = PhysicBodyManager.getById(body_id);
+		if (!body) return;
+		if (!InputManager.isKeyDown("Shift")) 
+			move_mode.resetSelectedBodies();
+		move_mode.selectBody(body);
+		renderUI();
+	};
+
 	return <div>
 		<p>Body Tree</p>
-		<ul>
+		<div>
 			{body_ids.map(id => 
-				<li key={id}>
-					<button onClick={() => onBodySelected(id)}>
-						{id}
-					</button>
-				</li>)}
-		</ul>
+				<button key={id} onClick={() => onBodyClicked(id)}>
+					{id}
+				</button>
+			)}
+		</div>
 	</div>;
 }

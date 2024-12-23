@@ -19,11 +19,11 @@ export default class MoveMode extends Mode {
     private mouse_body_offset: Map<PhysicBody, Vec2> | null = null;
 
     resetSelectedBodies(): void {
-        this.selected_bodies = new Set<PhysicBody>();
+        this.selected_bodies.clear();
     }
 
-    addBodyToSelection(body: PhysicBody): void {
-        if (this.selected_bodies.has(body)) { // an option to remove selected body
+    selectBody(body: PhysicBody): void {
+        if (this.selected_bodies.has(body)) {
             this.selected_bodies.delete(body);
         } else {
             this.selected_bodies.add(body);
@@ -33,7 +33,7 @@ export default class MoveMode extends Mode {
     onMouseClick(button: MouseButton): void {
         if (button == MouseButton.LEFT) {
             if (!InputManager.isKeyDown("Shift")) this.resetSelectedBodies();
-            if (this.hovered_body) this.addBodyToSelection(this.hovered_body);
+            if (this.hovered_body) this.selectBody(this.hovered_body);
         }
     }
 

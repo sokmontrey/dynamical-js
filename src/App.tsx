@@ -105,22 +105,9 @@ export default function App() {
 		LoopManager.run();
 	}, [canvas]);
 
-	// TODO: should I put this directly inside the component?
-	const onBodySelected = (body_id: string) => {
-		if (ModeManager.getCurrentModeType() !== ModeType.MOVE) 
-			ModeManager.toMoveMode();
-		const move_mode = ModeManager.getCurrentMode() as MoveMode;
-		const body = PhysicBodyManager.getById(body_id);
-		if (!body) return;
-		if (!InputManager.isKeyDown("Shift")) 
-			move_mode.resetSelectedBodies();
-		move_mode.addBodyToSelection(body);
-		renderUI();
-	}
-
 	return (<>
 		<SimulationCanvas onCanvasMounted={onCanvasMounted} />
-		<BodyTreePanel body_ids={body_ids} onBodySelected={onBodySelected} />
+		<BodyTreePanel body_ids={body_ids} renderUI={renderUI} />
 
 		<p> Mode: {mode ?? "None"} </p>
 		<button onClick={() => LoopManager.run()}>Run</button>
