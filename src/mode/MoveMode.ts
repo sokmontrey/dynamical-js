@@ -48,9 +48,9 @@ export default class MoveMode extends Mode {
     private checkDragging(): void {
         const mouse_pos = InputManager.getMousePosition();
         const diff = mouse_pos.distance(InputManager.getMouseDownPosition());
-        // TODO: get drag threshold from somewhere
-        // implement drag threshold in InputManager
-        this.is_mouse_dragging = diff > 5 && InputManager.isMouseDown(); 
+        this.is_mouse_dragging = 
+            diff > InputManager.getDragThreshold() && 
+            InputManager.isMouseDown(); 
     }
 
     private checkHoveredBody(): void {

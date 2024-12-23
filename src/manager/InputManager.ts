@@ -11,6 +11,7 @@ type MouseEventHandler = (button: MouseButton) => void;
 type MousePositionHandler = () => void;
 
 export default class InputManager {
+    private static drag_threshold: number = 5;
     private static mouse_position: Vec2 = Vec2.zero();
     private static is_mouse_down: boolean = false;
     private static mouse_down_pos: Vec2 = Vec2.zero();
@@ -147,5 +148,15 @@ export default class InputManager {
         InputManager.mouse_down_handlers.clear();
         InputManager.mouse_up_handlers.clear();
         InputManager.mouse_click_handlers.clear();
+    }
+
+    //================================ Setters ================================
+
+    static setDragThreshold(threshold: number): void {
+        InputManager.drag_threshold = threshold;
+    }   
+
+    static getDragThreshold(): number {
+        return InputManager.drag_threshold;
     }
 }
