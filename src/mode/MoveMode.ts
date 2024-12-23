@@ -94,7 +94,7 @@ export default class MoveMode extends Mode {
             this.onMouseDownOnSelectedBody();
         } else if (this.isMouseDownOnBody()) {
             if (this.selected_bodies.size) this.resetSelectedBodies();
-            this.selected_bodies.add(this.body_mouse_down_on!);
+            this.selectBody(this.body_mouse_down_on!);
             this.onMouseDownOnSelectedBody();
         }
     }
@@ -134,7 +134,7 @@ export default class MoveMode extends Mode {
         }
         
         PhysicBodyManager.getSelectedBodies(lower, upper)
-            .forEach(body => this.selected_bodies.add(body));
+            .forEach(body => this.selectBody(body));
     }
 
     getSelectedBodies(): Set<PhysicBody> {
