@@ -1,5 +1,3 @@
-import Vec2 from "./utils/Vector.ts";
-import {PhysicBodyType} from "./core-physic/PhysicBody.ts";
 import PhysicBodyState from "./core/PhysicBodyState.ts";
 import SimulationCanvas from "./ui-components/SimulationCanvas.tsx";
 import { useCallback, useEffect, useState } from "react";
@@ -11,29 +9,10 @@ import LoopManager from "./manager/LoopManager.ts";
 import SelectButton from "./ui-components/SelectButton.tsx";
 import BodyTreePanel from "./ui-components/BodyTreePanel.tsx";
 import MoveMode from "./mode/MoveMode.ts";
+import simple_pendulum_state from "./states/simple-pendulum.ts";
 
 export default function App() {
-	// TODO: move this to a separate file
-	const state: PhysicBodyState = {
-		"point1": {
-			type: PhysicBodyType.POINT_MASS,
-			props: { is_static: true, },
-			renderer: {
-				static_position: { radius: 5, fill_color: "red" },
-			}
-		},
-		"point2": {
-			type: PhysicBodyType.POINT_MASS,
-			props: { position: Vec2.right(100), }
-		},
-		"rigid1": {
-			type: PhysicBodyType.RIGID_CONSTRAINT,
-			dependencies: { pointmass1: "point1", pointmass2: "point2", },
-			props: { is_broken: false, }
-		},
-	};
-
-	const [initial_state, setInitialState] = useState<PhysicBodyState>(state);
+	const [initial_state, setInitialState] = useState<PhysicBodyState>(simple_pendulum_state);
 	const [canvas, setCanvas] = useState<{
 		base_canvas: Canvas | null, 
 		overlay_canvas: Canvas | null
@@ -93,7 +72,7 @@ export default function App() {
 			renderUI();
 		}, { sub_steps: 1000, constant_dt: null, });
 		PhysicBodyManager.setOnTreeChange(setBodyIds);
-		PhysicBodyManager.init(state);
+		PhysicBodyManager.init(initial_state);
 		ModeManager.init();
 		ModeManager.setOnModeChange(mode => {
 			setMode(mode);
