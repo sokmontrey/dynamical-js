@@ -52,15 +52,7 @@ export default class MoveMode extends Mode {
         // TODO: impl getMouseButton on InputManager
         this.mouse_down_button = _button;
         this.body_mouse_down_on = this.hovered_body;
-        if (this.isMouseDownOnSelectedBody()) {
-            this.updateBodiesOffset();
-        } else if (this.isMouseDownOnBody()) {
-            if (this.selected_bodies.size && !InputManager.isKeyDown("Shift")) {
-                this.resetSelectedBodies();
-                this.selectBody(this.body_mouse_down_on!);
-            }
-            this.updateBodiesOffset();
-        }
+        if (this.isMouseDownOnSelectedBody()) this.updateBodiesOffset();
     }
 
     onMouseUp(_button: MouseButton): void {
