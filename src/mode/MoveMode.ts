@@ -24,18 +24,19 @@ export default class MoveMode extends Mode {
     }
 
     selectBody(body: PhysicBody | null): void {
-        if (body) this.selected_bodies.add(body);
-    }
-
-    unselectBody(body: PhysicBody | null): void {
-        if (body) this.selected_bodies.delete(body);
+        if (!body) return;
+        if (this.selected_bodies.has(body)) {
+            this.selected_bodies.delete(body);
+        } else {
+            this.selected_bodies.add(body);
+        }
     }
 
     onMouseClick(button: MouseButton): void {
         if (button == MouseButton.LEFT) {
-            console.log("click");
             if (!InputManager.isKeyDown("Shift")) this.resetSelectedBodies();
             this.selectBody(this.hovered_body);
+            LoopManager.render();
         }
     }
 
@@ -44,25 +45,29 @@ export default class MoveMode extends Mode {
         this.checkDragging();
         if (this.is_mouse_dragging && this.isMouseDownOnSelectedBody()) {
             this.moveSelectedBodies();
-        } else if (this.is_mouse_dragging && !this.isMouseDownOnBody()) {
-            this.onSelectDragged();
-        }
+        } 
     }
 
     onMouseDown(_button: MouseButton): void {
+        // TODO: impl getMouseButton on InputManager
         this.mouse_down_button = _button;
         this.body_mouse_down_on = this.hovered_body;
         if (this.isMouseDownOnSelectedBody()) {
-            this.onMouseDownOnSelectedBody();
+            this.updateBodiesOffset();
         } else if (this.isMouseDownOnBody()) {
-            if (this.selected_bodies.size) this.resetSelectedBodies();
-            this.selectBody(this.body_mouse_down_on!);
-            this.onMouseDownOnSelectedBody();
+            if (this.selected_bodies.size && !InputManager.isKeyDown("Shift")) {
+                this.resetSelectedBodies();
+                this.selectBody(this.body_mouse_down_on!);
+            }
+            this.updateBodiesOffset();
         }
     }
 
     onMouseUp(_button: MouseButton): void {
         if (!this.is_mouse_dragging) return;
+        if (this.is_mouse_dragging && !this.isMouseDownOnBody()) {
+            this.onSelectDragged();
+        }
         this.body_mouse_down_on = null;
         this.mouse_body_offset = null;
         this.is_mouse_dragging = false;
@@ -82,7 +87,7 @@ export default class MoveMode extends Mode {
         this.hovered_body = hovered_bodies.length ? hovered_bodies[0] : null;
     }
 
-    private onMouseDownOnSelectedBody(): void {
+    private updateBodiesOffset(): void {
         this.mouse_body_offset = new Map<PhysicBody, Vec2>();
         const mouse_pos = InputManager.getMousePosition();
         this.selected_bodies.forEach(body => {
