@@ -53,7 +53,12 @@ export default class InputManager {
             if (!InputManager.is_mouse_down) return;
             InputManager.is_mouse_down = false;
             InputManager.notifyMouseUp(e);
-            InputManager.notifyMouseClick(e);
+            // deal with threshold
+            const current_pos = InputManager.mouse_position;
+            const delta = current_pos.sub(InputManager.mouse_down_pos);
+            if (delta.mag() < InputManager.drag_threshold) {
+                InputManager.notifyMouseClick(e);
+            }
         });
     }
 

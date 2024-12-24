@@ -15,6 +15,7 @@ export default class MoveMode extends Mode {
     private hovered_body: PhysicBody | null = null;
 
     private is_mouse_dragging: boolean = false;
+    private mouse_down_button: MouseButton | null = null;
     private body_mouse_down_on: PhysicBody | null = null;
     private mouse_body_offset: Map<PhysicBody, Vec2> | null = null;
 
@@ -22,18 +23,19 @@ export default class MoveMode extends Mode {
         this.selected_bodies.clear();
     }
 
-    selectBody(body: PhysicBody): void {
-        if (this.selected_bodies.has(body)) {
-            this.selected_bodies.delete(body);
-        } else {
-            this.selected_bodies.add(body);
-        }
+    selectBody(body: PhysicBody | null): void {
+        if (body) this.selected_bodies.add(body);
+    }
+
+    unselectBody(body: PhysicBody | null): void {
+        if (body) this.selected_bodies.delete(body);
     }
 
     onMouseClick(button: MouseButton): void {
         if (button == MouseButton.LEFT) {
+            console.log("click");
             if (!InputManager.isKeyDown("Shift")) this.resetSelectedBodies();
-            if (this.hovered_body) this.selectBody(this.hovered_body);
+            this.selectBody(this.hovered_body);
         }
     }
 
@@ -42,7 +44,28 @@ export default class MoveMode extends Mode {
         this.checkDragging();
         if (this.is_mouse_dragging && this.isMouseDownOnSelectedBody()) {
             this.moveSelectedBodies();
+        } else if (this.is_mouse_dragging && !this.isMouseDownOnBody()) {
+            this.onSelectDragged();
         }
+    }
+
+    onMouseDown(_button: MouseButton): void {
+        this.mouse_down_button = _button;
+        this.body_mouse_down_on = this.hovered_body;
+        if (this.isMouseDownOnSelectedBody()) {
+            this.onMouseDownOnSelectedBody();
+        } else if (this.isMouseDownOnBody()) {
+            if (this.selected_bodies.size) this.resetSelectedBodies();
+            this.selectBody(this.body_mouse_down_on!);
+            this.onMouseDownOnSelectedBody();
+        }
+    }
+
+    onMouseUp(_button: MouseButton): void {
+        if (!this.is_mouse_dragging) return;
+        this.body_mouse_down_on = null;
+        this.mouse_body_offset = null;
+        this.is_mouse_dragging = false;
     }
 
     private checkDragging(): void {
@@ -69,13 +92,12 @@ export default class MoveMode extends Mode {
 
     private moveSelectedBodies(): void {
         if (!this.mouse_body_offset) return;
+        if (this.mouse_down_button != MouseButton.LEFT) return;
         const mouse_pos = InputManager.getMousePosition();
         this.mouse_body_offset.forEach((offset, body) => {
             this.moveBody(body, mouse_pos.add(offset));
         });
-        if (!LoopManager.isRunning()) {
-            LoopManager.render();
-        }
+        if (!LoopManager.isRunning()) LoopManager.render();
     }
 
     private moveBody(body: PhysicBody, position: Vec2): void {
@@ -85,28 +107,6 @@ export default class MoveMode extends Mode {
             if (!LoopManager.isRunning()) {
                 PhysicBodyManager.updateConnectedConstraints(pointmass);
             }
-        }
-    }
-
-    onMouseDown(_button: MouseButton): void {
-        this.body_mouse_down_on = this.hovered_body;
-        if (this.isMouseDownOnSelectedBody()) {
-            this.onMouseDownOnSelectedBody();
-        } else if (this.isMouseDownOnBody()) {
-            if (this.selected_bodies.size) this.resetSelectedBodies();
-            this.selectBody(this.body_mouse_down_on!);
-            this.onMouseDownOnSelectedBody();
-        }
-    }
-
-    onMouseUp(button: MouseButton): void {
-        if (!this.is_mouse_dragging) return;
-        if (!this.isMouseDownOnBody()) this.onSelectDragged(button);
-        this.is_mouse_dragging = false;
-        if (this.isMouseDownOnSelectedBody()) {
-            this.moveSelectedBodies();
-            this.body_mouse_down_on = null;
-            this.mouse_body_offset = null;
         }
     }
 
@@ -122,19 +122,15 @@ export default class MoveMode extends Mode {
     /**
      * A drag that start from an empty space. For selection purpose.
      */
-    private onSelectDragged(button: MouseButton): void {
-        if (button != MouseButton.LEFT) return;
+    private onSelectDragged(): void {
+        if (this.mouse_down_button != MouseButton.LEFT) return;
         const down_pos = InputManager.getMouseDownPosition();
         const curr_pos = InputManager.getMousePosition();
         const lower = Vec2.min(down_pos, curr_pos);
         const upper = Vec2.max(down_pos, curr_pos);
-        
-        if (!InputManager.isKeyDown("Shift")) {
-            this.resetSelectedBodies();
-        }
-        
-        PhysicBodyManager.getSelectedBodies(lower, upper)
-            .forEach(body => this.selectBody(body));
+        if (!InputManager.isKeyDown("Shift")) this.resetSelectedBodies();
+        const in_range_bodies = PhysicBodyManager.getSelectedBodies(lower, upper);
+        in_range_bodies.forEach(body => this.selectBody(body));
     }
 
     getSelectedBodies(): Set<PhysicBody> {
