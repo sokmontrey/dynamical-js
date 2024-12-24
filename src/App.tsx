@@ -44,6 +44,7 @@ export default function App() {
 	const onCanvasMounted = useCallback(setCanvas, []);
 	const [mode, setMode] = useState<ModeType>(ModeType.MOVE);
 	const [body_ids, setBodyIds] = useState<string[]>([]);
+	const [selected_body_ids, setSelectedBodyIds] = useState<string[]>([]);
 
 	const update = (dt: number, _sub_steps: number) => {
 		const bodies = PhysicBodyManager.getAllBodies();
@@ -94,7 +95,12 @@ export default function App() {
 		PhysicBodyManager.setOnTreeChange(setBodyIds);
 		PhysicBodyManager.init(state);
 		ModeManager.init();
-		ModeManager.setOnModeChange(setMode);
+		ModeManager.setOnModeChange(mode => {
+			setMode(mode);
+			if (mode !== ModeType.MOVE) return;
+			const move_mode = ModeManager.getCurrentMode() as MoveMode;
+			move_mode.setOnSelectionChange(setSelectedBodyIds);
+		});
 		InputManager.onMouseMove(() => {
 			ModeManager.onMouseMove();
 			renderUI();
@@ -103,11 +109,15 @@ export default function App() {
 		InputManager.onMouseUp(ModeManager.onMouseUp);
 		InputManager.onMouseClick(ModeManager.onMouseClick);
 		LoopManager.run();
+		ModeManager.toMoveMode();
 	}, [canvas]);
 
 	return (<>
 		<SimulationCanvas onCanvasMounted={onCanvasMounted} />
-		<BodyTreePanel body_ids={body_ids} renderUI={renderUI} />
+		<BodyTreePanel 
+			selected_body_ids={selected_body_ids}
+			body_ids={body_ids} 
+			renderUI={renderUI} />
 
 		<p> Mode: {mode ?? "None"} </p>
 		<button onClick={() => LoopManager.run()}>Run</button>

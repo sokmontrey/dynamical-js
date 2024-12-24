@@ -19,8 +19,11 @@ export default class MoveMode extends Mode {
     private body_mouse_down_on: PhysicBody | null = null;
     private mouse_body_offset: Map<PhysicBody, Vec2> | null = null;
 
+    private on_selection_change: (selected_body_ids: string[]) => void = () => {};
+
     resetSelectedBodies(): void {
         this.selected_bodies.clear();
+        this.on_selection_change(this.getSelectedBodyIds());
     }
 
     selectBody(body: PhysicBody | null): void {
@@ -30,6 +33,7 @@ export default class MoveMode extends Mode {
         } else {
             this.selected_bodies.add(body);
         }
+        this.on_selection_change(this.getSelectedBodyIds());
     }
 
     onMouseClick(button: MouseButton): void {
@@ -140,5 +144,13 @@ export default class MoveMode extends Mode {
 
     isDragging(): boolean {
         return this.is_mouse_dragging;
+    }
+
+    setOnSelectionChange(callback: (selected_body_ids: string[]) => void): void {
+        this.on_selection_change = callback;
+    }
+
+    getSelectedBodyIds(): string[] {
+        return Array.from(this.selected_bodies).map(body => body.getId() ?? "");
     }
 }
