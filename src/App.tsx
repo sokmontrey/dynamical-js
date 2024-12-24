@@ -1,115 +1,88 @@
-import PhysicBodyState from "./core/PhysicBodyState.ts";
 import SimulationCanvas from "./ui-components/SimulationCanvas.tsx";
-import { useCallback, useEffect, useState } from "react";
-import Canvas from "./core/Canvas.ts";
+import { useCallback, useEffect } from "react";
 import InputManager from "./manager/InputManager.ts";
 import PhysicBodyManager from "./manager/PhysicBodyManager.ts";
-import ModeManager, { ModeType } from "./mode/ModeManager.ts";
+import ModeManager from "./mode/ModeManager.ts";
 import LoopManager from "./manager/LoopManager.ts";
-import SelectButton from "./ui-components/SelectButton.tsx";
 import BodyTreePanel from "./ui-components/BodyTreePanel.tsx";
-import MoveMode from "./mode/MoveMode.ts";
 import simple_pendulum_state from "./states/simple-pendulum.ts";
 import SimulationControls from "./ui-components/SimulationControls.tsx";
 import ToolBar from "./ui-components/ToolBar.tsx";
+import useCanvasManagement from "./hooks/useCanvasManagement.ts";
+import usePhysicsSimulation from "./hooks/usePhysicsSimulation.ts";
+import useModeManagement from "./hooks/useModeManager.ts";
 
 export default function App() {
-	const [initial_state, setInitialState] = useState<PhysicBodyState>(simple_pendulum_state);
-	const [canvas, setCanvas] = useState<{
-		base_canvas: Canvas | null, 
-		overlay_canvas: Canvas | null
-	}>({
-		base_canvas: null, 
-		overlay_canvas: null
-	});
-	const onCanvasMounted = useCallback(setCanvas, []);
-	const [mode, setMode] = useState<ModeType>(ModeType.MOVE);
-	const [body_ids, setBodyIds] = useState<string[]>([]);
-	const [selected_body_ids, setSelectedBodyIds] = useState<string[]>([]);
+	const {
+        canvas_state,
+        setCanvasState,
+        renderPhysics,
+        renderUI
+	} = useCanvasManagement();
 
-	const update = (dt: number, _sub_steps: number) => {
-		const bodies = PhysicBodyManager.getAllBodies();
-		bodies.sort((a, b) => a.getRank() - b.getRank());
-		bodies.forEach(x => x.update(dt));
-	}
+	const {
+		state,
+		body_ids,
+		setBodyIds,
+		update,
+		resetState,
+		saveState,
+	} = usePhysicsSimulation(simple_pendulum_state);
 
-	const renderPhysics = (sub_steps: number) => {
-		const base_canvas = canvas.base_canvas;
-		if (!base_canvas) return;
-		base_canvas.clear();
-		const bodies = PhysicBodyManager.getAllBodies();
-		bodies.sort((a, b) => b.getRank() - a.getRank());
-		bodies.forEach(
-			x => x.renderer.draw(base_canvas.getContext(), sub_steps)
-		);
-	}
+	const {
+        mode,
+        selected_body_ids,
+        initializeModeManager,
+	} = useModeManagement();
 
-	const renderUI = () => {
-		const overlay_canvas = canvas.overlay_canvas;
-		if (!overlay_canvas) return;
-		overlay_canvas.clear();
-		ModeManager.getCurrentMode()
-			.renderer
-			.draw(overlay_canvas.getContext() ?? null);
-	}
-
-	const resetState = () => {
-		PhysicBodyManager.loadFromState(initial_state);
-		ModeManager.reset();
-		LoopManager.render();
-	}
-
-	const saveState = () => {
-		setInitialState(PhysicBodyManager.toState());
-	}
-
-	useEffect(() => {
-		if (!canvas.overlay_canvas) return;
-		// TODO: deal with explicit dependencies between these managers
-		// they all need to be initialized in the right order
-		// internally, they all assume that the others are initialized
-		InputManager.init(canvas.overlay_canvas);
-		LoopManager.init(update, (_, sub_steps: number) => {
-			renderPhysics(sub_steps);
-			renderUI();
-		}, { sub_steps: 1000, constant_dt: null, });
+	const initializePhysicBodyManager = useCallback(() => {
+		PhysicBodyManager.init(state); 
 		PhysicBodyManager.setOnTreeChange(setBodyIds);
-		PhysicBodyManager.init(initial_state);
-		ModeManager.init();
-		ModeManager.setOnModeChange(mode => {
-			setMode(mode);
-			if (mode !== ModeType.MOVE) return;
-			const move_mode = ModeManager.getCurrentMode() as MoveMode;
-			move_mode.setOnSelectionChange(setSelectedBodyIds);
-		});
+	}, [state]);
+
+	const initializeInputManager = useCallback(() => {
+		if (!canvas_state.overlay_canvas) return;
+		InputManager.init(canvas_state.overlay_canvas);
 		InputManager.onMouseMove(() => {
 			ModeManager.onMouseMove();
-			renderUI();
+			if (!LoopManager.isRunning()) renderUI();
 		});
 		InputManager.onMouseDown(ModeManager.onMouseDown);
 		InputManager.onMouseUp(ModeManager.onMouseUp);
 		InputManager.onMouseClick(ModeManager.onMouseClick);
+	}, [canvas_state.overlay_canvas]);
+
+	const initializeLoopManager = useCallback(() => {
+		LoopManager.init(update, (_, sub_steps: number) => {
+			renderPhysics(sub_steps);
+			renderUI();
+		}, { sub_steps: 1000, constant_dt: null, });
+	}, [update, renderPhysics, renderUI]);
+
+	useEffect(() => {
+		if (!canvas_state.overlay_canvas) return;
+		initializePhysicBodyManager();
+		initializeModeManager();
+		initializeInputManager();
+		resetState();
+		initializeLoopManager();
 		LoopManager.run();
-		ModeManager.toMoveMode();
-	}, [canvas]);
+	}, [canvas_state]);
 
 	return (<>
-		<SimulationCanvas onCanvasMounted={onCanvasMounted} />
+		<SimulationCanvas onCanvasMounted={setCanvasState} />
 		<BodyTreePanel 
 			selected_body_ids={selected_body_ids}
 			body_ids={body_ids} 
 			renderUI={renderUI} />
-
 		<p> Mode: {mode ?? "None"} </p>
 		<SimulationControls 
-			onRun={() => LoopManager.run()}
-			onPause={() => LoopManager.pause()}
+			onRun={LoopManager.run}
+			onPause={LoopManager.pause}
 			onStep={() => LoopManager.step()}
-			onReset={() => resetState()}
-			onSave={() => saveState()}
+			onReset={resetState}
+			onSave={saveState}
 		/>
-		<ToolBar 
-			onModeChange={(mode: ModeType) => ModeManager.toCreateMode(mode)}
-		/>
+		<ToolBar />
 	</>);
 }

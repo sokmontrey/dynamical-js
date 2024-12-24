@@ -1,19 +1,13 @@
-import ModeManager, { ModeType } from "../mode/ModeManager";
+import ModeManager from "../mode/ModeManager";
 import SelectButton from "./SelectButton";
 
-export interface ToolBarProps {
-    onModeChange: (mode: ModeType) => void;
-}
-
-export default function ToolBar({ 
-    onModeChange,
-}: ToolBarProps) {
+export default function ToolBar() {
 	return <div>
-		<button onClick={() => onModeChange(ModeType.MOVE)}>
+		<button onClick={() => ModeManager.toMoveMode()}>
 			Move
 		</button>
 		<SelectButton options={ModeManager.getCreateModeTypes()}
-					  onSelect={(mode: ModeType) => onModeChange(mode)}
+					  onSelect={mode => ModeManager.toCreateMode(mode)}
 		></SelectButton>
 	</div>;
 }
