@@ -10,6 +10,8 @@ import SelectButton from "./ui-components/SelectButton.tsx";
 import BodyTreePanel from "./ui-components/BodyTreePanel.tsx";
 import MoveMode from "./mode/MoveMode.ts";
 import simple_pendulum_state from "./states/simple-pendulum.ts";
+import SimulationControls from "./ui-components/SimulationControls.tsx";
+import ToolBar from "./ui-components/ToolBar.tsx";
 
 export default function App() {
 	const [initial_state, setInitialState] = useState<PhysicBodyState>(simple_pendulum_state);
@@ -99,15 +101,15 @@ export default function App() {
 			renderUI={renderUI} />
 
 		<p> Mode: {mode ?? "None"} </p>
-		<button onClick={() => LoopManager.run()}>Run</button>
-		<button onClick={() => LoopManager.pause()}>Pause</button>
-		<button onClick={() => resetState()}>Reset</button>
-		<button onClick={() => saveState()}>Save</button>
-		<button onClick={() => ModeManager.toMoveMode()}>
-			Move
-		</button>
-		<SelectButton options={ModeManager.getCreateModeTypes()}
-					  onSelect={(mode: ModeType) => ModeManager.toCreateMode(mode)}
-		></SelectButton>
+		<SimulationControls 
+			onRun={() => LoopManager.run()}
+			onPause={() => LoopManager.pause()}
+			onStep={() => LoopManager.step()}
+			onReset={() => resetState()}
+			onSave={() => saveState()}
+		/>
+		<ToolBar 
+			onModeChange={(mode: ModeType) => ModeManager.toCreateMode(mode)}
+		/>
 	</>);
 }
