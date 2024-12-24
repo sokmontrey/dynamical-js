@@ -9,148 +9,204 @@ import PhysicBodyManager from "../manager/PhysicBodyManager.ts";
 import LoopManager from "../manager/LoopManager.ts";
 
 export default class MoveMode extends Mode {
-    public renderer: ModeRenderer = new MoveModeRenderer(this);
+    public readonly renderer: ModeRenderer;
 
-    private selected_bodies: Set<PhysicBody> = new Set<PhysicBody>();
-    private hovered_body: PhysicBody | null = null;
+    // Selection properties
+    private selected_bodies: Set<PhysicBody>;
+    private hovered_body: PhysicBody | null;
+    private on_selection_change: (selected_body_ids: string[]) => void;
 
-    private is_mouse_dragging: boolean = false;
-    private mouse_down_button: MouseButton | null = null;
-    private body_mouse_down_on: PhysicBody | null = null;
-    private mouse_body_offset: Map<PhysicBody, Vec2> | null = null;
+    // Drag properties
+    private is_dragging: boolean;
+    private mouse_down_button: MouseButton | null;
+    private target_body: PhysicBody | null;
+    private body_offsets: Map<PhysicBody, Vec2> | null;
 
-    private on_selection_change: (selected_body_ids: string[]) => void = () => {};
+    constructor() {
+        super();
+        this.renderer = new MoveModeRenderer(this);
 
-    resetSelectedBodies(): void {
-        this.selected_bodies.clear();
-        this.on_selection_change(this.getSelectedBodyIds());
+        // Initialize selection properties
+        this.selected_bodies = new Set<PhysicBody>();
+        this.hovered_body = null;
+        this.on_selection_change = () => { };
+
+        // Initialize drag properties
+        this.is_dragging = false;
+        this.mouse_down_button = null;
+        this.target_body = null;
+        this.body_offsets = null;
     }
 
-    selectBody(body: PhysicBody | null): void {
+    // Selection Management
+    public resetSelectedBodies(): void {
+        this.selected_bodies.clear();
+        this.notifySelectionChange();
+    }
+
+    public selectBody(body: PhysicBody | null): void {
         if (!body) return;
+
         if (this.selected_bodies.has(body)) {
             this.selected_bodies.delete(body);
         } else {
             this.selected_bodies.add(body);
         }
-        this.on_selection_change(this.getSelectedBodyIds());
+
+        this.notifySelectionChange();
     }
 
-    onMouseClick(button: MouseButton): void {
-        if (button == MouseButton.LEFT) {
-            if (!InputManager.isKeyDown("Shift")) this.resetSelectedBodies();
-            this.selectBody(this.hovered_body);
-            LoopManager.render();
+    private notifySelectionChange(): void {
+        const selected_ids = Array.from(this.selected_bodies)
+            .map(body => body.getId() ?? "");
+        this.on_selection_change(selected_ids);
+    }
+
+    public onMouseClick(button: MouseButton): void {
+        if (button !== MouseButton.LEFT) return;
+
+        if (!InputManager.isKeyDown("Shift")) {
+            this.resetSelectedBodies();
         }
+
+        this.selectBody(this.hovered_body);
+        LoopManager.render();
     }
 
-    onMouseMove(): void {
-        this.checkHoveredBody();
-        this.checkDragging();
-        if (this.is_mouse_dragging && this.isMouseDownOnSelectedBody()) {
+    public onMouseMove(): void {
+        this.updateHoveredBody();
+        this.updateDragState();
+
+        if (this.is_dragging && this.isMouseDownOnSelectedBody()) {
             this.moveSelectedBodies();
         } 
     }
 
-    onMouseDown(_button: MouseButton): void {
-        // TODO: impl getMouseButton on InputManager
-        this.mouse_down_button = _button;
-        this.body_mouse_down_on = this.hovered_body;
-        if (this.isMouseDownOnSelectedBody()) this.updateBodiesOffset();
-    }
+    public onMouseDown(button: MouseButton): void {
+        this.mouse_down_button = button;
+        this.target_body = this.hovered_body;
 
-    onMouseUp(_button: MouseButton): void {
-        if (!this.is_mouse_dragging) return;
-        if (this.is_mouse_dragging && !this.isMouseDownOnBody()) {
-            this.onSelectDragged();
+        if (this.isMouseDownOnBody()) {
+            this.calculateBodyOffsets();
         }
-        this.body_mouse_down_on = null;
-        this.mouse_body_offset = null;
-        this.is_mouse_dragging = false;
     }
 
-    private checkDragging(): void {
-        const mouse_pos = InputManager.getMousePosition();
-        const diff = mouse_pos.distance(InputManager.getMouseDownPosition());
-        this.is_mouse_dragging = 
-            diff > InputManager.getDragThreshold() && 
-            InputManager.isMouseDown(); 
+    public onMouseUp(button: MouseButton): void {
+        if (!this.is_dragging) return;
+
+        if (this.is_dragging && !this.isMouseDownOnBody()) {
+            this.handleDragSelection();
+        }
+
+        this.resetDragState();
     }
 
-    private checkHoveredBody(): void {
+    private updateDragState(): void {
         const mouse_pos = InputManager.getMousePosition();
-        const hovered_bodies = PhysicBodyManager.getHoveredBodies(mouse_pos);
-        this.hovered_body = hovered_bodies.length ? hovered_bodies[0] : null;
+        const drag_distance = mouse_pos.distance(InputManager.getMouseDownPosition());
+
+        this.is_dragging =
+            drag_distance > InputManager.getDragThreshold() &&
+            InputManager.isMouseDown();
     }
 
-    private updateBodiesOffset(): void {
-        this.mouse_body_offset = new Map<PhysicBody, Vec2>();
+    private calculateBodyOffsets(): void {
         const mouse_pos = InputManager.getMousePosition();
+        const offsets = new Map<PhysicBody, Vec2>();
+
         this.selected_bodies.forEach(body => {
-            this.mouse_body_offset!.set(body, body.getPosition().sub(mouse_pos));
+            offsets.set(body, body.getPosition().sub(mouse_pos));
         });
+
+        this.body_offsets = offsets;
     }
 
     private moveSelectedBodies(): void {
-        if (!this.mouse_body_offset) return;
-        if (this.mouse_down_button != MouseButton.LEFT) return;
+        if (!this.body_offsets || this.mouse_down_button !== MouseButton.LEFT) return;
+
         const mouse_pos = InputManager.getMousePosition();
-        this.mouse_body_offset.forEach((offset, body) => {
+        this.body_offsets.forEach((offset, body) => {
             this.moveBody(body, mouse_pos.add(offset));
         });
-        if (!LoopManager.isRunning()) LoopManager.render();
-    }
 
-    private moveBody(body: PhysicBody, position: Vec2): void {
-        if (body.getType() === PhysicBodyType.POINT_MASS) {
-            const pointmass = body as PointMass;
-            pointmass.moveTo(position);
-            if (!LoopManager.isRunning()) {
-                PhysicBodyManager.updateConnectedConstraints(pointmass);
-            }
+        if (!LoopManager.isRunning()) {
+            LoopManager.render();
         }
     }
 
-    isMouseDownOnBody(): boolean {
-        return this.body_mouse_down_on != null;
+    private moveBody(body: PhysicBody, position: Vec2): void {
+        if (body.getType() !== PhysicBodyType.POINT_MASS) return;
+
+        const point_mass = body as PointMass;
+        point_mass.moveTo(position);
+
+        if (!LoopManager.isRunning()) {
+            PhysicBodyManager.updateConnectedConstraints(point_mass);
+        }
     }
 
-    isMouseDownOnSelectedBody(): boolean {
-        return this.body_mouse_down_on != null &&
-            this.selected_bodies.has(this.body_mouse_down_on);
+    private updateHoveredBody(): void {
+        const mouse_pos = InputManager.getMousePosition();
+        const hovered_bodies = PhysicBodyManager.getHoveredBodies(mouse_pos);
+        this.hovered_body = hovered_bodies[0] ?? null;
     }
 
-    /**
-     * A drag that start from an empty space. For selection purpose.
-     */
-    private onSelectDragged(): void {
-        if (this.mouse_down_button != MouseButton.LEFT) return;
+    private handleDragSelection(): void {
+        if (this.mouse_down_button !== MouseButton.LEFT) return;
+
         const down_pos = InputManager.getMouseDownPosition();
-        const curr_pos = InputManager.getMousePosition();
-        const lower = Vec2.min(down_pos, curr_pos);
-        const upper = Vec2.max(down_pos, curr_pos);
-        if (!InputManager.isKeyDown("Shift")) this.resetSelectedBodies();
-        const in_range_bodies = PhysicBodyManager.getSelectedBodies(lower, upper);
-        in_range_bodies.forEach(body => this.selectBody(body));
+        const current_pos = InputManager.getMousePosition();
+        const [lower, upper] = this.calculateSelectionBounds(down_pos, current_pos);
+
+        if (!InputManager.isKeyDown("Shift")) {
+            this.resetSelectedBodies();
+        }
+
+        const bodies_in_range = PhysicBodyManager.getSelectedBodies(lower, upper);
+        bodies_in_range.forEach(body => this.selectBody(body));
     }
 
-    getSelectedBodies(): Set<PhysicBody> {
+    private calculateSelectionBounds(pos1: Vec2, pos2: Vec2): [Vec2, Vec2] {
+        return [
+            Vec2.min(pos1, pos2),
+            Vec2.max(pos1, pos2)
+        ];
+    }
+
+    public isMouseDownOnBody(): boolean {
+        return this.target_body !== null;
+    }
+
+    public isMouseDownOnSelectedBody(): boolean {
+        return this.target_body !== null &&
+            this.selected_bodies.has(this.target_body);
+    }
+
+    public getSelectedBodies(): Set<PhysicBody> {
         return this.selected_bodies;
     }
 
-    getHoveredBody(): PhysicBody | null {
+    public getHoveredBody(): PhysicBody | null {
         return this.hovered_body;
     }
 
-    isDragging(): boolean {
-        return this.is_mouse_dragging;
+    public getSelectedBodyIds(): string[] {
+        return Array.from(this.selected_bodies)
+            .map(body => body.getId() ?? "");
     }
 
-    setOnSelectionChange(callback: (selected_body_ids: string[]) => void): void {
+    public setOnSelectionChange(callback: (selected_body_ids: string[]) => void): void {
         this.on_selection_change = callback;
     }
 
-    getSelectedBodyIds(): string[] {
-        return Array.from(this.selected_bodies).map(body => body.getId() ?? "");
+    private resetDragState(): void {
+        this.is_dragging = false;
+        this.mouse_down_button = null;
+        this.target_body = null;
+        this.body_offsets = null;
+    }
+
+    isDragging(): boolean {
+        return this.is_dragging;
     }
 }
