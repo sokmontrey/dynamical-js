@@ -62,7 +62,8 @@ export default class PhysicBodyManager {
 	static getSelectedBodies(lower: Vec2, upper: Vec2): PhysicBody[] {
 		return Object
 			.values(PhysicBodyManager.bodies)
-			.filter(x => !x.interactor.isLocked() && x.interactor.isSelected(lower, upper));
+			.filter(x => !x.interactor.isLocked() 
+				&& x.interactor.isSelected(lower, upper));
 	}
 
 	static toState(): PhysicBodyState {
