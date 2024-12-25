@@ -8,7 +8,7 @@ export default function PropertyPanel({
     body,
 }: PropertyPanelProps) {
     if (!body) return <></>;
-    return <div>
+    return <div className='property-panel'>
         <p>Id: {body.getId()} Type: {body.getType()}</p>
         <body.panel body={body} key={body.getId()} />
     </div>;
