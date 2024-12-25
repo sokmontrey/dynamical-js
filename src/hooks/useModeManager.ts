@@ -12,6 +12,7 @@ export default function useModeManagement() {
             setMode(new_mode);
             if (new_mode !== ModeType.MOVE) return;
             const move_mode = ModeManager.getCurrentMode() as MoveMode;
+            setSelectedBodyIds([]);
             move_mode.setOnSelectionChange((selected_bodies) => {
                 const selected_body_ids = Array.from(selected_bodies)
                     .map(body => body.getId() ?? "Unknown");

@@ -2,7 +2,7 @@ import PointMassInteractor from "../interactor/PointMassInteractor.ts";
 import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBody, {PhysicBodyProps, PhysicBodyType} from "./PhysicBody.ts";
-import PointMassPanel from "../ui-components/property-panel/PointMassPanel.tsx";
+import PointMassPanelProps from "../panel-property/PointMassPanelProps.ts";
 
 export interface PointMassProps extends PhysicBodyProps {
 	position?: Vec2,
@@ -24,7 +24,7 @@ export default class PointMass extends PhysicBody {
 	private mass: number;
 	private is_static: boolean;
 
-	public panel: React.FC<any> = PointMassPanel;
+	public panel_property: PointMassPanelProps;
 	public renderer: PointMassRenderer;
 	public interactor: PointMassInteractor;
 
@@ -44,6 +44,7 @@ export default class PointMass extends PhysicBody {
 		this.net_force = initial_force.copy();
 		this.const_acc = constant_acceleration.copy();
 
+		this.panel_property = new PointMassPanelProps(this);
 		this.renderer = new PointMassRenderer(this);
 		this.interactor = new PointMassInteractor(this);
 	}
@@ -98,7 +99,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	enableStatic() {
 		this.is_static = true;
-		return this;
 	}
 
 	/**
@@ -107,7 +107,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	disableStatic() {
 		this.is_static = false;
-		return this;
 	}
 
 	/**
@@ -116,7 +115,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	setConstantAcceleration(acceleration: Vec2) {
 		this.const_acc = acceleration.copy();
-		return this;
 	}
 
 	/**
@@ -127,7 +125,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	applyForce(force: Vec2) {
 		this.net_force = this.net_force.add(force);
-		return this;
 	}
 
 	/**
@@ -149,7 +146,6 @@ export default class PointMass extends PhysicBody {
 	setCurrentPosition(position: Vec2) {
 		if (this.is_static) return;
 		this.curr_pos = position.copy();
-		return this;
 	}
 
 	/**
@@ -158,7 +154,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	setPreviousPosition(previous_position: Vec2) {
 		this.prev_pos = previous_position.copy();
-		return this;
 	}
 
 	/**
@@ -168,7 +163,6 @@ export default class PointMass extends PhysicBody {
 	setPosition(position: Vec2) {
 		this.curr_pos = position.copy();
 		this.prev_pos = position.copy();
-		return this;
 	}
 
 	/**
@@ -176,22 +170,18 @@ export default class PointMass extends PhysicBody {
 	**/
 	setVelocity(velocity: Vec2) {
 		this.prev_pos = this.curr_pos.sub(velocity);
-		return this;
 	}
 
 	addVelocity(velocity: Vec2) {
 		this.prev_pos = this.prev_pos.sub(velocity);
-		return this;
 	}
 
 	resetVelocity() {
 		this.prev_pos = this.curr_pos.copy();
-		return this;
 	}
 
 	setMass(mass: number) {
 		this.mass = mass;
-		return this;
 	}
 
 	//================================ Dynamic ================================

@@ -1,15 +1,21 @@
-import PhysicBody from '../../core-physic/PhysicBody';
-
-export interface PropertyPanelProps {
-    body: PhysicBody | null;
-}
+import { useEffect } from "react";
+import PhysicBody from "../../core-physic/PhysicBody";
 
 export default function PropertyPanel({ 
-    body,
-}: PropertyPanelProps) {
-    if (!body) return <></>;
-    return <div>
-        <p>Id: {body.getId()} Type: {body.getType()}</p>
-        <body.panel body={body} key={body.getId()} />
+    body 
+}: { body: PhysicBody }) {
+    const binders = body.panel_property.getPropBinders();
+
+    useEffect(() => {
+        const unsubscribe = body.setOnUpdate(() => {
+            binders.forEach(binder => binder.setValue(binder.getter()));
+        });
+        return () => unsubscribe();
+    }, [body]);
+
+    return <div key={body.getId()}>
+        {binders.map((prop, index) => 
+            <prop.component key={index} {...prop.props} />
+        )}
     </div>;
 }
