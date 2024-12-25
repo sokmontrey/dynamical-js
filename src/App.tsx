@@ -84,7 +84,7 @@ export default function App() {
 			body_ids={body_ids} 
 			renderUI={renderUI} />
 		<p> Mode: {mode ?? "None"} </p>
-		<PropertyPanel body={selected_body} />
+		{ selected_body && <PropertyPanel body={selected_body} key={selected_body.getId()} /> }
 		<SimulationControls 
 			onRun={LoopManager.run}
 			onPause={LoopManager.pause}

@@ -2,6 +2,7 @@ import Interactor from "../interactor/Interactor";
 import PhysicBodyRenderer from "../body-renderer/PhysicBodyRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
 import Serializable from "../core/Serializable.ts";
+import PhysicBodyPanelProps from "../panel-property/PhysicBodyPanelProps";
 
 export interface PhysicBodyProps { }
 
@@ -17,7 +18,7 @@ export default abstract class PhysicBody implements Serializable<PhysicBodyProps
 
 	protected on_update: (() => void) | null = null;
 
-	public abstract panel: React.FC<any>;
+	public abstract panel_property: PhysicBodyPanelProps;
 	public abstract renderer: PhysicBodyRenderer;
 	public abstract interactor: Interactor;
 

@@ -1,6 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import Vec2, { vec2 } from "../../utils/Vector";
-import LoopManager from "../../manager/LoopManager";
 
 export interface VectorInputProps {
     label: string;

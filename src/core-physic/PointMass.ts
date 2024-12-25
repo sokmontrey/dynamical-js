@@ -2,7 +2,7 @@ import PointMassInteractor from "../interactor/PointMassInteractor.ts";
 import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBody, {PhysicBodyProps, PhysicBodyType} from "./PhysicBody.ts";
-import PointMassPanel from "../ui-components/property-panel/PointMassPanel.tsx";
+import PointMassPanelProps from "../panel-property/PointMassPanelProps.ts";
 
 export interface PointMassProps extends PhysicBodyProps {
 	position?: Vec2,
@@ -24,7 +24,7 @@ export default class PointMass extends PhysicBody {
 	private mass: number;
 	private is_static: boolean;
 
-	public panel: React.FC<any> = PointMassPanel;
+	public panel_property: PointMassPanelProps;
 	public renderer: PointMassRenderer;
 	public interactor: PointMassInteractor;
 
@@ -44,6 +44,7 @@ export default class PointMass extends PhysicBody {
 		this.net_force = initial_force.copy();
 		this.const_acc = constant_acceleration.copy();
 
+		this.panel_property = new PointMassPanelProps(this);
 		this.renderer = new PointMassRenderer(this);
 		this.interactor = new PointMassInteractor(this);
 	}

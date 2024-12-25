@@ -1,12 +1,19 @@
 import React, { useCallback, useState } from "react";
-import LoopManager from "../../manager/LoopManager";
+import LoopManager from "../manager/LoopManager";
 
-export default function createInput<T>(
+export interface PropBinder<T> {
+    setValue: (value: T) => void;
+    getter: () => T;
+    component: React.FC<any>;
+    props: any;
+}
+
+export function useInputPropBinder<T>(
     component: React.FC<any>,
-    props: any, // TODO: fix this
+    props: any,
     getter: () => T, 
     setter: (value: T) => void
-) {
+): PropBinder<T> {
     const [value, setValue] = useState<T>(getter());
 
     const onChange = useCallback((value: T) => {
@@ -18,10 +25,11 @@ export default function createInput<T>(
     return {
         setValue,
         getter,
-        component: React.createElement(component, {
+        component: component, 
+        props: {
             ...props,
             value: value,
             onChange: onChange,
-        }),
+        },
     };
 };
