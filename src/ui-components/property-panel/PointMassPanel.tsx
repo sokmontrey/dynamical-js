@@ -1,27 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import PhysicBody from "../../core-physic/PhysicBody";
-import VectorInput from "../input/VectorInput";
-import PointMass from "../../core-physic/PointMass";
+import { createVectorInput } from "../input/VectorInput";
 import Vec2 from "../../utils/Vector";
+import PointMass from "../../core-physic/PointMass";
+import LoopManager from "../../manager/LoopManager";
+import PhysicBodyManager from "../../manager/PhysicBodyManager";
 
 export default function PointMassPanel({ 
     body 
 }: { body: PhysicBody }) {
-    const [position, setPosition] = useState(body.getPosition());
+    const pm = body as PointMass;
+    const props = [
+        createVectorInput(
+            "Position", 
+            () => pm.getPosition(),
+            (value: Vec2) => {
+                pm.setPosition(value)
+                if (!LoopManager.isRunning()) {
+                    PhysicBodyManager.updateConnectedConstraints(pm);
+                }
+            }
+        ),
+    ];
 
     useEffect(() => {
         const unsubscribe = body.setOnUpdate(() => {
-            setPosition(body.getPosition());
+            props.forEach(prop => prop.setValue(prop.getter()));
         });
         return () => unsubscribe();
     }, [body]);
 
     return <div className='point-mass-panel'>
-        <VectorInput label="Position" 
-            value={position} 
-            onChange={(value: Vec2) => {
-                setPosition(value);
-                (body as PointMass).setPosition(value);
-            }} />
+        {props.map(prop => prop.component)}
     </div>;
 }

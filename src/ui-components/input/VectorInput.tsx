@@ -1,5 +1,28 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import Vec2, { vec2 } from "../../utils/Vector";
+import LoopManager from "../../manager/LoopManager";
+
+export const createVectorInput = (
+    label: string, 
+    getter: () => Vec2, 
+    setter: (value: Vec2) => void
+) => {
+    const [value, setValue] = useState(getter());
+    const onChange = useCallback((value: Vec2) => {
+        setValue(value);
+        setter(value);
+        if (!LoopManager.isRunning()) LoopManager.render();
+    }, [setter]);
+    return {
+        component: <VectorInput 
+            key={label}
+            label={label} 
+            value={value} 
+            onChange={onChange} />,
+        setValue,
+        getter,
+    };
+};
 
 export interface VectorInputProps {
     label: string;
