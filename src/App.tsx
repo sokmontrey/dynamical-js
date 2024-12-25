@@ -1,16 +1,17 @@
-import SimulationCanvas from "./ui-components/SimulationCanvas.tsx";
-import { useCallback, useEffect } from "react";
+import SimulationCanvas from "./ui-components/main-ui/SimulationCanvas.tsx";
+import { useCallback, useEffect, useMemo } from "react";
 import InputManager from "./manager/InputManager.ts";
 import PhysicBodyManager from "./manager/PhysicBodyManager.ts";
 import ModeManager from "./mode/ModeManager.ts";
 import LoopManager from "./manager/LoopManager.ts";
-import BodyTreePanel from "./ui-components/BodyTreePanel.tsx";
+import BodyTreePanel from "./ui-components/main-ui/BodyTreePanel.tsx";
 import simple_pendulum_state from "./states/simple-pendulum.ts";
-import SimulationControls from "./ui-components/SimulationControls.tsx";
-import ToolBar from "./ui-components/ToolBar.tsx";
+import SimulationControls from "./ui-components/main-ui/SimulationControls.tsx";
+import ToolBar from "./ui-components/main-ui/ToolBar.tsx";
 import useCanvasManagement from "./hooks/useCanvasManagement.ts";
 import usePhysicsSimulation from "./hooks/usePhysicsSimulation.ts";
 import useModeManagement from "./hooks/useModeManager.ts";
+import PropertyPanel from "./ui-components/main-ui/PropertyPanel.tsx";
 
 export default function App() {
 	const {
@@ -35,9 +36,16 @@ export default function App() {
         initializeModeManager,
 	} = useModeManagement();
 
+	const selected_body = useMemo(() => {
+		if (selected_body_ids.length !== 1) return null;
+		return PhysicBodyManager.getById(selected_body_ids[0]);
+	}, [selected_body_ids]);
+
 	const initializePhysicBodyManager = useCallback(() => {
 		PhysicBodyManager.init(state); 
-		PhysicBodyManager.setOnTreeChange(setBodyIds);
+		PhysicBodyManager.setOnTreeChange((body_ids) => {
+			setBodyIds(body_ids);
+		});
 	}, [state]);
 
 	const initializeInputManager = useCallback(() => {
@@ -76,6 +84,7 @@ export default function App() {
 			body_ids={body_ids} 
 			renderUI={renderUI} />
 		<p> Mode: {mode ?? "None"} </p>
+		<PropertyPanel body={selected_body} />
 		<SimulationControls 
 			onRun={LoopManager.run}
 			onPause={LoopManager.pause}

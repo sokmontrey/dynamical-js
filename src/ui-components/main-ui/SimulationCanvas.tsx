@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import Canvas from "../core/Canvas";
+import Canvas from "../../core/Canvas";
 
 export interface SimulationCanvasProps {
 	container_id?: string;

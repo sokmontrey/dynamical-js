@@ -14,13 +14,15 @@ export default class MoveMode extends Mode {
     // Selection properties
     private selected_bodies: Set<PhysicBody>;
     private hovered_body: PhysicBody | null;
-    private on_selection_change: (selected_body_ids: string[]) => void;
+    private on_selection_change: (selected_bodies: Set<PhysicBody>) => void;
 
     // Drag properties
     private is_dragging: boolean;
     private mouse_down_button: MouseButton | null;
     private target_body: PhysicBody | null;
     private body_offsets: Map<PhysicBody, Vec2> | null;
+
+    private on_body_update: () => void;
 
     constructor() {
         super();
@@ -36,12 +38,18 @@ export default class MoveMode extends Mode {
         this.mouse_down_button = null;
         this.target_body = null;
         this.body_offsets = null;
+
+        this.on_body_update = () => {};
     }
 
     // Selection Management
     public resetSelectedBodies(): void {
         this.selected_bodies.clear();
         this.notifySelectionChange();
+    }
+
+    public setOnBodyUpdate(on_body_update: () => void): void {
+        this.on_body_update = on_body_update;
     }
 
     public selectBody(body: PhysicBody | null): void {
@@ -57,9 +65,7 @@ export default class MoveMode extends Mode {
     }
 
     private notifySelectionChange(): void {
-        const selected_ids = Array.from(this.selected_bodies)
-            .map(body => body.getId() ?? "");
-        this.on_selection_change(selected_ids);
+        this.on_selection_change(this.selected_bodies);
     }
 
     public onMouseClick(button: MouseButton): void {
@@ -135,14 +141,18 @@ export default class MoveMode extends Mode {
     }
 
     private moveBody(body: PhysicBody, position: Vec2): void {
+        // TODO: movable bodies
         if (body.getType() !== PhysicBodyType.POINT_MASS) return;
 
         const point_mass = body as PointMass;
         point_mass.moveTo(position);
+        point_mass.triggerOnUpdate();
 
         if (!LoopManager.isRunning()) {
             PhysicBodyManager.updateConnectedConstraints(point_mass);
         }
+
+        this.on_body_update();
     }
 
     private updateHoveredBody(): void {
@@ -195,7 +205,8 @@ export default class MoveMode extends Mode {
             .map(body => body.getId() ?? "");
     }
 
-    public setOnSelectionChange(callback: (selected_body_ids: string[]) => void): void {
+    // TODO: just pass in the body directly
+    public setOnSelectionChange(callback: (selected_bodies: Set<PhysicBody>) => void): void {
         this.on_selection_change = callback;
     }
 

@@ -4,7 +4,9 @@ import LoopManager from "../manager/LoopManager";
 import PhysicBodyManager from "../manager/PhysicBodyManager";
 import ModeManager from "../mode/ModeManager";
 
-export default function usePhysicsSimulation(initial_state: PhysicBodyState) {
+export default function usePhysicsSimulation(
+    initial_state: PhysicBodyState, 
+) {
     const [state, setState] = useState<PhysicBodyState>(initial_state);
     const [body_ids, setBodyIds] = useState<string[]>([]);
 

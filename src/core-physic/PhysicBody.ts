@@ -15,6 +15,9 @@ export default abstract class PhysicBody implements Serializable<PhysicBodyProps
 	protected abstract readonly type: PhysicBodyType;
 	protected abstract readonly rank: number;
 
+	protected on_update: (() => void) | null = null;
+
+	public abstract panel: React.FC<any>;
 	public abstract renderer: PhysicBodyRenderer;
 	public abstract interactor: Interactor;
 
@@ -39,5 +42,14 @@ export default abstract class PhysicBody implements Serializable<PhysicBodyProps
 
 	getRank(): number {
 		return this.rank;
+	}
+
+	setOnUpdate(on_update: () => void): () => void {
+		this.on_update = on_update;
+		return () => this.on_update = null;
+	}
+
+	triggerOnUpdate(): void {
+		if (this.on_update) this.on_update();
 	}
 }

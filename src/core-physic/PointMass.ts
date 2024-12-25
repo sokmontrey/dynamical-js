@@ -2,6 +2,7 @@ import PointMassInteractor from "../interactor/PointMassInteractor.ts";
 import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import Vec2 from "../utils/Vector.ts";
 import PhysicBody, {PhysicBodyProps, PhysicBodyType} from "./PhysicBody.ts";
+import PointMassPanel from "../ui-components/property-panel/PointMassPanel.tsx";
 
 export interface PointMassProps extends PhysicBodyProps {
 	position?: Vec2,
@@ -23,6 +24,7 @@ export default class PointMass extends PhysicBody {
 	private mass: number;
 	private is_static: boolean;
 
+	public panel: React.FC<any> = PointMassPanel;
 	public renderer: PointMassRenderer;
 	public interactor: PointMassInteractor;
 
@@ -136,6 +138,7 @@ export default class PointMass extends PhysicBody {
 		const vel = this.curr_pos.sub(this.prev_pos);
 		this.curr_pos = position.copy();
 		this.prev_pos = position.sub(vel);
+		this.triggerOnUpdate();
 	}
 
 	/**
@@ -197,8 +200,8 @@ export default class PointMass extends PhysicBody {
 	*	Update current position based on total accelration and previous position 
 	*		enabling position-based dynamic (verlet integration).
 	**/
-	update(delta_time: number) {
-		if (this.is_static) return this;
+	update(delta_time: number): void {
+		if (this.is_static) return;
 		const acc = this.getTotalAcceleration();
 		const vel = this.curr_pos
 			.sub(this.prev_pos)
@@ -207,7 +210,7 @@ export default class PointMass extends PhysicBody {
 		this.prev_pos = this.curr_pos.copy();
 		this.curr_pos = this.curr_pos.add(vel.mul(delta_time));
 		this.net_force = Vec2.zero();
-		return this;
+		this.triggerOnUpdate();
 	}
 
 	serialize(): PointMassProps {
