@@ -98,7 +98,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	enableStatic() {
 		this.is_static = true;
-		return this;
 	}
 
 	/**
@@ -107,7 +106,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	disableStatic() {
 		this.is_static = false;
-		return this;
 	}
 
 	/**
@@ -116,7 +114,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	setConstantAcceleration(acceleration: Vec2) {
 		this.const_acc = acceleration.copy();
-		return this;
 	}
 
 	/**
@@ -127,7 +124,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	applyForce(force: Vec2) {
 		this.net_force = this.net_force.add(force);
-		return this;
 	}
 
 	/**
@@ -149,7 +145,6 @@ export default class PointMass extends PhysicBody {
 	setCurrentPosition(position: Vec2) {
 		if (this.is_static) return;
 		this.curr_pos = position.copy();
-		return this;
 	}
 
 	/**
@@ -158,7 +153,6 @@ export default class PointMass extends PhysicBody {
 	**/
 	setPreviousPosition(previous_position: Vec2) {
 		this.prev_pos = previous_position.copy();
-		return this;
 	}
 
 	/**
@@ -168,7 +162,6 @@ export default class PointMass extends PhysicBody {
 	setPosition(position: Vec2) {
 		this.curr_pos = position.copy();
 		this.prev_pos = position.copy();
-		return this;
 	}
 
 	/**
@@ -176,22 +169,18 @@ export default class PointMass extends PhysicBody {
 	**/
 	setVelocity(velocity: Vec2) {
 		this.prev_pos = this.curr_pos.sub(velocity);
-		return this;
 	}
 
 	addVelocity(velocity: Vec2) {
 		this.prev_pos = this.prev_pos.sub(velocity);
-		return this;
 	}
 
 	resetVelocity() {
 		this.prev_pos = this.curr_pos.copy();
-		return this;
 	}
 
 	setMass(mass: number) {
 		this.mass = mass;
-		return this;
 	}
 
 	//================================ Dynamic ================================
