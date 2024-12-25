@@ -136,6 +136,7 @@ export default class RigidConstraint extends PhysicBody {
 		if (this.is_broken) return this;
 		this.check();
 		this.resolve(dt); // Immediately resolve the constraint
+		this.triggerOnUpdate();
 	}
 
 	/**

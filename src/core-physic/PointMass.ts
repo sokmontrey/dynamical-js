@@ -136,6 +136,7 @@ export default class PointMass extends PhysicBody {
 		const vel = this.curr_pos.sub(this.prev_pos);
 		this.curr_pos = position.copy();
 		this.prev_pos = position.sub(vel);
+		this.triggerOnUpdate();
 	}
 
 	/**
@@ -207,6 +208,7 @@ export default class PointMass extends PhysicBody {
 		this.prev_pos = this.curr_pos.copy();
 		this.curr_pos = this.curr_pos.add(vel.mul(delta_time));
 		this.net_force = Vec2.zero();
+		this.triggerOnUpdate();
 		return this;
 	}
 

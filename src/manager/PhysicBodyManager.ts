@@ -115,6 +115,7 @@ export default class PhysicBodyManager {
 		throw new Error("Unknown body type");
 	}
 
+	// TODO: separate this 
 	private static loadPointmassConfig(
 		_state: PhysicBodyState,
 		id: string,

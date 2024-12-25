@@ -1,5 +1,5 @@
-import ModeManager from "../mode/ModeManager";
-import SelectButton from "./SelectButton";
+import ModeManager from "../../mode/ModeManager";
+import SelectButton from "../input/SelectButton";
 
 export default function ToolBar() {
 	return <div>
