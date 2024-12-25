@@ -14,7 +14,7 @@ export default class MoveMode extends Mode {
     // Selection properties
     private selected_bodies: Set<PhysicBody>;
     private hovered_body: PhysicBody | null;
-    private on_selection_change: (selected_body_ids: string[]) => void;
+    private on_selection_change: (selected_bodies: Set<PhysicBody>) => void;
 
     // Drag properties
     private is_dragging: boolean;
@@ -65,9 +65,7 @@ export default class MoveMode extends Mode {
     }
 
     private notifySelectionChange(): void {
-        const selected_ids = Array.from(this.selected_bodies)
-            .map(body => body.getId() ?? "");
-        this.on_selection_change(selected_ids);
+        this.on_selection_change(this.selected_bodies);
     }
 
     public onMouseClick(button: MouseButton): void {
@@ -207,7 +205,8 @@ export default class MoveMode extends Mode {
             .map(body => body.getId() ?? "");
     }
 
-    public setOnSelectionChange(callback: (selected_body_ids: string[]) => void): void {
+    // TODO: just pass in the body directly
+    public setOnSelectionChange(callback: (selected_bodies: Set<PhysicBody>) => void): void {
         this.on_selection_change = callback;
     }
 

@@ -17,6 +17,7 @@ export default abstract class PhysicBody implements Serializable<PhysicBodyProps
 
 	protected on_update: (() => void) | null = null;
 
+	public abstract panel: React.FC<any>;
 	public abstract renderer: PhysicBodyRenderer;
 	public abstract interactor: Interactor;
 

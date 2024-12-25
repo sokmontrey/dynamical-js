@@ -4,6 +4,7 @@ import PhysicBody, {PhysicBodyType} from "./PhysicBody";
 import PointMass from "./PointMass";
 import Vec2 from "../utils/Vector.ts";
 import { PhysicBodyProps } from "../core-physic/PhysicBody.ts";
+import RigidConstraintPanel from "../ui-components/property-panel/RigidConstraintPanel.tsx";
 
 export interface RigidConstraintProps extends PhysicBodyProps {
 	is_broken?: boolean;
@@ -21,6 +22,7 @@ export default class RigidConstraint extends PhysicBody {
 	protected diff: number;
 	protected corr: number;
 
+	public panel: React.FC<any> = RigidConstraintPanel;
 	public renderer: RigidConstraintRenderer;
 	public interactor: RigidConstraintInteractor;
 

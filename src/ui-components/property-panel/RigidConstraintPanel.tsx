@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import RigidConstraint from "../../core-physic/RigidConstraint";
 import Vec2 from "../../utils/Vector";
+import PhysicBody from "../../core-physic/PhysicBody";
 
 export default function PointMassPanel({ 
-    rigid_constraint 
-}: { rigid_constraint: RigidConstraint }) {
+    body 
+}: { body: PhysicBody }) {
     // const [position, setPosition] = useState(rigid_constraint.getPosition());
 
     // useEffect(() => {
