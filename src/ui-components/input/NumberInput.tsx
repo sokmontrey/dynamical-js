@@ -5,6 +5,7 @@ export interface NumberInputProps {
     step?: number;
     value: number;
     onChange: (value: number) => void;
+    enable?: boolean;
 }
 
 export default function NumberInput({
@@ -14,6 +15,7 @@ export default function NumberInput({
     min = -Infinity,
     max = Infinity,
     step = 1,
+    enable = true,
 }: NumberInputProps) {
     return <div>
         <label>
@@ -25,6 +27,7 @@ export default function NumberInput({
                 min={min}
                 max={max}
                 step={step}
+                disabled={!enable}
             />
         </label>
     </div>
