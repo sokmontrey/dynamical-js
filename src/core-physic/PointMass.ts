@@ -98,7 +98,7 @@ export default class PointMass extends PhysicBody {
 	*		`setCurrentPosition`: has no effect even after the pointmass turned back to normal. Use `setPosition` instead to set position.
 	**/
 	enableStatic() {
-		this.is_static = true;
+		this.setStatic(true);
 	}
 
 	/**
@@ -106,7 +106,7 @@ export default class PointMass extends PhysicBody {
 	*	Action applied during the static phase will now be in effect (setVelocity, applyForce, etc.)
 	**/
 	disableStatic() {
-		this.is_static = false;
+		this.setStatic(false);
 	}
 
 	/**
@@ -182,6 +182,10 @@ export default class PointMass extends PhysicBody {
 
 	setMass(mass: number) {
 		this.mass = mass;
+	}
+
+	setStatic(is_static: boolean) {
+		this.is_static = is_static;
 	}
 
 	//================================ Dynamic ================================
