@@ -58,7 +58,7 @@ export default class RigidConstraint extends PhysicBody {
 		this.corr = 0;
 		if (this.rest_distance === 0)
 			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
-		return this;
+		return;
 	}
 
 	//================================ Getters ================================
@@ -104,8 +104,11 @@ export default class RigidConstraint extends PhysicBody {
 	*	Set pointmasses free from each other
 	**/
 	break() {
-		this.is_broken = true;
-		return this;
+		this.setBroken(true);
+	}
+
+	setBroken(is_broken: boolean) {
+		this.is_broken = is_broken;
 	}
 
 	/**
@@ -115,7 +118,6 @@ export default class RigidConstraint extends PhysicBody {
 	restore(recalculate_rest_distance: boolean = false) {
 		this.is_broken = false;
 		if (recalculate_rest_distance) this.calculateRestDistance();
-		return this;
 	}
 
 	setRestDistance(rest_distance: number, reset_pointmass_velocity: boolean = false) {
@@ -124,7 +126,6 @@ export default class RigidConstraint extends PhysicBody {
 			this.pointmass1.resetVelocity();
 			this.pointmass2.resetVelocity();
 		}
-		return this;
 	}
 
 	/**
@@ -136,7 +137,7 @@ export default class RigidConstraint extends PhysicBody {
 	*			(temp_pos += corr_pos; count ++; temp_pos / corr_pos)
 	**/
 	update(dt: number) {
-		if (this.is_broken) return this;
+		if (this.is_broken) return;
 		this.check();
 		this.resolve(dt); // Immediately resolve the constraint
 		this.triggerOnUpdate();
@@ -157,7 +158,7 @@ export default class RigidConstraint extends PhysicBody {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	setPosition(_position: Vec2) {
-		return this;
+		return;
 	}
 
 	calculateCorrection(_: number) {
@@ -165,12 +166,12 @@ export default class RigidConstraint extends PhysicBody {
 	}
 
 	resolve(dt: number) {
-		if (this.is_broken) return this;
+		if (this.is_broken) return;
 		if (this.rest_distance === 0)
 			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
 		const pos1 = this.pointmass1.getPosition();
 		const pos2 = this.pointmass2.getPosition();
-		if (Math.abs(this.diff) < 1e-9) return this;
+		if (Math.abs(this.diff) < 1e-9) return;
 
 		this.calculateCorrection(dt);
 		const v = pos2.sub(pos1);
