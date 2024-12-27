@@ -86,7 +86,7 @@ export default class RigidConstraint extends PhysicBody {
 		return -this.diff / this.rest_distance;
 	}
 
-	getRestDistanec() {
+	getRestDistance() {
 		return this.rest_distance;
 	}
 
@@ -96,6 +96,10 @@ export default class RigidConstraint extends PhysicBody {
 
 	isBroken(): boolean {
 		return this.is_broken;
+	}
+
+	getCurrentDistance(): number {
+		return this.pointmass1.getPosition().distance(this.pointmass2.getPosition());
 	}
 
 	//================================ Setters ================================
@@ -137,10 +141,10 @@ export default class RigidConstraint extends PhysicBody {
 	*			(temp_pos += corr_pos; count ++; temp_pos / corr_pos)
 	**/
 	update(dt: number) {
+		this.triggerOnUpdate();
 		if (this.is_broken) return;
 		this.check();
 		this.resolve(dt); // Immediately resolve the constraint
-		this.triggerOnUpdate();
 	}
 
 	/**
