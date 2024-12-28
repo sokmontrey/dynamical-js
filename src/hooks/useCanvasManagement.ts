@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Canvas from "../core/Canvas";
-import PhysicBodyManager from "../manager/PhysicBodyManager";
-import ModeManager from "../mode/ModeManager";
+import BodyManager from "../manager/BodyManager";
+import ModeManager from "../manager/ModeManager";
 
 export default function useCanvasManagement() {
     const [canvas_state, setCanvasState] = useState<{
@@ -16,7 +16,7 @@ export default function useCanvasManagement() {
 		const base_canvas = canvas_state.base_canvas;
 		if (!base_canvas) return;
 		base_canvas.clear();
-		const bodies = PhysicBodyManager.getAllBodies();
+		const bodies = BodyManager.getAllBodies();
 		bodies.sort((a, b) => b.getRank() - a.getRank());
 		bodies.forEach(
 			x => x.renderer.draw(base_canvas.getContext(), sub_steps)

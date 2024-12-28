@@ -1,8 +1,8 @@
 import SimulationCanvas from "./ui-components/main-ui/SimulationCanvas.tsx";
 import { useCallback, useEffect, useMemo } from "react";
 import InputManager from "./manager/InputManager.ts";
-import PhysicBodyManager from "./manager/PhysicBodyManager.ts";
-import ModeManager from "./mode/ModeManager.ts";
+import BodyManager from "./manager/BodyManager.ts";
+import ModeManager from "./manager/ModeManager.ts";
 import LoopManager from "./manager/LoopManager.ts";
 import BodyTreePanel from "./ui-components/main-ui/BodyTreePanel.tsx";
 import simple_pendulum_state from "./states/simple-pendulum.ts";
@@ -39,12 +39,12 @@ export default function App() {
 
 	const selected_body = useMemo(() => {
 		if (selected_body_ids.length !== 1) return null;
-		return PhysicBodyManager.getById(selected_body_ids[0]);
+		return BodyManager.getById(selected_body_ids[0]);
 	}, [selected_body_ids]);
 
-	const initializePhysicBodyManager = useCallback(() => {
-		PhysicBodyManager.init(state); 
-		PhysicBodyManager.setOnTreeChange((body_ids) => {
+	const initializeBodyManager = useCallback(() => {
+		BodyManager.init(state); 
+		BodyManager.setOnTreeChange((body_ids) => {
 			setBodyIds(body_ids);
 		});
 	}, [state]);
@@ -70,7 +70,7 @@ export default function App() {
 
 	useEffect(() => {
 		if (!canvas_state.overlay_canvas) return;
-		initializePhysicBodyManager();
+		initializeBodyManager();
 		initializeModeManager();
 		initializeInputManager();
 		resetState();
