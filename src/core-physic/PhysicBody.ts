@@ -9,6 +9,7 @@ export interface PhysicBodyProps { }
 export enum PhysicBodyType {
 	POINT_MASS = "point_mass",
 	RIGID_CONSTRAINT = "rigid_constraint",
+	CIRCULAR_KINEMATIC = "circular_kinematic",
 }
 
 export default abstract class PhysicBody implements Serializable<PhysicBodyProps> {

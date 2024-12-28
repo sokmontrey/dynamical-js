@@ -5,6 +5,8 @@ import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer.ts
 import PhysicBodyState, { PhysicBodyConfig } from "../core/PhysicBodyState.ts";
 import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody.ts";
 import PointMass from "../core-physic/PointMass.ts";
+import CircularKinematic from "../core-physic/CircularKinematic.ts";
+import CircularKinematicRenderer from "../body-renderer/CircularKinematicRenderer.ts";
 
 type TreeChangeCallback = (body_ids: string[]) => void;
 
@@ -107,6 +109,7 @@ export default class PhysicBodyManager {
 		const body_load_mapper = {
 			[PhysicBodyType.POINT_MASS]: PhysicBodyManager.loadPointmassConfig,
 			[PhysicBodyType.RIGID_CONSTRAINT]: PhysicBodyManager.loadRigidConstraintConfig,
+			[PhysicBodyType.CIRCULAR_KINEMATIC]: PhysicBodyManager.loadCircularKinematicConfig,
 		};
 
 		const loader = body_load_mapper[config.type];
@@ -156,6 +159,34 @@ export default class PhysicBodyManager {
 		rigid_constraint.renderer = new RigidConstraintRenderer(rigid_constraint, config.renderer);
 		PhysicBodyManager.addBody(rigid_constraint, id);
 		return rigid_constraint;
+	}
+
+	private static loadCircularKinematicConfig(
+		state: PhysicBodyState,
+		id: string,
+		config: PhysicBodyConfig
+	): CircularKinematic {
+		const body = PhysicBodyManager.getById(id);
+		if (body) return body as CircularKinematic;
+
+		const {
+			center_pointmass: pm1_id,
+			moving_pointmass: pm2_id
+		} = config.dependencies as {
+			center_pointmass: string,
+			moving_pointmass: string
+		};
+
+		// TODO: better error handling message
+		if (!pm1_id || !state[pm1_id]) throw new Error("Center pointmass not found");
+		if (!pm2_id || !state[pm2_id]) throw new Error("Moving pointmass not found");
+		const pm1 = PhysicBodyManager.loadBodyFromConfig(state, pm1_id) as PointMass;
+		const pm2 = PhysicBodyManager.loadBodyFromConfig(state, pm2_id) as PointMass;
+
+		const circular_kinematic = new CircularKinematic(pm1, pm2, config.props);
+		circular_kinematic.renderer = new CircularKinematicRenderer(circular_kinematic, config.renderer);
+		PhysicBodyManager.addBody(circular_kinematic, id);
+		return circular_kinematic;
 	}
 
 	static clear(): void {

@@ -89,6 +89,10 @@ export default class Vec2 {
 		return vec2(Math.max(a.x, b.x), Math.max(a.y, b.y));
 	}
 
+	angle(): number {
+		return Math.atan2(this.y, this.x);
+	}
+
 	//================================ Conveniences ================================
 
 	/**

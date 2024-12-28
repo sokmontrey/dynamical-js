@@ -141,7 +141,9 @@ export default class MoveMode extends Mode {
     }
 
     private moveBody(body: PhysicBody, position: Vec2): void {
-        if (body.getType() !== PhysicBodyType.POINT_MASS) return;
+        // TODO: PhysicBody.isMoveable
+        const type = body.getType();
+        if (type !== PhysicBodyType.POINT_MASS) return;
 
         const point_mass = body as PointMass;
         point_mass.moveTo(position);
