@@ -16,13 +16,16 @@ export default class PointMass extends Body<PointMass_Props, PointMass_Renderer>
 	protected readonly type = BodyType.POINT_MASS;
 	protected readonly moveable = true;
 
-	protected props: PointMass_Props;
-	protected renderer: PointMass_Renderer;	
-
-	constructor(props: PointMass_Props, renderer_props: RendererProps) {
+	constructor({
+		props, 
+		renderer
+	}: {
+		props: PointMass_Props, 
+		renderer: RendererProps
+	}) {
 		super();
 		this.props = props;
-		this.renderer = new PointMass_Renderer(renderer_props);
+		this.renderer = new PointMass_Renderer(renderer);
 	}
 
 	//================================ Dynamic ================================

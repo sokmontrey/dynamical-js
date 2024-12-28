@@ -14,12 +14,17 @@ export default abstract class Body<P, R> {
 	// public abstract panel_property: BodyPanelProps;
 	// public abstract interactor: BodyInteractor;
 
-	protected abstract props: P;
-	protected abstract renderer: R;
+	protected props: P;
+	protected renderer: R;
 
 	abstract update(dt: number): void;
 	abstract draw(ctx: CanvasRenderingContext2D, steps: number): void;
 	abstract drawSelection(ctx: CanvasRenderingContext2D): void;
+
+	constructor() {
+		this.props = {} as P;
+		this.renderer = {} as R;
+	}
 
 	//================================ Getters ================================
 
@@ -50,4 +55,9 @@ export default abstract class Body<P, R> {
 	triggerOnUpdate(): void {
 		if (this.on_update) this.on_update();
 	}
+
+	//================================ Serialization ================================
+
+	// abstract serialize(): any;
+	// abstract deserialize(serialized: any): void;
 }
