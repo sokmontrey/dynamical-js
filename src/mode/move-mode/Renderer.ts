@@ -28,17 +28,17 @@ export default class MoveModeRenderer extends ModeRenderer {
 
     private drawHoveredBody(
         ctx: CanvasRenderingContext2D,
-        hovered_body: Body | null
+        hovered_body: Body<any, any> | null
     ) {
-        hovered_body?.renderer.drawSelection(ctx);
+        hovered_body?.renderer.drawSelection(hovered_body, ctx);
     }
 
     private drawSelectedBodies(
         ctx: CanvasRenderingContext2D,
-        bodies: Set<Body>
+        bodies: Set<Body<any, any>>
     ) {
         bodies.forEach(body => {
-            body.renderer.drawSelection(ctx);
+            body.renderer.drawSelection(body, ctx);
         });
     }
 

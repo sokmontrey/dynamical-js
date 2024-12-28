@@ -12,15 +12,15 @@ export default class MoveMode extends Mode {
     public readonly renderer: ModeRenderer;
 
     // Selection properties
-    private selected_bodies: Set<Body>;
-    private hovered_body: Body | null;
-    private on_selection_change: (selected_bodies: Set<Body>) => void;
+    private selected_bodies: Set<Body<any, any>>;
+    private hovered_body: Body<any, any> | null;
+    private on_selection_change: (selected_bodies: Set<Body<any, any>>) => void;
 
     // Drag properties
     private is_dragging: boolean;
     private mouse_down_button: MouseButton | null;
-    private target_body: Body | null;
-    private body_offsets: Map<Body, Vec2> | null;
+    private target_body: Body<any, any> | null;
+    private body_offsets: Map<Body<any, any>, Vec2> | null;
 
     private on_body_update: () => void;
 
@@ -29,7 +29,7 @@ export default class MoveMode extends Mode {
         this.renderer = new MoveModeRenderer(this);
 
         // Initialize selection properties
-        this.selected_bodies = new Set<Body>();
+        this.selected_bodies = new Set<Body<any, any>>();
         this.hovered_body = null;
         this.on_selection_change = () => { };
 
@@ -52,7 +52,7 @@ export default class MoveMode extends Mode {
         this.on_body_update = on_body_update;
     }
 
-    public selectBody(body: Body | null): void {
+    public selectBody(body: Body<any, any> | null): void {
         if (!body) return;
 
         if (this.selected_bodies.has(body)) {
@@ -118,11 +118,14 @@ export default class MoveMode extends Mode {
 
     private calculateBodyOffsets(): void {
         const mouse_pos = InputManager.getMousePosition();
-        const offsets = new Map<Body, Vec2>();
+        const offsets = new Map<Body<any, any>, Vec2>();
 
-        this.selected_bodies.forEach(body => {
-            offsets.set(body, body.getPosition().sub(mouse_pos));
-        });
+        Array.from(this.selected_bodies)
+            .filter(body => body.isMoveable())
+            .forEach(body => {
+                // TODO: deal with (body as any) maybe inherit from MoveableBody. UHHH.
+                offsets.set(body, (body as any).getPosition().sub(mouse_pos));
+            });
 
         this.body_offsets = offsets;
     }
@@ -140,7 +143,7 @@ export default class MoveMode extends Mode {
         }
     }
 
-    private moveBody(body: Body, position: Vec2): void {
+    private moveBody(body: Body<any, any>, position: Vec2): void {
         // TODO: every Body should have a moveTo method
         const type = body.getType();
         if (type !== BodyType.POINT_MASS) return;
@@ -194,11 +197,11 @@ export default class MoveMode extends Mode {
             this.selected_bodies.has(this.target_body);
     }
 
-    public getSelectedBodies(): Set<Body> {
+    public getSelectedBodies(): Set<Body<any, any>> {
         return this.selected_bodies;
     }
 
-    public getHoveredBody(): Body | null {
+    public getHoveredBody(): Body<any, any> | null {
         return this.hovered_body;
     }
 
@@ -208,7 +211,7 @@ export default class MoveMode extends Mode {
     }
 
     // TODO: just pass in the body directly
-    public setOnSelectionChange(callback: (selected_bodies: Set<Body>) => void): void {
+    public setOnSelectionChange(callback: (selected_bodies: Set<Body<any, any>>) => void): void {
         this.on_selection_change = callback;
     }
 

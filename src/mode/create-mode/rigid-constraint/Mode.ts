@@ -18,6 +18,7 @@ export default class RigidConstraint_CreateMode extends Mode {
     private reset(): void {
         this.pointmass1 = null;
         this.pointmass2 = null;
+        this.hovered_pointmass = null;
     }
 
     onMouseMove(): void {

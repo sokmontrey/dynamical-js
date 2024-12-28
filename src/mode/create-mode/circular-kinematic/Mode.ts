@@ -17,6 +17,7 @@ export default class CircularKinematic_CreateMode extends Mode {
     private reset(): void {
         this.center_pointmass = null;
         this.anchor_pointmass = null;
+        this.hovered_pointmass = null;
     }
 
     onMouseMove(): void {

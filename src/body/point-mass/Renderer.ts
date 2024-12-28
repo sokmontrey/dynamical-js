@@ -6,10 +6,10 @@ import Vec2 from "../../utils/Vector";
 import PointMass from "./Body";
 
 export interface RendererProps {
-	position: CircleStyleProps;
-	static_position: CircleStyleProps;
-	velocity: ArrowStyleProps;
-	selected: CircleStyleProps;
+	position?: CircleStyleProps;
+	static_position?: CircleStyleProps;
+	velocity?: ArrowStyleProps;
+	selected?: CircleStyleProps;
 }
 
 export default class PointMass_Renderer extends BodyRenderer<PointMass> {

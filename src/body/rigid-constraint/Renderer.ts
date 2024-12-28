@@ -8,10 +8,10 @@ import Vec2 from "../../utils/Vector";
 import RigidConstraint from "./Body";
 
 export interface RendererProps {
-	constraint_line: LineStyleProps;
-	stress: StressStyleProps;
-	selected: LineStyleProps;
-	selected_circle: CircleStyleProps;
+	constraint_line?: LineStyleProps;
+	stress?: StressStyleProps;
+	selected?: LineStyleProps;
+	selected_circle?: CircleStyleProps;
 }
 
 export default class RigidConstraint_Renderer extends BodyRenderer<RigidConstraint> {

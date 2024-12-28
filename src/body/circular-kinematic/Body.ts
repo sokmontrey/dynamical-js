@@ -25,8 +25,8 @@ export default class CircularKinematic extends Body<CircularKinematic, Props> {
     private anchor_pointmass: PointMass;
 
     protected props: Props;
-    protected renderer: CircularKinematic_Renderer;
-    protected interactor: CircularKinematic_Interactor;
+    public renderer: CircularKinematic_Renderer;
+    public interactor: CircularKinematic_Interactor;
 
     constructor({
         center_pointmass,

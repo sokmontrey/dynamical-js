@@ -24,8 +24,8 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
 	protected readonly moveable = true;
 
 	protected props: PointMass_Props;
-	protected renderer: PointMass_Renderer;
-	protected interactor: PointMass_Interactor;
+	public renderer: PointMass_Renderer;
+	public interactor: PointMass_Interactor;
 
 	constructor({
 		props, 

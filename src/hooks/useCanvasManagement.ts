@@ -19,7 +19,7 @@ export default function useCanvasManagement() {
 		const bodies = BodyManager.getAllBodies();
 		bodies.sort((a, b) => b.getRank() - a.getRank());
 		bodies.forEach(
-			x => x.renderer.draw(base_canvas.getContext(), sub_steps)
+			x => x.renderer.draw(x, base_canvas.getContext(), sub_steps)
 		);
     };
 

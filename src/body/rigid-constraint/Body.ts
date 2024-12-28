@@ -19,8 +19,8 @@ export default class RigidConstraint extends Body<RigidConstraint, Props> {
 	protected pointmass2: PointMass;
 
 	protected props: Props;
-	protected renderer: RigidConstraint_Renderer;
-	protected interactor: RigidConstraint_Interactor;
+	public renderer: RigidConstraint_Renderer;
+	public interactor: RigidConstraint_Interactor;
 
 	protected rest_distance: number = 0;
 	protected diff: number = 0;

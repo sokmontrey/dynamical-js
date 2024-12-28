@@ -16,8 +16,8 @@ export default abstract class Body<T, P> {
 	protected on_update: (() => void) | null = null;
 
 	protected abstract props: P;
-	protected abstract renderer: BodyRenderer<T>;
-	protected abstract interactor: BodyInteractor;
+	public abstract renderer: BodyRenderer<T>;
+	public abstract interactor: BodyInteractor;
 
 	abstract update(dt: number): void;
 	abstract getPropBinders(): PropBinder<any>[];
@@ -43,6 +43,10 @@ export default abstract class Body<T, P> {
 
 	getRank(): number {
 		return this.rank;
+	}
+
+	isMoveable(): boolean {
+		return this.moveable;
 	}
 
 	//================================ Setters ================================

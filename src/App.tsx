@@ -12,7 +12,6 @@ import useCanvasManagement from "./hooks/useCanvasManagement.ts";
 import usePhysicsSimulation from "./hooks/usePhysicsSimulation.ts";
 import useModeManagement from "./hooks/useModeManager.ts";
 import PropertyPanel from "./ui-components/main-ui/PropertyPanel.tsx";
-import circular_kinematic_test_state from "./states/circular-kinematic-test.ts";
 
 export default function App() {
 	const {
