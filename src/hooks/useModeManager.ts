@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import ModeManager, { ModeType } from "../mode/ModeManager";
-import MoveMode from "../mode/MoveMode";
+import ModeManager, { ModeType } from "../manager/ModeManager";
+import MoveMode from "../mode/move-mode/Mode";
 
 export default function useModeManagement() {
     const [mode, setMode] = useState<ModeType>(ModeType.MOVE);

@@ -1,7 +1,7 @@
+import BodyManager from "../../manager/BodyManager";
 import InputManager from "../../manager/InputManager";
-import PhysicBodyManager from "../../manager/PhysicBodyManager";
-import ModeManager, { ModeType } from "../../mode/ModeManager";
-import MoveMode from "../../mode/MoveMode";
+import ModeManager, { ModeType } from "../../manager/ModeManager";
+import MoveMode from "../../mode/move-mode/Mode";
 
 export interface BodyTreePanelProps {
 	body_ids: string[];
@@ -18,7 +18,7 @@ export default function BodyTreePanel({
 		if (ModeManager.getCurrentModeType() !== ModeType.MOVE)
 			ModeManager.toMoveMode();
 		const move_mode = ModeManager.getCurrentMode() as MoveMode;
-		const body = PhysicBodyManager.getById(body_id);
+		const body = BodyManager.getById(body_id);
 		if (!body) return;
 		if (!InputManager.isKeyDown("Shift")) 
 			move_mode.resetSelectedBodies();

@@ -1,29 +1,29 @@
 import { useState } from "react";
-import PhysicBodyState from "../core/PhysicBodyState";
+import BodyState from "../core/BodyState";
 import LoopManager from "../manager/LoopManager";
-import PhysicBodyManager from "../manager/PhysicBodyManager";
-import ModeManager from "../mode/ModeManager";
+import BodyManager from "../manager/BodyManager";
+import ModeManager from "../manager/ModeManager";
 
 export default function usePhysicsSimulation(
-    initial_state: PhysicBodyState, 
+    initial_state: BodyState, 
 ) {
-    const [state, setState] = useState<PhysicBodyState>(initial_state);
+    const [state, setState] = useState<BodyState>(initial_state);
     const [body_ids, setBodyIds] = useState<string[]>([]);
 
     const update = (dt: number, _sub_steps: number) => {
-        const bodies = PhysicBodyManager.getAllBodies();
+        const bodies = BodyManager.getAllBodies();
         bodies.sort((a, b) => a.getRank() - b.getRank());
         bodies.forEach(x => x.update(dt));
     };
 
     const resetState = () => {
-        PhysicBodyManager.loadFromState(state);
+        BodyManager.loadFromState(state);
         ModeManager.reset();
         LoopManager.render();
     };
 
     const saveState = () => {
-        setState(PhysicBodyManager.toState());
+        setState(BodyManager.toState());
     };
 
     return {

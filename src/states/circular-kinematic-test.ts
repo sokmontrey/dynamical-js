@@ -1,21 +1,21 @@
-import { PhysicBodyType } from "../core-physic/PhysicBody";
-import PhysicBodyState from "../core/PhysicBodyState";
-import Vec2 from "../utils/Vector";
+import { BodyType } from "../core/Body.ts";
+import BodyState from "../core/BodyState.ts";
+import Vec2 from "../utils/Vector.ts";
 
-const circular_kinematic_test_state: PhysicBodyState = {
+const circular_kinematic_test_state: BodyState = {
     "point1": {
-        type: PhysicBodyType.POINT_MASS,
+        type: BodyType.POINT_MASS,
         props: { is_static: true, },
         renderer: {
             static_position: { radius: 5, fill_color: "red" },
         }
     },
     "point2": {
-        type: PhysicBodyType.POINT_MASS,
+        type: BodyType.POINT_MASS,
         props: { position: Vec2.right(50), }
     },
     "circular_kinematic": {
-        type: PhysicBodyType.CIRCULAR_KINEMATIC,
+        type: BodyType.CIRCULAR_KINEMATIC,
         dependencies: { 
             center_pointmass: "point1",  // TODO: use Reference Object for automatic dependency loading 
             moving_pointmass: "point2", 

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import PhysicBody from "../../core-physic/PhysicBody";
+import Body from "../../core/Body.ts";
 
 export default function PropertyPanel({ 
     body 
-}: { body: PhysicBody }) {
+}: { body: Body }) {
     const binders = body.panel_property.getPropBinders();
 
     useEffect(() => {
