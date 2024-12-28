@@ -13,8 +13,8 @@ export default class CircularKinematic extends Body<CircularKinematic, Props> {
     protected readonly rank = 1;
     protected readonly type = BodyType.CIRCULAR_KINEMATIC;
 
-    private radius!: number;
-    private angle!: number;
+    private radius: number = 10;
+    private angle: number = 0;
 
     private center_pointmass: PointMass;
     private anchor_pointmass: PointMass;
