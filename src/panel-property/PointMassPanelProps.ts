@@ -1,5 +1,4 @@
 import Vec2 from "../utils/Vector";
-import PointMass from "../core-physic/PointMass";
 import LoopManager from "../manager/LoopManager";
 import PhysicBodyManager from "../manager/PhysicBodyManager";
 import VectorInput from "../ui-components/input/VectorInput";
@@ -7,6 +6,7 @@ import { useInputPropBinder, PropBinder } from "../hooks/usePropBinder";
 import PhysicBodyPanelProps from "./PhysicBodyPanelProps";
 import NumberInput from "../ui-components/input/NumberInput";
 import BooleanInput from "../ui-components/input/BooleanInput";
+import PointMass from "../core-physic/PointMass";
 
 export default class PointMassPanelProps implements PhysicBodyPanelProps {
     private point_mass: PointMass;

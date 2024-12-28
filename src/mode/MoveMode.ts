@@ -1,12 +1,12 @@
 import Mode from "./Mode.ts";
 import Vec2 from "../utils/Vector.ts";
 import InputManager, { MouseButton } from "../manager/InputManager.ts";
-import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody.ts";
 import MoveModeRenderer from "../mode-renderer/MoveModeRenderer.ts";
 import ModeRenderer from "../mode-renderer/ModeRenderer.ts";
-import PointMass from "../core-physic/PointMass.ts";
 import PhysicBodyManager from "../manager/PhysicBodyManager.ts";
 import LoopManager from "../manager/LoopManager.ts";
+import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody.ts";
+import PointMass from "../core-physic/PointMass.ts";
 
 export default class MoveMode extends Mode {
     public readonly renderer: ModeRenderer;
@@ -141,7 +141,6 @@ export default class MoveMode extends Mode {
     }
 
     private moveBody(body: PhysicBody, position: Vec2): void {
-        // TODO: movable bodies
         if (body.getType() !== PhysicBodyType.POINT_MASS) return;
 
         const point_mass = body as PointMass;

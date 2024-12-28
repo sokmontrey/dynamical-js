@@ -1,10 +1,10 @@
 import Vec2 from "../utils/Vector.ts";
-import PhysicBody, {PhysicBodyType} from "../core-physic/PhysicBody.ts";
-import PointMass from "../core-physic/PointMass.ts";
 import RigidConstraint from "../core-physic/RigidConstraint.ts";
 import PointMassRenderer from "../body-renderer/PointMassRenderer.ts";
 import RigidConstraintRenderer from "../body-renderer/RigidConstraintRenderer.ts";
 import PhysicBodyState, { PhysicBodyConfig } from "../core/PhysicBodyState.ts";
+import PhysicBody, { PhysicBodyType } from "../core-physic/PhysicBody.ts";
+import PointMass from "../core-physic/PointMass.ts";
 
 type TreeChangeCallback = (body_ids: string[]) => void;
 
