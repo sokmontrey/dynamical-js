@@ -27,7 +27,7 @@ export default class CircularKinematic extends PhysicBody {
     private anchor_pointmass: PointMass;
 
     constructor(center_pointmass: PointMass, anchor_pointmass: PointMass, {
-        angular_velocity = 0,
+        angular_velocity = Math.PI / 6,
         is_running = true,
     }: CircularKinematicProps = {}) {
         super();
@@ -126,7 +126,7 @@ export default class CircularKinematic extends PhysicBody {
 
     serialize(): CircularKinematicProps {
         return {
-            angular_velocity: this.getAngularVelocity(false),
+            angular_velocity: this.getAngularVelocity(true),
             is_running: this.isRunning(),
         };
     }
