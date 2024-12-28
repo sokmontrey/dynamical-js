@@ -1,6 +1,11 @@
 import Body, { BodyType } from "../../core/Body";
+import { PropBinder, useInputPropBinder } from "../../hooks/usePropBinder";
+import BooleanInput from "../../ui-components/input/BooleanInput";
+import NumberInput from "../../ui-components/input/NumberInput";
+import VectorInput from "../../ui-components/input/VectorInput";
 import Vec2 from "../../utils/Vector";
 import PointMass from "../point-mass/Body";
+import CircularKinematic_Interactor from "./Interactor";
 import CircularKinematic_Renderer, { RendererProps } from "./Renderer";
 
 interface Props {
@@ -19,6 +24,10 @@ export default class CircularKinematic extends Body<CircularKinematic, Props> {
     private center_pointmass: PointMass;
     private anchor_pointmass: PointMass;
 
+    protected props: Props;
+    protected renderer: CircularKinematic_Renderer;
+    protected interactor: CircularKinematic_Interactor;
+
     constructor({
         center_pointmass,
         anchor_pointmass,
@@ -35,6 +44,7 @@ export default class CircularKinematic extends Body<CircularKinematic, Props> {
         this.anchor_pointmass = anchor_pointmass;
         this.props = props;
         this.renderer = new CircularKinematic_Renderer(renderer);
+        this.interactor = new CircularKinematic_Interactor(this);
 
         this.calculateRadius();
         this.calculateAngle();
@@ -52,6 +62,42 @@ export default class CircularKinematic extends Body<CircularKinematic, Props> {
         this.anchor_pointmass.setPosition(new_pos);
 
         this.triggerOnUpdate();
+    }
+
+    getPropBinders(): PropBinder<any>[] {        
+        return [
+            // is running
+            useInputPropBinder(BooleanInput, 
+                { label: "Running" },
+                () => this.isRunning(),
+                (value: boolean) => this.setRunning(value)),
+
+            // position
+            useInputPropBinder(VectorInput, 
+                { label: "Position", step: 10 },
+                () => this.getPosition(),
+                (value: Vec2) => this.setPosition(value)),
+
+            // radius
+            useInputPropBinder(NumberInput, 
+                { label: "Radius", step: 10, min: 0.01 },
+                () => this.getRadius(),
+                (value: number) => this.setRadius(value)),
+
+            // angle velocity
+            useInputPropBinder(NumberInput, 
+                { label: "Angular Velocity", step: 10 },
+                () => this.getAngularVelocity(false),
+                (value: number) => 
+                    this.setAngularVelocity(value, false)),
+
+            // angle
+            useInputPropBinder(NumberInput, 
+                { label: "Angle", step: 10, min: 0, max: 360 },
+                () => this.getAngle(false),
+                (value: number) => 
+                    this.setAngle(value, false)),
+        ];
     }
 
     //================================ Helpers ================================

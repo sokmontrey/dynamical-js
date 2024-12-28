@@ -1,5 +1,9 @@
 import Body, { BodyType } from "../../core/Body";
+import { PropBinder, useInputPropBinder } from "../../hooks/usePropBinder";
+import BooleanInput from "../../ui-components/input/BooleanInput";
+import NumberInput from "../../ui-components/input/NumberInput";
 import PointMass from "../point-mass/Body";
+import RigidConstraint_Interactor from "./Interactor";
 import RigidConstraint_Renderer, { RendererProps } from "./Renderer";
 
 interface Props {
@@ -13,6 +17,10 @@ export default class RigidConstraint extends Body<RigidConstraint, Props> {
 
 	protected pointmass1: PointMass;
 	protected pointmass2: PointMass;
+
+	protected props: Props;
+	protected renderer: RigidConstraint_Renderer;
+	protected interactor: RigidConstraint_Interactor;
 
 	protected rest_distance: number = 0;
 	protected diff: number = 0;
@@ -32,8 +40,10 @@ export default class RigidConstraint extends Body<RigidConstraint, Props> {
 		super();
 		this.pointmass1 = pointmass1;
 		this.pointmass2 = pointmass2;
+
 		this.props = props;
 		this.renderer = new RigidConstraint_Renderer(renderer);
+		this.interactor = new RigidConstraint_Interactor(this);
 
 		this.calculateRestDistance();
 	}
@@ -51,6 +61,27 @@ export default class RigidConstraint extends Body<RigidConstraint, Props> {
 		if (this.isBroken()) return;
 		this.check();
 		this.resolve(dt); // Immediately resolve the constraint
+	}
+
+	getPropBinders(): PropBinder<any>[] {
+        return [ 
+            useInputPropBinder(BooleanInput,
+                { label: "Connected" },
+                () => !this.isBroken(),
+                (value: boolean) => value ? 
+                    this.restore(true) : 
+                    this.break()),
+
+            useInputPropBinder(NumberInput,
+                { label: "Rest Distance", enable: true },
+                () => this.getRestDistance(),
+                (value: number) => this.setRestDistance(value)),
+
+            useInputPropBinder(NumberInput,
+                { label: "Current Distance", enable: false },
+                () => this.getCurrentDistance(),
+                (_value: number) => {}),
+        ];
 	}
 
 	//================================ Helpers ================================

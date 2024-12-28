@@ -1,3 +1,5 @@
+import { PropBinder } from "../hooks/usePropBinder";
+import BodyInteractor from "./BodyInteractor";
 import BodyRenderer from "./BodyRenderer";
 
 export enum BodyType {
@@ -13,15 +15,12 @@ export default abstract class Body<T, P> {
 	protected abstract readonly moveable: boolean;
 	protected on_update: (() => void) | null = null;
 
-	protected props: P;
-	protected renderer: BodyRenderer<T>;
+	protected abstract props: P;
+	protected abstract renderer: BodyRenderer<T>;
+	protected abstract interactor: BodyInteractor;
 
 	abstract update(dt: number): void;
-
-	constructor() {
-		this.props = {} as P;
-		this.renderer = {} as BodyRenderer<T>;
-	}
+	abstract getPropBinders(): PropBinder<any>[];
 
 	draw(ctx: CanvasRenderingContext2D, steps: number): void {
 		// TODO: deal with this
