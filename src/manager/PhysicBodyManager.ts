@@ -249,6 +249,16 @@ export default class PhysicBodyManager {
 		return body_name;
 	}
 
+    static createCircularKinematic(center_pointmass: PointMass, anchor_pointmass: PointMass) {
+		const circular_kinematic = new CircularKinematic(center_pointmass, anchor_pointmass);
+		const body_name = PhysicBodyManager.addBody(circular_kinematic);
+		PhysicBodyManager.setDependency(body_name, { 
+			center_pointmass: center_pointmass.getId()!, 
+			moving_pointmass: anchor_pointmass.getId()! 
+		});
+		return body_name;
+    }
+
 	// ============================== Body update ==============================
 
 	static updateConnectedConstraints(pointmass: PointMass): void {

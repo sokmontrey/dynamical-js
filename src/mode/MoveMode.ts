@@ -141,7 +141,7 @@ export default class MoveMode extends Mode {
     }
 
     private moveBody(body: PhysicBody, position: Vec2): void {
-        // TODO: PhysicBody.isMoveable
+        // TODO: every PhysicBody should have a moveTo method
         const type = body.getType();
         if (type !== PhysicBodyType.POINT_MASS) return;
 
@@ -149,6 +149,7 @@ export default class MoveMode extends Mode {
         point_mass.moveTo(position);
         point_mass.triggerOnUpdate();
 
+        // TODO: remove this
         if (!LoopManager.isRunning()) {
             PhysicBodyManager.updateConnectedConstraints(point_mass);
         }

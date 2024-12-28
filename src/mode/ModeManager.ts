@@ -1,5 +1,6 @@
 import CreatePointMassMode from "./CreatePointMassMode.ts";
 import CreateRigidConstraintMode from "./CreateRigidConstraintMode.ts";
+import CreateCircularKinematicMode from "./CreateCircularKinematicMode.ts";
 import MoveMode from "./MoveMode.ts";
 import Mode from "./Mode.ts";
 import { MouseButton } from "../manager/InputManager.ts";
@@ -8,6 +9,7 @@ export enum ModeType {
     MOVE = "Move",
     CREATE_POINTMASS = "Create Point Mass",
     CREATE_RIGID_CONSTRAINT = "Create Rigid Constraint",
+    CREATE_CIRCULAR_KINEMATIC = "Create Circular Kinematic",
 }
 
 export default class ModeManager {
@@ -33,6 +35,9 @@ export default class ModeManager {
                 break;
             case ModeType.CREATE_RIGID_CONSTRAINT:
                 ModeManager.toMode(new CreateRigidConstraintMode(), ModeType.CREATE_RIGID_CONSTRAINT);
+                break;
+            case ModeType.CREATE_CIRCULAR_KINEMATIC:
+                ModeManager.toMode(new CreateCircularKinematicMode(), ModeType.CREATE_CIRCULAR_KINEMATIC);
                 break;
             default:
                 throw new Error("Invalid create mode");
@@ -82,7 +87,11 @@ export default class ModeManager {
     }
 
     static getCreateModeTypes(): ModeType[] {
-        return [ModeType.CREATE_POINTMASS, ModeType.CREATE_RIGID_CONSTRAINT];
+        return [
+            ModeType.CREATE_POINTMASS,
+            ModeType.CREATE_RIGID_CONSTRAINT,
+            ModeType.CREATE_CIRCULAR_KINEMATIC
+        ];
     }  
 
     //================================ Reset ================================

@@ -29,7 +29,7 @@ export default function App() {
 		update,
 		resetState,
 		saveState,
-	} = usePhysicsSimulation(circular_kinematic_test_state);
+	} = usePhysicsSimulation(simple_pendulum_state);
 
 	const {
         mode,
