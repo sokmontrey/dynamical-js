@@ -1,88 +1,91 @@
-import Body, { BodyProps, BodyType } from "../../core/Body";
+import Body, { BodyType } from "../../core/Body";
 import Vec2 from "../../utils/Vector";
-import Interactor from "./Interactor";
-import PanelProps from "./PanelProps";
-import Renderer from "./Renderer";
+import PointMass_Renderer, { RendererProps } from "./Renderer";
 
-interface Props extends BodyProps {
-	position?: Vec2,
-	velocity?: Vec2,
-	constant_acceleration?: Vec2,
-	initial_force?: Vec2,
-	mass?: number,
-	is_static?: boolean,
+interface PointMass_Props {
+	position: Vec2,
+	previous_position: Vec2,
+	constant_acceleration: Vec2,
+	net_force: Vec2,
+	mass: number,
+	is_static: boolean,
 }
 
-export default class PointMass extends Body {
-	readonly rank = 1;
-	readonly type = BodyType.POINT_MASS;
+export default class PointMass extends Body<PointMass_Props, PointMass_Renderer> {
+	protected readonly rank = 1;
+	protected readonly type = BodyType.POINT_MASS;
+	protected readonly moveable = true;
 
-	private curr_pos: Vec2;
-	private prev_pos: Vec2;
-	private const_acc: Vec2;
-	private net_force: Vec2;
-	private mass: number;
-	private is_static: boolean;
+	protected props: PointMass_Props;
+	protected renderer: PointMass_Renderer;	
 
-	public panel_property: PanelProps;
-	public renderer: Renderer;
-	public interactor: Interactor;
-
-	constructor({
-		position = Vec2.zero(),
-		velocity = Vec2.zero(),
-		mass = 1,
-		is_static = false,
-		constant_acceleration = Vec2.down(9.8),
-		initial_force = Vec2.zero(),
-	}: Props = {}) {
+	constructor(props: PointMass_Props, renderer_props: RendererProps) {
 		super();
-		this.curr_pos = position.copy();
-		this.prev_pos = position.sub(velocity);
-		this.mass = mass;
-		this.is_static = is_static;
-		this.net_force = initial_force.copy();
-		this.const_acc = constant_acceleration.copy();
+		this.props = props;
+		this.renderer = new PointMass_Renderer(renderer_props);
+	}
 
-		this.panel_property = new PanelProps(this);
-		this.renderer = new Renderer(this);
-		this.interactor = new Interactor(this);
+	//================================ Dynamic ================================
+
+	/**
+	*	Update current position based on total accelration and previous position 
+	*		enabling position-based dynamic (verlet integration).
+	**/
+	update(delta_time: number): void {
+		if (this.isStatic()) return;
+		const acc = this.getTotalAcceleration();
+		const vel = this.props.position
+			.sub(this.props.previous_position)
+			.div(delta_time)
+			.add(acc.mul(delta_time));
+		this.props.previous_position = this.props.position.copy();
+		this.props.position = this.props.position.add(vel.mul(delta_time));
+		this.props.net_force = Vec2.zero();
+		this.triggerOnUpdate();
+	}
+
+	draw(ctx: CanvasRenderingContext2D, steps: number): void {
+		this.renderer.draw(this, ctx, steps);
+	}
+
+	drawSelection(ctx: CanvasRenderingContext2D): void {
+		this.renderer.drawSelection(this, ctx);
 	}
 
 	//================================ Getters ================================
 
 	getTotalAcceleration() {
-		return this.net_force
-			.div(this.mass)			//	 net force / mass
-			.add(this.const_acc);	// + constant acceleration
+		return this.props.net_force
+			.div(this.props.mass)			//	 net force / mass
+			.add(this.props.constant_acceleration);	// + constant acceleration
 	}
 
 	getPosition() {
-		return this.curr_pos;
+		return this.props.position;
 	}
 
 	getPreviousPosition() {
-		return this.prev_pos;
+		return this.props.previous_position;
 	}
 
 	getVelocity() {
-		return this.curr_pos.sub(this.prev_pos);
+		return this.props.position.sub(this.props.previous_position);
 	}
 
 	getMass() {
-		return this.mass;
+		return this.props.mass;
 	}
 
 	isStatic() {
-		return this.is_static;
+		return this.props.is_static;
 	}
 
 	getNetForce() {
-		return this.net_force;
+		return this.props.net_force;
 	}
 
 	getConstantAcceleration() {
-		return this.const_acc;
+		return this.props.constant_acceleration;
 	}
 
 	getType(): BodyType {
@@ -114,7 +117,7 @@ export default class PointMass extends Body {
 	*	Used for setting gravity, and etc.
 	**/
 	setConstantAcceleration(acceleration: Vec2) {
-		this.const_acc = acceleration.copy();
+		this.props.constant_acceleration = acceleration.copy();
 	}
 
 	/**
@@ -124,7 +127,7 @@ export default class PointMass extends Body {
 	*	Used for applying at a specific time step.
 	**/
 	applyForce(force: Vec2) {
-		this.net_force = this.net_force.add(force);
+		this.props.net_force = this.props.net_force.add(force);
 	}
 
 	/**
@@ -132,9 +135,9 @@ export default class PointMass extends Body {
 	*	while reserving its velocity
 	**/
 	moveTo(position: Vec2){
-		const vel = this.curr_pos.sub(this.prev_pos);
-		this.curr_pos = position.copy();
-		this.prev_pos = position.sub(vel);
+		const vel = this.props.position.sub(this.props.previous_position);
+		this.props.position = position.copy();
+		this.props.previous_position = position.sub(vel);
 		this.triggerOnUpdate();
 	}
 
@@ -144,8 +147,8 @@ export default class PointMass extends Body {
 	*	Does not apply when the pointmass is static
 	**/
 	setCurrentPosition(position: Vec2) {
-		if (this.is_static) return;
-		this.curr_pos = position.copy();
+		if (this.isStatic()) return;
+		this.props.position = position.copy();
 	}
 
 	/**
@@ -153,7 +156,7 @@ export default class PointMass extends Body {
 	*	velocity = current - previous position
 	**/
 	setPreviousPosition(previous_position: Vec2) {
-		this.prev_pos = previous_position.copy();
+		this.props.previous_position = previous_position.copy();
 	}
 
 	/**
@@ -161,72 +164,30 @@ export default class PointMass extends Body {
 	*	The velocity become zero
 	**/
 	setPosition(position: Vec2) {
-		this.curr_pos = position.copy();
-		this.prev_pos = position.copy();
+		this.props.position = position.copy();
+		this.props.previous_position = position.copy();
 	}
 
 	/**
 	*	Override previous position to assign new velocity to the pointmass
 	**/
 	setVelocity(velocity: Vec2) {
-		this.prev_pos = this.curr_pos.sub(velocity);
+		this.props.previous_position = this.props.position.sub(velocity);
 	}
 
 	addVelocity(velocity: Vec2) {
-		this.prev_pos = this.prev_pos.sub(velocity);
+		this.props.previous_position = this.props.previous_position.sub(velocity);
 	}
 
 	resetVelocity() {
-		this.prev_pos = this.curr_pos.copy();
+		this.props.previous_position = this.props.position.copy();
 	}
 
 	setMass(mass: number) {
-		this.mass = mass;
+		this.props.mass = mass;
 	}
 
 	setStatic(is_static: boolean) {
-		this.is_static = is_static;
-	}
-
-	//================================ Dynamic ================================
-
-	/**
-	*	Update current position based on total accelration and previous position 
-	*		enabling position-based dynamic (verlet integration).
-	**/
-	update(delta_time: number): void {
-		if (this.is_static) return;
-		const acc = this.getTotalAcceleration();
-		const vel = this.curr_pos
-			.sub(this.prev_pos)
-			.div(delta_time)
-			.add(acc.mul(delta_time));
-		this.prev_pos = this.curr_pos.copy();
-		this.curr_pos = this.curr_pos.add(vel.mul(delta_time));
-		this.net_force = Vec2.zero();
-		this.triggerOnUpdate();
-	}
-
-	serialize(): Props {
-		return {
-			position: this.getPosition(),
-			velocity: this.getVelocity(),
-			constant_acceleration: this.getConstantAcceleration(),
-			initial_force: this.getNetForce(),
-			mass: this.getMass(),
-			is_static: this.isStatic(),
-		};
-	}
-
-	// TODO: Implement this later
-	deserialize(_data: Props): void {
-		// if (data.position instanceof Vec2) this.setPosition(data.position);
-		// if (data.velocity instanceof Vec2) this.setVelocity(data.velocity);
-		// if (data.constant_acceleration instanceof Vec2) this.setConstantAcceleration(data.constant_acceleration);
-		// if (data.initial_force instanceof Vec2) this.applyForce(data.initial_force);
-		// if (typeof data.mass === 'number') this.setMass(data.mass);
-		// if (typeof data.is_static === 'boolean') {
-		// 	data.is_static ? this.enableStatic() : this.disableStatic();
-		// }
+		this.props.is_static = is_static;
 	}
 }

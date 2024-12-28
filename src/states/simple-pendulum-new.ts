@@ -5,20 +5,14 @@ const simple_pendulum_state_new: any = {
             position: "vec2(0,0)",
             is_static: true,
         },
-        renderer: {
-            type: "renderer(pointmass)",
-            props: "ref(renderer1)"
-        }
+        renderer: "copy(renderer1)",
     },
     point2: {
         type: "body(pointmass)",
         props: {
             position: "vec2(100,0)",
         },
-        renderer: {
-            type: "renderer(pointmass)",
-            props: "ref(renderer1)"
-        }
+        renderer: "copy(renderer1)",
     },
     rigid1: {
         type: "body(rigidconstraint)",
@@ -27,10 +21,7 @@ const simple_pendulum_state_new: any = {
         props: { 
             is_broken: false, 
         },
-        renderer: { 
-            type: "renderer(rigidconstraint)",
-            props: "ref(renderer1)"
-        }
+        renderer: "copy(renderer1)",
     },
     renderer1: {
         position: { 
