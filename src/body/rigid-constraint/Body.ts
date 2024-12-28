@@ -6,7 +6,7 @@ interface Props {
 	is_broken: boolean;
 }
 
-export default class RigidConstraint extends Body<Props, RigidConstraint_Renderer> {
+export default class RigidConstraint extends Body<RigidConstraint, Props> {
 	protected readonly moveable = false;
 	protected readonly rank = 2;
 	protected readonly type = BodyType.RIGID_CONSTRAINT;
@@ -15,8 +15,8 @@ export default class RigidConstraint extends Body<Props, RigidConstraint_Rendere
 	protected pointmass2: PointMass;
 
 	protected rest_distance: number = 0;
-	protected diff: number;
-	protected corr: number;
+	protected diff: number = 0;
+	protected corr: number = 0;
 
 	constructor({
 		pointmass1,
@@ -36,8 +36,6 @@ export default class RigidConstraint extends Body<Props, RigidConstraint_Rendere
 		this.renderer = new RigidConstraint_Renderer(renderer);
 
 		this.calculateRestDistance();
-		this.diff = 0;
-		this.corr = 0;
 	}
 
 	/**
@@ -53,14 +51,6 @@ export default class RigidConstraint extends Body<Props, RigidConstraint_Rendere
 		if (this.isBroken()) return;
 		this.check();
 		this.resolve(dt); // Immediately resolve the constraint
-	}
-
-	draw(ctx: CanvasRenderingContext2D, steps: number): void {
-		this.renderer.draw(this, ctx, steps);
-	}
-
-	drawSelection(ctx: CanvasRenderingContext2D): void {
-		this.renderer.drawSelection(this, ctx);
 	}
 
 	//================================ Helpers ================================

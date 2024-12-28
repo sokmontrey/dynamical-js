@@ -11,7 +11,7 @@ interface PointMass_Props {
 	is_static: boolean,
 }
 
-export default class PointMass extends Body<PointMass_Props, PointMass_Renderer> {
+export default class PointMass extends Body<PointMass, PointMass_Props> {
 	protected readonly rank = 1;
 	protected readonly type = BodyType.POINT_MASS;
 	protected readonly moveable = true;
@@ -45,14 +45,6 @@ export default class PointMass extends Body<PointMass_Props, PointMass_Renderer>
 		this.props.position = this.props.position.add(vel.mul(delta_time));
 		this.props.net_force = Vec2.zero();
 		this.triggerOnUpdate();
-	}
-
-	draw(ctx: CanvasRenderingContext2D, steps: number): void {
-		this.renderer.draw(this, ctx, steps);
-	}
-
-	drawSelection(ctx: CanvasRenderingContext2D): void {
-		this.renderer.drawSelection(this, ctx);
 	}
 
 	//================================ Getters ================================

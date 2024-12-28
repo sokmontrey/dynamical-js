@@ -1,29 +1,35 @@
+import BodyRenderer from "./BodyRenderer";
+
 export enum BodyType {
 	POINT_MASS = "point_mass",
 	RIGID_CONSTRAINT = "rigid_constraint",
 	CIRCULAR_KINEMATIC = "circular_kinematic",
 }
 
-export default abstract class Body<P, R> {
+export default abstract class Body<T, P> {
 	protected id: string | null = null;
 	protected abstract readonly type: BodyType;
 	protected abstract readonly rank: number;
 	protected abstract readonly moveable: boolean;
 	protected on_update: (() => void) | null = null;
 
-	// public abstract panel_property: BodyPanelProps;
-	// public abstract interactor: BodyInteractor;
-
 	protected props: P;
-	protected renderer: R;
+	protected renderer: BodyRenderer<T>;
 
 	abstract update(dt: number): void;
-	abstract draw(ctx: CanvasRenderingContext2D, steps: number): void;
-	abstract drawSelection(ctx: CanvasRenderingContext2D): void;
 
 	constructor() {
 		this.props = {} as P;
-		this.renderer = {} as R;
+		this.renderer = {} as BodyRenderer<T>;
+	}
+
+	draw(ctx: CanvasRenderingContext2D, steps: number): void {
+		// TODO: deal with this
+		(this.renderer as any).draw(this, ctx, steps);
+	}
+
+	drawSelection(ctx: CanvasRenderingContext2D): void {
+		(this.renderer as any).drawSelection(this, ctx);
 	}
 
 	//================================ Getters ================================
