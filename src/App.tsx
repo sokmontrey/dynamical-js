@@ -1,18 +1,19 @@
-import SimulationCanvas from "./ui-components/main-ui/SimulationCanvas.tsx";
+import SimulationCanvas from "./ui-components/main-component/SimulationCanvas.tsx";
 import { useCallback, useEffect, useMemo } from "react";
 import InputManager from "./manager/InputManager.ts";
 import BodyManager from "./manager/BodyManager.ts";
 import ModeManager from "./manager/ModeManager.ts";
 import LoopManager from "./manager/LoopManager.ts";
-import BodyTreePanel from "./ui-components/main-ui/BodyTreePanel.tsx";
-import SimulationControls from "./ui-components/main-ui/SimulationControls.tsx";
-import ToolBar from "./ui-components/main-ui/ToolBar.tsx";
+import BodyTreePanel from "./ui-components/main-component/BodyTreePanel.tsx";
+import SimulationControls from "./ui-components/main-component/SimulationControls.tsx";
+import ToolBar from "./ui-components/main-component/ToolBar.tsx";
 import useCanvasManagement from "./hooks/useCanvasManagement.ts";
 import usePhysicsSimulation from "./hooks/usePhysicsSimulation.ts";
 import useModeManagement from "./hooks/useModeManager.ts";
-import PropertyPanel from "./ui-components/main-ui/PropertyPanel.tsx";
+import PropertyPanel from "./ui-components/main-component/PropertyPanel.tsx";
 import simple_pendulum_state from "./states/simple-pendulum.ts";
 import circular_kinematic_test_state from "./states/circular-kinematic-test.ts";
+import StateLog from "./ui-components/main-component/StateLog.tsx";
 
 export default function App() {
 	const {
@@ -82,30 +83,26 @@ export default function App() {
 		initializeInputManager();
 		resetState();
 		initializeLoopManager();
-		LoopManager.run();
+		// LoopManager.run();
+		LoopManager.render();
 	}, [canvas_state]);
 
-	return (<>
-		<SimulationCanvas onCanvasMounted={setCanvasState} />
+	return (<div className="flex flex-col">
+		<SimulationControls 
+			onRun={() => LoopManager.run()}
+			onPause={() => LoopManager.pause()}
+			onStep={() => !LoopManager.isRunning() ? LoopManager.step() : null }
+			// onReset={resetState}
+			onSave={saveState}
+		/>
+		<ToolBar />
 		<BodyTreePanel 
 			selected_body_ids={selected_body_ids}
 			body_ids={body_ids} 
 			renderUI={renderUI} />
 		<p> Mode: {mode ?? "None"} </p>
 		{ selected_body && <PropertyPanel body={selected_body} key={selected_body.getId()} /> }
-		<SimulationControls 
-			onRun={LoopManager.run}
-			onPause={LoopManager.pause}
-			onStep={() => LoopManager.step()}
-			onReset={resetState}
-			onSave={saveState}
-		/>
-		{states.map((state, index) => (
-			<div key={index}>
-				<button onClick={() => switchState(index)}>Load State {index}</button>
-			</div>
-		))}
-		{/* TODO: commited states list */}
-		<ToolBar />
-	</>);
+		<StateLog states={states} onStateSelected={switchState} />
+		<SimulationCanvas onCanvasMounted={setCanvasState} />
+	</div>);
 }

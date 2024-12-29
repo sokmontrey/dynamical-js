@@ -1,5 +1,11 @@
 {
   "imports": {
-    "@std/assert": "jsr:@std/assert@^1.0.6"
+    "@std/assert": "jsr:@std/assert@^1.0.6",
+    "tailwindcss": "npm:tailwindcss",
+    "tailwindcss/plugin": "npm:tailwindcss/plugin"
+  },
+  "tasks": {
+    "build:css": "deno run -A npm:tailwindcss -i ./src/styles.css -o ./src/output.css --watch",
+    "start": "deno run --import-map=import_map.json -A npm:concurrently \"deno task dev\" \"deno task build:css\""
   }
 }

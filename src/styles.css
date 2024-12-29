@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--bg-color: #1B1C1E;
+	--txt-color: #E5E5E4;
+	--sec-txt-color: #333536;
+	--prm-color: #222324;
+	--sur-color: #303133;
+	--border-color: #333334;
+	--acc-color: #E7E77F;
+}
+
+body {
+	background-color: var(--bg-color);
+	color: var(--txt-color);
+}
+
+.bg-color {
+	color: var(--bg-color);
+}
+
+.txt-color {
+	color: var(--txt-color);
+}
+
+.sec-txt-color {
+	color: var(--sec-txt-color);
+}
+
+.pm-color {
+	color: var(--prm-color);
+}	
+
+.sur-color {
+	color: var(--sur-color);
+}
+
+.border-color {
+	color: var(--border-color);
+}
+
+.acc-color {
+	color: var(--acc-color);
+}
+
+.bg-bg {
+	background-color: var(--bg-color);
+}	
+
+.txt-bg {
+	background-color: var(--txt-color);
+}
+
+.sec-txt-bg {
+	background-color: var(--sec-txt-color);
+}
+
+.prm-bg {
+	background-color: var(--prm-color);
+}	
+
+.sur-bg {
+	background-color: var(--sur-color);
+}
+
+.border-bg {
+	background-color: var(--border-color);
+}
+
+.acc-bg {
+	background-color: var(--acc-color);
+}	
+
+/* .primary-canvas { */
+	/* height: 100%; */
+	/* width: 100%; */
+	/* background-image: radial-gradient(var(--nt-light-color) 1px, transparent 2px);
+	background-size: 32px 32px;
+} */
