@@ -173,8 +173,10 @@ export default class CircularKinematic extends Body<CircularKinematic, CircularK
     toJSON(): any {
         return {
             ...super.toJSON(),
-            center_pointmass: this.center_pointmass.getId(),
-            anchor_pointmass: this.anchor_pointmass.getId(),
+            dependencies: {
+                center_pointmass: this.center_pointmass.getId(),
+                anchor_pointmass: this.anchor_pointmass.getId(),
+            },
         };
     }
 }

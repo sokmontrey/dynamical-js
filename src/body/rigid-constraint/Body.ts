@@ -213,8 +213,10 @@ export default class RigidConstraint extends Body<RigidConstraint, RigidConstrai
 	toJSON(): any {
 		return {
 			...super.toJSON(),
-			pointmass1: this.pointmass1.getId(),
-			pointmass2: this.pointmass2.getId(),
+			dependencies: {
+				pointmass1: this.pointmass1.getId(),
+				pointmass2: this.pointmass2.getId(),
+			},
 		};
 	}
 }

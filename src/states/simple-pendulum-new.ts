@@ -14,8 +14,10 @@ const simple_pendulum_state_new: any = {
     },
     rigid1: {
         type: "rigid_constraint",
-        pointmass1: "point1",
-        pointmass2: "point2",
+        dependencies: {
+            pointmass1: "point1",
+            pointmass2: "point2",
+        },
         props: { 
             is_broken: false, 
         },

@@ -9,19 +9,20 @@ type TreeChangeCallback = (body_ids: string[]) => void;
 
 export default class BodyManager {
 	private static bodies: Record<string, Body<any, any>> = {};
+	private static dependency_table: Map<string, string[]> = new Map();
+	private static on_tree_change: TreeChangeCallback = () => {};
+
 	private static seed: number = 0;
 	private static initialized: boolean = false;
-	private static dependency_table: Map<string, string[]> = new Map();
-	private static state: Record<string, any> = {};
-	private static on_tree_change: TreeChangeCallback = () => {};
+
+	private static state: any = {};
 
 	private constructor() {} // Prevent instantiation
 
-	static init(state: string): void {
+	static init(): void {
 		if (!BodyManager.initialized) {
 			BodyManager.initialized = true;
 		}
-		BodyManager.loadFromJSON(state);
 	}
 
 	static setOnTreeChange(callback: TreeChangeCallback): void {
@@ -66,34 +67,63 @@ export default class BodyManager {
 				&& x.interactor.isSelected(lower, upper));
 	}
 
-	static toJSON(): any {
-		return Object.fromEntries(
-			Object.entries(BodyManager.bodies)
-				.map(([id, body]) => [ id, body.toJSON() ])
-		);
-	}
-
 	static getAllBodyIds(): string[] {
 		return Object.keys(BodyManager.bodies);
 	}
 
+	static toJSON(): any {
+		const json = Object.fromEntries(
+			Object.entries(BodyManager.bodies)
+				.map(([id, body]) => [ id, body.toJSON() ])
+		);
+		return JSON.parse(JSON.stringify(json));
+	}
+
 	// ============================== Loaders ==============================
 
-	static loadFromJSON(state_json: string): void {
-		// BodyManager.state = JSON.parse(state_json);
-		// Object.entries(BodyManager.state).forEach(([id, body]) => {
-		// 	if (BodyManager.bodies[id]) return;
-		// 	const params = BodyManager.processTags(body);
-		// 	const _body = BodyManager.createBody(params);
-		// 	if (!_body) throw new Error("Invalid body");
-		// 	BodyManager.addBody(_body, id);
-		// });
+	static loadFromJSON(setting: any): void {
+		BodyManager.clear();
+		BodyManager.state = Vec2.deserializeVectorOnObject(setting);
+		for(const [id] of Object.entries(BodyManager.state)) {
+			BodyManager.processConfig(id);
+		}
+	}
+
+	static processDependency(id: string): void {
+		const dep = BodyManager.state[id].dependencies;
+		if (dep) {
+			for (const [id, dep_id] of Object.entries(dep)) {
+				dep[id] = BodyManager.processConfig(dep_id as string);
+			}
+			BodyManager.state[id] = { ...BodyManager.state[id], ...dep };
+		}
+	}
+
+	static processConfig(id: string): Body<any, any> {
+		if (BodyManager.bodies[id]) return BodyManager.bodies[id];
+		if (!BodyManager.state[id]) throw new Error(`Body ${id} not found in state`);
+		let config = BodyManager.state[id];
+		if (config.dependencies) {
+			const dep = Object.fromEntries(Object.entries(config.dependencies).map(([id, dep_id]) =>
+				[id, BodyManager.processConfig(dep_id as string)]
+			));
+			config = { ...config, ...dep };
+		}
+
+		const creator: Record<BodyType, Function> = {
+			[BodyType.POINT_MASS]: BodyManager.createPointMass,
+			[BodyType.RIGID_CONSTRAINT]: BodyManager.createRigidConstraint,
+			[BodyType.CIRCULAR_KINEMATIC]: BodyManager.createCircularKinematic,
+		}
+
+		return creator[config.type as BodyType](config, id);
 	}
 
 	static clear(): void {
 		BodyManager.bodies = {};
 		BodyManager.dependency_table.clear();
 		BodyManager.seed = 0;
+		BodyManager.state = {};
 	}
 
 	// ============================== Body dependency ==============================
@@ -118,25 +148,24 @@ export default class BodyManager {
 
 	// ============================== Body creation ==============================
 
-	static addBody(body: Body<any, any>, id: string = ""): string {
+	static addBody(body: Body<any, any>, id: string = ""): Body<any, any> {
 		id = id || body.getType().toString() + BodyManager.seed;
 		body.setId(id);
 		BodyManager.bodies[id] = body;
 		BodyManager.seed++;
 		BodyManager.setDependency(id, body.getDependencies());
 		BodyManager.on_tree_change(BodyManager.getAllBodyIds());
-		console.log(this.dependency_table)
-		return id;
+		return body;
 	}
 
-	static createPointMass({ props, renderer }: {
+	static createPointMass({ props, renderer }: { // TODO: implement this directly in the body and remove this
 		props?: Partial<PointMass_Props>,
 		renderer?: RendererProps,
-	}): PointMass {
+	}, id: string = ""): Body<any, any> {
 		const body = new PointMass({
 			props: {
 				position: props?.position || vec2(0, 0),
-				previous_position: props?.position || vec2(0, 0),
+				previous_position: props?.previous_position || props?.position || vec2(0, 0),
 				constant_acceleration: props?.constant_acceleration || vec2(0, 9.8),
 				net_force: props?.net_force || vec2(0, 0),
 				mass: props?.mass || 1,
@@ -146,8 +175,7 @@ export default class BodyManager {
 				...renderer,
 			},
 		});
-		BodyManager.addBody(body);
-		return body;
+		return BodyManager.addBody(body, id);
 	}
 
 	static createRigidConstraint({ pointmass1, pointmass2, props, renderer }: {
@@ -155,7 +183,7 @@ export default class BodyManager {
 		pointmass2: PointMass,
 		props?: Partial<RigidConstraint_Props>,
 		renderer?: RendererProps,
-	}): RigidConstraint {
+	}, id: string = ""): Body<any, any> {
 		const body = new RigidConstraint({
 			pointmass1,
 			pointmass2,
@@ -166,8 +194,7 @@ export default class BodyManager {
 				...renderer,
 			},
 		});
-		BodyManager.addBody(body);
-		return body;
+		return BodyManager.addBody(body, id);
 	}
 
 	static createCircularKinematic({ center_pointmass, anchor_pointmass, props, renderer }: {
@@ -175,7 +202,7 @@ export default class BodyManager {
 		anchor_pointmass: PointMass,
 		props?: Partial<CircularKinematic_Props>,
 		renderer?: RendererProps,
-	}): CircularKinematic {
+	}, id: string = ""): Body<any, any> {
 		const body = new CircularKinematic({
 			center_pointmass,
 			anchor_pointmass,
@@ -187,8 +214,7 @@ export default class BodyManager {
 				...renderer,
 			},
 		});
-		BodyManager.addBody(body);
-		return body;
+		return BodyManager.addBody(body, id);
 	}
 
 	// ============================== Body update ==============================

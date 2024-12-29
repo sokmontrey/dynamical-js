@@ -201,4 +201,27 @@ export default class Vec2 {
 	static fromPolar(theta: number, r: number) {
 		return vec2(r * Math.cos(theta), r * Math.sin(theta));
 	}
+
+	/**
+	 * recursively replace all vectors in an object that follow the format { x: number, y: number }
+	 * with a Vec2 object
+	 **/ 
+	static deserializeVectorOnObject(obj: any): any {
+		if (typeof obj !== "object" || obj === null) return obj;
+		
+		// Check if current object matches {x: number, y: number} pattern
+		if (typeof obj.x === "number" && typeof obj.y === "number") {
+			return vec2(obj.x, obj.y);
+		}
+		
+		// Handle arrays
+		if (Array.isArray(obj)) {
+			return obj.map(Vec2.deserializeVectorOnObject);
+		}
+		
+		// Recursively process object properties
+		return Object.fromEntries(
+			Object.entries(obj).map(([key, value]) => [key, Vec2.deserializeVectorOnObject(value)])
+		);
+	}
 }

@@ -4,9 +4,9 @@ import BodyManager from "../manager/BodyManager";
 import ModeManager from "../manager/ModeManager";
 
 export default function usePhysicsSimulation(
-    initial_state: string, 
+    initial_state: any
 ) {
-    const [state, setState] = useState<string>(initial_state);
+    const [states, setStates] = useState<any[]>([initial_state]);
     const [body_ids, setBodyIds] = useState<string[]>([]);
 
     const update = (dt: number, _sub_steps: number) => {
@@ -15,18 +15,22 @@ export default function usePhysicsSimulation(
         bodies.forEach(x => x.update(dt));
     };
 
+    const addState = (state: any) => {
+        setStates([...states, state]);
+    };
+
     const resetState = () => {
-        BodyManager.loadFromJSON(state);
+        setStates([initial_state]);
         ModeManager.reset();
         LoopManager.render();
     };
 
     const saveState = () => {
-        setState(BodyManager.toJSON());
+        addState(BodyManager.toJSON());
     };
 
     return {
-        state,
+        states,
         body_ids,
         setBodyIds,
         update,

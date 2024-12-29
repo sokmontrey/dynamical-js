@@ -5,13 +5,13 @@ import BodyManager from "./manager/BodyManager.ts";
 import ModeManager from "./manager/ModeManager.ts";
 import LoopManager from "./manager/LoopManager.ts";
 import BodyTreePanel from "./ui-components/main-ui/BodyTreePanel.tsx";
-import simple_pendulum_state from "./states/simple-pendulum-new.ts";
 import SimulationControls from "./ui-components/main-ui/SimulationControls.tsx";
 import ToolBar from "./ui-components/main-ui/ToolBar.tsx";
 import useCanvasManagement from "./hooks/useCanvasManagement.ts";
 import usePhysicsSimulation from "./hooks/usePhysicsSimulation.ts";
 import useModeManagement from "./hooks/useModeManager.ts";
 import PropertyPanel from "./ui-components/main-ui/PropertyPanel.tsx";
+import simple_pendulum_state_new from "./states/simple-pendulum-new.ts";
 
 export default function App() {
 	const {
@@ -22,13 +22,13 @@ export default function App() {
 	} = useCanvasManagement();
 
 	const {
-		state,
 		body_ids,
 		setBodyIds,
 		update,
 		resetState,
 		saveState,
-	} = usePhysicsSimulation(JSON.stringify(simple_pendulum_state));
+		states,
+	} = usePhysicsSimulation(simple_pendulum_state_new);
 
 	const {
         mode,
@@ -42,11 +42,12 @@ export default function App() {
 	}, [selected_body_ids]);
 
 	const initializeBodyManager = useCallback(() => {
-		BodyManager.init(state); 
+		BodyManager.init(); 
 		BodyManager.setOnTreeChange((body_ids) => {
 			setBodyIds(body_ids);
 		});
-	}, [state]);
+		BodyManager.loadFromJSON(states[0]);
+	}, [states]);
 
 	const initializeInputManager = useCallback(() => {
 		if (!canvas_state.overlay_canvas) return;
@@ -92,6 +93,12 @@ export default function App() {
 			onReset={resetState}
 			onSave={saveState}
 		/>
+		{states.map((state, index) => (
+			<div key={index}>
+				<button onClick={() => BodyManager.loadFromJSON(state)}>Load State {index}</button>
+			</div>
+		))}
+		{/* TODO: commited states list */}
 		<ToolBar />
 	</>);
 }
