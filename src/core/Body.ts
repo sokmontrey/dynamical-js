@@ -1,8 +1,6 @@
-import Vec2 from "../utils/Vector";
+import { PropBinder } from "../hooks/usePropBinder";
 import BodyInteractor from "./BodyInteractor";
-import BodyPanelProps from "./BodyPanelProps";
 import BodyRenderer from "./BodyRenderer";
-import Serializable from "./Serializable";
 
 export enum BodyType {
 	POINT_MASS = "point_mass",
@@ -10,25 +8,30 @@ export enum BodyType {
 	CIRCULAR_KINEMATIC = "circular_kinematic",
 }
 
-export interface BodyProps { }
-
-// TODO: deal with serialization
-export default abstract class Body implements Serializable<BodyProps> {
+export default abstract class Body<T, P> {
 	protected id: string | null = null;
 	protected abstract readonly type: BodyType;
 	protected abstract readonly rank: number;
-
+	protected abstract readonly moveable: boolean;
 	protected on_update: (() => void) | null = null;
 
-	public abstract panel_property: BodyPanelProps;
-	public abstract renderer: BodyRenderer;
+	protected abstract props: P;
+	public abstract renderer: BodyRenderer<T>;
 	public abstract interactor: BodyInteractor;
 
-	abstract serialize(): BodyProps;
-	abstract deserialize(props: BodyProps): void;
-
 	abstract update(dt: number): void;
-	abstract getPosition(): Vec2;
+	abstract getPropBinders(): PropBinder<any>[];
+
+	draw(ctx: CanvasRenderingContext2D, steps: number): void {
+		// TODO: deal with this
+		(this.renderer as any).draw(this, ctx, steps);
+	}
+
+	drawSelection(ctx: CanvasRenderingContext2D): void {
+		(this.renderer as any).drawSelection(this, ctx);
+	}
+
+	//================================ Getters ================================
 
 	getType(): BodyType {
 		return this.type;
@@ -38,13 +41,21 @@ export default abstract class Body implements Serializable<BodyProps> {
 		return this.id;
 	}
 
+	getRank(): number {
+		return this.rank;
+	}
+
+	isMoveable(): boolean {
+		return this.moveable;
+	}
+
+	abstract getDependencies(): string[];
+
+	//================================ Setters ================================
+
 	setId(id: string): void {
 		if (this.id) throw new Error("Physic body already has an id");
 		this.id = id;
-	}
-
-	getRank(): number {
-		return this.rank;
 	}
 
 	setOnUpdate(on_update: () => void): () => void {
@@ -55,4 +66,16 @@ export default abstract class Body implements Serializable<BodyProps> {
 	triggerOnUpdate(): void {
 		if (this.on_update) this.on_update();
 	}
+
+	//================================ Serialization ================================
+
+	toJSON(): any {
+		return {
+			id: this.id,
+			type: this.getType(),
+			props: this.props,
+			renderer: this.renderer.toJSON(),
+		};
+	}
+	// abstract deserialize(serialized: any): void;
 }

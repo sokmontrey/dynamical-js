@@ -3,8 +3,8 @@ import Body from "../../core/Body.ts";
 
 export default function PropertyPanel({ 
     body 
-}: { body: Body }) {
-    const binders = body.panel_property.getPropBinders();
+}: { body: Body<any, any> }) {
+    const binders = body.getPropBinders();
 
     useEffect(() => {
         const unsubscribe = body.setOnUpdate(() => {

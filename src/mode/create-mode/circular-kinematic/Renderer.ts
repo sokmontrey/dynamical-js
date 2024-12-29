@@ -26,7 +26,7 @@ export default class CircularKinematic_CreateModeRenderer extends ModeRenderer {
         hovered_pointmass: PointMass | null
     ): void {
         if (!hovered_pointmass) return;
-        hovered_pointmass.renderer.drawSelection(ctx);
+        hovered_pointmass.renderer.drawSelection(hovered_pointmass, ctx);
     }
 
     /**
@@ -39,7 +39,7 @@ export default class CircularKinematic_CreateModeRenderer extends ModeRenderer {
         mouse_pos: Vec2
     ) {
         if (!first_pointmass) { return; }
-        first_pointmass.renderer.drawSelection(ctx);
+        first_pointmass.renderer.drawSelection(first_pointmass, ctx);
         const pm_pos = first_pointmass.getPosition();
         this.circle_path.radius = pm_pos.distance(mouse_pos);
         Draw.circle(ctx, pm_pos, this.circle_path);

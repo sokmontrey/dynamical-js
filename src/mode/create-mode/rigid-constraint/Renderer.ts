@@ -25,7 +25,7 @@ export default class RigidConstraint_CreateModeRenderer extends ModeRenderer {
         hovered_pointmass: PointMass | null
     ): void {
         if (!hovered_pointmass) return;
-        hovered_pointmass.renderer.drawSelection(ctx);
+        hovered_pointmass.renderer.drawSelection(hovered_pointmass, ctx);
     }
 
     /**
@@ -38,7 +38,7 @@ export default class RigidConstraint_CreateModeRenderer extends ModeRenderer {
         mouse_pos: Vec2
     ) {
         if (!first_pointmass) { return; }
-        first_pointmass.renderer.drawSelection(ctx);
+        first_pointmass.renderer.drawSelection(first_pointmass, ctx);
         const pm_pos = first_pointmass.getPosition();
         Draw.line(ctx, pm_pos, mouse_pos, this.constraint_line);
     }

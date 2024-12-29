@@ -16,7 +16,9 @@ export default class PointMass_CreateMode extends Mode {
 
     private addPointMass(): void {
         const position = InputManager.getMousePosition();
-        BodyManager.createPointMass(position);
+        BodyManager.createPointMass({ 
+            props: { position },
+        });
         if (!LoopManager.isRunning()) LoopManager.render();
     }
 

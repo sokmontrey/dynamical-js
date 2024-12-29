@@ -1,50 +1,87 @@
-import Body, { BodyProps, BodyType } from "../../core/Body";
-import Vec2 from "../../utils/Vector";
+import Body, { BodyType } from "../../core/Body";
+import { PropBinder, useInputPropBinder } from "../../hooks/usePropBinder";
+import BooleanInput from "../../ui-components/input/BooleanInput";
+import NumberInput from "../../ui-components/input/NumberInput";
 import PointMass from "../point-mass/Body";
-import Interactor from "./Interactor";
-import PanelProps from "./PanelProps";
-import Renderer from "./Renderer";
+import RigidConstraint_Interactor from "./Interactor";
+import RigidConstraint_Renderer, { RendererProps } from "./Renderer";
 
-interface Props extends BodyProps {
-	is_broken?: boolean;
+export interface RigidConstraint_Props {
+	is_broken: boolean;
 }
 
-export default class RigidConstraint extends Body {
-	readonly rank = 2;
-	readonly type = BodyType.RIGID_CONSTRAINT;
+export default class RigidConstraint extends Body<RigidConstraint, RigidConstraint_Props> {
+	protected readonly moveable = false;
+	protected readonly rank = 2;
+	protected readonly type = BodyType.RIGID_CONSTRAINT;
 
 	protected pointmass1: PointMass;
 	protected pointmass2: PointMass;
-	protected is_broken: boolean;
+
+	protected props: RigidConstraint_Props;
+	public renderer: RigidConstraint_Renderer;
+	public interactor: RigidConstraint_Interactor;
 
 	protected rest_distance: number = 0;
-	protected diff: number;
-	protected corr: number;
+	protected diff: number = 0;
+	protected corr: number = 0;
 
-	public panel_property: PanelProps;
-	public renderer: Renderer;
-	public interactor: Interactor;
-
-	constructor(pointmass1: PointMass, pointmass2: PointMass, {
-		is_broken = false,
-	}: Props = {}) {
+	constructor({
+		pointmass1,
+		pointmass2,
+		props,
+		renderer = {},
+	}: {
+		pointmass1: PointMass,
+		pointmass2: PointMass,
+		props: RigidConstraint_Props,
+		renderer: RendererProps,
+	}) {
 		super();
 		this.pointmass1 = pointmass1;
 		this.pointmass2 = pointmass2;
-		this.is_broken = is_broken;
-		this.calculateRestDistance();
-		this.diff = 0;
-		this.corr = 0;
 
-		this.panel_property = new PanelProps(this);
-		this.renderer = new Renderer(this);
-		this.interactor = new Interactor(this);
+		this.props = props;
+		this.renderer = new RigidConstraint_Renderer(renderer);
+		this.interactor = new RigidConstraint_Interactor(this);
+
+		this.calculateRestDistance();
 	}
 
-	getPosition(): Vec2 {
-		return this.pointmass1.getPosition()
-			.add(this.pointmass2.getPosition())
-			.div(2);
+	/**
+	*	Check for differnece in current distance and rest distance 
+	*		and immediately resolve the constraint by directly updating 
+	*		the pointmasses position based on it relative weight to one another.
+	*		TODO: create a correction build up mechanism for PointMass so that resolution 
+	*			can be done after checking every constraint. 
+	*			(temp_pos += corr_pos; count ++; temp_pos / corr_pos)
+	**/
+	update(dt: number) {
+		this.triggerOnUpdate();
+		if (this.isBroken()) return;
+		this.check();
+		this.resolve(dt); // Immediately resolve the constraint
+	}
+
+	getPropBinders(): PropBinder<any>[] {
+        return [ 
+            useInputPropBinder(BooleanInput,
+                { label: "Connected" },
+                () => !this.isBroken(),
+                (value: boolean) => value ? 
+                    this.restore(true) : 
+                    this.break()),
+
+            useInputPropBinder(NumberInput,
+                { label: "Rest Distance", enable: true },
+                () => this.getRestDistance(),
+                (value: number) => this.setRestDistance(value)),
+
+            useInputPropBinder(NumberInput,
+                { label: "Current Distance", enable: false },
+                () => this.getCurrentDistance(),
+                (_value: number) => {}),
+        ];
 	}
 
 	//================================ Helpers ================================
@@ -67,6 +104,10 @@ export default class RigidConstraint extends Body {
 	**/
 	getPointMasses() {
 		return [this.pointmass1, this.pointmass2];
+	}
+
+	getDependencies(): string[] {
+		return [this.pointmass1.getId()!, this.pointmass2.getId()!];
 	}
 
 	/**
@@ -94,7 +135,7 @@ export default class RigidConstraint extends Body {
 	}
 
 	isBroken(): boolean {
-		return this.is_broken;
+		return this.props.is_broken;
 	}
 
 	getCurrentDistance(): number {
@@ -111,7 +152,7 @@ export default class RigidConstraint extends Body {
 	}
 
 	setBroken(is_broken: boolean) {
-		this.is_broken = is_broken;
+		this.props.is_broken = is_broken;
 	}
 
 	/**
@@ -119,7 +160,7 @@ export default class RigidConstraint extends Body {
 	*	@param [recalculate_rest_distance=false] false by default. Recalculate rest distance (use current distance between pointmasses). 
 	**/
 	restore(recalculate_rest_distance: boolean = false) {
-		this.is_broken = false;
+		this.setBroken(false);
 		if (recalculate_rest_distance) this.calculateRestDistance();
 	}
 
@@ -132,21 +173,6 @@ export default class RigidConstraint extends Body {
 	}
 
 	/**
-	*	Check for differnece in current distance and rest distance 
-	*		and immediately resolve the constraint by directly updating 
-	*		the pointmasses position based on it relative weight to one another.
-	*		TODO: create a correction build up mechanism for PointMass so that resolution 
-	*			can be done after checking every constraint. 
-	*			(temp_pos += corr_pos; count ++; temp_pos / corr_pos)
-	**/
-	update(dt: number) {
-		this.triggerOnUpdate();
-		if (this.is_broken) return;
-		this.check();
-		this.resolve(dt); // Immediately resolve the constraint
-	}
-
-	/**
 	*	Check for the difference
 	**/
 	check() {
@@ -156,21 +182,13 @@ export default class RigidConstraint extends Body {
 		this.diff = this.rest_distance - curr_distance;
 	}
 
-	/**
-	 * Only re-calculating the rest distance
-	 */
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	setPosition(_position: Vec2) {
-		return;
-	}
-
 	calculateCorrection(_: number) {
 		this.corr = this.diff / this.rest_distance;
 	}
 
 	resolve(dt: number) {
-		if (this.is_broken) return;
-		if (this.rest_distance === 0)
+		if (this.isBroken()) return;
+		if (this.getRestDistance() === 0)
 			throw new Error("Rigid constraint cannot have rest distance = 0. Please use Hinge constraint instead.");
 		const pos1 = this.pointmass1.getPosition();
 		const pos2 = this.pointmass2.getPosition();
@@ -190,13 +208,15 @@ export default class RigidConstraint extends Body {
 		if (!this.pointmass2.isStatic()) this.pointmass2.setCurrentPosition(new_pos2);
 	}
 
-	serialize(): Props {
-		return {
-			is_broken: this.isBroken(),
-		};
-	}
+	//================================ Serialization ================================
 
-	deserialize(_data: Props): void {
-		// TODO: Implement this later
+	toJSON(): any {
+		return {
+			...super.toJSON(),
+			dependencies: {
+				pointmass1: this.pointmass1.getId(),
+				pointmass2: this.pointmass2.getId(),
+			},
+		};
 	}
 }
