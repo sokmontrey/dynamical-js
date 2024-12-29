@@ -1,3 +1,4 @@
+import PointMass from "../../../body/point-mass/Body.ts";
 import Mode from "../../../core/Mode.ts";
 import ModeRenderer from "../../../core/ModeRenderer.ts";
 import BodyManager from "../../../manager/BodyManager.ts";
@@ -16,9 +17,10 @@ export default class PointMass_CreateMode extends Mode {
 
     private addPointMass(): void {
         const position = InputManager.getMousePosition();
-        BodyManager.createPointMass({ 
+        const pointmass = new PointMass({
             props: { position },
         });
+        BodyManager.addBody(pointmass);
         if (!LoopManager.isRunning()) LoopManager.render();
     }
 

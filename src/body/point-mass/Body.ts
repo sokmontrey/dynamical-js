@@ -5,9 +5,9 @@ import LoopManager from "../../manager/LoopManager";
 import BooleanInput from "../../ui-components/input/BooleanInput";
 import NumberInput from "../../ui-components/input/NumberInput";
 import VectorInput from "../../ui-components/input/VectorInput";
-import Vec2 from "../../utils/Vector";
+import Vec2, { vec2 } from "../../utils/Vector";
 import PointMass_Interactor from "./Interactor";
-import PointMass_Renderer, { RendererProps } from "./Renderer";
+import PointMass_Renderer, { PointMass_RendererProps } from "./Renderer";
 
 export interface PointMass_Props {
 	position: Vec2,
@@ -28,14 +28,21 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
 	public interactor: PointMass_Interactor;
 
 	constructor({
-		props,
+		props = {},
 		renderer = {},
 	}: {
-		props: PointMass_Props, 
-		renderer: RendererProps
+		props?: Partial<PointMass_Props>, 
+		renderer?: PointMass_RendererProps
 	}) {
 		super();
-		this.props = props;
+		this.props = {
+			position: props.position || vec2(0, 0),
+			previous_position: props.previous_position || props.position || vec2(0, 0),
+			constant_acceleration: props.constant_acceleration || vec2(0, 9.8),
+			net_force: props.net_force || vec2(0, 0),
+			mass: props.mass || 1,
+			is_static: props.is_static || false,
+		};
 		this.renderer = new PointMass_Renderer(renderer);
 		this.interactor = new PointMass_Interactor(this);
 	}

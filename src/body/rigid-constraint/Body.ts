@@ -4,7 +4,7 @@ import BooleanInput from "../../ui-components/input/BooleanInput";
 import NumberInput from "../../ui-components/input/NumberInput";
 import PointMass from "../point-mass/Body";
 import RigidConstraint_Interactor from "./Interactor";
-import RigidConstraint_Renderer, { RendererProps } from "./Renderer";
+import RigidConstraint_Renderer, { RigidConstraint_RendererProps } from "./Renderer";
 
 export interface RigidConstraint_Props {
 	is_broken: boolean;
@@ -29,19 +29,21 @@ export default class RigidConstraint extends Body<RigidConstraint, RigidConstrai
 	constructor({
 		pointmass1,
 		pointmass2,
-		props,
+		props = {},
 		renderer = {},
 	}: {
 		pointmass1: PointMass,
 		pointmass2: PointMass,
-		props: RigidConstraint_Props,
-		renderer: RendererProps,
+		props?: Partial<RigidConstraint_Props>,
+		renderer?: RigidConstraint_RendererProps,
 	}) {
 		super();
 		this.pointmass1 = pointmass1;
 		this.pointmass2 = pointmass2;
 
-		this.props = props;
+		this.props = {
+			is_broken: props.is_broken || false,
+		};
 		this.renderer = new RigidConstraint_Renderer(renderer);
 		this.interactor = new RigidConstraint_Interactor(this);
 

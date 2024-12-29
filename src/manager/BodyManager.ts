@@ -3,7 +3,9 @@ import CircularKinematic, { CircularKinematic_Props } from "../body/circular-kin
 import Body, { BodyType } from "../core/Body.ts";
 import PointMass, { PointMass_Props } from "../body/point-mass/Body.ts";
 import RigidConstraint, { RigidConstraint_Props } from "../body/rigid-constraint/Body.ts";
-import { RendererProps } from "../body/point-mass/Renderer.ts";
+import { PointMass_RendererProps } from "../body/point-mass/Renderer.ts";
+import { RigidConstraint_RendererProps } from "../body/rigid-constraint/Renderer.ts";
+import { CircularKinematic_RendererProps } from "../body/circular-kinematic/Renderer.ts";
 
 type TreeChangeCallback = (body_ids: string[]) => void;
 
@@ -89,34 +91,30 @@ export default class BodyManager {
 		}
 	}
 
-	static processDependency(id: string): void {
-		const dep = BodyManager.state[id].dependencies;
-		if (dep) {
-			for (const [id, dep_id] of Object.entries(dep)) {
-				dep[id] = BodyManager.processConfig(dep_id as string);
-			}
-			BodyManager.state[id] = { ...BodyManager.state[id], ...dep };
-		}
-	}
-
-	static processConfig(id: string): Body<any, any> {
-		if (BodyManager.bodies[id]) return BodyManager.bodies[id];
-		if (!BodyManager.state[id]) throw new Error(`Body ${id} not found in state`);
-		let config = BodyManager.state[id];
+	static processDependency(config: any): any {
 		if (config.dependencies) {
 			const dep = Object.fromEntries(Object.entries(config.dependencies).map(([id, dep_id]) =>
 				[id, BodyManager.processConfig(dep_id as string)]
 			));
 			config = { ...config, ...dep };
 		}
+		return config;
+	}
 
-		const creator: Record<BodyType, Function> = {
-			[BodyType.POINT_MASS]: BodyManager.createPointMass,
-			[BodyType.RIGID_CONSTRAINT]: BodyManager.createRigidConstraint,
-			[BodyType.CIRCULAR_KINEMATIC]: BodyManager.createCircularKinematic,
+	static processConfig(id: string): Body<any, any> {
+		if (BodyManager.bodies[id]) return BodyManager.bodies[id];
+		if (!BodyManager.state[id]) throw new Error(`Body ${id} not found in state`);
+		const config = BodyManager.processDependency(BodyManager.state[id]);
+
+		const creator: Record<BodyType, new (config: any) => Body<any, any>> = {
+			[BodyType.POINT_MASS]: PointMass,
+			[BodyType.RIGID_CONSTRAINT]: RigidConstraint,
+			[BodyType.CIRCULAR_KINEMATIC]: CircularKinematic,
 		}
 
-		return creator[config.type as BodyType](config, id);
+		const body = new creator[config.type as BodyType](config);
+		BodyManager.addBody(body, id);
+		return body;
 	}
 
 	static clear(): void {
@@ -156,65 +154,6 @@ export default class BodyManager {
 		BodyManager.setDependency(id, body.getDependencies());
 		BodyManager.on_tree_change(BodyManager.getAllBodyIds());
 		return body;
-	}
-
-	static createPointMass({ props, renderer }: { // TODO: implement this directly in the body and remove this
-		props?: Partial<PointMass_Props>,
-		renderer?: RendererProps,
-	}, id: string = ""): Body<any, any> {
-		const body = new PointMass({
-			props: {
-				position: props?.position || vec2(0, 0),
-				previous_position: props?.previous_position || props?.position || vec2(0, 0),
-				constant_acceleration: props?.constant_acceleration || vec2(0, 9.8),
-				net_force: props?.net_force || vec2(0, 0),
-				mass: props?.mass || 1,
-				is_static: props?.is_static || false,
-			},
-			renderer: {
-				...renderer,
-			},
-		});
-		return BodyManager.addBody(body, id);
-	}
-
-	static createRigidConstraint({ pointmass1, pointmass2, props, renderer }: {
-		pointmass1: PointMass,
-		pointmass2: PointMass,
-		props?: Partial<RigidConstraint_Props>,
-		renderer?: RendererProps,
-	}, id: string = ""): Body<any, any> {
-		const body = new RigidConstraint({
-			pointmass1,
-			pointmass2,
-			props: {
-				is_broken: props?.is_broken || false,
-			},
-			renderer: {
-				...renderer,
-			},
-		});
-		return BodyManager.addBody(body, id);
-	}
-
-	static createCircularKinematic({ center_pointmass, anchor_pointmass, props, renderer }: {
-		center_pointmass: PointMass,
-		anchor_pointmass: PointMass,
-		props?: Partial<CircularKinematic_Props>,
-		renderer?: RendererProps,
-	}, id: string = ""): Body<any, any> {
-		const body = new CircularKinematic({
-			center_pointmass,
-			anchor_pointmass,
-			props: {
-				angular_velocity: props?.angular_velocity || Math.PI / 3,
-				is_running: props?.is_running || true,
-			},
-			renderer: {
-				...renderer,
-			},
-		});
-		return BodyManager.addBody(body, id);
 	}
 
 	// ============================== Body update ==============================

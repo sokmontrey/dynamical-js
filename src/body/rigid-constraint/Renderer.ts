@@ -7,7 +7,7 @@ import Color from "../../utils/Color";
 import Vec2 from "../../utils/Vector";
 import RigidConstraint from "./Body";
 
-export interface RendererProps {
+export interface RigidConstraint_RendererProps {
 	constraint_line?: LineStyleProps;
 	stress?: StressStyleProps;
 	selected?: LineStyleProps;
@@ -20,7 +20,7 @@ export default class RigidConstraint_Renderer extends BodyRenderer<RigidConstrai
 	selected: LineStyle;
 	selected_circle: CircleStyle;
 
-	constructor(props: RendererProps) {
+	constructor(props: RigidConstraint_RendererProps) {
 		super();
 		this.constraint_line = new LineStyle(props.constraint_line);
 		this.stress = new StressStyle(props.stress);

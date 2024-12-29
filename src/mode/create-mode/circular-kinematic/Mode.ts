@@ -1,3 +1,4 @@
+import CircularKinematic from "../../../body/circular-kinematic/Body";
 import PointMass from "../../../body/point-mass/Body";
 import Mode from "../../../core/Mode";
 import ModeRenderer from "../../../core/ModeRenderer";
@@ -52,10 +53,11 @@ export default class CircularKinematic_CreateMode extends Mode {
 
     private createCircularKinematic(): void {
         if (!this.center_pointmass || !this.anchor_pointmass) return;
-        BodyManager.createCircularKinematic({
+        const circular = new CircularKinematic({
             center_pointmass: this.center_pointmass,
             anchor_pointmass: this.anchor_pointmass,
         });
+        BodyManager.addBody(circular);
         if (!LoopManager.isRunning()) LoopManager.render();
     }
 

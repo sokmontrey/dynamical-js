@@ -6,7 +6,7 @@ import VectorInput from "../../ui-components/input/VectorInput";
 import Vec2 from "../../utils/Vector";
 import PointMass from "../point-mass/Body";
 import CircularKinematic_Interactor from "./Interactor";
-import CircularKinematic_Renderer, { RendererProps } from "./Renderer";
+import CircularKinematic_Renderer, { CircularKinematic_RendererProps } from "./Renderer";
 
 export interface CircularKinematic_Props {
     angular_velocity: number;
@@ -32,17 +32,20 @@ export default class CircularKinematic extends Body<CircularKinematic, CircularK
         center_pointmass,
         anchor_pointmass,
         props,
-        renderer,
+        renderer = {},
     }: {
         center_pointmass: PointMass,
         anchor_pointmass: PointMass,
-        props: CircularKinematic_Props,
-        renderer: RendererProps,
+        props?: Partial<CircularKinematic_Props>,
+        renderer?: CircularKinematic_RendererProps,
     }) {
         super();
         this.center_pointmass = center_pointmass;
         this.anchor_pointmass = anchor_pointmass;
-        this.props = props;
+        this.props = {
+            angular_velocity: props?.angular_velocity || Math.PI / 3,
+            is_running: props?.is_running || true,
+        };
         this.renderer = new CircularKinematic_Renderer(renderer);
         this.interactor = new CircularKinematic_Interactor(this);
 

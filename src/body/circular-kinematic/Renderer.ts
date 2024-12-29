@@ -5,7 +5,7 @@ import LineStyle, { LineStyleProps } from "../../style/LineStyle";
 import Vec2 from "../../utils/Vector";
 import CircularKinematic from "./Body";
 
-export interface RendererProps {
+export interface CircularKinematic_RendererProps {
     radius_line?: LineStyleProps;
     motion_path?: CircleStyleProps;
     selected?: CircleStyleProps;
@@ -16,7 +16,7 @@ export default class CircularKinematic_Renderer extends BodyRenderer<CircularKin
     selected: CircleStyle;
     radius_line: LineStyle;
 
-    constructor(props: RendererProps) {
+    constructor(props: CircularKinematic_RendererProps) {
         super();
         this.motion_path = new CircleStyle(props.motion_path);
         this.selected = new CircleStyle(props.selected);

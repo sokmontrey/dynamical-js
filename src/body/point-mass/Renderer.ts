@@ -5,7 +5,7 @@ import CircleStyle, { CircleStyleProps } from "../../style/CircleStyle";
 import Vec2 from "../../utils/Vector";
 import PointMass from "./Body";
 
-export interface RendererProps {
+export interface PointMass_RendererProps {
 	position?: CircleStyleProps;
 	static_position?: CircleStyleProps;
 	velocity?: ArrowStyleProps;
@@ -18,7 +18,7 @@ export default class PointMass_Renderer extends BodyRenderer<PointMass> {
 	velocity: ArrowStyle;
 	selected: CircleStyle;
 
-	constructor(props: RendererProps) {
+	constructor(props: PointMass_RendererProps) {
 		super();
 		this.position = new CircleStyle(props.position);
 		this.static_position = new CircleStyle(props.static_position);

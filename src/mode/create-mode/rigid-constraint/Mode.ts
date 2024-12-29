@@ -7,6 +7,7 @@ import LoopManager from "../../../manager/LoopManager.ts";
 import Vec2 from "../../../utils/Vector.ts";
 import PointMass from "../../../body/point-mass/Body.ts";
 import BodyManager from "../../../manager/BodyManager.ts";
+import RigidConstraint from "../../../body/rigid-constraint/Body.ts";
 
 export default class RigidConstraint_CreateMode extends Mode {
     public renderer: ModeRenderer = new RigidConstraint_CreateModeRenderer(this);
@@ -53,10 +54,11 @@ export default class RigidConstraint_CreateMode extends Mode {
 
     private createRigidConstraint(): void {
         if (!this.pointmass1 || !this.pointmass2) return;
-        BodyManager.createRigidConstraint({
+        const rigid = new RigidConstraint({ 
             pointmass1: this.pointmass1,
             pointmass2: this.pointmass2,
         });
+        BodyManager.addBody(rigid);
         if (!LoopManager.isRunning()) LoopManager.render();
     }
 
