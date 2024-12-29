@@ -2,6 +2,7 @@ import BodyRenderer from "../../core/BodyRenderer";
 import Draw from "../../core/Draw";
 import ArrowStyle, { ArrowStyleProps } from "../../style/ArrowStyle";
 import CircleStyle, { CircleStyleProps } from "../../style/CircleStyle";
+import Color from "../../utils/Color";
 import Vec2 from "../../utils/Vector";
 import PointMass from "./Body";
 
@@ -20,10 +21,29 @@ export default class PointMass_Renderer extends BodyRenderer<PointMass> {
 
 	constructor(props: PointMass_RendererProps) {
 		super();
-		this.position = new CircleStyle(props.position);
-		this.static_position = new CircleStyle(props.static_position);
-		this.velocity = new ArrowStyle(props.velocity);
-		this.selected = new CircleStyle(props.selected);
+		this.position = new CircleStyle(props.position || {
+			line_width: 2,
+			fill_color: Color.secondary.toString(),
+			stroke_color: Color.secondary.toString(),
+			radius: 6,
+		});
+		this.static_position = new CircleStyle(props.static_position || {
+			line_width: 2,
+			stroke_color: Color.neutral.toString(),
+			fill_color: Color.neutral_light.toString(),
+			radius: 6,
+		});
+		this.selected = new CircleStyle(props.selected || {
+			line_width: 2,
+			stroke_color: Color.accent.toString(),
+			fill_color: Color.primary.toString(),
+			radius: 7,
+		});
+		this.velocity = new ArrowStyle(props.velocity || {
+			line_width: 2,
+			stroke_color: Color.neutral_light.toString(),
+			fill_color: Color.neutral_light.toString(),
+		});
 	}
 
 	private drawCurrentPosition(pointmass: PointMass, ctx: CanvasRenderingContext2D, pos: Vec2) {

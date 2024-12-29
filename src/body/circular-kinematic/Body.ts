@@ -15,7 +15,7 @@ export interface CircularKinematic_Props {
 
 export default class CircularKinematic extends Body<CircularKinematic, CircularKinematic_Props> {
     protected readonly moveable = false;
-    protected readonly rank = 1;
+    protected readonly rank = 2;
     protected readonly type = BodyType.CIRCULAR_KINEMATIC;
 
     private radius: number = 10;
@@ -31,7 +31,7 @@ export default class CircularKinematic extends Body<CircularKinematic, CircularK
     constructor({
         center_pointmass,
         anchor_pointmass,
-        props,
+        props = {},
         renderer = {},
     }: {
         center_pointmass: PointMass,

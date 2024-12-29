@@ -1,11 +1,20 @@
-body {
-	background-color: #101015;
-	color: #e5e7eb;
+
+:root {
+	--pm-color: #E5DEC1;
+	--nt-color: #393734;
+	--nt-light-color: #AAA297;
+	--acc-color: #3A6052;
+	--sec-color: #1F4EEA;
 }
 
-.primary-canvas {
+body {
+	background-color: var(--pm-color);
+	color: var(--nt-color);
+}
+
+/* .primary-canvas { */
 	/* height: 100%; */
 	/* width: 100%; */
-	background-image: radial-gradient(#e5e7eb18 1px, transparent 2px);
+	/* background-image: radial-gradient(var(--nt-light-color) 1px, transparent 2px);
 	background-size: 32px 32px;
-}
+} */

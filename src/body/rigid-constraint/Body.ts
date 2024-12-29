@@ -2,6 +2,7 @@ import Body, { BodyType } from "../../core/Body";
 import { PropBinder, useInputPropBinder } from "../../hooks/usePropBinder";
 import BooleanInput from "../../ui-components/input/BooleanInput";
 import NumberInput from "../../ui-components/input/NumberInput";
+import Color from "../../utils/Color";
 import PointMass from "../point-mass/Body";
 import RigidConstraint_Interactor from "./Interactor";
 import RigidConstraint_Renderer, { RigidConstraint_RendererProps } from "./Renderer";

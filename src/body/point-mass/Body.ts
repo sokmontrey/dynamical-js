@@ -5,6 +5,7 @@ import LoopManager from "../../manager/LoopManager";
 import BooleanInput from "../../ui-components/input/BooleanInput";
 import NumberInput from "../../ui-components/input/NumberInput";
 import VectorInput from "../../ui-components/input/VectorInput";
+import Color from "../../utils/Color";
 import Vec2, { vec2 } from "../../utils/Vector";
 import PointMass_Interactor from "./Interactor";
 import PointMass_Renderer, { PointMass_RendererProps } from "./Renderer";

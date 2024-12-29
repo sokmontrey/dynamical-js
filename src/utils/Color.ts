@@ -17,6 +17,10 @@ export default class Color {
 		return `rgba(${this.r},${this.g},${this.b})`; 
 	}
 
+	toString() {
+		return this.toStringRGB();
+	}
+
 	toArrayRGB() { 
 		return [this.r, this.g, this.b]; 
 	}
@@ -41,4 +45,10 @@ export default class Color {
 			parseInt(result[3], 16)
 		) : color(0, 0, 0);
 	}
+
+	static primary = Color.fromHex('#E5DEC1');
+	static secondary = Color.fromHex('#3A6052');
+	static accent = Color.fromHex('#1F4EEA');
+	static neutral = Color.fromHex('#393734');
+	static neutral_light = Color.fromHex('#AAA297');
 }

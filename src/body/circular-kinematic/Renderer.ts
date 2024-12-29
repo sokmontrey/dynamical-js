@@ -2,6 +2,7 @@ import BodyRenderer from "../../core/BodyRenderer";
 import Draw from "../../core/Draw";
 import CircleStyle, { CircleStyleProps } from "../../style/CircleStyle";
 import LineStyle, { LineStyleProps } from "../../style/LineStyle";
+import Color from "../../utils/Color";
 import Vec2 from "../../utils/Vector";
 import CircularKinematic from "./Body";
 
@@ -18,9 +19,22 @@ export default class CircularKinematic_Renderer extends BodyRenderer<CircularKin
 
     constructor(props: CircularKinematic_RendererProps) {
         super();
-        this.motion_path = new CircleStyle(props.motion_path);
-        this.selected = new CircleStyle(props.selected);
-        this.radius_line = new LineStyle(props.radius_line);
+        this.motion_path = new CircleStyle(props.motion_path || {
+            is_enable: true,
+            line_width: 2,
+            is_fill: false,
+            stroke_color: Color.secondary.toString(),
+        });
+        this.selected = new CircleStyle(props.selected || {
+            line_width: 2,
+            stroke_color: Color.accent.toString(),
+            fill_color: 'rgba(0, 0, 255, 0.1)',
+            radius: 7,
+        });
+        this.radius_line = new LineStyle(props.radius_line || {
+            line_width: 2,
+            stroke_color: Color.secondary.toString(),
+        });
     }
 
     draw(circular_kinematic: CircularKinematic, ctx: CanvasRenderingContext2D, _steps: number): void {

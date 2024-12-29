@@ -11,7 +11,8 @@ import useCanvasManagement from "./hooks/useCanvasManagement.ts";
 import usePhysicsSimulation from "./hooks/usePhysicsSimulation.ts";
 import useModeManagement from "./hooks/useModeManager.ts";
 import PropertyPanel from "./ui-components/main-ui/PropertyPanel.tsx";
-import simple_pendulum_state_new from "./states/simple-pendulum-new.ts";
+import simple_pendulum_state from "./states/simple-pendulum.ts";
+import circular_kinematic_test_state from "./states/circular-kinematic-test.ts";
 
 export default function App() {
 	const {
@@ -28,7 +29,7 @@ export default function App() {
 		resetState,
 		saveState,
 		states,
-	} = usePhysicsSimulation(simple_pendulum_state_new);
+	} = usePhysicsSimulation(circular_kinematic_test_state);
 
 	const {
         mode,

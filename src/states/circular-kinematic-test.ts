@@ -1,26 +1,43 @@
-import { BodyType } from "../core/Body.ts";
-import BodyState from "../core/BodyState.ts";
-import Vec2 from "../utils/Vector.ts";
-
-const circular_kinematic_test_state: BodyState = {
-    "point1": {
-        type: BodyType.POINT_MASS,
-        props: { is_static: true, },
-        renderer: {
-            static_position: { radius: 5, fill_color: "red" },
-        }
-    },
-    "point2": {
-        type: BodyType.POINT_MASS,
-        props: { position: Vec2.right(50), }
-    },
-    "circular_kinematic": {
-        type: BodyType.CIRCULAR_KINEMATIC,
-        dependencies: { 
-            center_pointmass: "point1",  // TODO: use Reference Object for automatic dependency loading 
-            moving_pointmass: "point2", 
+const circular_kinematic_test_state: any = {
+    point0: {
+        type: "point_mass",
+        props: {
+            position: { x: -20, y: 0 },
+            is_static: true,
         },
-        props: { radius: 100, angular_velocity: 0.1, }
+    },
+    point1: {
+        type: "point_mass",
+        props: {
+            position: { x: 20, y: 0 },
+            is_static: true,
+        },
+    },
+    point2: {
+        type: "point_mass",
+        props: {
+            position: { x: 100, y: 0 },
+        },
+    },
+    rigid1: {
+        type: "rigid_constraint",
+        dependencies: {
+            pointmass1: "point1",
+            pointmass2: "point2",
+        },
+        props: { 
+            is_broken: false, 
+        },
+    },
+    circular_motion: {
+        type: "circular_kinematic",
+        dependencies: {
+            center_pointmass: "point0",
+            anchor_pointmass: "point1",
+        },
+        props: {
+            angular_velocity: Math.PI / 18,
+        },
     },
 };
 

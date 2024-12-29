@@ -22,10 +22,25 @@ export default class RigidConstraint_Renderer extends BodyRenderer<RigidConstrai
 
 	constructor(props: RigidConstraint_RendererProps) {
 		super();
-		this.constraint_line = new LineStyle(props.constraint_line);
-		this.stress = new StressStyle(props.stress);
-		this.selected = new LineStyle(props.selected);
-		this.selected_circle = new CircleStyle(props.selected_circle);
+		this.constraint_line = new LineStyle(props.constraint_line || {
+			line_width: 2,
+			stroke_color: Color.secondary.toString(),
+		});
+		this.selected = new LineStyle(props.selected || {
+			line_width: 2,
+			stroke_color: Color.accent.toString(),
+		});
+		this.stress = new StressStyle(props.stress || {
+			is_enable: false,
+			compress_color: Color.primary,
+			tension_color: Color.secondary,
+		});
+		this.selected_circle = new CircleStyle(props.selected_circle || {
+			line_width: 2,
+			stroke_color: Color.accent.toString(),
+			fill_color: Color.primary.toString(),
+			radius: 7,
+		});
 	}
 
 	draw(rigid_constraint: RigidConstraint, ctx: CanvasRenderingContext2D, steps: number) {
