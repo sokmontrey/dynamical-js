@@ -52,7 +52,10 @@ export default class CircularKinematic_CreateMode extends Mode {
 
     private createCircularKinematic(): void {
         if (!this.center_pointmass || !this.anchor_pointmass) return;
-        BodyManager.createCircularKinematic(this.center_pointmass, this.anchor_pointmass);
+        BodyManager.createCircularKinematic({
+            center_pointmass: this.center_pointmass,
+            anchor_pointmass: this.anchor_pointmass,
+        });
         if (!LoopManager.isRunning()) LoopManager.render();
     }
 

@@ -6,11 +6,11 @@ import PointMass from "../point-mass/Body";
 import RigidConstraint_Interactor from "./Interactor";
 import RigidConstraint_Renderer, { RendererProps } from "./Renderer";
 
-interface Props {
+export interface RigidConstraint_Props {
 	is_broken: boolean;
 }
 
-export default class RigidConstraint extends Body<RigidConstraint, Props> {
+export default class RigidConstraint extends Body<RigidConstraint, RigidConstraint_Props> {
 	protected readonly moveable = false;
 	protected readonly rank = 2;
 	protected readonly type = BodyType.RIGID_CONSTRAINT;
@@ -18,7 +18,7 @@ export default class RigidConstraint extends Body<RigidConstraint, Props> {
 	protected pointmass1: PointMass;
 	protected pointmass2: PointMass;
 
-	protected props: Props;
+	protected props: RigidConstraint_Props;
 	public renderer: RigidConstraint_Renderer;
 	public interactor: RigidConstraint_Interactor;
 
@@ -30,11 +30,11 @@ export default class RigidConstraint extends Body<RigidConstraint, Props> {
 		pointmass1,
 		pointmass2,
 		props,
-		renderer,
+		renderer = {},
 	}: {
 		pointmass1: PointMass,
 		pointmass2: PointMass,
-		props: Props,
+		props: RigidConstraint_Props,
 		renderer: RendererProps,
 	}) {
 		super();
@@ -104,6 +104,10 @@ export default class RigidConstraint extends Body<RigidConstraint, Props> {
 	**/
 	getPointMasses() {
 		return [this.pointmass1, this.pointmass2];
+	}
+
+	getDependencies(): string[] {
+		return [this.pointmass1.getId()!, this.pointmass2.getId()!];
 	}
 
 	/**
@@ -202,5 +206,15 @@ export default class RigidConstraint extends Body<RigidConstraint, Props> {
 
 		if (!this.pointmass1.isStatic()) this.pointmass1.setCurrentPosition(new_pos1);
 		if (!this.pointmass2.isStatic()) this.pointmass2.setCurrentPosition(new_pos2);
+	}
+
+	//================================ Serialization ================================
+
+	toJSON(): any {
+		return {
+			...super.toJSON(),
+			pointmass1: this.pointmass1.getId(),
+			pointmass2: this.pointmass2.getId(),
+		};
 	}
 }

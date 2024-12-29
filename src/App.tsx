@@ -5,7 +5,7 @@ import BodyManager from "./manager/BodyManager.ts";
 import ModeManager from "./manager/ModeManager.ts";
 import LoopManager from "./manager/LoopManager.ts";
 import BodyTreePanel from "./ui-components/main-ui/BodyTreePanel.tsx";
-import simple_pendulum_state from "./states/simple-pendulum.ts";
+import simple_pendulum_state from "./states/simple-pendulum-new.ts";
 import SimulationControls from "./ui-components/main-ui/SimulationControls.tsx";
 import ToolBar from "./ui-components/main-ui/ToolBar.tsx";
 import useCanvasManagement from "./hooks/useCanvasManagement.ts";
@@ -28,7 +28,7 @@ export default function App() {
 		update,
 		resetState,
 		saveState,
-	} = usePhysicsSimulation(simple_pendulum_state);
+	} = usePhysicsSimulation(JSON.stringify(simple_pendulum_state));
 
 	const {
         mode,

@@ -49,6 +49,8 @@ export default abstract class Body<T, P> {
 		return this.moveable;
 	}
 
+	abstract getDependencies(): string[];
+
 	//================================ Setters ================================
 
 	setId(id: string): void {
@@ -67,6 +69,13 @@ export default abstract class Body<T, P> {
 
 	//================================ Serialization ================================
 
-	// abstract serialize(): any;
+	toJSON(): any {
+		return {
+			id: this.id,
+			type: this.getType(),
+			props: this.props,
+			renderer: this.renderer.toJSON(),
+		};
+	}
 	// abstract deserialize(serialized: any): void;
 }

@@ -5,11 +5,11 @@ import LoopManager from "../../manager/LoopManager";
 import BooleanInput from "../../ui-components/input/BooleanInput";
 import NumberInput from "../../ui-components/input/NumberInput";
 import VectorInput from "../../ui-components/input/VectorInput";
-import Vec2 from "../../utils/Vector";
+import Vec2, { vec2 } from "../../utils/Vector";
 import PointMass_Interactor from "./Interactor";
 import PointMass_Renderer, { RendererProps } from "./Renderer";
 
-interface PointMass_Props {
+export interface PointMass_Props {
 	position: Vec2,
 	previous_position: Vec2,
 	constant_acceleration: Vec2,
@@ -28,8 +28,8 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
 	public interactor: PointMass_Interactor;
 
 	constructor({
-		props, 
-		renderer
+		props,
+		renderer = {},
 	}: {
 		props: PointMass_Props, 
 		renderer: RendererProps
@@ -99,6 +99,10 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
 	}
 
 	//================================ Getters ================================
+
+	getDependencies(): string[] {
+		return [];
+	}
 
 	getTotalAcceleration() {
 		return this.props.net_force
@@ -235,5 +239,15 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
 
 	setStatic(is_static: boolean) {
 		this.props.is_static = is_static;
+	}
+
+	//================================ Serialization ================================
+
+	toJSON(): any {
+		return {
+			...super.toJSON(),
+			props: this.props,
+			renderer: this.renderer.toJSON(),
+		};
 	}
 }

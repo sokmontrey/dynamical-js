@@ -1,13 +1,12 @@
 import { useState } from "react";
-import BodyState from "../core/BodyState";
 import LoopManager from "../manager/LoopManager";
 import BodyManager from "../manager/BodyManager";
 import ModeManager from "../manager/ModeManager";
 
 export default function usePhysicsSimulation(
-    initial_state: BodyState, 
+    initial_state: string, 
 ) {
-    const [state, setState] = useState<BodyState>(initial_state);
+    const [state, setState] = useState<string>(initial_state);
     const [body_ids, setBodyIds] = useState<string[]>([]);
 
     const update = (dt: number, _sub_steps: number) => {
@@ -17,13 +16,13 @@ export default function usePhysicsSimulation(
     };
 
     const resetState = () => {
-        BodyManager.loadFromState(state);
+        BodyManager.loadFromJSON(state);
         ModeManager.reset();
         LoopManager.render();
     };
 
     const saveState = () => {
-        setState(BodyManager.toState());
+        setState(BodyManager.toJSON());
     };
 
     return {

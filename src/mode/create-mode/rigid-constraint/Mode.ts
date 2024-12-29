@@ -53,7 +53,10 @@ export default class RigidConstraint_CreateMode extends Mode {
 
     private createRigidConstraint(): void {
         if (!this.pointmass1 || !this.pointmass2) return;
-        BodyManager.createRigidConstraint(this.pointmass1, this.pointmass2);
+        BodyManager.createRigidConstraint({
+            pointmass1: this.pointmass1,
+            pointmass2: this.pointmass2,
+        });
         if (!LoopManager.isRunning()) LoopManager.render();
     }
 

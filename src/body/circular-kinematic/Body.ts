@@ -8,12 +8,12 @@ import PointMass from "../point-mass/Body";
 import CircularKinematic_Interactor from "./Interactor";
 import CircularKinematic_Renderer, { RendererProps } from "./Renderer";
 
-interface Props {
+export interface CircularKinematic_Props {
     angular_velocity: number;
     is_running: boolean;
 }
 
-export default class CircularKinematic extends Body<CircularKinematic, Props> {
+export default class CircularKinematic extends Body<CircularKinematic, CircularKinematic_Props> {
     protected readonly moveable = false;
     protected readonly rank = 1;
     protected readonly type = BodyType.CIRCULAR_KINEMATIC;
@@ -24,7 +24,7 @@ export default class CircularKinematic extends Body<CircularKinematic, Props> {
     private center_pointmass: PointMass;
     private anchor_pointmass: PointMass;
 
-    protected props: Props;
+    protected props: CircularKinematic_Props;
     public renderer: CircularKinematic_Renderer;
     public interactor: CircularKinematic_Interactor;
 
@@ -36,7 +36,7 @@ export default class CircularKinematic extends Body<CircularKinematic, Props> {
     }: {
         center_pointmass: PointMass,
         anchor_pointmass: PointMass,
-        props: Props,
+        props: CircularKinematic_Props,
         renderer: RendererProps,
     }) {
         super();
@@ -118,6 +118,10 @@ export default class CircularKinematic extends Body<CircularKinematic, Props> {
 
 	//================================ Getters ================================
 
+    getDependencies(): string[] {
+        return [this.center_pointmass.getId()!, this.anchor_pointmass.getId()!];
+    }
+
     getPointMasses() {
         return [this.center_pointmass, this.anchor_pointmass];
     }
@@ -162,5 +166,15 @@ export default class CircularKinematic extends Body<CircularKinematic, Props> {
 
     setRadius(value: number) {
         this.radius = value;
+    }
+
+    //================================ Serialization ================================
+
+    toJSON(): any {
+        return {
+            ...super.toJSON(),
+            center_pointmass: this.center_pointmass.getId(),
+            anchor_pointmass: this.anchor_pointmass.getId(),
+        };
     }
 }
