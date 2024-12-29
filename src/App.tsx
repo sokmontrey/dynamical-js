@@ -68,6 +68,12 @@ export default function App() {
 		}, { sub_steps: 1000, constant_dt: null, });
 	}, [update, renderPhysics, renderUI]);
 
+	const switchState = useCallback((index: number) => {
+		BodyManager.loadFromJSON(states[index]);
+		ModeManager.reset();
+		LoopManager.render();
+	}, [states]);
+
 	useEffect(() => {
 		if (!canvas_state.overlay_canvas) return;
 		initializeBodyManager();
@@ -95,7 +101,7 @@ export default function App() {
 		/>
 		{states.map((state, index) => (
 			<div key={index}>
-				<button onClick={() => BodyManager.loadFromJSON(state)}>Load State {index}</button>
+				<button onClick={() => switchState(index)}>Load State {index}</button>
 			</div>
 		))}
 		{/* TODO: commited states list */}
