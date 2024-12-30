@@ -34,7 +34,6 @@ export default function App() {
 	} = usePhysicsSimulation(circular_kinematic_test_state);
 
 	const {
-        mode,
         selected_body_ids,
         initializeModeManager,
 	} = useModeManagement();
@@ -145,12 +144,13 @@ export default function App() {
 		</div>
 
 		<ResizableContainer 
-			className="prm-bg h-[100vh] box-border" 
+			className="prm-bg h-[100vh] box-border pt-4" 
 			is_left={false}
 			min_width={350}
 			max_width={500}
 			onResize={onResize}
 		>
+			<p className="txt-color opacity-50">Properties</p>
 			{selected_body && <PropertyPanel 
 				body={selected_body} 
 				key={selected_body.getId()} 

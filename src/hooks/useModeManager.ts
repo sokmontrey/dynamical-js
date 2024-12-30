@@ -10,6 +10,7 @@ export default function useModeManagement() {
         ModeManager.init();
         ModeManager.setOnModeChange(new_mode => {
             setMode(new_mode);
+            setSelectedBodyIds([]);
             if (new_mode !== ModeType.MOVE) return;
             const move_mode = ModeManager.getCurrentMode() as MoveMode;
             setSelectedBodyIds([]);
