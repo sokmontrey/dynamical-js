@@ -26,7 +26,7 @@ export default function BodyTreePanel({
 		renderUI();
 	};
 
-	return <div className="flex flex-col mt-8">
+	return <div className="flex flex-col mt-4">
 		<div className="flex items-center pl-2">
 			<div className="w-[28px] flex items-center justify-center mr-1">
 				<div className="w-[10px] h-[10px] acc-bg rounded-[3px]"></div>
