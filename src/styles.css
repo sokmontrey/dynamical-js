@@ -105,6 +105,23 @@ body {
 	background: #555;
 }
 
+input {
+	background-color: var(--sur-color);
+	border-radius: 0.25rem;
+	padding: 0.1rem 0.4rem;
+	outline: none;
+	@apply font-mono text-sm;
+}
+
+input:focus {
+	background-color: var(--acc-color);
+	color: var(--bg-color);
+}
+
+label {
+	white-space: nowrap;
+}
+
 /* .primary-canvas { */
 	/* height: 100%; */
 	/* width: 100%; */

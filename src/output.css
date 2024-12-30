@@ -741,6 +741,10 @@ video {
   min-width: max-content;
 }
 
+.flex-1 {
+  flex: 1 1 0%;
+}
+
 .flex-shrink-0 {
   flex-shrink: 0;
 }
@@ -890,8 +894,20 @@ video {
   padding-left: 1rem;
 }
 
+.pr-2 {
+  padding-right: 0.5rem;
+}
+
 .pr-4 {
   padding-right: 1rem;
+}
+
+.pt-2 {
+  padding-top: 0.5rem;
+}
+
+.pt-4 {
+  padding-top: 1rem;
 }
 
 .text-left {
@@ -1056,6 +1072,25 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+input {
+  background-color: var(--sur-color);
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.4rem;
+  outline: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+input:focus {
+  background-color: var(--acc-color);
+  color: var(--bg-color);
+}
+
+label {
+  white-space: nowrap;
 }
 
 /* .primary-canvas { */

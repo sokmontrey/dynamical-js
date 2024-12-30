@@ -147,7 +147,8 @@ export default function App() {
 		<ResizableContainer 
 			className="prm-bg h-[100vh] box-border" 
 			is_left={false}
-			max_width={400}
+			min_width={350}
+			max_width={500}
 			onResize={onResize}
 		>
 			{selected_body && <PropertyPanel 

@@ -11,8 +11,8 @@ export default function BooleanInput({
     onChange,
     enable = true
 }: BooleanInputProps) {
-    return <div>
-        <p>{label}</p>
+    return <div className="flex flex-row space-x-2 pt-2">
+        <label className="sec-txt-color">{label}</label> 
         <input 
             title={label}
             type="checkbox" 

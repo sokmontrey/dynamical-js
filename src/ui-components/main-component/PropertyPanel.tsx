@@ -17,7 +17,7 @@ export default function PropertyPanel({
         return () => unsubscribe();
     }, [body]);
 
-    return <div>
+    return <div className="flex flex-col space-y-2 pr-2 pt-4">
         {binders.map((prop, index) => 
             <prop.component key={index} {...prop.props} />
         )}

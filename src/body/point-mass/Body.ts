@@ -75,6 +75,12 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
                 () => this.isStatic(),
                 (value: boolean) => this.setStatic(value)),
 
+            // mass
+            useInputPropBinder(NumberInput, 
+                { label: "Mass", min: 0.01, step: 1 },
+                () => this.getMass(),
+                (value: number) => this.setMass(value)),
+
             // position
             useInputPropBinder(VectorInput, 
                 { label: "Position", step: 10 },
@@ -88,7 +94,7 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
 
             // velocity
             useInputPropBinder(VectorInput, 
-                { label: "Velocity", step: 0.01 },
+                { label: "Velocity", step: 0.001 },
                 () => this.getVelocity(),
                 (value: Vec2) => this.setVelocity(value)),
 
@@ -97,12 +103,6 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
                 { label: "Acceleration", step: 0.1 },
                 () => this.getConstantAcceleration(),
                 (value: Vec2) => this.setConstantAcceleration(value)),
-
-            // mass
-            useInputPropBinder(NumberInput, 
-                { label: "Mass", min: 0.01, step: 1 },
-                () => this.getMass(),
-                (value: number) => this.setMass(value)),
         ];
 	}
 
