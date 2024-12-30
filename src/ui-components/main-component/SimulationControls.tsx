@@ -46,8 +46,8 @@ export default function SimulationControls({
             disabled={is_running} 
             direction={tooltip_direction} />
         <IconButton 
-            desc="Save" 
-            icon_class="fa-solid fa-save" 
+            desc="Snapshot of current state" 
+            icon_class="fa-solid fa-camera" 
             onClick={onSave} 
             direction={tooltip_direction} />
     </>

@@ -24,6 +24,7 @@ export default function ToolBar({
 			onClick={() => ModeManager.toMoveMode()} 
 			direction={tooltip_direction} />
 		<SelectButton 
+
 			focused={create_modes.some(mode => mode.type === current_mode)}
 			options={create_modes}
 			onSelect={mode_type => ModeManager.toCreateMode(mode_type)}

@@ -11,12 +11,14 @@ export interface SelectButtonProps<T> {
     options: SelectOption<T>[];
     onSelect: (option: T) => void;
     focused: boolean;
+    tooltip_direction?: "top" | "bottom";
 }
 
 export default function SelectButton<T>({ 
     options, 
     onSelect, 
-    focused 
+    focused,
+    tooltip_direction = "top"
 }: SelectButtonProps<T>) {
     const [selected_option, setSelectedOption] = useState<SelectOption<T> | null>(null);
     const [is_show_dropdown, setShowDropdown] = useState(false);
@@ -61,23 +63,7 @@ export default function SelectButton<T>({
 
     return (
         <div className="flex-col relative inline-block" ref={dropdown_ref}>
-            <div className="flex items-center">
-                <IconButton 
-                    focused={focused}
-                    desc={selected_option?.desc ?? "Create"} 
-                    icon_class={selected_option?.icon_class ?? "fa-solid fa-plus"}
-                    onClick={handleButtonClick} 
-                    direction="bottom" />
-
-                <button 
-                    aria-label="Select"
-                    onClick={handleDropdownToggle}
-                    className="h-9 font-mono pl-1 rounded-lg txt-color opacity-50 hover:opacity-100 text-sm">
-                    <i className="fa-solid fa-chevron-down"></i>
-                </button>
-            </div>
-
-            {is_show_dropdown && <div className="flex flex-col space-y-2 absolute left-0 mt-2 prm-bg rounded-lg w-[200px] z-50 shadow-lg">
+            {is_show_dropdown && <div className="flex flex-col space-y-2 absolute left-0 bottom-full mb-2 prm-bg rounded-lg w-[200px] z-50 shadow-lg">
                 {options.map((option, i: number) =>
                     <button
                         key={i} 
@@ -89,6 +75,22 @@ export default function SelectButton<T>({
                     </button>
                 )}
             </div>}
+
+            <div className="flex items-center">
+                <IconButton 
+                    focused={focused}
+                    desc={selected_option?.desc ?? "Create"} 
+                    icon_class={selected_option?.icon_class ?? "fa-solid fa-plus"}
+                    onClick={handleButtonClick} 
+                    direction={tooltip_direction} />
+
+                <button 
+                    aria-label="Select"
+                    onClick={handleDropdownToggle}
+                    className="h-9 font-mono pl-1 rounded-lg txt-color opacity-50 hover:opacity-100 text-sm">
+                    <i className="fa-solid fa-chevron-up"></i>
+                </button>
+            </div>
         </div>
     );
 };

@@ -14,7 +14,6 @@ import PropertyPanel from "./ui-components/main-component/PropertyPanel.tsx";
 import simple_pendulum_state from "./states/simple-pendulum.ts";
 import circular_kinematic_test_state from "./states/circular-kinematic-test.ts";
 import StateLog from "./ui-components/main-component/StateLog.tsx";
-import TopBar from "./ui-components/layout/TopBar.tsx";
 import ResizableContainer from "./ui-components/common/ResizableContainer.tsx";
 
 export default function App() {
@@ -122,12 +121,27 @@ export default function App() {
 		<div 
 			className="flex flex-col flex-grow w-full"
 		>
-			<TopBar onSave={saveState} />
-
 			<SimulationCanvas 
 				onCanvasMounted={setCanvasState} 
 				container_ref={middle_container_ref}
 			/>
+
+			<div className="flex flex-row justify-center space-x-2 p-4">
+				<div className="tool-container">
+					<SimulationControls 
+						tooltip_direction="top"
+						onRun={() => LoopManager.run()}
+						onPause={() => LoopManager.pause()}
+						onStep={() => !LoopManager.isRunning() ? LoopManager.step() : null }
+						onSave={saveState}
+					/>
+				</div>
+				<div className="tool-container">
+					<ToolBar 
+						tooltip_direction="top"
+					/>
+				</div>
+			</div>
 		</div>
 
 		<ResizableContainer 
