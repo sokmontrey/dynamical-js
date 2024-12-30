@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Canvas from "../../core/Canvas";
 
 export interface SimulationCanvasProps {
@@ -35,7 +35,7 @@ export default function SimulationCanvas({
 
     return <div id={container_id} 
         ref={container_ref}
-        style={{ position: "relative", minWidth: "500px", minHeight: "500px" }}
+        style={{ position: "relative", height: "100%", width: "100%" }}
     >
         <canvas id="base_canvas" ref={base_canvas_ref}
             style={{ position: "absolute", top: 0, left: 0, zIndex: 0 }}

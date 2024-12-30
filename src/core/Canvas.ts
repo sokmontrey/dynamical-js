@@ -41,6 +41,17 @@ export default class Canvas {
 		return this;
 	}
 
+	resize(width: number, height: number) {
+		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+		this.width = width;
+		this.height = height;
+		this.canvas.width = this.width;
+		this.canvas.height = this.height;
+		this.offset = vec2(this.width / 2.0, this.height / 2.0);
+		this.ctx.translate(this.offset.x, this.offset.y);
+		return this;
+	}
+
 	addMousePositionEvent() {
 		this.onMouseMove((e: MouseEvent) => {
 			const rect = this.canvas.getBoundingClientRect();

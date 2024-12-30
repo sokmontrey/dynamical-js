@@ -6,6 +6,7 @@ interface ResizableContainerProps {
     is_left?: boolean;
     min_width?: number;
     max_width?: number;
+    onResize?: () => void;
 }
 
 export default function ResizableContainer({
@@ -14,6 +15,7 @@ export default function ResizableContainer({
     is_left = true,
     min_width = 250,
     max_width = 1000,
+    onResize,
 }: ResizableContainerProps) {
     const container_ref = useRef<HTMLDivElement>(null);
     const [is_dragging, setIsDragging] = useState(false);
@@ -31,6 +33,7 @@ export default function ResizableContainer({
                 Math.min(max_width, Math.max(min_width, container_rect.right - e.clientX));
 
             setWidth(new_width);
+            onResize?.();
         };
 
         const handleMouseUp = () => {

@@ -1,5 +1,5 @@
 import SimulationCanvas from "./ui-components/main-component/SimulationCanvas.tsx";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import InputManager from "./manager/InputManager.ts";
 import BodyManager from "./manager/BodyManager.ts";
 import ModeManager from "./manager/ModeManager.ts";
@@ -78,6 +78,15 @@ export default function App() {
 		LoopManager.render();
 	}, [states]);
 
+	const middle_container_ref = useRef<HTMLDivElement>(null);
+
+	const onResize = useCallback(() => {
+		if (!middle_container_ref.current) return;
+		const { clientWidth: width, clientHeight: height } = middle_container_ref.current;
+		canvas_state.base_canvas?.resize(width, height);
+		canvas_state.overlay_canvas?.resize(width, height);
+	}, [canvas_state]);
+
 	useEffect(() => {
 		if (!canvas_state.overlay_canvas) return;
 		initializeBodyManager();
@@ -87,13 +96,16 @@ export default function App() {
 		initializeLoopManager();
 		LoopManager.run();
 		LoopManager.render();
+		window.addEventListener("resize", onResize);
 	}, [canvas_state]);
 
 	return (<div className="flex flex-row w-full">
 		<ResizableContainer 
 			className="prm-bg h-[100vh] box-border" 
 			is_left={true}
+			min_width={200}
 			max_width={400}
+			onResize={onResize}
 		>
 			<BodyTreePanel 
 				selected_body_ids={selected_body_ids}
@@ -102,19 +114,25 @@ export default function App() {
 			/>
 		</ResizableContainer>
 
-		<div className="flex flex-col flex-grow">
+		<div 
+			className="flex flex-col flex-grow w-full"
+			ref={middle_container_ref}
+		>
 			<div className="flex flex-row items-center">
 				<TopBar onSave={saveState} />
 				<StateLog states={states} onStateSelected={switchState} />
 			</div>
 
-			<SimulationCanvas onCanvasMounted={setCanvasState} />
+			<SimulationCanvas 
+				onCanvasMounted={setCanvasState} 
+			/>
 		</div>
 
 		<ResizableContainer 
 			className="prm-bg h-[100vh] box-border" 
 			is_left={false}
 			max_width={400}
+			onResize={onResize}
 		>
 			{selected_body && <PropertyPanel 
 				body={selected_body} 
