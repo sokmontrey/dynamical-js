@@ -116,7 +116,6 @@ export default function App() {
 
 		<div 
 			className="flex flex-col flex-grow w-full"
-			ref={middle_container_ref}
 		>
 			<div className="flex flex-row items-center">
 				<TopBar onSave={saveState} />
@@ -125,6 +124,7 @@ export default function App() {
 
 			<SimulationCanvas 
 				onCanvasMounted={setCanvasState} 
+				container_ref={middle_container_ref}
 			/>
 		</div>
 

@@ -7,15 +7,16 @@ export interface SimulationCanvasProps {
         base_canvas: Canvas, 
         overlay_canvas: Canvas 
     }) => void;
+    container_ref: React.RefObject<HTMLDivElement>;
 }
 
 export default function SimulationCanvas({ 
     container_id = "", 
-    onCanvasMounted
+    onCanvasMounted,
+    container_ref,
 }: SimulationCanvasProps) {
     const base_canvas_ref = useRef<HTMLCanvasElement>(null);
     const overlay_canvas_ref = useRef<HTMLCanvasElement>(null);
-    const container_ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!container_ref.current || 
@@ -31,9 +32,10 @@ export default function SimulationCanvas({
 		const overlay_canvas = new Canvas(overlay_canvas_ele, {width, height}).addMousePositionEvent();
 
         onCanvasMounted({ base_canvas, overlay_canvas });
-    }, [onCanvasMounted]);
+    }, [onCanvasMounted, container_ref]);
 
-    return <div id={container_id} 
+    return <div 
+        id={container_id} 
         ref={container_ref}
         style={{ position: "relative", height: "100%", width: "100%" }}
     >
