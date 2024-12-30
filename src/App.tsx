@@ -31,12 +31,13 @@ export default function App() {
 		resetState,
 		saveState,
 		states,
+		addState,
 	} = usePhysicsSimulation(circular_kinematic_test_state);
 
-	const [current_state, setCurrentState] = useState<State>(states[states.length - 1]);
+	const [current_state_index, setCurrentStateIndex] = useState<number>(states.length - 1);
 
 	useEffect(() => {
-		setCurrentState(states[states.length - 1]);
+		setCurrentStateIndex(states.length - 1);
 	}, [states]);
 
 	const {
@@ -55,8 +56,8 @@ export default function App() {
 			setBodyIds(body_ids);
 			ModeManager.reset();
 		});
-		BodyManager.loadFromJSON(current_state.state);
-	}, [states]);
+		BodyManager.loadFromJSON(states[current_state_index].state);
+	}, [current_state_index]);
 
 	const initializeInputManager = useCallback(() => {
 		if (!canvas_state.overlay_canvas) return;
@@ -78,25 +79,32 @@ export default function App() {
 	}, [update, renderPhysics, renderUI]);
 
 	const switchState = useCallback((index: number) => {
-		setCurrentState(states[index]);
+		setCurrentStateIndex(index);
 		BodyManager.loadFromJSON(states[index].state);
 		ModeManager.reset();
 		LoopManager.render();
 	}, [states]);
 
 	const onExport = useCallback(() => {
-		const json = JSON.stringify(current_state.state, null, 2);
+		const json = JSON.stringify(states[current_state_index].state, null, 2);
 		const blob = new Blob([json], { type: "application/json" });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = `${current_state.id}.json`;
+		a.download = `${states[current_state_index].id}.json`;
 		a.click();
-	}, []);
+	}, [current_state_index]);
 
-	const onImport = useCallback(() => {
-		// const file = new File([], "state.json");
-		// BodyManager.loadFromJSONFile(file);
+	const onImport = useCallback((json_content: string) => {
+		const state = JSON.parse(json_content);
+		try {
+			addState(state);
+			switchState(states.length - 1);
+			BodyManager.loadFromJSON(state); // TODO: debug why this is necessary
+		} catch (error) {
+			//TODO: error message handling
+			console.error('Error importing state:', error);
+		}
 	}, []);
 
 	const middle_container_ref = useRef<HTMLDivElement>(null);
@@ -135,7 +143,7 @@ export default function App() {
 			/>
 			
 			<StateLog 
-				current_state={current_state}
+				current_state={states[current_state_index]}
 				states={states} 
 				onStateSelected={switchState} 
 			/>

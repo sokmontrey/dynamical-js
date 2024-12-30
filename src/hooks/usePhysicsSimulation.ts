@@ -44,6 +44,7 @@ export default function usePhysicsSimulation(
         setBodyIds,
         update,
         resetState,
-        saveState
+        saveState,
+        addState
     };
 }
