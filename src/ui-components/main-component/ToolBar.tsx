@@ -1,13 +1,38 @@
-import ModeManager from "../../manager/ModeManager";
+import ModeManager, { ModeType } from "../../manager/ModeManager";
+import IconButton from "../common/IconButton";
 import SelectButton from "../input/SelectButton";
 
-export default function ToolBar() {
-	return <div>
-		<button onClick={() => ModeManager.toMoveMode()}>
-			Move
-		</button>
-		<SelectButton options={ModeManager.getCreateModeTypes()}
-					  onSelect={mode => ModeManager.toCreateMode(mode)}
+interface ToolBarProps {
+	tooltip_direction: "top" | "right" | "bottom" | "left";
+}
+
+export default function ToolBar({
+	tooltip_direction = "bottom",
+}: ToolBarProps) {
+	const current_mode = ModeManager.getCurrentModeType();
+	const create_modes = [
+		{ type: ModeType.CREATE_POINTMASS, desc: "Point Mass", icon_class: "fa-solid fa-circle" },
+		{ type: ModeType.CREATE_RIGID_CONSTRAINT, desc: "Rigid Constraint", icon_class: "fa-solid fa-slash" },
+		{ type: ModeType.CREATE_CIRCULAR_KINEMATIC, desc: "Circular Kinematic", icon_class: "fa-solid fa-circle-dot" }
+	];
+
+	return <>
+		<IconButton 
+			focused={current_mode === ModeType.MOVE}
+			desc="Move" 
+			icon_class="fa-solid fa-arrow-pointer" 
+			onClick={() => ModeManager.toMoveMode()} 
+			direction={tooltip_direction} />
+		{/* <IconButton 
+			focused={create_modes.includes(current_mode)}
+			desc="Create" 
+			icon_class="fa-solid fa-plus" 
+			onClick={() => {}} 
+			direction={tooltip_direction} /> */}
+		<SelectButton 
+			focused={create_modes.some(mode => mode.type === current_mode)}
+			options={create_modes}
+			onSelect={mode_type => ModeManager.toCreateMode(mode_type)}
 		></SelectButton>
-	</div>;
+	</>;
 }

@@ -73,6 +73,18 @@ body {
 	background-color: var(--acc-color);
 }	
 
+.tool-container {
+	display: flex;
+	flex-direction: row;
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+	background-color: var(--prm-color);
+}
+
+.tool-container > * + * {
+	margin-left: 0.5rem;
+}
+
 /* .primary-canvas { */
 	/* height: 100%; */
 	/* width: 100%; */

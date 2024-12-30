@@ -7,6 +7,7 @@ export interface SimulationControlsProps {
     onPause: () => void;
     onStep: () => void;
     onSave: () => void;
+    tooltip_direction: "top" | "right" | "bottom" | "left";
 }
 
 export default function SimulationControls({
@@ -14,8 +15,8 @@ export default function SimulationControls({
     onStep,
     onPause,
     onSave,
+    tooltip_direction = "bottom",
 }: SimulationControlsProps) {
-    const tooltip_direction = "right";
     const [is_running, setIsRunning] = useState(false);
 
     const onRunPause = () => {
@@ -32,7 +33,7 @@ export default function SimulationControls({
         setIsRunning(LoopManager.isRunning());
     }, [LoopManager.isRunning()]);
 
-    return <div className="flex flex-col p-2 space-y-2 rounded-xl prm-bg">
+    return <>
         <IconButton 
             desc={is_running ? "Pause" : "Run"}
             icon_class={is_running ? "fa-solid fa-pause" : "fa-solid fa-play"} 
@@ -49,5 +50,5 @@ export default function SimulationControls({
             icon_class="fa-solid fa-save" 
             onClick={onSave} 
             direction={tooltip_direction} />
-    </div>
+    </>
 }

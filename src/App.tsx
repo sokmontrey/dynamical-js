@@ -14,6 +14,7 @@ import PropertyPanel from "./ui-components/main-component/PropertyPanel.tsx";
 import simple_pendulum_state from "./states/simple-pendulum.ts";
 import circular_kinematic_test_state from "./states/circular-kinematic-test.ts";
 import StateLog from "./ui-components/main-component/StateLog.tsx";
+import TopBar from "./ui-components/layout/TopBar.tsx";
 
 export default function App() {
 	const {
@@ -83,24 +84,16 @@ export default function App() {
 		initializeInputManager();
 		resetState();
 		initializeLoopManager();
-		// LoopManager.run();
+		LoopManager.run();
 		LoopManager.render();
 	}, [canvas_state]);
 
 	return (<div className="flex flex-col">
-		<SimulationControls 
-			onRun={() => LoopManager.run()}
-			onPause={() => LoopManager.pause()}
-			onStep={() => !LoopManager.isRunning() ? LoopManager.step() : null }
-			// onReset={resetState}
-			onSave={saveState}
-		/>
-		<ToolBar />
+		<TopBar onSave={saveState} />
 		<BodyTreePanel 
 			selected_body_ids={selected_body_ids}
 			body_ids={body_ids} 
 			renderUI={renderUI} />
-		<p> Mode: {mode ?? "None"} </p>
 		{ selected_body && <PropertyPanel body={selected_body} key={selected_body.getId()} /> }
 		<StateLog states={states} onStateSelected={switchState} />
 		<SimulationCanvas onCanvasMounted={setCanvasState} />
