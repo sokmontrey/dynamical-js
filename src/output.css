@@ -636,14 +636,6 @@ video {
   top: 100%;
 }
 
-.-right-4 {
-  right: -1rem;
-}
-
-.-right-0 {
-  right: -0px;
-}
-
 .z-50 {
   z-index: 50;
 }
@@ -705,14 +697,6 @@ video {
 }
 
 .h-full {
-  height: 100%;
-}
-
-.h-\[\] {
-  height: ;
-}
-
-.h-\[100\%\] {
   height: 100%;
 }
 
@@ -825,10 +809,6 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
-}
-
-.overflow-x-hidden {
-  overflow-x: hidden;
 }
 
 .overflow-y-scroll {
@@ -1057,7 +1037,7 @@ body {
 /* width */
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 /* Track */
