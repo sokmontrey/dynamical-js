@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import Body from "../../core/Body.ts";
-import IconButton from "../common/IconButton.tsx";
 import RedButton from "../common/RedButton.tsx";
 import BodyManager from "../../manager/BodyManager.ts";
 

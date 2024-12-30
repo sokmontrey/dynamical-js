@@ -7,7 +7,7 @@ export default function usePhysicsSimulation(
     initial_state: any
 ) {
     const [states, setStates] = useState<any[]>([{
-        timestamp: new Date().toLocaleTimeString(),
+        id: `0 ${new Date().toLocaleTimeString()}`,
         state: initial_state
     }]);
     const [body_ids, setBodyIds] = useState<string[]>([]);
@@ -20,14 +20,14 @@ export default function usePhysicsSimulation(
 
     const addState = (state: any) => {
         setStates([...states, {
-            timestamp: new Date().toLocaleTimeString(),
+            id: `${states.length} ${new Date().toLocaleTimeString()}`,
             state: state
         }]);
     };
 
     const resetState = () => {
         setStates([{
-            timestamp: new Date().toLocaleTimeString(),
+            id: `0 ${new Date().toLocaleTimeString()}`,
             state: initial_state
         }]);
         ModeManager.reset();

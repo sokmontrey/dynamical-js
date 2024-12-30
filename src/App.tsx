@@ -11,10 +11,10 @@ import useCanvasManagement from "./hooks/useCanvasManagement.ts";
 import usePhysicsSimulation from "./hooks/usePhysicsSimulation.ts";
 import useModeManagement from "./hooks/useModeManager.ts";
 import PropertyPanel from "./ui-components/main-component/PropertyPanel.tsx";
-import simple_pendulum_state from "./states/simple-pendulum.ts";
 import circular_kinematic_test_state from "./states/circular-kinematic-test.ts";
-import StateLog from "./ui-components/main-component/StateLog.tsx";
+import StateLog, { State } from "./ui-components/main-component/StateLog.tsx";
 import ResizableContainer from "./ui-components/common/ResizableContainer.tsx";
+import StateTools from "./ui-components/main-component/StateTools.tsx";
 
 export default function App() {
 	const {
@@ -33,6 +33,12 @@ export default function App() {
 		states,
 	} = usePhysicsSimulation(circular_kinematic_test_state);
 
+	const [current_state, setCurrentState] = useState<State>(states[states.length - 1]);
+
+	useEffect(() => {
+		setCurrentState(states[states.length - 1]);
+	}, [states]);
+
 	const {
         selected_body_ids,
         initializeModeManager,
@@ -49,7 +55,7 @@ export default function App() {
 			setBodyIds(body_ids);
 			ModeManager.reset();
 		});
-		BodyManager.loadFromJSON(states[states.length - 1].state);
+		BodyManager.loadFromJSON(current_state.state);
 	}, [states]);
 
 	const initializeInputManager = useCallback(() => {
@@ -72,10 +78,26 @@ export default function App() {
 	}, [update, renderPhysics, renderUI]);
 
 	const switchState = useCallback((index: number) => {
+		setCurrentState(states[index]);
 		BodyManager.loadFromJSON(states[index].state);
 		ModeManager.reset();
 		LoopManager.render();
 	}, [states]);
+
+	const onExport = useCallback(() => {
+		const json = JSON.stringify(current_state.state, null, 2);
+		const blob = new Blob([json], { type: "application/json" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = `${current_state.id}.json`;
+		a.click();
+	}, []);
+
+	const onImport = useCallback(() => {
+		// const file = new File([], "state.json");
+		// BodyManager.loadFromJSONFile(file);
+	}, []);
 
 	const middle_container_ref = useRef<HTMLDivElement>(null);
 
@@ -113,9 +135,14 @@ export default function App() {
 			/>
 			
 			<StateLog 
+				current_state={current_state}
 				states={states} 
 				onStateSelected={switchState} 
 			/>
+
+			<p className="txt-color opacity-50 m-2">
+				NOTE: Changes are not saved automatically.
+			</p>
 		</ResizableContainer>
 
 		<div 
@@ -133,12 +160,17 @@ export default function App() {
 						onRun={() => LoopManager.run()}
 						onPause={() => LoopManager.pause()}
 						onStep={() => !LoopManager.isRunning() ? LoopManager.step() : null }
-						onSave={saveState}
 					/>
 				</div>
 				<div className="tool-container">
-					<ToolBar 
+					<ToolBar tooltip_direction="top" />
+				</div>
+				<div className="tool-container">
+					<StateTools 
 						tooltip_direction="top"
+						onSave={saveState}
+						onImport={onImport}
+						onExport={onExport}
 					/>
 				</div>
 			</div>
@@ -151,6 +183,8 @@ export default function App() {
 			max_width={500}
 			onResize={onResize}
 		>
+			{/* TODO: move this to move mode*/}
+			{/* This way we can switch panel between mode  */}
 			<p className="txt-color opacity-50">Properties</p>
 			{selected_body && <PropertyPanel 
 				body={selected_body} 

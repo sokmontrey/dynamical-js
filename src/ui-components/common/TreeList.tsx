@@ -24,7 +24,7 @@ export default function TreeList({
 			{items.map((item, index) => {
 				const is_focused = focused_items.includes(item);
 				return <button 
-					key={item}
+					key={`${item}-${index}`}
 					onClick={() => onItemClicked(index)} 
 					className={`group flex items-center text-left hover:bg-[var(--sur-color)] rounded-tr-lg rounded-br-lg pl-2 transition-all duration-100 hover:opacity-100 ${is_focused ? "bg-[var(--sur-color)]" : ""}`}
 					style={{

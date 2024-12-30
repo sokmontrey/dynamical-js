@@ -88,6 +88,14 @@ export default class BodyManager {
 		}
 	}
 
+	static loadFromJSONFile(file: File): void {
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			BodyManager.loadFromJSON(e.target?.result);
+		};
+		reader.readAsText(file);
+	}
+
 	static processDependency(config: any): any {
 		if (config.dependencies) {
 			const dep = Object.fromEntries(Object.entries(config.dependencies).map(([id, dep_id]) =>
@@ -102,6 +110,7 @@ export default class BodyManager {
 		if (BodyManager.bodies[id]) return BodyManager.bodies[id];
 		if (!BodyManager.state[id]) throw new Error(`Body ${id} not found in state`);
 		const config = BodyManager.processDependency(BodyManager.state[id]);
+		if (!config.type) throw new Error(`Body ${id} has no type`);
 
 		const creator: Record<BodyType, new (config: any) => Body<any, any>> = {
 			[BodyType.POINT_MASS]: PointMass,

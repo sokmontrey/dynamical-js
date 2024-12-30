@@ -23,8 +23,8 @@ export default function ToolBar({
 			icon_class="fa-solid fa-arrow-pointer" 
 			onClick={() => ModeManager.toMoveMode()} 
 			direction={tooltip_direction} />
-		<SelectButton 
 
+		<SelectButton 
 			focused={create_modes.some(mode => mode.type === current_mode)}
 			options={create_modes}
 			onSelect={mode_type => ModeManager.toCreateMode(mode_type)}
