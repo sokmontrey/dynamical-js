@@ -100,7 +100,7 @@ export default function App() {
 
 	return (<div className="flex flex-row w-full">
 		<ResizableContainer 
-			className="prm-bg h-[100vh] box-border" 
+			className="prm-bg h-[100vh] box-border flex flex-col" 
 			is_left={true}
 			min_width={200}
 			max_width={400}

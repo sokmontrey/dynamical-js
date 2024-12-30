@@ -32,5 +32,6 @@ export default function BodyTreePanel({
 		items={body_ids}
 		focused_items={selected_body_ids}
 		onItemClicked={onBodyClicked}
+		className="flex-1"
 	/>;
 }

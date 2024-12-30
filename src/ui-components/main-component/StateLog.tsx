@@ -13,6 +13,7 @@ export default function StateLog({
     onStateSelected,
 }: StateLogProps) {
 	return <TreeList
+		className="flex-1"
 		title="Changes"
 		items={states.map(({ timestamp }) => `${timestamp}`)}
 		focused_items={[]}
