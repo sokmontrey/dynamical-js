@@ -55,6 +55,7 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
 	*		enabling position-based dynamic (verlet integration).
 	**/
 	update(delta_time: number): void {
+		this.triggerOnUpdate();
 		if (this.isStatic()) return;
 		const acc = this.getTotalAcceleration();
 		const vel = this.props.position
@@ -64,7 +65,6 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
 		this.props.previous_position = this.props.position.copy();
 		this.props.position = this.props.position.add(vel.mul(delta_time));
 		this.props.net_force = Vec2.zero();
-		this.triggerOnUpdate();
 	}
 
 	getPropBinders(): PropBinder<any>[] {

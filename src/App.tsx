@@ -1,5 +1,5 @@
 import SimulationCanvas from "./ui-components/main-component/SimulationCanvas.tsx";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import InputManager from "./manager/InputManager.ts";
 import BodyManager from "./manager/BodyManager.ts";
 import ModeManager from "./manager/ModeManager.ts";
@@ -15,6 +15,7 @@ import simple_pendulum_state from "./states/simple-pendulum.ts";
 import circular_kinematic_test_state from "./states/circular-kinematic-test.ts";
 import StateLog from "./ui-components/main-component/StateLog.tsx";
 import TopBar from "./ui-components/layout/TopBar.tsx";
+import ResizableContainer from "./ui-components/common/ResizableContainer.tsx";
 
 export default function App() {
 	const {
@@ -88,14 +89,37 @@ export default function App() {
 		LoopManager.render();
 	}, [canvas_state]);
 
-	return (<div className="flex flex-col">
-		<TopBar onSave={saveState} />
-		<BodyTreePanel 
-			selected_body_ids={selected_body_ids}
-			body_ids={body_ids} 
-			renderUI={renderUI} />
-		{ selected_body && <PropertyPanel body={selected_body} key={selected_body.getId()} /> }
-		<StateLog states={states} onStateSelected={switchState} />
-		<SimulationCanvas onCanvasMounted={setCanvasState} />
+	return (<div className="flex flex-row w-full">
+		<ResizableContainer 
+			className="prm-bg h-[100vh] box-border" 
+			is_left={true}
+			max_width={400}
+		>
+			<BodyTreePanel 
+				selected_body_ids={selected_body_ids}
+				body_ids={body_ids} 
+				renderUI={renderUI} 
+			/>
+		</ResizableContainer>
+
+		<div className="flex flex-col flex-grow">
+			<div className="flex flex-row items-center">
+				<TopBar onSave={saveState} />
+				<StateLog states={states} onStateSelected={switchState} />
+			</div>
+
+			<SimulationCanvas onCanvasMounted={setCanvasState} />
+		</div>
+
+		<ResizableContainer 
+			className="prm-bg h-[100vh] box-border" 
+			is_left={false}
+			max_width={400}
+		>
+			{selected_body && <PropertyPanel 
+				body={selected_body} 
+				key={selected_body.getId()} 
+			/> }
+		</ResizableContainer>
 	</div>);
 }

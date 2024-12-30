@@ -1,9 +1,13 @@
 import { useEffect } from "react";
 import Body from "../../core/Body.ts";
 
+interface PropertyPanelProps {
+    body: Body<any, any>;
+}
+
 export default function PropertyPanel({ 
-    body 
-}: { body: Body<any, any> }) {
+    body,
+}: PropertyPanelProps) {
     const binders = body.getPropBinders();
 
     useEffect(() => {
@@ -13,7 +17,7 @@ export default function PropertyPanel({
         return () => unsubscribe();
     }, [body]);
 
-    return <div key={body.getId()}>
+    return <div>
         {binders.map((prop, index) => 
             <prop.component key={index} {...prop.props} />
         )}
