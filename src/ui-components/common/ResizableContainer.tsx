@@ -54,7 +54,7 @@ export default function ResizableContainer({
     return (
         <div
             ref={container_ref}
-            className={`relative flex-shrink-0 ${className} ${is_left ? 'pr-4' : 'pl-4'} overflow-hidden z-100`}
+            className={`relative flex-shrink-0 ${className} ${is_left ? 'pr-4' : 'pl-4'} overflow-hidden overflow-y-scroll z-100`}
             style={{ width: `${width}px` }}
         >
             {children}

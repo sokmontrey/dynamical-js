@@ -636,6 +636,14 @@ video {
   top: 100%;
 }
 
+.-right-4 {
+  right: -1rem;
+}
+
+.-right-0 {
+  right: -0px;
+}
+
 .z-50 {
   z-index: 50;
 }
@@ -692,20 +700,20 @@ video {
   height: 10px;
 }
 
-.h-\[28px\] {
-  height: 28px;
+.h-\[30px\] {
+  height: 30px;
 }
 
 .h-full {
   height: 100%;
 }
 
-.h-\[40px\] {
-  height: 40px;
+.h-\[\] {
+  height: ;
 }
 
-.h-\[30px\] {
-  height: 30px;
+.h-\[100\%\] {
+  height: 100%;
 }
 
 .w-4 {
@@ -817,6 +825,14 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 
 .rounded {
@@ -1036,6 +1052,30 @@ body {
 
 .tool-container > * + * {
   margin-left: 0.5rem;
+}
+
+/* width */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+  background: var(--prm-color);
+}
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+  background: var(--sur-color);
+}
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* .primary-canvas { */

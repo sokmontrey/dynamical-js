@@ -111,7 +111,7 @@ export default function App() {
 				body_ids={body_ids} 
 				renderUI={renderUI} 
 			/>
-
+			
 			<StateLog 
 				states={states} 
 				onStateSelected={switchState} 
