@@ -23,17 +23,17 @@ export default class CircularKinematic_Renderer extends BodyRenderer<CircularKin
             is_enable: true,
             line_width: 2,
             is_fill: false,
-            stroke_color: Color.secondary.toString(),
+            stroke_color: Color.sur,
         });
         this.selected = new CircleStyle(props.selected || {
             line_width: 2,
-            stroke_color: Color.accent.toString(),
-            fill_color: 'rgba(0, 0, 255, 0.1)',
+            stroke_color: Color.sel,
+            fill_color: Color.sel_light,
             radius: 7,
         });
         this.radius_line = new LineStyle(props.radius_line || {
             line_width: 2,
-            stroke_color: Color.secondary.toString(),
+            stroke_color: Color.sur,
         });
     }
 

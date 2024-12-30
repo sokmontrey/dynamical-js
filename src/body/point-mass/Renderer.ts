@@ -23,26 +23,27 @@ export default class PointMass_Renderer extends BodyRenderer<PointMass> {
 		super();
 		this.position = new CircleStyle(props.position || {
 			line_width: 2,
-			fill_color: Color.secondary.toString(),
-			stroke_color: Color.secondary.toString(),
+			fill_color: Color.acc,
+			stroke_color: Color.acc,
 			radius: 6,
 		});
 		this.static_position = new CircleStyle(props.static_position || {
-			line_width: 2,
-			stroke_color: Color.neutral.toString(),
-			fill_color: Color.neutral_light.toString(),
+			// line_width: 2,
+			is_stroke: false,
+			// stroke_color: Color.sec_txt,
+			fill_color: Color.sec_txt,
 			radius: 6,
 		});
 		this.selected = new CircleStyle(props.selected || {
 			line_width: 2,
-			stroke_color: Color.accent.toString(),
-			fill_color: Color.primary.toString(),
+			stroke_color: Color.sel,
+			fill_color: Color.sel_light,
 			radius: 7,
 		});
 		this.velocity = new ArrowStyle(props.velocity || {
 			line_width: 2,
-			stroke_color: Color.neutral_light.toString(),
-			fill_color: Color.neutral_light.toString(),
+			stroke_color: Color.sec,
+			fill_color: Color.sec,
 		});
 	}
 

@@ -24,22 +24,23 @@ export default class RigidConstraint_Renderer extends BodyRenderer<RigidConstrai
 		super();
 		this.constraint_line = new LineStyle(props.constraint_line || {
 			line_width: 2,
-			stroke_color: Color.secondary.toString(),
+			stroke_color: Color.sur,
 		});
 		this.selected = new LineStyle(props.selected || {
 			line_width: 2,
-			stroke_color: Color.accent.toString(),
+			stroke_color: Color.sel,
 		});
 		this.stress = new StressStyle(props.stress || {
 			is_enable: false,
-			compress_color: Color.primary,
-			tension_color: Color.secondary,
+			compress_color: Color.fromHex(Color.sur),
+			tension_color: Color.fromHex(Color.acc),
 		});
 		this.selected_circle = new CircleStyle(props.selected_circle || {
 			line_width: 2,
-			stroke_color: Color.accent.toString(),
-			fill_color: Color.primary.toString(),
-			radius: 7,
+			is_stroke: false,
+			// stroke_color: Color.sel,
+			fill_color: Color.sel,
+			radius: 4,
 		});
 	}
 

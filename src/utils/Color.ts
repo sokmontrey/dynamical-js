@@ -46,9 +46,14 @@ export default class Color {
 		) : color(0, 0, 0);
 	}
 
-	static primary = Color.fromHex('#E5DEC1');
-	static secondary = Color.fromHex('#3A6052');
-	static accent = Color.fromHex('#1F4EEA');
-	static neutral = Color.fromHex('#393734');
-	static neutral_light = Color.fromHex('#AAA297');
+	static sel = '#3390ff';
+	static sel_light = '#3390ff44';
+	static bg = '#1B1C1E';
+	static txt = '#E5E5E4';
+	static sec_txt = '#cbcbc9';
+	static prm = '#222324';
+	static sur = '#303133';
+	static border = '#333334';
+	static acc = '#E7E77F';
+	static sec = '#e7ac7f';
 }
