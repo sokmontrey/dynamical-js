@@ -50,7 +50,7 @@ export default function App() {
 		BodyManager.setOnTreeChange((body_ids) => {
 			setBodyIds(body_ids);
 		});
-		BodyManager.loadFromJSON(states[0]);
+		BodyManager.loadFromJSON(states[states.length - 1].state);
 	}, [states]);
 
 	const initializeInputManager = useCallback(() => {
@@ -73,7 +73,7 @@ export default function App() {
 	}, [update, renderPhysics, renderUI]);
 
 	const switchState = useCallback((index: number) => {
-		BodyManager.loadFromJSON(states[index]);
+		BodyManager.loadFromJSON(states[index].state);
 		ModeManager.reset();
 		LoopManager.render();
 	}, [states]);
@@ -112,15 +112,17 @@ export default function App() {
 				body_ids={body_ids} 
 				renderUI={renderUI} 
 			/>
+
+			<StateLog 
+				states={states} 
+				onStateSelected={switchState} 
+			/>
 		</ResizableContainer>
 
 		<div 
 			className="flex flex-col flex-grow w-full"
 		>
-			<div className="flex flex-row items-center">
-				<TopBar onSave={saveState} />
-				<StateLog states={states} onStateSelected={switchState} />
-			</div>
+			<TopBar onSave={saveState} />
 
 			<SimulationCanvas 
 				onCanvasMounted={setCanvasState} 

@@ -692,12 +692,20 @@ video {
   height: 10px;
 }
 
-.h-\[40px\] {
-  height: 40px;
+.h-\[28px\] {
+  height: 28px;
 }
 
 .h-full {
   height: 100%;
+}
+
+.h-\[40px\] {
+  height: 40px;
+}
+
+.h-\[30px\] {
+  height: 30px;
 }
 
 .w-4 {
@@ -845,6 +853,10 @@ video {
 
 .border-\[var\(--sur-color\)\] {
   border-color: var(--sur-color);
+}
+
+.bg-\[var\(--sur-color\)\] {
+  background-color: var(--sur-color);
 }
 
 .bg-transparent {

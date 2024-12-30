@@ -6,7 +6,10 @@ import ModeManager from "../manager/ModeManager";
 export default function usePhysicsSimulation(
     initial_state: any
 ) {
-    const [states, setStates] = useState<any[]>([initial_state]);
+    const [states, setStates] = useState<any[]>([{
+        timestamp: new Date().toLocaleTimeString(),
+        state: initial_state
+    }]);
     const [body_ids, setBodyIds] = useState<string[]>([]);
 
     const update = (dt: number, _sub_steps: number) => {
@@ -16,11 +19,17 @@ export default function usePhysicsSimulation(
     };
 
     const addState = (state: any) => {
-        setStates([...states, state]);
+        setStates([...states, {
+            timestamp: new Date().toLocaleTimeString(),
+            state: state
+        }]);
     };
 
     const resetState = () => {
-        setStates([initial_state]);
+        setStates([{
+            timestamp: new Date().toLocaleTimeString(),
+            state: initial_state
+        }]);
         ModeManager.reset();
         LoopManager.render();
     };
