@@ -1,11 +1,8 @@
-import Vec2, { vec2 } from "../utils/Vector.ts";
-import CircularKinematic, { CircularKinematic_Props } from "../body/circular-kinematic/Body.ts";
+import Vec2 from "../utils/Vector.ts";
+import CircularKinematic from "../body/circular-kinematic/Body.ts";
 import Body, { BodyType } from "../core/Body.ts";
-import PointMass, { PointMass_Props } from "../body/point-mass/Body.ts";
-import RigidConstraint, { RigidConstraint_Props } from "../body/rigid-constraint/Body.ts";
-import { PointMass_RendererProps } from "../body/point-mass/Renderer.ts";
-import { RigidConstraint_RendererProps } from "../body/rigid-constraint/Renderer.ts";
-import { CircularKinematic_RendererProps } from "../body/circular-kinematic/Renderer.ts";
+import PointMass from "../body/point-mass/Body.ts";
+import RigidConstraint from "../body/rigid-constraint/Body.ts";
 
 type TreeChangeCallback = (body_ids: string[]) => void;
 

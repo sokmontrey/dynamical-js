@@ -10,11 +10,20 @@
 	--sur-color: #303133;
 	--border-color: #333334;
 	--acc-color: #E7E77F;
+	--err-color: #fa5656;
 }
 
 body {
 	background-color: var(--bg-color);
 	color: var(--txt-color);
+}
+
+.err-color {
+	color: var(--err-color);
+}
+
+.err-bg {
+	background-color: var(--err-color);
 }
 
 .bg-color {

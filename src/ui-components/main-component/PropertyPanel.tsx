@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 import Body from "../../core/Body.ts";
+import IconButton from "../common/IconButton.tsx";
+import RedButton from "../common/RedButton.tsx";
+import BodyManager from "../../manager/BodyManager.ts";
 
 interface PropertyPanelProps {
     body: Body<any, any>;
@@ -22,5 +25,16 @@ export default function PropertyPanel({
         {binders.map((prop, index) => 
             <prop.component key={index} {...prop.props} />
         )}
+        <div className="pt-4">
+            <RedButton
+                desc="Delete this body"
+                direction="right"
+                onConfirmed={() => {
+                    BodyManager.removeBody(body.getId()!);
+                }} 
+            >
+                <i className="fa-solid fa-trash-can"></i> Delete
+            </RedButton>
+        </div>
     </div>;
 }

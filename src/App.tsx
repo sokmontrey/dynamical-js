@@ -47,6 +47,7 @@ export default function App() {
 		BodyManager.init(); 
 		BodyManager.setOnTreeChange((body_ids) => {
 			setBodyIds(body_ids);
+			ModeManager.reset();
 		});
 		BodyManager.loadFromJSON(states[states.length - 1].state);
 	}, [states]);
