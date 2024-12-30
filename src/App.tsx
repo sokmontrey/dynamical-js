@@ -168,6 +168,10 @@ export default function App() {
 						onRun={() => LoopManager.run()}
 						onPause={() => LoopManager.pause()}
 						onStep={() => !LoopManager.isRunning() ? LoopManager.step() : null }
+onRestart={() => {
+							switchState(current_state_index);
+							LoopManager.render();
+						}}
 					/>
 				</div>
 				<div className="tool-container">

@@ -6,6 +6,7 @@ export interface SimulationControlsProps {
     onRun: () => void;
     onPause: () => void;
     onStep: () => void;
+    onRestart: () => void;
     tooltip_direction: "top" | "right" | "bottom" | "left";
 }
 
@@ -13,6 +14,7 @@ export default function SimulationControls({
     onRun,
     onStep,
     onPause,
+    onRestart,
     tooltip_direction = "bottom",
 }: SimulationControlsProps) {
     const [is_running, setIsRunning] = useState(false);
@@ -36,6 +38,11 @@ export default function SimulationControls({
             desc={is_running ? "Pause" : "Run"}
             icon_class={is_running ? "fa-solid fa-pause" : "fa-solid fa-play"} 
             onClick={onRunPause} 
+            direction={tooltip_direction} />          
+        <IconButton 
+            desc="Restart"
+            icon_class="fa-solid fa-arrow-rotate-right" 
+            onClick={onRestart} 
             direction={tooltip_direction} />          
         <IconButton 
             desc="Step" 
