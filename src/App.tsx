@@ -12,7 +12,7 @@ import usePhysicsSimulation from "./hooks/usePhysicsSimulation.ts";
 import useModeManagement from "./hooks/useModeManager.ts";
 import PropertyPanel from "./ui-components/main-component/PropertyPanel.tsx";
 import circular_kinematic_test_state from "./states/circular-kinematic-test.ts";
-import StateLog, { State } from "./ui-components/main-component/StateLog.tsx";
+import StateLog from "./ui-components/main-component/StateLog.tsx";
 import ResizableContainer from "./ui-components/common/ResizableContainer.tsx";
 import StateTools from "./ui-components/main-component/StateTools.tsx";
 

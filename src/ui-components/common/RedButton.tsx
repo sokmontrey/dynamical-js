@@ -1,18 +1,13 @@
 import { useState } from "react";
-import Tooltip from "./Tooltip";
 
 interface IconButtonProps {
-    desc: string;
     onConfirmed: () => void;
-    direction?: 'bottom' | 'top' | 'left' | 'right';
     disabled?: boolean;
     children?: React.ReactNode;
 }
 
 export default function RedButton({
-    desc,
     onConfirmed,
-    direction = 'bottom',
     disabled = false,
     children,
 }: IconButtonProps) {

@@ -136,14 +136,6 @@ export default class BodyManager {
 		BodyManager.dependency_table.set(child_id, parent);
 	}
 
-	private static getDependency(child_id: string): string[] | null {
-		return BodyManager.dependency_table.get(child_id) || null;
-	}
-
-	private static hasDependency(child_id: string): boolean {
-		return BodyManager.dependency_table.has(child_id);
-	}
-
 	private static getDependentBodies(parent_id: string): string[] {
 		return Array.from(BodyManager.dependency_table.entries())
 			.filter(([_, deps]) => deps.includes(parent_id))

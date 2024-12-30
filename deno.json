@@ -6,6 +6,7 @@
   },
   "tasks": {
     "build:css": "deno run -A npm:tailwindcss -i ./src/styles.css -o ./src/output.css --watch",
-    "start": "deno run --import-map=import_map.json -A npm:concurrently \"deno task dev\" \"deno task build:css\""
+    "start": "deno run --import-map=import_map.json -A npm:concurrently \"deno task dev\" \"deno task build:css\"",
+    "build:prod": "deno run -A npm:tailwindcss -i ./src/styles.css -o ./src/output.css && deno task build"
   }
 }

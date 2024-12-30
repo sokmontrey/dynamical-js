@@ -97,7 +97,7 @@ export default class MoveMode extends Mode {
         }
     }
 
-    public onMouseUp(button: MouseButton): void {
+    public onMouseUp(_button: MouseButton): void {
         if (!this.is_dragging) return;
 
         if (this.is_dragging && !this.isMouseDownOnBody()) {

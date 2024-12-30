@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Body from "../../core/Body.ts";
 import RedButton from "../common/RedButton.tsx";
 import BodyManager from "../../manager/BodyManager.ts";
+import Tooltip from "../common/Tooltip.tsx";
 
 interface PropertyPanelProps {
     body: Body<any, any>;
@@ -25,15 +26,15 @@ export default function PropertyPanel({
             <prop.component key={index} {...prop.props} />
         )}
         <div className="pt-4">
-            <RedButton
-                desc="Delete this body"
-                direction="right"
-                onConfirmed={() => {
-                    BodyManager.removeBody(body.getId()!);
-                }} 
-            >
-                <i className="fa-solid fa-trash-can"></i> Delete
-            </RedButton>
+            <Tooltip text="Delete this body" direction="right">
+                <RedButton
+                    onConfirmed={() => {
+                        BodyManager.removeBody(body.getId()!);
+                    }} 
+                >
+                    <i className="fa-solid fa-trash-can"></i> Delete
+                </RedButton>
+            </Tooltip>
         </div>
     </div>;
 }
