@@ -24,6 +24,8 @@ export default function ResizableContainer({
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             if (!is_dragging || !container_ref.current) return;
+            // prevent text selection
+            e.preventDefault();
 
             const container = container_ref.current as HTMLElement;
             const container_rect = container.getBoundingClientRect();

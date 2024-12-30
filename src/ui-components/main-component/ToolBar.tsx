@@ -11,9 +11,9 @@ export default function ToolBar({
 }: ToolBarProps) {
 	const current_mode = ModeManager.getCurrentModeType();
 	const create_modes = [
-		{ type: ModeType.CREATE_POINTMASS, desc: "Point Mass", icon_class: "fa-solid fa-circle" },
+		{ type: ModeType.CREATE_POINTMASS, desc: "Point Mass", icon_class: "fa-solid fa-circle text-[5px]" },
 		{ type: ModeType.CREATE_RIGID_CONSTRAINT, desc: "Rigid Constraint", icon_class: "fa-solid fa-slash" },
-		{ type: ModeType.CREATE_CIRCULAR_KINEMATIC, desc: "Circular Kinematic", icon_class: "fa-solid fa-circle-dot" }
+		{ type: ModeType.CREATE_CIRCULAR_KINEMATIC, desc: "Circular Kinematic", icon_class: "fa-regular fa-circle" }
 	];
 
 	return <>
