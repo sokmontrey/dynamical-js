@@ -648,12 +648,20 @@ video {
   margin-left: 0.5rem;
 }
 
+.mr-1 {
+  margin-right: 0.25rem;
+}
+
 .mr-2 {
   margin-right: 0.5rem;
 }
 
 .mt-2 {
   margin-top: 0.5rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
 }
 
 .box-border {
@@ -680,6 +688,14 @@ video {
   height: 100vh;
 }
 
+.h-\[10px\] {
+  height: 10px;
+}
+
+.h-\[40px\] {
+  height: 40px;
+}
+
 .h-full {
   height: 100%;
 }
@@ -692,12 +708,24 @@ video {
   width: 2.25rem;
 }
 
+.w-\[10px\] {
+  width: 10px;
+}
+
 .w-\[15\%\] {
   width: 15%;
 }
 
 .w-\[200px\] {
   width: 200px;
+}
+
+.w-\[28px\] {
+  width: 28px;
+}
+
+.w-\[2px\] {
+  width: 2px;
 }
 
 .w-\[85\%\] {
@@ -775,8 +803,16 @@ video {
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .rounded {
   border-radius: 0.25rem;
+}
+
+.rounded-\[3px\] {
+  border-radius: 3px;
 }
 
 .rounded-lg {
@@ -785,6 +821,14 @@ video {
 
 .rounded-md {
   border-radius: 0.375rem;
+}
+
+.rounded-br-lg {
+  border-bottom-right-radius: 0.5rem;
+}
+
+.rounded-tr-lg {
+  border-top-right-radius: 0.5rem;
 }
 
 .border-l-2 {
@@ -826,6 +870,10 @@ video {
   padding-left: 0.25rem;
 }
 
+.pl-2 {
+  padding-left: 0.5rem;
+}
+
 .pl-4 {
   padding-left: 1rem;
 }
@@ -850,6 +898,14 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.opacity-10 {
+  opacity: 0.1;
+}
+
+.opacity-100 {
+  opacity: 1;
 }
 
 .opacity-50 {
@@ -894,7 +950,7 @@ video {
 :root {
   --bg-color: #1B1C1E;
   --txt-color: #E5E5E4;
-  --sec-txt-color: #333536;
+  --sec-txt-color: #cbcbc9;
   --prm-color: #222324;
   --sur-color: #303133;
   --border-color: #333334;
@@ -1010,6 +1066,10 @@ body {
   background-color: var(--acc-color);
 }
 
+.hover\:bg-\[var\(--sur-color\)\]:hover {
+  background-color: var(--sur-color);
+}
+
 .hover\:text-\[var\(--prm-color\)\]:hover {
   color: var(--prm-color);
 }
@@ -1024,4 +1084,12 @@ body {
 
 .group:hover .group-hover\:block {
   display: block;
+}
+
+.group:hover .group-hover\:bg-\[var\(--acc-color\)\] {
+  background-color: var(--acc-color);
+}
+
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
 }
