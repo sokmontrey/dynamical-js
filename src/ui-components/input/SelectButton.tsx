@@ -84,7 +84,7 @@ export default function SelectButton<T>({
                         onClick={() => handleOptionSelect(option)}
                         className={`cursor-pointer hover:text-[var(--prm-color)] hover:bg-[var(--acc-color)] text-left px-4 py-1 transition-all duration-100 first:rounded-t-lg last:rounded-b-lg first:pt-2 last:pb-2`}
                     > 
-                        <i className={`${option.icon_class} mr-2 w-[15%]`}></i>
+                        <i className={`${option.icon_class} mr-2 w-[15%] text-xs`}></i>
                         <span className="w-[85%] text-sm">{option.desc}</span>
                     </button>
                 )}
