@@ -31,6 +31,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <a href="https://github.com/sokmontrey/dynamical-js" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="absolute bottom-4 right-4 m-2 hover:text-[var(--acc-color)] hover:underline"
+        >
+          <i className="fa-brands fa-github"></i>
+          <span className="ml-2">Dynamical</span>
+        </a>
       </body>
     </html>
   );
