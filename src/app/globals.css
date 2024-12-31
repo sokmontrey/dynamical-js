@@ -85,6 +85,7 @@ body {
 .tool-container {
 	display: flex;
 	flex-direction: row;
+	align-items: center;
 	padding: 0.5rem;
 	border-radius: 0.5rem;
 	background-color: var(--prm-color);
@@ -117,9 +118,14 @@ body {
 input {
 	background-color: var(--sur-color);
 	border-radius: 0.25rem;
-	padding: 0.1rem 0.4rem;
+	padding: 0.1rem;
+	padding-left: 0.4rem;
 	outline: none;
 	@apply font-mono text-sm;
+}
+
+.tool-container input {
+	max-width: 5rem;
 }
 
 input:focus {

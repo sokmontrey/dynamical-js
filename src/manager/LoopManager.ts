@@ -125,6 +125,10 @@ export default class LoopManager {
         return LoopManager.is_running;
     }
 
+    static getSubSteps(): number {
+        return LoopManager.sub_steps;
+    }
+
     //================================ Setters ================================
 
     static setConstantDeltaTime(dt: number | null = null): void {
@@ -144,5 +148,9 @@ export default class LoopManager {
 
     static setRenderingFunction(rendering_func: RenderingFunction): void {
         LoopManager.rendering_func = rendering_func;
+    }
+
+    static setSubSteps(sub_steps: number): void {
+        LoopManager.sub_steps = sub_steps;
     }
 } 

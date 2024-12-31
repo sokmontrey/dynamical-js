@@ -6,6 +6,7 @@ export interface NumberInputProps {
     value: number;
     onChange: (value: number) => void;
     enable?: boolean;
+    className?: string;
 }
 
 export default function NumberInput({
@@ -16,8 +17,9 @@ export default function NumberInput({
     max = Infinity,
     step = 1,
     enable = true,
+    className = "",
 }: NumberInputProps) {
-    return <div className="flex flex-row space-x-2 w-full ">
+    return <div className={`flex flex-row space-x-2 w-full ${className}`}>
         <label className="sec-txt-color">{label}</label> 
         <input 
             className="flex-1"

@@ -76,7 +76,7 @@ export default function Home() {
 		LoopManager.init(update, (_, sub_steps: number) => {
 			renderPhysics(sub_steps);
 			renderUI();
-		}, { sub_steps: 1000, constant_dt: null, });
+		}, { constant_dt: null, });
 	}, [update, renderPhysics, renderUI]);
 
 	const switchState = useCallback((index: number) => {
@@ -171,10 +171,11 @@ export default function Home() {
 						onRun={() => LoopManager.run()}
 						onPause={() => LoopManager.pause()}
 						onStep={() => !LoopManager.isRunning() ? LoopManager.step() : null }
-onRestart={() => {
+						onRestart={() => {
 							switchState(current_state_index);
 							LoopManager.render();
 						}}
+						onSubStepsChange={(value: number) => LoopManager.setSubSteps(value)}
 					/>
 				</div>
 				<div className="tool-container">
