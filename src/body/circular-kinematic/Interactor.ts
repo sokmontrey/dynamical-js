@@ -1,5 +1,5 @@
-import BodyInteractor from "../../core/BodyInteractor";
-import Vec2 from "../../utils/Vector";
+import BodyInteractor from "@/core/BodyInteractor";
+import Vec2 from "@/utils/Vector";
 import CircularKinematic from "./Body";
 
 export default class CircularKinematic_Interactor extends BodyInteractor {

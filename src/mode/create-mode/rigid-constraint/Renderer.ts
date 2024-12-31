@@ -1,10 +1,10 @@
-import RigidConstraint_CreateMode from "./Mode.ts";
-import PointMass from "../../../body/point-mass/Body.ts";
-import LineStyle from "../../../style/LineStyle.ts";
-import Vec2 from "../../../utils/Vector.ts";
-import Draw from "../../../core/Draw.ts";
-import ModeRenderer from "../../../core/ModeRenderer.ts";
-import InputManager from "../../../manager/InputManager.ts";
+import PointMass from "@/body/point-mass/Body";
+import Draw from "@/core/Draw";
+import ModeRenderer from "@/core/ModeRenderer";
+import InputManager from "@/manager/InputManager";
+import LineStyle from "@/style/LineStyle";
+import Vec2 from "@/utils/Vector";
+import RigidConstraint_CreateMode from "./Mode";
 
 export default class RigidConstraint_CreateModeRenderer extends ModeRenderer {
     public constraint_line: LineStyle = new LineStyle({

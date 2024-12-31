@@ -1,4 +1,4 @@
-import ModeManager, { ModeType } from "../../manager/ModeManager";
+import ModeManager, { ModeType } from "@/manager/ModeManager";
 import IconButton from "../common/IconButton";
 import SelectButton from "../input/SelectButton";
 

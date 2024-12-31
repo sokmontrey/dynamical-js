@@ -1,11 +1,11 @@
-import CircularKinematic from "../../../body/circular-kinematic/Body";
-import PointMass from "../../../body/point-mass/Body";
-import Mode from "../../../core/Mode";
-import ModeRenderer from "../../../core/ModeRenderer";
-import BodyManager from "../../../manager/BodyManager";
-import InputManager, { MouseButton } from "../../../manager/InputManager";
-import LoopManager from "../../../manager/LoopManager";
-import Vec2 from "../../../utils/Vector";
+import CircularKinematic from "@/body/circular-kinematic/Body";
+import PointMass from "@/body/point-mass/Body";
+import ModeRenderer from "@/core/ModeRenderer";
+import BodyManager from "@/manager/BodyManager";
+import InputManager, { MouseButton } from "@/manager/InputManager";
+import LoopManager from "@/manager/LoopManager";
+import Vec2 from "@/utils/Vector";
+import Mode from "../point-mass/Mode";
 import CircularKinematic_CreateModeRenderer from "./Renderer";
 
 export default class CircularKinematic_CreateMode extends Mode {

@@ -1,9 +1,9 @@
-import BodyRenderer from "../../core/BodyRenderer";
-import Draw from "../../core/Draw";
-import ArrowStyle, { ArrowStyleProps } from "../../style/ArrowStyle";
-import CircleStyle, { CircleStyleProps } from "../../style/CircleStyle";
-import Color from "../../utils/Color";
-import Vec2 from "../../utils/Vector";
+import BodyRenderer from "@/core/BodyRenderer";
+import Draw from "@/core/Draw";
+import ArrowStyle, { ArrowStyleProps } from "@/style/ArrowStyle";
+import CircleStyle, { CircleStyleProps } from "@/style/CircleStyle";
+import Color from "@/utils/Color";
+import Vec2 from "@/utils/Vector";
 import PointMass from "./Body";
 
 export interface PointMass_RendererProps {

@@ -1,6 +1,6 @@
-import BodyInteractor from "../../core/BodyInteractor";
-import { segment } from "../../utils/Segment";
-import Vec2, { vec2 } from "../../utils/Vector";
+import BodyInteractor from "@/core/BodyInteractor";
+import { segment } from "@/utils/Segment";
+import Vec2, { vec2 } from "@/utils/Vector";
 import RigidConstraint from "./Body";
 
 export default class RigidConstraint_Interactor extends BodyInteractor {

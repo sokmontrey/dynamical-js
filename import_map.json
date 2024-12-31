@@ -1,7 +1,0 @@
-{
-    "imports": {
-      "@fortawesome/fontawesome-svg-core": "https://cdn.skypack.dev/@fortawesome/fontawesome-svg-core",
-      "@fortawesome/free-solid-svg-icons": "https://cdn.skypack.dev/@fortawesome/free-solid-svg-icons",
-      "@fortawesome/react-fontawesome": "https://cdn.skypack.dev/@fortawesome/react-fontawesome"
-    }
-}

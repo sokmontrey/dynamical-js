@@ -1,5 +1,5 @@
-import Canvas from "../core/Canvas";
-import Vec2 from "../utils/Vector";
+import Canvas from "@/core/Canvas";
+import Vec2 from "@/utils/Vector";
 
 export enum MouseButton {
     LEFT = 0,

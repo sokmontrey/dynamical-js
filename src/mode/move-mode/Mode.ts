@@ -1,12 +1,12 @@
-import Mode from "../../core/Mode.ts";
-import Vec2 from "../../utils/Vector.ts";
-import InputManager, { MouseButton } from "../../manager/InputManager.ts";
-import MoveModeRenderer from "./Renderer.ts";
-import ModeRenderer from "../../core/ModeRenderer.ts";
-import LoopManager from "../../manager/LoopManager.ts";
-import BodyManager from "../../manager/BodyManager.ts";
-import Body, { BodyType } from "../../core/Body.ts";
-import PointMass from "../../body/point-mass/Body.ts";
+import PointMass from "@/body/point-mass/Body";
+import Body, { BodyType } from "@/core/Body";
+import Mode from "@/core/Mode";
+import ModeRenderer from "@/core/ModeRenderer";
+import BodyManager from "@/manager/BodyManager";
+import InputManager, { MouseButton } from "@/manager/InputManager";
+import LoopManager from "@/manager/LoopManager";
+import Vec2 from "@/utils/Vector";
+import MoveModeRenderer from "./Renderer";
 
 export default class MoveMode extends Mode {
     public readonly renderer: ModeRenderer;

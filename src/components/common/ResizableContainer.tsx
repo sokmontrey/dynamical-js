@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useState, useEffect } from "react";
 
 interface ResizableContainerProps {
     children: React.ReactNode;

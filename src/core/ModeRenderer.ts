@@ -1,4 +1,4 @@
-import Mode from "./Mode.ts";
+import Mode from "./Mode";
 
 export default abstract class ModeRenderer {
     protected mode: Mode;

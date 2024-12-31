@@ -1,9 +1,9 @@
-import BodyRenderer from "../../core/BodyRenderer";
-import Draw from "../../core/Draw";
-import CircleStyle, { CircleStyleProps } from "../../style/CircleStyle";
-import LineStyle, { LineStyleProps } from "../../style/LineStyle";
-import Color from "../../utils/Color";
-import Vec2 from "../../utils/Vector";
+import BodyRenderer from "@/core/BodyRenderer";
+import Draw from "@/core/Draw";
+import CircleStyle, { CircleStyleProps } from "@/style/CircleStyle";
+import LineStyle, { LineStyleProps } from "@/style/LineStyle";
+import Color from "@/utils/Color";
+import Vec2 from "@/utils/Vector";
 import CircularKinematic from "./Body";
 
 export interface CircularKinematic_RendererProps {

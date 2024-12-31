@@ -1,5 +1,5 @@
+import Vec2, { vec2 } from "@/utils/Vector";
 import { useCallback } from "react";
-import Vec2, { vec2 } from "../../utils/Vector";
 
 export interface VectorInputProps {
     label: string;

@@ -1,4 +1,4 @@
-import Vec2, { vec2 } from "../utils/Vector.ts";
+import Vec2, { vec2 } from "@/utils/Vector";
 
 export interface CanvasParams {
 	width?: number;

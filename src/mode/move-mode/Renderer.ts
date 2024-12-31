@@ -1,10 +1,10 @@
-import MoveMode from "./Mode.ts";
-import Body from "../../core/Body.ts";
-import Vec2 from "../../utils/Vector.ts";
-import ShapeStyle from "../../style/ShapeStyle.ts";
-import Draw from "../../core/Draw.ts";
-import ModeRenderer from "../../core/ModeRenderer.ts";
-import InputManager from "../../manager/InputManager.ts";
+import Draw from "@/core/Draw";
+import ModeRenderer from "@/core/ModeRenderer";
+import InputManager from "@/manager/InputManager";
+import ShapeStyle from "@/style/ShapeStyle";
+import Vec2 from "@/utils/Vector";
+import MoveMode from "./Mode";
+import Body from "@/core/Body";
 
 export default class MoveModeRenderer extends ModeRenderer {
     public drag_rectangle: ShapeStyle = new ShapeStyle({

@@ -1,11 +1,11 @@
-import PointMass from "../../../body/point-mass/Body.ts";
-import Mode from "../../../core/Mode.ts";
-import ModeRenderer from "../../../core/ModeRenderer.ts";
-import BodyManager from "../../../manager/BodyManager.ts";
-import InputManager, { MouseButton } from "../../../manager/InputManager.ts";
-import LoopManager from "../../../manager/LoopManager.ts";
-import Vec2 from "../../../utils/Vector.ts";
-import PointMass_CreateModeRenderer from "./Renderer.ts";
+import PointMass from "@/body/point-mass/Body";
+import Mode from "@/core/Mode";
+import ModeRenderer from "@/core/ModeRenderer";
+import BodyManager from "@/manager/BodyManager";
+import InputManager, { MouseButton } from "@/manager/InputManager";
+import LoopManager from "@/manager/LoopManager";
+import Vec2 from "@/utils/Vector";
+import PointMass_CreateModeRenderer from "./Renderer";
 
 export default class PointMass_CreateMode extends Mode {
     public renderer: ModeRenderer = new PointMass_CreateModeRenderer(this);

@@ -1,7 +1,7 @@
+import BodyManager from "@/manager/BodyManager";
+import LoopManager from "@/manager/LoopManager";
+import ModeManager from "@/manager/ModeManager";
 import { useState } from "react";
-import LoopManager from "../manager/LoopManager";
-import BodyManager from "../manager/BodyManager";
-import ModeManager from "../manager/ModeManager";
 
 export default function usePhysicsSimulation(
     initial_state: any

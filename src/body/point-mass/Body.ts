@@ -1,13 +1,7 @@
-import Body, { BodyType } from "../../core/Body";
-import { PropBinder, useInputPropBinder } from "../../hooks/usePropBinder";
-import BodyManager from "../../manager/BodyManager";
-import LoopManager from "../../manager/LoopManager";
-import BooleanInput from "../../ui-components/input/BooleanInput";
-import NumberInput from "../../ui-components/input/NumberInput";
-import VectorInput from "../../ui-components/input/VectorInput";
-import Vec2, { vec2 } from "../../utils/Vector";
+import Vec2, { vec2 } from "@/utils/Vector";
 import PointMass_Interactor from "./Interactor";
 import PointMass_Renderer, { PointMass_RendererProps } from "./Renderer";
+import Body, { BodyType } from "@/core/Body";
 
 export interface PointMass_Props {
 	position: Vec2,
@@ -64,45 +58,6 @@ export default class PointMass extends Body<PointMass, PointMass_Props> {
 		this.props.previous_position = this.props.position.copy();
 		this.props.position = this.props.position.add(vel.mul(delta_time));
 		this.props.net_force = Vec2.zero();
-	}
-
-	getPropBinders(): PropBinder<any>[] {
-        return [
-            // static
-            useInputPropBinder(BooleanInput, 
-                { label: "Static" },
-                () => this.isStatic(),
-                (value: boolean) => this.setStatic(value)),
-
-            // mass
-            useInputPropBinder(NumberInput, 
-                { label: "Mass", min: 0.01, step: 1 },
-                () => this.getMass(),
-                (value: number) => this.setMass(value)),
-
-            // position
-            useInputPropBinder(VectorInput, 
-                { label: "Position", step: 10 },
-                () => this.getPosition(),
-                (value: Vec2) => {
-                    this.setPosition(value);
-                    if (!LoopManager.isRunning()) {
-                        BodyManager.updateConnectedConstraints(this);
-                    }
-                }),
-
-            // velocity
-            useInputPropBinder(VectorInput, 
-                { label: "Velocity", step: 0.001 },
-                () => this.getVelocity(),
-                (value: Vec2) => this.setVelocity(value)),
-
-            // constant acceleration
-            useInputPropBinder(VectorInput, 
-                { label: "Acceleration", step: 0.1 },
-                () => this.getConstantAcceleration(),
-                (value: Vec2) => this.setConstantAcceleration(value)),
-        ];
 	}
 
 	//================================ Getters ================================

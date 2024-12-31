@@ -1,4 +1,4 @@
-import Vec2 from "../utils/Vector.ts";
+import Vec2 from "@/utils/Vector";
 
 export default abstract class BodyInteractor {
 	private is_locked: boolean = false;

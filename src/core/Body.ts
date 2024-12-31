@@ -1,4 +1,3 @@
-import { PropBinder } from "../hooks/usePropBinder";
 import BodyInteractor from "./BodyInteractor";
 import BodyRenderer from "./BodyRenderer";
 
@@ -20,7 +19,6 @@ export default abstract class Body<T, P> {
 	public abstract interactor: BodyInteractor;
 
 	abstract update(dt: number): void;
-	abstract getPropBinders(): PropBinder<any>[];
 
 	draw(ctx: CanvasRenderingContext2D, steps: number): void {
 		// TODO: deal with this

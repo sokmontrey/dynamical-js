@@ -1,4 +1,4 @@
-import { lerp } from "./BasicMath.ts";
+import { lerp } from "./BasicMath";
 
 export const color = (r: number, g: number, b: number) => new Color(r, g, b);
 

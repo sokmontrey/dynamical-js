@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import LoopManager from "../manager/LoopManager";
+import LoopManager from "@/manager/LoopManager";
+import { useState, useCallback } from "react";
 
 export interface PropBinder<T> {
     setValue: (value: T) => void;

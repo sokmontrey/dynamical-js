@@ -1,10 +1,10 @@
-import PointMass from "../../../body/point-mass/Body.ts";
-import Draw from "../../../core/Draw.ts";
-import ModeRenderer from "../../../core/ModeRenderer.ts";
-import InputManager from "../../../manager/InputManager.ts";
-import CircleStyle from "../../../style/CircleStyle.ts";
-import Vec2 from "../../../utils/Vector.ts";
-import CircularKinematic_CreateMode from "./Mode.ts";
+import PointMass from "@/body/point-mass/Body";
+import Draw from "@/core/Draw";
+import ModeRenderer from "@/core/ModeRenderer";
+import InputManager from "@/manager/InputManager";
+import CircleStyle from "@/style/CircleStyle";
+import Vec2 from "@/utils/Vector";
+import CircularKinematic_CreateMode from "./Mode";
 
 export default class CircularKinematic_CreateModeRenderer extends ModeRenderer {
     public circle_path: CircleStyle = new CircleStyle({

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import IconButton from "../common/IconButton";
 
 export interface SelectOption<T> {

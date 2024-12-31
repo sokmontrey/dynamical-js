@@ -1,8 +1,8 @@
-import Draw from "../../../core/Draw";
-import ModeRenderer from "../../../core/ModeRenderer";
-import InputManager from "../../../manager/InputManager";
-import CircleStyle from "../../../style/CircleStyle";
-import Vec2 from "../../../utils/Vector";
+import Draw from "@/core/Draw";
+import ModeRenderer from "@/core/ModeRenderer";
+import InputManager from "@/manager/InputManager";
+import CircleStyle from "@/style/CircleStyle";
+import Vec2 from "@/utils/Vector";
 
 export default class PointMass_CreateModeRenderer extends ModeRenderer {
     public hint_circle: CircleStyle = new CircleStyle({

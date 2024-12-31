@@ -1,7 +1,7 @@
-import BodyManager from "../../manager/BodyManager";
-import InputManager from "../../manager/InputManager";
-import ModeManager, { ModeType } from "../../manager/ModeManager";
-import MoveMode from "../../mode/move-mode/Mode";
+import BodyManager from "@/manager/BodyManager";
+import InputManager from "@/manager/InputManager";
+import ModeManager, { ModeType } from "@/manager/ModeManager";
+import MoveMode from "@/mode/move-mode/Mode";
 import TreeList from "../common/TreeList";
 
 export interface BodyTreePanelProps {

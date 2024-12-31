@@ -1,4 +1,4 @@
-const simple_pendulum_state: any = {
+const simple_pendulum_state = {
     point1: {
         type: "point_mass",
         props: {

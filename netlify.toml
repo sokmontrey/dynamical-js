@@ -1,6 +1,0 @@
-[build]
-  command = "npm run build:prod"
-  publish = "dist"
-
-[build.environment]
-  DENO_VERSION = "2.0"

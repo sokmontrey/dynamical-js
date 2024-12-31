@@ -1,8 +1,8 @@
-import ArrowStyle from "../style/ArrowStyle";
-import CircleStyle from "../style/CircleStyle";
-import LineStyle from "../style/LineStyle";
-import ShapeStyle from "../style/ShapeStyle";
-import Vec2 from "../utils/Vector.ts";
+import ArrowStyle from "@/style/ArrowStyle";
+import CircleStyle from "@/style/CircleStyle";
+import LineStyle from "@/style/LineStyle";
+import ShapeStyle from "@/style/ShapeStyle";
+import Vec2 from "@/utils/Vector";
 
 export default class Draw {
 	public static fill(ctx: CanvasRenderingContext2D, style: ShapeStyle) {

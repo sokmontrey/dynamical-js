@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import LoopManager from "../../manager/LoopManager";
+import LoopManager from "@/manager/LoopManager";
+import { useState, useEffect } from "react";
 import IconButton from "../common/IconButton";
 
 export interface SimulationControlsProps {

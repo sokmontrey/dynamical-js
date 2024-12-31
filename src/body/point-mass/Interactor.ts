@@ -1,5 +1,5 @@
-import BodyInteractor from "../../core/BodyInteractor";
-import Vec2 from "../../utils/Vector";
+import BodyInteractor from "@/core/BodyInteractor";
+import Vec2 from "@/utils/Vector";
 import PointMass from "./Body";
 
 export default class PointMass_Interactor extends BodyInteractor {

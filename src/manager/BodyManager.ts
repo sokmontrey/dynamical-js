@@ -1,8 +1,8 @@
-import Vec2 from "../utils/Vector.ts";
-import CircularKinematic from "../body/circular-kinematic/Body.ts";
-import Body, { BodyType } from "../core/Body.ts";
-import PointMass from "../body/point-mass/Body.ts";
-import RigidConstraint from "../body/rigid-constraint/Body.ts";
+import CircularKinematic from "@/body/circular-kinematic/Body";
+import PointMass from "@/body/point-mass/Body";
+import RigidConstraint from "@/body/rigid-constraint/Body";
+import Body, { BodyType } from "@/core/Body";
+import Vec2 from "@/utils/Vector";
 
 type TreeChangeCallback = (body_ids: string[]) => void;
 

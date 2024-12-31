@@ -1,10 +1,7 @@
-import Body, { BodyType } from "../../core/Body";
-import { PropBinder, useInputPropBinder } from "../../hooks/usePropBinder";
-import BooleanInput from "../../ui-components/input/BooleanInput";
-import NumberInput from "../../ui-components/input/NumberInput";
 import PointMass from "../point-mass/Body";
 import RigidConstraint_Interactor from "./Interactor";
 import RigidConstraint_Renderer, { RigidConstraint_RendererProps } from "./Renderer";
+import Body, { BodyType } from "@/core/Body";
 
 export interface RigidConstraint_Props {
 	is_broken: boolean;
@@ -63,27 +60,6 @@ export default class RigidConstraint extends Body<RigidConstraint, RigidConstrai
 		if (this.isBroken()) return;
 		this.check();
 		this.resolve(dt); // Immediately resolve the constraint
-	}
-
-	getPropBinders(): PropBinder<any>[] {
-        return [ 
-            useInputPropBinder(BooleanInput,
-                { label: "Connected" },
-                () => !this.isBroken(),
-                (value: boolean) => value ? 
-                    this.restore(true) : 
-                    this.break()),
-
-            useInputPropBinder(NumberInput,
-                { label: "Rest Distance", enable: true },
-                () => this.getRestDistance(),
-                (value: number) => this.setRestDistance(value)),
-
-            useInputPropBinder(NumberInput,
-                { label: "Current Distance", enable: false },
-                () => this.getCurrentDistance(),
-                (_value: number) => {}),
-        ];
 	}
 
 	//================================ Helpers ================================

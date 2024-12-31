@@ -1,8 +1,12 @@
+import BodyManager from "@/manager/BodyManager";
 import { useEffect } from "react";
-import Body from "../../core/Body.ts";
-import RedButton from "../common/RedButton.tsx";
-import BodyManager from "../../manager/BodyManager.ts";
-import Tooltip from "../common/Tooltip.tsx";
+import RedButton from "../common/RedButton";
+import Tooltip from "../common/Tooltip";
+import Body, { BodyType } from "@/core/Body";
+import { PropBinder } from "@/hooks/usePropBinder";
+import useCircularKinematic_PropBinders from "@/body/circular-kinematic/PanelProps";
+import usePointMass_PropBinders from "@/body/point-mass/PanelProps";
+import useRigidConstraint_PropBinders from "@/body/rigid-constraint/PanelProps";
 
 interface PropertyPanelProps {
     body: Body<any, any>;
@@ -11,7 +15,13 @@ interface PropertyPanelProps {
 export default function PropertyPanel({ 
     body,
 }: PropertyPanelProps) {
-    const binders = body.getPropBinders();
+    const binders_map = {
+        [BodyType.POINT_MASS]: usePointMass_PropBinders,
+        [BodyType.RIGID_CONSTRAINT]: useRigidConstraint_PropBinders,
+        [BodyType.CIRCULAR_KINEMATIC]: useCircularKinematic_PropBinders,
+    }
+
+    const binders = binders_map[body.getType()]!(body);
 
     useEffect(() => {
         const unsubscribe = body.setOnUpdate(() => {

@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import Canvas from "../../core/Canvas";
+import Canvas from "@/core/Canvas";
+import { useRef, useEffect } from "react";
 
 export interface SimulationCanvasProps {
 	container_id?: string;
@@ -7,7 +7,7 @@ export interface SimulationCanvasProps {
         base_canvas: Canvas, 
         overlay_canvas: Canvas 
     }) => void;
-    container_ref: React.RefObject<HTMLDivElement>;
+    container_ref: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function SimulationCanvas({ 
@@ -19,7 +19,7 @@ export default function SimulationCanvas({
     const overlay_canvas_ref = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        if (!container_ref.current || 
+        if (!container_ref?.current || 
             !base_canvas_ref.current || 
             !overlay_canvas_ref.current) return;
 

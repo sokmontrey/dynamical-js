@@ -1,22 +1,24 @@
-import SimulationCanvas from "./ui-components/main-component/SimulationCanvas.tsx";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import InputManager from "./manager/InputManager.ts";
-import BodyManager from "./manager/BodyManager.ts";
-import ModeManager from "./manager/ModeManager.ts";
-import LoopManager from "./manager/LoopManager.ts";
-import BodyTreePanel from "./ui-components/main-component/BodyTreePanel.tsx";
-import SimulationControls from "./ui-components/main-component/SimulationControls.tsx";
-import ToolBar from "./ui-components/main-component/ToolBar.tsx";
-import useCanvasManagement from "./hooks/useCanvasManagement.ts";
-import usePhysicsSimulation from "./hooks/usePhysicsSimulation.ts";
-import useModeManagement from "./hooks/useModeManager.ts";
-import PropertyPanel from "./ui-components/main-component/PropertyPanel.tsx";
-import circular_kinematic_test_state from "./states/circular-kinematic-test.ts";
-import StateLog from "./ui-components/main-component/StateLog.tsx";
-import ResizableContainer from "./ui-components/common/ResizableContainer.tsx";
-import StateTools from "./ui-components/main-component/StateTools.tsx";
+"use client"
 
-export default function App() {
+import useCanvasManagement from "@/hooks/useCanvasManagement";
+import useModeManagement from "@/hooks/useModeManager";
+import usePhysicsSimulation from "@/hooks/usePhysicsSimulation";
+import BodyManager from "@/manager/BodyManager";
+import InputManager from "@/manager/InputManager";
+import LoopManager from "@/manager/LoopManager";
+import ModeManager from "@/manager/ModeManager";
+import circular_kinematic_test_state from "@/states/circular-kinematic-test";
+import ResizableContainer from "@/components/common/ResizableContainer";
+import BodyTreePanel from "@/components/main-component/BodyTreePanel";
+import PropertyPanel from "@/components/main-component/PropertyPanel";
+import SimulationCanvas from "@/components/main-component/SimulationCanvas";
+import SimulationControls from "@/components/main-component/SimulationControls";
+import StateLog from "@/components/main-component/StateLog";
+import StateTools from "@/components/main-component/StateTools";
+import ToolBar from "@/components/main-component/ToolBar";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+
+export default function Home() {
 	const {
         canvas_state,
         setCanvasState,
@@ -57,7 +59,7 @@ export default function App() {
 			ModeManager.reset();
 		});
 		BodyManager.loadFromJSON(states[current_state_index].state);
-	}, [current_state_index]);
+	}, [current_state_index, states, setBodyIds]);
 
 	const initializeInputManager = useCallback(() => {
 		if (!canvas_state.overlay_canvas) return;
@@ -69,7 +71,7 @@ export default function App() {
 		InputManager.onMouseDown(ModeManager.onMouseDown);
 		InputManager.onMouseUp(ModeManager.onMouseUp);
 		InputManager.onMouseClick(ModeManager.onMouseClick);
-	}, [canvas_state.overlay_canvas]);
+	}, [canvas_state.overlay_canvas, renderUI]);
 
 	const initializeLoopManager = useCallback(() => {
 		LoopManager.init(update, (_, sub_steps: number) => {
@@ -93,7 +95,7 @@ export default function App() {
 		a.href = url;
 		a.download = `${states[current_state_index].id}.json`;
 		a.click();
-	}, [current_state_index]);
+	}, [current_state_index, states]);
 
 	const onImport = useCallback((json_content: string) => {
 		const state = JSON.parse(json_content);
@@ -105,7 +107,7 @@ export default function App() {
 			//TODO: error message handling
 			console.error('Error importing state:', error);
 		}
-	}, []);
+	}, [states, addState, switchState]);
 
 	const middle_container_ref = useRef<HTMLDivElement>(null);
 
@@ -126,7 +128,9 @@ export default function App() {
 		LoopManager.run();
 		LoopManager.render();
 		window.addEventListener("resize", onResize);
-	}, [canvas_state]);
+	}, [
+		canvas_state.overlay_canvas, 
+	]);
 
 	return (<div className="flex flex-row w-full">
 		<ResizableContainer 

@@ -1,10 +1,10 @@
-import BodyRenderer from "../../core/BodyRenderer";
-import Draw from "../../core/Draw";
-import CircleStyle, { CircleStyleProps } from "../../style/CircleStyle";
-import LineStyle, { LineStyleProps } from "../../style/LineStyle";
-import StressStyle, { StressStyleProps } from "../../style/StressStyle";
-import Color from "../../utils/Color";
-import Vec2 from "../../utils/Vector";
+import BodyRenderer from "@/core/BodyRenderer";
+import Draw from "@/core/Draw";
+import CircleStyle, { CircleStyleProps } from "@/style/CircleStyle";
+import LineStyle, { LineStyleProps } from "@/style/LineStyle";
+import StressStyle, { StressStyleProps } from "@/style/StressStyle";
+import Color from "@/utils/Color";
+import Vec2 from "@/utils/Vector";
 import RigidConstraint from "./Body";
 
 export interface RigidConstraint_RendererProps {

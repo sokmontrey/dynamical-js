@@ -1,4 +1,4 @@
-import Vec2 from "./Vector.ts";
+import Vec2 from "./Vector";
 
 export const segment = (a: Vec2, b: Vec2) => new Segment(a, b);
 

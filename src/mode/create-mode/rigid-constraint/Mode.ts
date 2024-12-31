@@ -1,13 +1,12 @@
-import Mode from "../../../core/Mode.ts";
-import RigidConstraint_CreateModeRenderer from "./Renderer.ts";
-import { MouseButton } from "../../../manager/InputManager.ts";
-import ModeRenderer from "../../../core/ModeRenderer.ts";
-import InputManager from "../../../manager/InputManager.ts";
-import LoopManager from "../../../manager/LoopManager.ts";
-import Vec2 from "../../../utils/Vector.ts";
-import PointMass from "../../../body/point-mass/Body.ts";
-import BodyManager from "../../../manager/BodyManager.ts";
-import RigidConstraint from "../../../body/rigid-constraint/Body.ts";
+import PointMass from "@/body/point-mass/Body";
+import RigidConstraint from "@/body/rigid-constraint/Body";
+import Mode from "@/core/Mode";
+import ModeRenderer from "@/core/ModeRenderer";
+import BodyManager from "@/manager/BodyManager";
+import InputManager, { MouseButton } from "@/manager/InputManager";
+import LoopManager from "@/manager/LoopManager";
+import Vec2 from "@/utils/Vector";
+import RigidConstraint_CreateModeRenderer from "./Renderer";
 
 export default class RigidConstraint_CreateMode extends Mode {
     public renderer: ModeRenderer = new RigidConstraint_CreateModeRenderer(this);

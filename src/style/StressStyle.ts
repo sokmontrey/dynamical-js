@@ -1,4 +1,4 @@
-import Color from "../utils/Color.ts";
+import Color from "@/utils/Color";
 import Style, { StyleProps } from "./Style";
 
 export interface StressStyleProps extends StyleProps {

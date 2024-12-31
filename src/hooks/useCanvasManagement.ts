@@ -1,7 +1,7 @@
+import Canvas from "@/core/Canvas";
+import BodyManager from "@/manager/BodyManager";
+import ModeManager from "@/manager/ModeManager";
 import { useState } from "react";
-import Canvas from "../core/Canvas";
-import BodyManager from "../manager/BodyManager";
-import ModeManager from "../manager/ModeManager";
 
 export default function useCanvasManagement() {
     const [canvas_state, setCanvasState] = useState<{

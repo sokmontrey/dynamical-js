@@ -1,9 +1,9 @@
-import RigidConstraint_CreateMode from "../mode/create-mode/rigid-constraint/Mode.ts";
-import MoveMode from "../mode/move-mode/Mode.ts";
-import Mode from "../core/Mode.ts";
-import { MouseButton } from "./InputManager.ts";
-import PointMass_CreateMode from "../mode/create-mode/point-mass/Mode.ts";
-import CircularKinematic_CreateMode from "../mode/create-mode/circular-kinematic/Mode.ts";
+import CircularKinematic_CreateMode from "@/mode/create-mode/circular-kinematic/Mode";
+import PointMass_CreateMode from "@/mode/create-mode/point-mass/Mode";
+import RigidConstraint_CreateMode from "@/mode/create-mode/rigid-constraint/Mode";
+import MoveMode from "@/mode/move-mode/Mode";
+import { MouseButton } from "./InputManager";
+import Mode from "@/core/Mode";
 
 export enum ModeType {
     MOVE = "Move",

@@ -1,12 +1,8 @@
-import Body, { BodyType } from "../../core/Body";
-import { PropBinder, useInputPropBinder } from "../../hooks/usePropBinder";
-import BooleanInput from "../../ui-components/input/BooleanInput";
-import NumberInput from "../../ui-components/input/NumberInput";
-import VectorInput from "../../ui-components/input/VectorInput";
-import Vec2 from "../../utils/Vector";
+import Body, { BodyType } from "@/core/Body";
+import Vec2 from "@/utils/Vector";
 import PointMass from "../point-mass/Body";
-import CircularKinematic_Interactor from "./Interactor";
 import CircularKinematic_Renderer, { CircularKinematic_RendererProps } from "./Renderer";
+import CircularKinematic_Interactor from "./Interactor";
 
 export interface CircularKinematic_Props {
     angular_velocity: number;
@@ -65,42 +61,6 @@ export default class CircularKinematic extends Body<CircularKinematic, CircularK
         this.anchor_pointmass.setPosition(new_pos);
 
         this.triggerOnUpdate();
-    }
-
-    getPropBinders(): PropBinder<any>[] {        
-        return [
-            // is running
-            useInputPropBinder(BooleanInput, 
-                { label: "Running" },
-                () => this.isRunning(),
-                (value: boolean) => this.setRunning(value)),
-
-            // position
-            useInputPropBinder(VectorInput, 
-                { label: "Position", step: 10 },
-                () => this.getPosition(),
-                (value: Vec2) => this.setPosition(value)),
-
-            // radius
-            useInputPropBinder(NumberInput, 
-                { label: "Radius", step: 10, min: 0.01 },
-                () => this.getRadius(),
-                (value: number) => this.setRadius(value)),
-
-            // angle velocity
-            useInputPropBinder(NumberInput, 
-                { label: "Angular Velocity", step: 10 },
-                () => this.getAngularVelocity(false),
-                (value: number) => 
-                    this.setAngularVelocity(value, false)),
-
-            // angle
-            useInputPropBinder(NumberInput, 
-                { label: "Angle", step: 10, min: 0, max: 360 },
-                () => this.getAngle(false),
-                (value: number) => 
-                    this.setAngle(value, false)),
-        ];
     }
 
     //================================ Helpers ================================
