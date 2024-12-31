@@ -28,10 +28,12 @@ jobs:
       - name: Build step
         run: "deno task build:prod"
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload to Deno Deploy
+        uses: denoland/deployctl@v1
         with:
-          path: ./dist
+          project: "dynamical-site"
+          entrypoint: "main.tsx"
+          root: "."
 
   deploy:
     environment:
