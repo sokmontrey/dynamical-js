@@ -1,2 +1,6 @@
+[build]
+  command = "deno task build:prod"
+  publish = "dist"
+
 [build.environment]
-DENO_VERSION = "2.1.4"
+  DENO_VERSION = "2.0"
