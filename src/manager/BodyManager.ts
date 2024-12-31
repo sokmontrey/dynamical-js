@@ -146,6 +146,10 @@ export default class BodyManager {
 
 	static addBody(body: Body<any, any>, id: string = ""): Body<any, any> {
 		id = id || body.getType().toString() + BodyManager.seed;
+		while (BodyManager.bodies[id]) {
+			id = id + "_" + BodyManager.seed;
+			BodyManager.seed++;
+		}
 		body.setId(id);
 		BodyManager.bodies[id] = body;
 		BodyManager.seed++;
