@@ -7,6 +7,8 @@ import { PropBinder } from "@/hooks/usePropBinder";
 import useCircularKinematic_PropBinders from "@/body/circular-kinematic/PanelProps";
 import usePointMass_PropBinders from "@/body/point-mass/PanelProps";
 import useRigidConstraint_PropBinders from "@/body/rigid-constraint/PanelProps";
+import LoopManager from "@/manager/LoopManager";
+import ModeManager from "@/manager/ModeManager";
 
 interface PropertyPanelProps {
     body: Body<any, any>;
@@ -40,6 +42,8 @@ export default function PropertyPanel({
                 <RedButton
                     onConfirmed={() => {
                         BodyManager.removeBody(body.getId()!);
+                        LoopManager.render();
+                        ModeManager.reset();
                     }} 
                 >
                     <i className="fa-solid fa-trash-can"></i> Delete

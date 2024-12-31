@@ -7,7 +7,6 @@ import BodyManager from "@/manager/BodyManager";
 import InputManager from "@/manager/InputManager";
 import LoopManager from "@/manager/LoopManager";
 import ModeManager from "@/manager/ModeManager";
-import circular_kinematic_test_state from "@/states/circular-kinematic-test";
 import ResizableContainer from "@/components/common/ResizableContainer";
 import BodyTreePanel from "@/components/main-component/BodyTreePanel";
 import PropertyPanel from "@/components/main-component/PropertyPanel";
@@ -17,6 +16,7 @@ import StateLog from "@/components/main-component/StateLog";
 import StateTools from "@/components/main-component/StateTools";
 import ToolBar from "@/components/main-component/ToolBar";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import strandbeest_state from "@/states/strandbeest";
 
 export default function Home() {
 	const {
@@ -34,7 +34,7 @@ export default function Home() {
 		saveState,
 		states,
 		addState,
-	} = usePhysicsSimulation(circular_kinematic_test_state);
+	} = usePhysicsSimulation(strandbeest_state);
 
 	const [current_state_index, setCurrentStateIndex] = useState<number>(states.length - 1);
 
@@ -56,7 +56,6 @@ export default function Home() {
 		BodyManager.init(); 
 		BodyManager.setOnTreeChange((body_ids) => {
 			setBodyIds(body_ids);
-			ModeManager.reset();
 		});
 		BodyManager.loadFromJSON(states[current_state_index].state);
 	}, [current_state_index, states, setBodyIds]);
