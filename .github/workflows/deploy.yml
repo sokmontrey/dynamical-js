@@ -2,8 +2,11 @@ name: Deploy
 on:
   push:
     branches: master
-  pull_request:
-    branches: master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
